@@ -106,9 +106,9 @@ const router = new Router({
   mode: 'hash',
   routes: [{
     path: '/',
-    name: 'login',
+    name: '',
     redirect: '/login',
-    component: Login,
+    // component: Login,
     meta: {
       requireAuth: true,
     }
@@ -125,18 +125,83 @@ const router = new Router({
     path: '/home',
     name: 'home',
     redirect: '/home/task',
-    component: resolve => require(['@/pages/home/task/task'], resolve),
+    component: resolve => require(['@/pages/home/home'], resolve),
     meta: {
       requireAuth: true,
     },
-    children: [{
-      path: '/home/task',
-      name: 'task',
-      component: resolve => require(['@/pages/home/task/task'], resolve),
-      meta: {
-        requireAuth: true,
+    children: [
+      {
+        path: '/home/task',
+        name: 'task',
+        component: resolve => require(['@/pages/home/task/task'], resolve),
+        meta: {
+          requireAuth: true,
+        }
+      },
+      {
+        path: '/home/addTask',
+        name: 'addTask',
+        component: resolve => require(['@/pages/home/task/addtask'], resolve),
+        meta: {
+          requireAuth: true,
+        }
+      },
+      {
+        path: '/home/taskDetail',
+        name: 'taskDetail',
+        component: resolve => require(['@/pages/home/task/taskdetail'], resolve),
+        meta: {
+          requireAuth: true,
+        }
+      },
+      {
+        path: '/home/settlement',
+        name: 'settlement',
+        component: resolve => require(['@/pages/home/settlement/settlement'], resolve),
+        meta: {
+          requireAuth: true,
+        }
+      },
+      {
+        path: '/home/owners',
+        name: 'owners',
+        component: resolve => require(['@/pages/home/owners/owners'], resolve),
+        meta: {
+          requireAuth: true,
+        }
+      },
+      {
+        path: '/home/site',
+        name: 'site',
+        component: resolve => require(['@/pages/home/site/site'], resolve),
+        meta: {
+          requireAuth: true,
+        }
+      },
+      {
+        path: '/home/analysis',
+        name: 'analysis',
+        component: resolve => require(['@/pages/home/analysis/analysis'], resolve),
+        meta: {
+          requireAuth: true,
+        }
+      },
+      {
+        path: '/home/metadata',
+        name: 'metadata',
+        component: resolve => require(['@/pages/home/metadata/metadata'], resolve),
+        meta: {
+          requireAuth: true,
+        }
+      },
+      {
+        path: '/home/document',
+        name: 'document',
+        component: resolve => require(['@/pages/home/document/document'], resolve),
+        meta: {
+          requireAuth: true,
+        }
       }
-    }
     ]
   },
   {

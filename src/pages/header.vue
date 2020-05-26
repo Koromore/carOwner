@@ -1,7 +1,7 @@
 <template>
   <!-- <div> -->
 
-  <el-header style="height: 70px" class="homeHeader">
+  <el-header style="height: 70px" id="homeHeader">
     <el-row>
       <el-col :span="14" class="header_left">
         <!-- logo start -->
@@ -12,13 +12,13 @@
 
         <!-- 导航 start -->
         <el-col :span="20" class="navList">
-          <div>任务管理</div>
-          <div>结算管理</div>
-          <div>车主管理</div>
-          <div>场地管理</div>
-          <div>数据分析</div>
-          <div>元数据管理</div>
-          <div>合作文档</div>
+          <div @click="navTo(1)" :class="[routeName=='task'?'act':'']">任务管理</div>
+          <div @click="navTo(2)" :class="[routeName=='settlement'?'act':'']">结算管理</div>
+          <div @click="navTo(3)" :class="[routeName=='owners'?'act':'']">车主管理</div>
+          <div @click="navTo(4)" :class="[routeName=='site'?'act':'']">场地管理</div>
+          <div @click="navTo(5)" :class="[routeName=='analysis'?'act':'']">数据分析</div>
+          <div @click="navTo(6)" :class="[routeName=='metadata'?'act':'']">元数据管理</div>
+          <div @click="navTo(7)" :class="[routeName=='document'?'act':'']">合作文档</div>
         </el-col>
         <!-- 导航 end -->
       </el-col>
@@ -35,8 +35,8 @@
           @clear="searchStart"
         >
           <el-select v-model="select" slot="prepend" placeholder="请选择">
-            <el-option label="项目" value="1"></el-option>
-            <el-option label="任务" value="2"></el-option>
+            <el-option label="任务" value="1"></el-option>
+            <el-option label="结算" value="2"></el-option>
             <el-option label="文档" value="3"></el-option>
           </el-select>
           <el-button slot="append" icon="el-icon-search" @click="searchStart"></el-button>
@@ -59,7 +59,9 @@
 <script>
 export default {
   name: 'homeHeader',
-  props: {},
+  props: {
+    routeName: String
+  },
   data() {
     return {
       // 搜索内容
@@ -84,8 +86,30 @@ export default {
       let searchWord = this.searchWord
       let select = this.select
       console.log(searchWord, select)
-    }
+    },
     ///////// 搜索事件 end /////////
+
+    ///////// 导航页面跳转 start /////////
+    navTo(index) {
+      let url = ''
+      if (index == 1) {
+        url = '/home/task'
+      } else if (index == 2) {
+        url = '/home/settlement'
+      } else if (index == 3) {
+        url = '/home/owners'
+      } else if (index == 4) {
+        url = '/home/site'
+      } else if (index == 5) {
+        url = '/home/analysis'
+      } else if (index == 6) {
+        url = '/home/metadata'
+      } else if (index == 7) {
+        url = '/home/document'
+      }
+      this.$router.push({ path: url })
+    }
+    ///////// 导航页面跳转 end /////////
   }
 }
 </script>
@@ -98,55 +122,63 @@ export default {
 //   background-color: rgb(197, 197, 197);
 //   position: fixed;
 //   top: 0;
-  .el-header {
-    background-color: rgb(197, 197, 197);
-    padding: 0 18px 0 54px;
+.el-header {
+  background-color: #fff;
+  padding: 0 18px 0 54px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  .el-row {
+    width: 100%;
+  }
+  .header_left {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    .el-row{
-      width: 100%;
+    .logo {
+      width: 128px;
     }
-    .header_left {
+    .navList {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
-      .logo {
-        width: 128px;
+      font-size: 18px;
+      .act {
+        font-weight: 700;
+        color: rgba(106, 145, 232, 1);
       }
-      .navList {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: space-between;
-        div {
-          cursor: pointer;
-        }
-      }
-    }
-    .header_right {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: flex-end;
-      .search {
-        width: 320px;
-        margin-right: 13px;
-      }
-      .admin {
-        width: 210px;
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: space-between;
-        i {
-          font-size: 32px;
-          font-weight: bold;
-        }
+      div {
+        cursor: pointer;
       }
     }
   }
+  .header_right {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    .search {
+      width: 320px;
+      margin-right: 13px;
+      .el-select {
+        width: 100px;
+      }
+    }
+    .admin {
+      width: 210px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      i {
+        font-size: 32px;
+        font-weight: bold;
+      }
+    }
+  }
+}
 // }
 </style>
