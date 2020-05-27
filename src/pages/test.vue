@@ -32,15 +32,18 @@
     </el-table>
 
     <!--  -->
-    <el-calendar>
+    <el-calendar v-model="valueDate">
       <!-- 这里使用的是 2.5 slot 语法，对于新项目请使用 2.6 slot 语法-->
       <template slot="dateCell" slot-scope="{date, data}">
+        <!-- {{date}} -->
         <!-- <p
           :class="data.isSelected ? 'is-selected' : ''"
         >{{ data.day.split('-').slice(1).join('-') }} {{ data.isSelected ? '✔️' : ''}}</p> -->
-        {{data.type}}
-        {{data.isSelected}}
-        {{data.day}}
+        
+        <!-- {{data.isSelected}}
+        {{data.day}} -->
+        <!-- <div class="box">{{data}}</div> -->
+        {{test(date)}}
       </template>
       <!-- 123 -->
     </el-calendar>
@@ -57,6 +60,9 @@ export default {
   // Data数据
   data() {
     return {
+      // valueDate: {
+      //   time: 1
+      // },
       tableData: [
         {
           date: '2016-05-02',
@@ -122,6 +128,9 @@ export default {
       console.log(5)
       const property = column['property']
       return row[property] === value
+    },
+    test(res){
+      return (res)
     }
   }
 }
@@ -129,5 +138,8 @@ export default {
 <style lang="scss" scoped>
 .is-selected {
   color: #1989fa;
+}
+.box:hover{
+  background: red;
 }
 </style>

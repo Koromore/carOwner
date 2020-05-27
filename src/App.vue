@@ -105,13 +105,18 @@ select {
 }
 .el-drawer .el-drawer__header span {
   color: black;
-  font-size: 18px;
+  font-size: 24px;
+  font-weight: bold;
+}
+.el-drawer .el-drawer__header i {
+  color: black;
+  font-size: 32px;
   font-weight: bold;
 }
 :focus {
   outline: 0;
 }
 .gutter {
-  display: none !important;
+  background: rgb(242, 242, 242) !important;
 }
 </style>

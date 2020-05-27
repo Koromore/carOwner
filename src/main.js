@@ -6,14 +6,20 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import App from './App'
 import router from './router'
-import echarts from 'echarts'
+// import echarts from 'echarts/lib/echarts'
 import {date,date_,time} from '@/utils/date'
 import {date0,time0} from '@/utils/time'
 // import {Decrypt,Encrypt} from '@/utils/cryptoJS'
 
+// 引入柱状图
+// require('echarts/lib/chart/bar')
+// // 引入提示框和标题组件
+// require('echarts/lib/component/tooltip')
+// require('echarts/lib/component/title')
+
 Vue.config.productionTip = false
 Vue.use(ElementUI)
-Vue.prototype.$echarts = echarts
+// Vue.prototype.$echarts = echarts
 Vue.prototype.$date = date
 Vue.prototype.$date_ = date_
 Vue.prototype.$time = time

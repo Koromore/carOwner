@@ -68,9 +68,9 @@
           <el-table-column prop="address" label="操作">
             <template>
               <i class="el-icon-edit"></i>
-              <i class="el-icon-timer"></i>
-              <i class="el-icon-circle-check"></i>
-              <i class="el-icon-circle-close"></i>
+              <i class="el-icon-timer" @click="delay"></i>
+              <i class="el-icon-circle-check" @click="putTask"></i>
+              <i class="el-icon-circle-close" @click="delTask"></i>
             </template>
           </el-table-column>
         </el-table>
@@ -89,6 +89,62 @@
       </el-col>
     </el-row>
     <!-- 内容列表 end -->
+    <!-- 抽屉弹窗延期原因 start -->
+    <el-drawer title="延期任务" :visible.sync="drawerDelay" size="720px">
+      <el-row class="drawerDelay">
+        <el-col :span="4">任务名称:</el-col>
+        <el-col :span="20">日常超精拍摄邀约</el-col>
+        <el-col :span="4">所属项目:</el-col>
+        <el-col :span="20">6-7月 长城汽车哈佛H系日常</el-col>
+        <el-col :span="4">预计时间:</el-col>
+        <el-col :span="20">
+          <el-date-picker v-model="delayTime" type="date" placeholder="选择日期"></el-date-picker>
+        </el-col>
+        <el-col :span="4" class="key keycontent">延期说明:</el-col>
+        <el-col :span="20">
+          <el-input type="textarea" :rows="6" placeholder="请输入内容" v-model="delayReason"></el-input>
+        </el-col>
+      </el-row>
+    </el-drawer>
+    <!-- 抽屉弹窗延期原因 end -->
+
+    <!-- 抽屉弹窗提交任务 start -->
+    <el-drawer title="提交任务" :visible.sync="drawerPuttask" size="720px">
+      <el-row class="drawerPuttask">
+        <el-col :span="4">任务名称:</el-col>
+        <el-col :span="20">日常超精拍摄邀约</el-col>
+        <el-col :span="4" class="keycontent">结算明细:</el-col>
+        <el-col :span="20">
+          <el-col :span="20">
+            <el-input placeholder="搜索车主" suffix-icon="el-icon-search" v-model="input1"></el-input>
+          </el-col>
+          <el-col :span="24">
+            <el-col :span="6">
+              <el-input placeholder="请输入内容" v-model="input" clearable></el-input>
+            </el-col>
+            <el-col :span="6">
+              <el-input placeholder="请输入内容" v-model="input" clearable></el-input>
+            </el-col>
+            <el-col :span="6">
+              <el-input placeholder="请输入内容" v-model="input" clearable></el-input>
+            </el-col>
+            <el-col :span="6">
+              <el-switch
+                style="display: block"
+                v-model="value2"
+                active-color="#13ce66"
+                inactive-color="#ff4949"
+                active-text="油卡"
+                inactive-text="现金"
+              ></el-switch>
+            </el-col>
+          </el-col>
+          <el-col :span="24"></el-col>
+          <el-col :span="24"></el-col>
+        </el-col>
+      </el-row>
+    </el-drawer>
+    <!-- 抽屉弹窗提交任务 end -->
   </div>
 </template>
 <script>
@@ -304,7 +360,17 @@ export default {
           carNum: '6',
           expertTime: '20-06-01'
         }
-      ]
+      ],
+      // 抽屉弹窗延期原因
+      drawerDelay: false,
+      delayReason: '', // 延期原因
+      delayTime: '', // 延期预计时间时间
+
+      // 抽屉弹窗提交任务
+      drawerPuttask: false,
+
+      input: '',
+      value2: ''
     }
   },
   // 侦听器
@@ -316,7 +382,7 @@ export default {
   // 方法
   methods: {
     ///////// 添加任务 start /////////
-    addTask(){
+    addTask() {
       this.$router.push({ path: '/home/addtask' })
     },
     ///////// 添加任务 end /////////
@@ -329,22 +395,48 @@ export default {
     // 页码变换时触发事件
     changePage(pageNum) {
       console.log(pageNum)
-    }
+    },
     ///////// 分页 end /////////
+
+    ///////// 延期原因 start /////////
+    delay() {
+      this.drawerDelay = true
+    },
+    ///////// 延期原因 end /////////
+
+    ///////// 提交任务 start /////////
+    putTask() {
+      this.drawerPuttask = true
+    },
+    ///////// 提交任务 end /////////
+
+    ///////// 删除任务 start /////////
+    delTask() {
+      this.$confirm('确认要删除该任务吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
+    }
+    ///////// 删除任务 end /////////
   }
 }
 </script>
 <style lang="scss" scoped>
 $white: #fff;
 $icoColor: rgb(106, 145, 232);
-body {
-  .el-table {
-    th.gutter {
-      display: table-cell !important;
-    }
-  }
-}
-body>>>.gutter{display: none !important;}
 #task {
   height: 100%;
   .top {
@@ -413,6 +505,46 @@ body>>>.gutter{display: none !important;}
       // flex-wrap: wrap;
       // align-items: center;
       // justify-content: center;
+    }
+  }
+  // 抽屉弹窗延期原因样式
+  .drawerDelay {
+    box-sizing: border-box;
+    padding: 20px;
+    height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    align-content: flex-start;
+    .el-col {
+      margin-bottom: 49px;
+      font-size: 20px;
+    }
+    .keycontent {
+      align-self: flex-start;
+    }
+    .el-input {
+      width: 100%;
+    }
+  }
+  // 抽屉弹窗提交任务样式
+  .drawerPuttask {
+    box-sizing: border-box;
+    padding: 20px;
+    height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    align-content: flex-start;
+    .el-col {
+      margin-bottom: 49px;
+      font-size: 20px;
+    }
+    .keycontent {
+      align-self: flex-start;
+    }
+    .el-input {
+      width: 100%;
     }
   }
 }

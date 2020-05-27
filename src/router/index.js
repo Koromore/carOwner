@@ -163,6 +163,14 @@ const router = new Router({
         }
       },
       {
+        path: '/home/settlementDetail',
+        name: 'settlementDetail',
+        component: resolve => require(['@/pages/home/settlement/settlementdetail'], resolve),
+        meta: {
+          requireAuth: true,
+        }
+      },
+      {
         path: '/home/owners',
         name: 'owners',
         component: resolve => require(['@/pages/home/owners/owners'], resolve),
