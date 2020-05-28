@@ -57,7 +57,7 @@
           :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
           height="100%"
         >
-          <el-table-column prop="name" label="任务名称" width="360"></el-table-column>
+          <el-table-column prop="name" label="任务名称" min-width="360"></el-table-column>
           <el-table-column prop="type" label="邀约对象" width="240"></el-table-column>
           <el-table-column prop="matter" label="邀约事项" width="240"></el-table-column>
           <el-table-column prop="vehicle" label="邀约车型" width="160"></el-table-column>
@@ -65,7 +65,7 @@
           <el-table-column prop="taskNum" label="任务量" width="100"></el-table-column>
           <el-table-column prop="carNum" label="车主数量" width="180"></el-table-column>
           <el-table-column prop="expertTime" label="预计时间" width="180" sortable></el-table-column>
-          <el-table-column prop="address" label="操作">
+          <el-table-column prop="address" label="操作" width="180">
             <template>
               <i class="el-icon-edit"></i>
               <i class="el-icon-timer" @click="delay"></i>

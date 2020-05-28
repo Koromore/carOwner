@@ -23,8 +23,8 @@ export default {
   // 侦听器
   watch: {
     $route(to, from) {
-      console.log(to)
-      this.routeName = to.name
+      // console.log(to)
+      this.routeName = this.$route.matched[1].name
     }
   },
   // 钩子函数
@@ -38,8 +38,8 @@ export default {
   methods: {
     // 路由获取
     getRoute() {
-      console.log(this.$route)
-      this.routeName = this.$route.name
+      // console.log(this.$route)
+      this.routeName = this.$route.matched[1].name
     }
   }
 }

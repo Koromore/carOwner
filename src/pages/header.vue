@@ -145,7 +145,7 @@ export default {
       flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
-      font-size: 18px;
+      font-size: 16px;
       .act {
         font-weight: 700;
         color: rgba(106, 145, 232, 1);

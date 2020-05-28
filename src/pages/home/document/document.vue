@@ -10,7 +10,7 @@
           :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
           height="100%"
         >
-          <el-table-column label="序号" width="100">
+          <el-table-column label="序号" width="100" align="center">
             <template slot-scope="scope">0{{scope.$index+1}}</template>
           </el-table-column>
           <el-table-column prop="type" label="车主类型" min-width="130"></el-table-column>

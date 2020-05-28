@@ -187,6 +187,14 @@ const router = new Router({
         }
       },
       {
+        path: '/home/sitecarownerlist',
+        name: 'sitecarownerlist',
+        component: resolve => require(['@/pages/home/site/sitecarownerlist'], resolve),
+        meta: {
+          requireAuth: true,
+        }
+      },
+      {
         path: '/home/analysis',
         name: 'analysis',
         component: resolve => require(['@/pages/home/analysis/analysis'], resolve),
@@ -197,11 +205,71 @@ const router = new Router({
       {
         path: '/home/metadata',
         name: 'metadata',
+        redirect: '/home/metadata/brand',
         component: resolve => require(['@/pages/home/metadata/metadata'], resolve),
         meta: {
           requireAuth: true,
-        }
+        },
+        children: [
+          {
+            path: '/home/metadata/brand',
+            name: 'brand',
+            component: resolve => require(['@/pages/home/metadata/components/brand'], resolve),
+            meta: {
+              requireAuth: true,
+            }
+          },
+          {
+            path: '/home/metadata/certifications',
+            name: 'certifications',
+            component: resolve => require(['@/pages/home/metadata/components/certifications'], resolve),
+            meta: {
+              requireAuth: true,
+            }
+          },
+          {
+            path: '/home/metadata/carownertype',
+            name: 'carownertype',
+            component: resolve => require(['@/pages/home/metadata/components/carownertype'], resolve),
+            meta: {
+              requireAuth: true,
+            }
+          },
+          {
+            path: '/home/metadata/carownersource',
+            name: 'carownersource',
+            component: resolve => require(['@/pages/home/metadata/components/carownersource'], resolve),
+            meta: {
+              requireAuth: true,
+            }
+          },
+          {
+            path: '/home/metadata/carownerspeciality',
+            name: 'carownerspeciality',
+            component: resolve => require(['@/pages/home/metadata/components/carownerspeciality'], resolve),
+            meta: {
+              requireAuth: true,
+            }
+          },
+          {
+            path: '/home/metadata/scheduletype',
+            name: 'scheduletype',
+            component: resolve => require(['@/pages/home/metadata/components/scheduletype'], resolve),
+            meta: {
+              requireAuth: true,
+            }
+          },
+          {
+            path: '/home/metadata/sitetype',
+            name: 'sitetype',
+            component: resolve => require(['@/pages/home/metadata/components/sitetype'], resolve),
+            meta: {
+              requireAuth: true,
+            }
+          }
+        ]
       },
+
       {
         path: '/home/document',
         name: 'document',

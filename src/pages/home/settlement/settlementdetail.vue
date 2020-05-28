@@ -314,7 +314,8 @@ export default {
           evidence: '',
           budget: 500
         }
-      ]
+      ],
+      input: ''
     }
   },
   // 侦听器
@@ -333,7 +334,7 @@ export default {
     },
     ///////// 返回上一页 end /////////
 
-    ///////// 返回上一页 start /////////
+    ///////// 确认 start /////////
     submit(){
       this.$confirm('确认提交任务吗?', '提示', {
         confirmButtonText: '确定',
@@ -353,7 +354,7 @@ export default {
           })
         })
     },
-    ///////// 返回上一页 end /////////
+    ///////// 确认 end /////////
 
     ///////// 分页 start /////////
     // 每页条数变化时触发事件

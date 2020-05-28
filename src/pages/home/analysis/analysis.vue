@@ -13,7 +13,7 @@
         <div class="butBox2">
           <div
             :class="[tab2act==index?'but act':'but']"
-            @click="tab2(index)"
+            @click="tab2(index,item.id)"
             v-for="(item,index) in tab2Items"
             :key="index"
           >{{item.name}}</div>
@@ -146,7 +146,7 @@ export default {
     tab2act: function(newData, oldData) {
       let tab1act = this.tab1act
       let tab2act = newData
-      console.log(tab2act)
+      // console.log(tab2act)
       if (tab2act == 0) {
         this.chartKeyData = ['执行中', '结算中', '延期', '已完成']
         this.chartvalData = [520, 360, 130, 240]
@@ -210,8 +210,9 @@ export default {
     tab1(e) {
       this.tab1act = e
     },
-    tab2(e) {
+    tab2(e,id) {
       this.tab2act = e
+      console.log(id)
     },
     // 图表
     echartsBar(res) {
