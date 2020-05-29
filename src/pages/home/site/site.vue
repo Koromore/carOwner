@@ -304,7 +304,7 @@ export default {
       this.drawerAdd = true
       if (type == 0) {
         this.drawerAddTitle = '添加场地'
-      } else if (type == 0) {
+      } else if (type == 1) {
         this.drawerAddTitle = '修改场地'
       }
     },

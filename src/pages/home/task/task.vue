@@ -57,14 +57,14 @@
           :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
           height="100%"
         >
-          <el-table-column prop="name" label="任务名称" min-width="360"></el-table-column>
-          <el-table-column prop="type" label="邀约对象" width="240"></el-table-column>
-          <el-table-column prop="matter" label="邀约事项" width="240"></el-table-column>
-          <el-table-column prop="vehicle" label="邀约车型" width="160"></el-table-column>
-          <el-table-column prop="state" label="状态" width="130"></el-table-column>
-          <el-table-column prop="taskNum" label="任务量" width="100"></el-table-column>
-          <el-table-column prop="carNum" label="车主数量" width="180"></el-table-column>
-          <el-table-column prop="expertTime" label="预计时间" width="180" sortable></el-table-column>
+          <el-table-column prop="name" label="任务名称" min-width="360" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="type" label="邀约对象" min-width="130" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="matter" label="邀约事项" min-width="130" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="vehicle" label="邀约车型" min-width="160" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="state" label="状态" min-width="80"></el-table-column>
+          <el-table-column prop="taskNum" label="任务量" min-width="80"></el-table-column>
+          <el-table-column prop="carNum" label="车主数量" min-width="80"></el-table-column>
+          <el-table-column prop="expertTime" label="预计时间" min-width="100" sortable></el-table-column>
           <el-table-column prop="address" label="操作" width="180">
             <template>
               <i class="el-icon-edit"></i>
@@ -116,7 +116,7 @@
         <el-col :span="4" class="keycontent">结算明细:</el-col>
         <el-col :span="20">
           <el-col :span="20">
-            <el-input placeholder="搜索车主" suffix-icon="el-icon-search" v-model="input1"></el-input>
+            <el-input placeholder="搜索车主" suffix-icon="el-icon-search" v-model="input"></el-input>
           </el-col>
           <el-col :span="24">
             <el-col :span="6">
@@ -179,188 +179,7 @@ export default {
       ],
       value: '',
       // 表格数据
-      tableData: [
-        {
-          name: '2020年6月-长城-#校服女神#日常超精拍摄邀约',
-          type: '拍摄型车主',
-          matter: '日常素材',
-          vehicle: '长城哈佛H6',
-          state: '执行中',
-          taskNum: '6',
-          carNum: '6',
-          expertTime: '20-06-01'
-        },
-        {
-          name: '2020年6月-长城-#校服女神#日常超精拍摄邀约',
-          type: '拍摄型车主',
-          matter: '日常素材',
-          vehicle: '长城哈佛H6',
-          state: '执行中',
-          taskNum: '6',
-          carNum: '6',
-          expertTime: '20-06-01'
-        },
-        {
-          name: '2020年6月-长城-#校服女神#日常超精拍摄邀约',
-          type: '拍摄型车主',
-          matter: '日常素材',
-          vehicle: '长城哈佛H6',
-          state: '执行中',
-          taskNum: '6',
-          carNum: '6',
-          expertTime: '20-06-01'
-        },
-        {
-          name: '2020年6月-长城-#校服女神#日常超精拍摄邀约',
-          type: '拍摄型车主',
-          matter: '日常素材',
-          vehicle: '长城哈佛H6',
-          state: '执行中',
-          taskNum: '6',
-          carNum: '6',
-          expertTime: '20-06-01'
-        },
-        {
-          name: '2020年6月-长城-#校服女神#日常超精拍摄邀约',
-          type: '拍摄型车主',
-          matter: '日常素材',
-          vehicle: '长城哈佛H6',
-          state: '执行中',
-          taskNum: '6',
-          carNum: '6',
-          expertTime: '20-06-01'
-        },
-        {
-          name: '2020年6月-长城-#校服女神#日常超精拍摄邀约',
-          type: '拍摄型车主',
-          matter: '日常素材',
-          vehicle: '长城哈佛H6',
-          state: '执行中',
-          taskNum: '6',
-          carNum: '6',
-          expertTime: '20-06-01'
-        },
-        {
-          name: '2020年6月-长城-#校服女神#日常超精拍摄邀约',
-          type: '拍摄型车主',
-          matter: '日常素材',
-          vehicle: '长城哈佛H6',
-          state: '执行中',
-          taskNum: '6',
-          carNum: '6',
-          expertTime: '20-06-01'
-        },
-        {
-          name: '2020年6月-长城-#校服女神#日常超精拍摄邀约',
-          type: '拍摄型车主',
-          matter: '日常素材',
-          vehicle: '长城哈佛H6',
-          state: '执行中',
-          taskNum: '6',
-          carNum: '6',
-          expertTime: '20-06-01'
-        },
-        {
-          name: '2020年6月-长城-#校服女神#日常超精拍摄邀约',
-          type: '拍摄型车主',
-          matter: '日常素材',
-          vehicle: '长城哈佛H6',
-          state: '执行中',
-          taskNum: '6',
-          carNum: '6',
-          expertTime: '20-06-01'
-        },
-        {
-          name: '2020年6月-长城-#校服女神#日常超精拍摄邀约',
-          type: '拍摄型车主',
-          matter: '日常素材',
-          vehicle: '长城哈佛H6',
-          state: '执行中',
-          taskNum: '6',
-          carNum: '6',
-          expertTime: '20-06-01'
-        },
-        {
-          name: '2020年6月-长城-#校服女神#日常超精拍摄邀约',
-          type: '拍摄型车主',
-          matter: '日常素材',
-          vehicle: '长城哈佛H6',
-          state: '执行中',
-          taskNum: '6',
-          carNum: '6',
-          expertTime: '20-06-01'
-        },
-        {
-          name: '2020年6月-长城-#校服女神#日常超精拍摄邀约',
-          type: '拍摄型车主',
-          matter: '日常素材',
-          vehicle: '长城哈佛H6',
-          state: '执行中',
-          taskNum: '6',
-          carNum: '6',
-          expertTime: '20-06-01'
-        },
-        {
-          name: '2020年6月-长城-#校服女神#日常超精拍摄邀约',
-          type: '拍摄型车主',
-          matter: '日常素材',
-          vehicle: '长城哈佛H6',
-          state: '执行中',
-          taskNum: '6',
-          carNum: '6',
-          expertTime: '20-06-01'
-        },
-        {
-          name: '2020年6月-长城-#校服女神#日常超精拍摄邀约',
-          type: '拍摄型车主',
-          matter: '日常素材',
-          vehicle: '长城哈佛H6',
-          state: '执行中',
-          taskNum: '6',
-          carNum: '6',
-          expertTime: '20-06-01'
-        },
-        {
-          name: '2020年6月-长城-#校服女神#日常超精拍摄邀约',
-          type: '拍摄型车主',
-          matter: '日常素材',
-          vehicle: '长城哈佛H6',
-          state: '执行中',
-          taskNum: '6',
-          carNum: '6',
-          expertTime: '20-06-01'
-        },
-        {
-          name: '2020年6月-长城-#校服女神#日常超精拍摄邀约',
-          type: '拍摄型车主',
-          matter: '日常素材',
-          vehicle: '长城哈佛H6',
-          state: '执行中',
-          taskNum: '6',
-          carNum: '6',
-          expertTime: '20-06-01'
-        },
-        {
-          name: '2020年6月-长城-#校服女神#日常超精拍摄邀约',
-          type: '拍摄型车主',
-          matter: '日常素材',
-          vehicle: '长城哈佛H6',
-          state: '执行中',
-          taskNum: '6',
-          carNum: '6',
-          expertTime: '20-06-01'
-        },
-        {
-          name: '2020年6月-长城-#校服女神#日常超精拍摄邀约',
-          type: '拍摄型车主',
-          matter: '日常素材',
-          vehicle: '长城哈佛H6',
-          state: '执行中',
-          taskNum: '6',
-          carNum: '6',
-          expertTime: '20-06-01'
-        }
-      ],
+      tableData: [],
       // 抽屉弹窗延期原因
       drawerDelay: false,
       delayReason: '', // 延期原因
@@ -378,9 +197,29 @@ export default {
   // 钩子函数
   beforeCreate() {},
   beforeMount() {},
-  mounted() {},
+  mounted() {
+    this.foreach()
+  },
   // 方法
   methods: {
+    ///////// 循环 start /////////
+    foreach() {
+      for (let i = 0; i < 30; i++) {
+        // const element = array[i];
+        this.tableData.push({
+          name: '2020年6月-长城-#校服女神#日常超精拍摄邀约',
+          type: '拍摄型车主',
+          matter: '日常素材',
+          vehicle: '长城哈佛H6',
+          state: '执行中',
+          taskNum: '6',
+          carNum: '6',
+          expertTime: '20-06-01'
+        })
+      }
+    },
+    ///////// 循环 end /////////
+
     ///////// 添加任务 start /////////
     addTask() {
       this.$router.push({ path: '/home/addtask' })

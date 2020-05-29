@@ -150,7 +150,7 @@ export default {
     ///////// 返回上一页 start /////////
     previous() {
       this.$router.push({
-        path: '/home/settlement'
+        path: '/home/site'
       })
     },
     ///////// 返回上一页 end /////////

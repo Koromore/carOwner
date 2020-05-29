@@ -164,7 +164,7 @@ export default {
       width: 320px;
       margin-right: 13px;
       .el-select {
-        width: 100px;
+        width: 81px;
       }
     }
     .admin {
