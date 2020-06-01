@@ -2,7 +2,7 @@
   <div id="addTask">
     <!-- 内容列表 start -->
     <el-row class="content">
-      <el-col :span="24" class="title">新增任务</el-col>
+      <el-col :span="24" class="title">新建任务</el-col>
       <el-col :span="12" class="left">
         <el-col :span="24" class="list">
           <div class="key">任务名称</div>

@@ -325,8 +325,8 @@ $icoColor: rgb(106, 145, 232);
       }
       .butBox {
         $tabBg: rgb(126, 189, 81);
-        width: 220px;
-        height: 46px;
+        // width: 220px;
+        // height: 46px;
         overflow: hidden;
         background: rgb(160, 160, 160);
         color: white;
@@ -335,9 +335,9 @@ $icoColor: rgb(106, 145, 232);
         flex-wrap: wrap;
         align-items: center;
         .but {
-          width: 110px;
-          height: 46px;
-          line-height: 46px;
+          width: 81px;
+          height: 36px;
+          line-height: 36px;
           text-align: center;
           cursor: pointer;
         }

@@ -119,4 +119,7 @@ select {
 .gutter {
   background: rgb(242, 242, 242) !important;
 }
+.el-drawer{
+  padding: 24px;
+}
 </style>

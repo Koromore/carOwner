@@ -37,7 +37,9 @@
           <el-select v-model="select" slot="prepend" placeholder="请选择">
             <el-option label="任务" value="1"></el-option>
             <el-option label="结算" value="2"></el-option>
-            <el-option label="文档" value="3"></el-option>
+            <el-option label="车主" value="3"></el-option>
+            <el-option label="场地" value="4"></el-option>
+            <el-option label="文档" value="5"></el-option>
           </el-select>
           <el-button slot="append" icon="el-icon-search" @click="searchStart"></el-button>
         </el-input>
@@ -67,7 +69,7 @@ export default {
       // 搜索内容
       searchWord: '',
       // 搜索维度
-      select: '项目'
+      select: '1'
     }
   },
   // 侦听器

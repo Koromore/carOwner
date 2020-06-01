@@ -179,6 +179,30 @@ const router = new Router({
         }
       },
       {
+        path: '/home/ownerssite',
+        name: 'ownerssite',
+        component: resolve => require(['@/pages/home/owners/ownerssite'], resolve),
+        meta: {
+          requireAuth: true,
+        }
+      },
+      {
+        path: '/home/ownersrecord',
+        name: 'ownersrecord',
+        component: resolve => require(['@/pages/home/owners/ownersrecord'], resolve),
+        meta: {
+          requireAuth: true,
+        }
+      },
+      {
+        path: '/home/ownersschedule',
+        name: 'ownersschedule',
+        component: resolve => require(['@/pages/home/owners/ownersschedule'], resolve),
+        meta: {
+          requireAuth: true,
+        }
+      },
+      {
         path: '/home/site',
         name: 'site',
         component: resolve => require(['@/pages/home/site/site'], resolve),

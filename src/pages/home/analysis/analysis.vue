@@ -325,17 +325,18 @@ $icoColor: rgb(106, 145, 232);
       align-items: center;
       .butBox1 {
         width: auto;
-        height: 48px;
+        height: 36px;
         margin-left: 36px;
         display: flex;
         flex-wrap: wrap;
         align-items: center;
         border-radius: 6px;
         border: 1px solid rgb(205, 205, 205);
+        overflow: hidden;
         .but {
-          width: 113px;
-          height: 48px;
-          line-height: 48px;
+          width: 81px;
+          height: 36px;
+          line-height: 36px;
           text-align: center;
           font-size: 14px;
           cursor: pointer;
@@ -354,7 +355,7 @@ $icoColor: rgb(106, 145, 232);
       }
       .butBox2 {
         width: auto;
-        height: 48px;
+        height: 36px;
         margin-left: 36px;
         overflow: hidden;
         display: flex;
@@ -363,9 +364,9 @@ $icoColor: rgb(106, 145, 232);
         border-radius: 6px;
         border: 1px solid rgb(205, 205, 205);
         .but {
-          width: 113px;
-          height: 48px;
-          line-height: 48px;
+          width: 81px;
+          height: 36px;
+          line-height: 36px;
           text-align: center;
           font-size: 14px;
           cursor: pointer;

@@ -36,14 +36,14 @@
       <!-- 这里使用的是 2.5 slot 语法，对于新项目请使用 2.6 slot 语法-->
       <template slot="dateCell" slot-scope="{date, data}">
         <!-- {{date}} -->
-        <!-- <p
+        <p
           :class="data.isSelected ? 'is-selected' : ''"
-        >{{ data.day.split('-').slice(1).join('-') }} {{ data.isSelected ? '✔️' : ''}}</p> -->
+        >{{ data.day.split('-').slice(1).join('-') }} {{ data.isSelected ? '✔️' : ''}}</p>
         
         <!-- {{data.isSelected}}
         {{data.day}} -->
         <!-- <div class="box">{{data}}</div> -->
-        {{test(date)}}
+        <!-- {{test(date)}} -->
       </template>
       <!-- 123 -->
     </el-calendar>

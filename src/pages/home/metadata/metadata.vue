@@ -27,17 +27,6 @@
   </div>
 </template>
 <script>
-// 引入 ECharts 主模块
-import echarts from 'echarts/lib/echarts'
-// 引入柱状图
-require('echarts/lib/chart/bar')
-// 引入饼状图
-require('echarts/lib/chart/pie')
-// 引入提示框,标题,图例组件
-require('echarts/lib/component/tooltip')
-require('echarts/lib/component/title')
-require('echarts/lib/component/legend')
-
 export default {
   name: 'metadata',
   components: {},
@@ -142,7 +131,6 @@ $icoColor: rgb(106, 145, 232);
       align-items: center;
       .butBox {
         width: auto;
-        height: 48px;
         margin-left: 36px;
         display: flex;
         flex-wrap: wrap;
@@ -150,9 +138,9 @@ $icoColor: rgb(106, 145, 232);
         border-radius: 6px;
         border: 1px solid rgb(205, 205, 205);
         .but {
-          width: 113px;
-          height: 48px;
-          line-height: 48px;
+          width: 81px;
+          height: 36px;
+          line-height: 36px;
           text-align: center;
           font-size: 14px;
           cursor: pointer;
@@ -189,10 +177,6 @@ $icoColor: rgb(106, 145, 232);
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    // #chartBar {
-    //   width: 80%;
-    //   height: 100%;
-    // }
   }
   // 抽屉弹窗新增/编辑数据
   .drawerData {
