@@ -203,6 +203,22 @@ const router = new Router({
         }
       },
       {
+        path: '/home/addowners',
+        name: 'addowners',
+        component: resolve => require(['@/pages/home/owners/addowners'], resolve),
+        meta: {
+          requireAuth: true,
+        }
+      },
+      {
+        path: '/home/ownersdetail',
+        name: 'ownersdetail',
+        component: resolve => require(['@/pages/home/owners/ownersdetail'], resolve),
+        meta: {
+          requireAuth: true,
+        }
+      },
+      {
         path: '/home/site',
         name: 'site',
         component: resolve => require(['@/pages/home/site/site'], resolve),

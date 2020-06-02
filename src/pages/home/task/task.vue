@@ -39,7 +39,7 @@
           <el-button type="warning" size="medium">结算中</el-button>
           <el-button type="info" size="medium">已完成</el-button>
         </el-button-group>
-        <div class="add_task" @click="addTask">
+        <div class="add_task" @click="addTask(0)">
           <i class="el-icon-circle-plus-outline"></i>
           <br />新建任务
         </div>
@@ -57,7 +57,17 @@
           :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
           height="100%"
         >
-          <el-table-column prop="name" label="任务名称" min-width="360" show-overflow-tooltip></el-table-column>
+          <el-table-column prop label width="24" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="name" label="任务名称" min-width="360" show-overflow-tooltip>
+            <template slot-scope="scope">
+              <el-link
+                target="_blank"
+                class="omit"
+                :underline="false"
+                @click="toDetail"
+              >{{scope.row.name}}</el-link>
+            </template>
+          </el-table-column>
           <el-table-column prop="type" label="邀约对象" min-width="130" show-overflow-tooltip></el-table-column>
           <el-table-column prop="matter" label="邀约事项" min-width="130" show-overflow-tooltip></el-table-column>
           <el-table-column prop="vehicle" label="邀约车型" min-width="160" show-overflow-tooltip></el-table-column>
@@ -65,12 +75,23 @@
           <el-table-column prop="taskNum" label="任务量" min-width="80"></el-table-column>
           <el-table-column prop="carNum" label="车主数量" min-width="80"></el-table-column>
           <el-table-column prop="expertTime" label="预计时间" min-width="100" sortable></el-table-column>
-          <el-table-column prop="address" label="操作" width="180">
+          <el-table-column prop="address" label="操作" width="200">
             <template>
-              <i class="el-icon-edit"></i>
-              <i class="el-icon-timer" @click="delay"></i>
-              <i class="el-icon-circle-check" @click="putTask"></i>
-              <i class="el-icon-circle-close" @click="delTask"></i>
+              <el-tooltip class="item" effect="dark" content="编辑任务" placement="top">
+                <i class="el-icon-edit" @click="addTask(1)"></i>
+              </el-tooltip>
+
+              <el-tooltip class="item" effect="dark" content="延期任务" placement="top">
+                <i class="el-icon-timer" @click="delay"></i>
+              </el-tooltip>
+
+              <el-tooltip class="item" effect="dark" content="提交任务" placement="top">
+                <i class="el-icon-circle-check" @click="putTask"></i>
+              </el-tooltip>
+
+              <el-tooltip class="item" effect="dark" content="删除任务" placement="top">
+                <i class="el-icon-circle-close" @click="delTask"></i>
+              </el-tooltip>
             </template>
           </el-table-column>
         </el-table>
@@ -89,8 +110,9 @@
       </el-col>
     </el-row>
     <!-- 内容列表 end -->
+
     <!-- 抽屉弹窗延期原因 start -->
-    <el-drawer title="延期任务" :visible.sync="drawerDelay" size="720px">
+    <el-drawer title="延期任务" :visible.sync="drawerDelay" size="566px">
       <el-row class="drawerDelay">
         <el-col :span="4">任务名称:</el-col>
         <el-col :span="20">日常超精拍摄邀约</el-col>
@@ -103,6 +125,15 @@
         <el-col :span="4" class="key keycontent">延期说明:</el-col>
         <el-col :span="20">
           <el-input type="textarea" :rows="6" placeholder="请输入内容" v-model="delayReason"></el-input>
+        </el-col>
+        <!-- 底部按钮 -->
+        <el-col :span="24" class="btn">
+          <el-col :span="6" :offset="5">
+            <el-button type="info">取消</el-button>
+          </el-col>
+          <el-col :span="6" :offset="2">
+            <el-button type="primary">提交</el-button>
+          </el-col>
         </el-col>
       </el-row>
     </el-drawer>
@@ -118,29 +149,45 @@
           <el-col :span="20">
             <el-input placeholder="搜索车主" suffix-icon="el-icon-search" v-model="input"></el-input>
           </el-col>
-          <el-col :span="24">
-            <el-col :span="6">
-              <el-input placeholder="请输入内容" v-model="input" clearable></el-input>
+          <el-col :span="24" class="detailList" v-for="(item, index) in detailList" :key="index">
+            <el-col :span="5">
+              <el-input placeholder="车主姓名" v-model="item.ownersName" clearable></el-input>
             </el-col>
             <el-col :span="6">
-              <el-input placeholder="请输入内容" v-model="input" clearable></el-input>
+              <el-input placeholder="链接" v-model="item.link" clearable></el-input>
             </el-col>
-            <el-col :span="6">
-              <el-input placeholder="请输入内容" v-model="input" clearable></el-input>
+            <el-col :span="4">
+              <el-input placeholder="金额" v-model="item.sum" clearable></el-input>
             </el-col>
             <el-col :span="6">
               <el-switch
                 style="display: block"
-                v-model="value2"
+                v-model="item.type"
                 active-color="#13ce66"
                 inactive-color="#ff4949"
                 active-text="油卡"
                 inactive-text="现金"
               ></el-switch>
             </el-col>
+            <el-col :span="2">
+              <template v-if="index == detailList.length-1">
+                <i class="el-icon-delete" @click="delDetailList"></i>
+                <i class="el-icon-circle-plus-outline" @click="addDetailList"></i>
+              </template>
+            </el-col>
           </el-col>
           <el-col :span="24"></el-col>
           <el-col :span="24"></el-col>
+        </el-col>
+
+        <!-- 底部按钮 -->
+        <el-col :span="24" class="btn">
+          <el-col :span="6" :offset="5">
+            <el-button type="info">取消</el-button>
+          </el-col>
+          <el-col :span="6" :offset="2">
+            <el-button type="primary">提交</el-button>
+          </el-col>
         </el-col>
       </el-row>
     </el-drawer>
@@ -155,6 +202,20 @@ export default {
   components: {},
   data() {
     return {
+      detailList: [
+        {
+          ownersName: '',
+          link: '',
+          sum: '',
+          type: true
+        },
+        {
+          ownersName: '',
+          link: '',
+          sum: '',
+          type: true
+        }
+      ],
       options: [
         {
           value: '选项1',
@@ -221,8 +282,11 @@ export default {
     ///////// 循环 end /////////
 
     ///////// 添加任务 start /////////
-    addTask() {
-      this.$router.push({ path: '/home/addtask' })
+    addTask(type) {
+      this.$router.push({
+        path: '/home/addtask',
+        query: { type: type }
+      })
     },
     ///////// 添加任务 end /////////
 
@@ -268,8 +332,34 @@ export default {
             message: '已取消删除'
           })
         })
-    }
+    },
     ///////// 删除任务 end /////////
+
+    ///////// 跳转任务详情页 start /////////
+    toDetail() {
+      this.$router.push({ path: '/home/taskdetail' })
+    },
+    ///////// 跳转任务详情页 end /////////
+
+    ///////// 提交任务删除结算明列表 start /////////
+    delDetailList() {
+      let detailList = this.detailList
+      if (detailList.length>1) {
+        this.detailList.pop()
+      }
+    },
+    ///////// 提交任务删除结算明列表 end /////////
+
+    ///////// 提交任务删除结算明列表 start /////////
+    addDetailList() {
+      this.detailList.push({
+        ownersName: '',
+        link: '',
+        sum: '',
+        type: true
+      })
+    }
+    ///////// 提交任务删除结算明列表 end /////////
   }
 }
 </script>
@@ -303,6 +393,7 @@ $icoColor: rgb(106, 145, 232);
         margin-right: 49px;
         button {
           width: 81px;
+          border: none;
         }
       }
       .add_task {
@@ -341,13 +432,11 @@ $icoColor: rgb(106, 145, 232);
       box-sizing: border-box;
       padding: 16px;
       text-align: center;
-      // flex-wrap: wrap;
-      // align-items: center;
-      // justify-content: center;
     }
   }
   // 抽屉弹窗延期原因样式
   .drawerDelay {
+    position: relative;
     box-sizing: border-box;
     padding: 20px;
     height: 100%;
@@ -356,8 +445,8 @@ $icoColor: rgb(106, 145, 232);
     align-items: center;
     align-content: flex-start;
     .el-col {
-      margin-bottom: 49px;
-      font-size: 20px;
+      margin-bottom: 36px;
+      font-size: 18px;
     }
     .keycontent {
       align-self: flex-start;
@@ -368,6 +457,7 @@ $icoColor: rgb(106, 145, 232);
   }
   // 抽屉弹窗提交任务样式
   .drawerPuttask {
+    position: relative;
     box-sizing: border-box;
     padding: 20px;
     height: 100%;
@@ -375,15 +465,38 @@ $icoColor: rgb(106, 145, 232);
     flex-wrap: wrap;
     align-items: center;
     align-content: flex-start;
-    .el-col {
-      margin-bottom: 49px;
-      font-size: 20px;
+    > .el-col {
+      margin-bottom: 36px;
+      font-size: 18px;
+    }
+    i {
+      color: $icoColor;
+      cursor: pointer;
+    }
+    .detailList {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 18px;
     }
     .keycontent {
       align-self: flex-start;
     }
     .el-input {
       width: 100%;
+    }
+  }
+  .btn {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    margin-bottom: 0 !important;
+    .el-col {
+      margin-bottom: 0;
+      button {
+        width: 100%;
+      }
     }
   }
 }

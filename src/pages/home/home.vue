@@ -55,3 +55,19 @@ export default {
   }
 }
 </style>
+<style lang="scss">
+#home {
+  .omit {
+    width: 100%;
+    text-align: left;
+    span {
+      width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+  .el-scrollbar__wrap{
+    overflow-x: hidden;
+  }
+}
+</style>

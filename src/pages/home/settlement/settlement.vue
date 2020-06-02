@@ -38,6 +38,7 @@
           :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
           height="100%"
         >
+          <el-table-column prop label width="24" show-overflow-tooltip></el-table-column>
           <el-table-column prop="serNum" label="采购编号" width="360"></el-table-column>
           <el-table-column prop="proTeam" label="项目组" width="240"></el-table-column>
           <el-table-column prop="taskName" label="任务名称" width="240"></el-table-column>
@@ -336,8 +337,9 @@ $icoColor: rgb(106, 145, 232);
         align-items: center;
         .but {
           width: 81px;
-          height: 36px;
-          line-height: 36px;
+          height: 34px;
+          line-height: 34px;
+          font-size: 14px;
           text-align: center;
           cursor: pointer;
         }

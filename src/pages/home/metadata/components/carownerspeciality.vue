@@ -8,7 +8,7 @@
         :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
         height="100%"
       >
-        <el-table-column prop="name" label="序号" width="130" align="center">
+        <el-table-column prop="name" label="序号" width="81" align="center">
           <template slot-scope="scope">0{{scope.$index+1}}</template>
         </el-table-column>
         <el-table-column prop="siteName" label="车主特长" min-width="240"></el-table-column>

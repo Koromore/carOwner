@@ -1,9 +1,17 @@
 <template>
-  <div id="addTask">
+  <div id="taskdetail">
     <!-- 内容列表 start -->
     <el-row class="content">
-      <el-col :span="2" class="title">任务详情</el-col>
-      <el-col :span="22" class="title">任务详情</el-col>
+      <!-- <el-col :span="2" class="title">返回</el-col> -->
+      <el-col :span="24" class="title">
+        <el-col :span="6" class="previousBox">
+          <div @click="previous">
+            <i class="el-icon-arrow-left"></i>
+            返回
+          </div>
+        </el-col>
+        <el-col :span="12">任务详情</el-col>
+      </el-col>
       <el-col :span="12" class="left">
         <el-col :span="24" class="list">
           <div class="key">任务名称</div>
@@ -42,25 +50,26 @@
         </el-col>
         <el-col :span="24" class="list">
           <div class="key">完成时间</div>
-          <div class="val">2020/9/1 18：00：03</div>
+          <div class="val">2020/9/1 18:00:03</div>
         </el-col>
       </el-col>
       <el-col :span="12" class="right">
         <el-col :span="24" class="list">
           <div class="key">任务描述</div>
           <div class="val">
-            <div class="text"><span>邀约目的：活跃论坛</span></div>
-            <div class="text"><span>参与资格：xxxx</span></div>
-            <div class="text"><span>字数要求：xxxx</span></div>
-            <div class="text"><span>帖子类型：xxxxxxx</span></div>
-            <div class="text"><span>费用情况：xxxxx</span></div>
-            <div class="text"><span>其他说明：xxxxxxxxxxxxxxxxxx</span></div>
+            <div class="text"><span>邀约目的:活跃论坛</span></div>
+            <div class="text"><span>参与资格:xxxx</span></div>
+            <div class="text"><span>字数要求:xxxx</span></div>
+            <div class="text"><span>帖子类型:xxxxxxx</span></div>
+            <div class="text"><span>费用情况:xxxxx</span></div>
+            <div class="text"><span>其他说明:xxxxxxxxxxxxxxxxxx</span></div>
           </div>
         </el-col>
         <el-col :span="24" class="list">
           <div class="key">任务文件</div>
           <div class="val">
-            <!-- <el-input placeholder="请输入内容" v-model="input" clearable></el-input> -->
+            <div><img src="static/images/document/ppt.png" width="20" alt="">&nbsp;2020年6月-长城-#校服女神#创意标准文件</div>
+            <div><img src="static/images/document/ppt.png" width="20" alt="">&nbsp;2020年6月-长城-#校服女神#创意标准文件</div>
           </div>
         </el-col>
         <el-col :span="24" class="list">
@@ -68,9 +77,10 @@
           <div class="val">暂无</div>
         </el-col>
       </el-col>
-      <!-- <el-col :span="24" class="put">
-        <el-button type="primary">提交</el-button>
-      </el-col>-->
+      <el-col :span="24" class="btn">
+        <el-button type="primary">发送邀请函</el-button>
+        <el-button type="primary">复制任务</el-button>
+      </el-col>
     </el-row>
     <!-- 内容列表 end -->
   </div>
@@ -79,7 +89,7 @@
 // import { matchType } from '@/utils/matchType' // 引入文件格式判断方法
 
 export default {
-  name: 'addTask',
+  name: 'taskdetail',
   components: {},
   data() {
     return {}
@@ -92,6 +102,14 @@ export default {
   mounted() {},
   // 方法事件
   methods: {
+    ///////// 返回上一页 start /////////
+    previous() {
+      this.$router.push({
+        path: '/home/task'
+      })
+    },
+    ///////// 返回上一页 end /////////
+
     // 文件上传
     handleRemove(file, fileList) {
       console.log(file, fileList)
@@ -113,10 +131,11 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-#addTask {
+#taskdetail {
   height: 100%;
   background: white;
   .content {
+    position: relative;
     height: 100%;
     box-sizing: border-box;
     padding: 36px;
@@ -124,7 +143,7 @@ export default {
       display: flex;
       flex-wrap: wrap;
       align-items: flex-start;
-      margin: 13px 0;
+      margin: 0;
       .key {
         width: 96px;
         height: 40px;
@@ -151,6 +170,22 @@ export default {
       text-align: center;
       font-size: 28px;
       font-weight: bold;
+      margin-bottom: 24px;
+      .previousBox {
+        font-size: 22px;
+        text-align: left;
+        // padding-left: 36px;
+        div {
+          cursor: pointer;
+          text-align: left;
+          font-weight: 100;
+          height: 37px;
+          line-height: 37px;
+        }
+        i {
+          font-weight: bold;
+        }
+      }
     }
     $pad: 49px;
     .left {
@@ -165,10 +200,14 @@ export default {
         justify-content: flex-start;
       }
     }
-    .put {
+    .btn {
+      position: absolute;
+      bottom: 24px;
+      left: 0;
       text-align: center;
       button {
         width: 136px;
+        margin-left: 49px;
       }
     }
   }

@@ -235,8 +235,12 @@ $icoColor: rgb(106, 145, 232);
     position: absolute;
     left: 0;
     bottom: 0;
-    button {
-      width: 100%;
+    margin-bottom: 0 !important;
+    .el-col {
+      margin-bottom: 0;
+      button {
+        width: 100%;
+      }
     }
   }
 }

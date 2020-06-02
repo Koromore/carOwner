@@ -28,22 +28,21 @@
           :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
           height="100%"
         >
-          <el-table-column prop="time" label="时间" width="100"></el-table-column>
-          <el-table-column prop="addressee" label="收件人" width="100"></el-table-column>
-          <el-table-column prop="matter" label="合作事项" width="180"></el-table-column>
-          <el-table-column prop="title" label="内容标题" min-width="320"></el-table-column>
-          <el-table-column prop="link" label="链接" min-width="90">
-            【原】
-          </el-table-column>
-          <el-table-column prop="tele" label="电话" min-width="130"></el-table-column>
-          <el-table-column prop="site" label="地址" min-width="360"></el-table-column>
-          <el-table-column prop="type" label="油卡或现金" min-width="110" align="center">
+          <el-table-column prop label width="24" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="time" label="时间" width="81"></el-table-column>
+          <el-table-column prop="addressee" label="收件人" width="64"></el-table-column>
+          <el-table-column prop="matter" label="合作事项" width="81"></el-table-column>
+          <el-table-column prop="title" label="内容标题" min-width="240" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="link" label="链接" width="80">【原】</el-table-column>
+          <el-table-column prop="tele" label="电话" min-width="110"></el-table-column>
+          <el-table-column prop="site" label="地址" min-width="240" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="type" label="油卡或现金" width="100" align="center">
             <template slot-scope="scope">
               <template v-if="scope.row.type == 1">油卡</template>
               <template v-else-if="scope.row.type == 2">现金</template>
             </template>
           </el-table-column>
-          <el-table-column prop="evidence" label="结算凭证" min-width="200" align="center">
+          <el-table-column prop="evidence" label="结算凭证" width="200" align="center">
             <template slot-scope="scope">
               <template v-if="scope.row.type == '1'&&scope.row.trackNum == ''">
                 <el-input placeholder="请输入内容" v-model="input" clearable size="mini"></el-input>
@@ -51,16 +50,12 @@
               <template
                 v-else-if="scope.row.type == '1'&&scope.row.trackNum != ''"
               >{{scope.row.trackNum}}</template>
-              <template
-                v-else-if="scope.row.type == '2'&&scope.row.evidence == ''"
-              >上传凭证</template>
-              <template
-                v-else-if="scope.row.type == '2'&&scope.row.evidence != ''"
-              >查看凭证</template>
+              <template v-else-if="scope.row.type == '2'&&scope.row.evidence == ''">上传凭证</template>
+              <template v-else-if="scope.row.type == '2'&&scope.row.evidence != ''">查看凭证</template>
             </template>
           </el-table-column>
-          <el-table-column prop="budget" label="预算" min-width="80" align="center"></el-table-column>
-          <el-table-column prop="address" label="操作" width="130" align="center">
+          <el-table-column prop="budget" label="预算" min-width="60" align="center"></el-table-column>
+          <el-table-column prop="address" label="操作" width="64" align="center">
             <template>
               <i class="el-icon-circle-check"></i>
             </template>
@@ -327,7 +322,7 @@ export default {
   // 方法
   methods: {
     ///////// 返回上一页 start /////////
-    previous(){
+    previous() {
       this.$router.push({
         path: '/home/settlement'
       })
@@ -335,7 +330,7 @@ export default {
     ///////// 返回上一页 end /////////
 
     ///////// 确认 start /////////
-    submit(){
+    submit() {
       this.$confirm('确认提交任务吗?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',

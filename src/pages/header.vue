@@ -47,9 +47,12 @@
 
         <!-- 用户信息 start -->
         <div class="admin">
-          <i class="el-icon-bell"></i>
+          <!-- <i class="el-icon-bell"></i> -->
           <div class="name">超级管理员</div>
-          <i class="el-icon-switch-button"></i>
+
+          <el-tooltip class="item" effect="dark" content="退出" placement="bottom">
+            <i class="el-icon-switch-button"></i>
+          </el-tooltip>
         </div>
         <!-- 用户信息 end -->
       </el-col>
@@ -126,7 +129,7 @@ export default {
 //   top: 0;
 .el-header {
   background-color: #fff;
-  padding: 0 18px 0 54px;
+  // padding: 0 18px 0 54px;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -174,10 +177,12 @@ export default {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      justify-content: space-between;
+      justify-content: flex-end;
       i {
-        font-size: 32px;
+        font-size: 24px;
         font-weight: bold;
+        margin-left: 13px;
+        cursor: pointer;
       }
     }
   }

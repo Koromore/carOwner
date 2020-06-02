@@ -8,7 +8,7 @@
         :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
         height="100%"
       >
-        <el-table-column prop="name" label="序号" width="130" align="center">
+        <el-table-column prop="name" label="序号" width="81" align="center">
           <template slot-scope="scope">0{{scope.$index+1}}</template>
         </el-table-column>
         <el-table-column prop="siteName" label="品牌名称" width="240"></el-table-column>
@@ -45,6 +45,7 @@
         <el-col :span="18">
           <el-input placeholder="请输入内容" v-model="input" clearable></el-input>
         </el-col>
+        <!-- 底部按钮 -->
         <el-col :span="24" class="btn">
           <el-col :span="6" :offset="5">
             <el-button type="info">取消</el-button>

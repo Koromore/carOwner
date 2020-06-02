@@ -66,7 +66,7 @@
           :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
           height="100%"
         >
-          <el-table-column prop label="序号" min-width="81" align="center">
+          <el-table-column prop label="序号" width="81" align="center">
             <template slot-scope="scope">0{{scope.$index+1}}</template>
           </el-table-column>
           <el-table-column prop="name" label="车主姓名" min-width="81" show-overflow-tooltip></el-table-column>
@@ -111,7 +111,7 @@
           :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
           height="100%"
         >
-          <el-table-column prop label="序号" min-width="81" align="center">
+          <el-table-column prop label="序号" width="81" align="center">
             <template slot-scope="scope">0{{scope.$index+1}}</template>
           </el-table-column>
           <el-table-column prop="name" label="车主姓名" min-width="81" show-overflow-tooltip></el-table-column>
@@ -156,7 +156,7 @@
           :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
           height="100%"
         >
-          <el-table-column prop label="序号" min-width="81" align="center">
+          <el-table-column prop label="序号" width="81" align="center">
             <template slot-scope="scope">0{{scope.$index+1}}</template>
           </el-table-column>
           <el-table-column prop="name" label="车主姓名" min-width="81" show-overflow-tooltip></el-table-column>
@@ -391,23 +391,9 @@ export default {
 
     ///////// 确认 start /////////
     submit() {
-      this.$confirm('确认提交任务吗?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
+      this.$router.push({
+        path: '/home/addowners'
       })
-        .then(() => {
-          this.$message({
-            type: 'success',
-            message: '提交成功!'
-          })
-        })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消提交'
-          })
-        })
     }
     ///////// 确认 end /////////
   }
@@ -427,6 +413,7 @@ $icoColor: rgb(106, 145, 232);
     align-items: center;
     .left {
       height: 100%;
+      font-size: 14px;
       display: flex;
       flex-wrap: wrap;
       align-items: center;
@@ -434,6 +421,7 @@ $icoColor: rgb(106, 145, 232);
         width: auto;
         height: 36px;
         margin-left: 36px;
+        overflow: hidden;
         display: flex;
         flex-wrap: wrap;
         align-items: center;
