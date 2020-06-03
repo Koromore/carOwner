@@ -23,9 +23,18 @@
       <el-calendar>
         <!-- 这里使用的是 2.5 slot 语法，对于新项目请使用 2.6 slot 语法-->
         <template slot="dateCell" slot-scope="{date, data}">
-          <p
-            :class="data.isSelected ? 'is-selected' : ''"
-          >{{ data.day.split('-').slice(1).join('-') }} {{ data.isSelected ? '✔️' : ''}}</p>
+          <div :class="data.isSelected ? 'is-selected box' : 'box'">
+            <div
+              class="time"
+            >{{ data.day.split('-').slice(1).join('-') }} {{ data.isSelected ? '✔️' : ''}}</div>
+
+            <div
+              class="schedule"
+              @click="scheduleDetail"
+              v-if="$date0(date) == $date0(new Date)"
+            >云图系统</div>
+            <div class="openAdd" v-else @click="openAddSchedule">新建日程</div>
+          </div>
         </template>
       </el-calendar>
     </el-row>
@@ -34,22 +43,54 @@
     <!-- 抽屉弹窗提交任务 start -->
     <el-drawer title="日程预约" :visible.sync="scheduleRecord" size="572px">
       <el-row class="scheduleRecord">
-        <el-col :span="4">任务名称:</el-col>
-        <el-col :span="20">日常超精拍摄邀约</el-col>
-        <el-col :span="4">开始时间:</el-col>
-        <el-col :span="20">2020-05-01 15:00</el-col>
-        <el-col :span="4">时长:</el-col>
-        <el-col :span="20">5小时</el-col>
-        <el-col :span="4">类型:</el-col>
-        <el-col :span="20">日常邀约拍摄</el-col>
-        <el-col :span="4">路线:</el-col>
-        <el-col :span="20">xxxxxxxx</el-col>
-        <el-col :span="4">地点:</el-col>
-        <el-col :span="20">湖北省武汉市洪山区</el-col>
-        <el-col :span="4">备注:</el-col>
-        <el-col :span="20">xxxxxxxx</el-col>
-        <el-col :span="4">预约车主:</el-col>
-        <el-col :span="20">xxxxxxxx</el-col>
+        <el-col :span="4" class="key">任务名称</el-col>
+        <el-col :span="1">:</el-col>
+        <el-col :span="19">日常超精拍摄邀约</el-col>
+        <el-col :span="4" class="key">开始时间</el-col>
+        <el-col :span="1">:</el-col>
+        <el-col :span="19">2020-05-01 15:00</el-col>
+        <el-col :span="4" class="key">时长</el-col>
+        <el-col :span="1">:</el-col>
+        <el-col :span="19">5小时</el-col>
+        <el-col :span="4" class="key">类型</el-col>
+        <el-col :span="1">:</el-col>
+        <el-col :span="19">日常邀约拍摄</el-col>
+        <el-col :span="4" class="key">路线</el-col>
+        <el-col :span="1">:</el-col>
+        <el-col :span="19">xxxxxxxx</el-col>
+        <el-col :span="4" class="key">地点</el-col>
+        <el-col :span="1">:</el-col>
+        <el-col :span="19">湖北省武汉市洪山区</el-col>
+        <el-col :span="4" class="key">备注</el-col>
+        <el-col :span="1">:</el-col>
+        <el-col :span="19">xxxxxxxx</el-col>
+        <el-col :span="4" class="key">预约车主</el-col>
+        <el-col :span="1">:</el-col>
+        <el-col :span="19" class="appoin">
+          <el-col :span="7">
+            <el-select v-model="value" clearable placeholder="预约组别">
+              <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </el-col>
+          <el-col :span="7">
+            <el-select v-model="value" clearable placeholder="预约车型">
+              <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </el-col>
+          <el-col :span="8">
+            <el-input placeholder="计划预约量" v-model="input" clearable></el-input>
+          </el-col>
+        </el-col>
 
         <el-col :span="24" class="btn">
           <el-col :span="8" :offset="3">
@@ -66,15 +107,18 @@
     <!-- 抽屉弹窗提交任务 start -->
     <el-drawer title="新建日程" :visible.sync="addSchedule" size="572px">
       <el-row class="addSchedule">
-        <el-col :span="4">日程主题:</el-col>
+        <el-col :span="4" class="key">日程主题</el-col>
+        <el-col :span="1">:</el-col>
         <el-col :span="18">
           <el-input placeholder="请输入内容" v-model="input" clearable></el-input>
         </el-col>
-        <el-col :span="4">开始时间:</el-col>
+        <el-col :span="4" class="key">开始时间</el-col>
+        <el-col :span="1">:</el-col>
         <el-col :span="18">
           <el-date-picker v-model="value1" type="date" placeholder="选择日期"></el-date-picker>
         </el-col>
-        <el-col :span="4">时长:</el-col>
+        <el-col :span="4" class="key">时长</el-col>
+        <el-col :span="1">:</el-col>
         <el-col :span="18">
           <el-input placeholder="请输入内容" v-model="input3" class="input-with-select">
             <el-select v-model="select" slot="append" placeholder="选择">
@@ -85,19 +129,30 @@
             <!-- <el-button slot="append" icon="el-icon-search"></el-button> -->
           </el-input>
         </el-col>
-        <el-col :span="4">类型:</el-col>
+        <el-col :span="4" class="key">类型</el-col>
+        <el-col :span="1">:</el-col>
+        <el-col :span="18">
+          <el-select v-model="value" clearable placeholder="请选择">
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+        </el-col>
+        <el-col :span="4" class="key">路线</el-col>
+        <el-col :span="1">:</el-col>
         <el-col :span="18">
           <el-input placeholder="请输入内容" v-model="input" clearable></el-input>
         </el-col>
-        <el-col :span="4">路线:</el-col>
+        <el-col :span="4" class="key">地点</el-col>
+        <el-col :span="1">:</el-col>
         <el-col :span="18">
           <el-input placeholder="请输入内容" v-model="input" clearable></el-input>
         </el-col>
-        <el-col :span="4">地点:</el-col>
-        <el-col :span="18">
-          <el-input placeholder="请输入内容" v-model="input" clearable></el-input>
-        </el-col>
-        <el-col :span="4">备注:</el-col>
+        <el-col :span="4" class="key">备注</el-col>
+        <el-col :span="1">:</el-col>
         <el-col :span="18">
           <el-input placeholder="请输入内容" v-model="input" clearable></el-input>
         </el-col>
@@ -124,12 +179,37 @@ export default {
   data() {
     return {
       // 日程记录
+      newDate: new Date(),
       scheduleRecord: false,
       input: '',
       value1: '',
-      addSchedule: true,
+      input3: '',
+      addSchedule: false,
       prepend: '1',
-      select: ''
+      select: '',
+      options: [
+        {
+          value: '选项1',
+          label: '黄金糕'
+        },
+        {
+          value: '选项2',
+          label: '双皮奶'
+        },
+        {
+          value: '选项3',
+          label: '蚵仔煎'
+        },
+        {
+          value: '选项4',
+          label: '龙须面'
+        },
+        {
+          value: '选项5',
+          label: '北京烤鸭'
+        }
+      ],
+      value: ''
     }
   },
   // 侦听器
@@ -138,7 +218,7 @@ export default {
   beforeCreate() {},
   beforeMount() {},
   mounted() {
-    this.foreach()
+    // this.foreach()
   },
   // 方法
   methods: {
@@ -180,8 +260,20 @@ export default {
     // 页码变换时触发事件
     changePage(pageNum) {
       console.log(pageNum)
-    }
+    },
     ///////// 分页 end /////////
+
+    ///////// 打开新建日程 start /////////
+    openAddSchedule() {
+      this.addSchedule = true
+    },
+    ///////// 打开新建日程 end /////////
+
+    ///////// 打开日程详情 start /////////
+    scheduleDetail() {
+      this.scheduleRecord = true
+    }
+    ///////// 打开日程详情 end /////////
   }
 }
 </script>
@@ -190,6 +282,9 @@ $white: #fff;
 $icoColor: rgb(106, 145, 232);
 #ownersschedule {
   height: 100%;
+  .el-select {
+    width: 100%;
+  }
   .top {
     height: 88px;
     // margin-bottom: 9px;
@@ -233,10 +328,44 @@ $icoColor: rgb(106, 145, 232);
     }
   }
   .content {
+    $isColor: #1989fa;
     height: calc(100% - 88px);
     background: #fff;
+    overflow: hidden;
     .is-selected {
-      color: #1989fa;
+      color: $isColor;
+    }
+    .box {
+      height: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: flex-start;
+      align-content: space-between;
+      .time {
+        width: 100%;
+      }
+      .openAdd {
+        display: none;
+        width: 100%;
+        color: $isColor;
+        text-align: center;
+      }
+      .schedule {
+        margin: 0 auto;
+        width: 90%;
+        height: 30px;
+        line-height: 30px;
+        font-size: 13px;
+        text-align: center;
+        background: $isColor;
+        color: #fff;
+      }
+    }
+    .box:hover {
+      .openAdd {
+        display: block;
+      }
     }
   }
 
@@ -250,9 +379,15 @@ $icoColor: rgb(106, 145, 232);
     flex-wrap: wrap;
     align-items: center;
     align-content: flex-start;
-    .el-col {
+    > .el-col {
       margin-bottom: 24px;
       font-size: 18px;
+    }
+    .appoin {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
     }
     .keycontent {
       align-self: flex-start;
@@ -269,11 +404,12 @@ $icoColor: rgb(106, 145, 232);
     padding: 20px;
     padding-top: 0;
     height: 100%;
+    position: relative;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     align-content: flex-start;
-    .el-col {
+    > .el-col {
       margin-bottom: 24px;
       font-size: 18px;
     }
@@ -284,11 +420,29 @@ $icoColor: rgb(106, 145, 232);
     button {
       width: 100%;
     }
-    .input-with-select{
+    .input-with-select {
       .el-select {
         width: 81px;
       }
     }
+  }
+  .key {
+    // width: 96px;
+    height: 40px;
+    line-height: 40px;
+    // margin-right: 13px;
+    text-align: justify;
+    box-sizing: border-box;
+  }
+  .key:after {
+    display: inline-block;
+    content: '';
+    padding-left: 100%;
+  }
+  .btn {
+    position: absolute;
+    bottom: 0;
+    left: 0;
   }
 }
 </style>

@@ -80,9 +80,15 @@
           <el-table-column prop="period" label="结算周期" min-width="100"></el-table-column>
           <el-table-column prop label="操作" width="160">
             <template>
-              <i class="el-icon-view"></i>
-              <i class="el-icon-map-location" @click="toOwnerssite"></i>
-              <i class="el-icon-delete" @click="delOwners"></i>
+              <el-tooltip class="item" effect="dark" content="车主信息" placement="top">
+                <i class="el-icon-view" @click="toDetail"></i>
+              </el-tooltip>
+              <el-tooltip class="item" effect="dark" content="场地信息" placement="top">
+                <i class="el-icon-map-location" @click="toOwnerssite"></i>
+              </el-tooltip>
+              <el-tooltip class="item" effect="dark" content="删除" placement="top">
+                <i class="el-icon-delete" @click="delOwners"></i>
+              </el-tooltip>
             </template>
           </el-table-column>
         </el-table>
@@ -124,11 +130,21 @@
           <el-table-column prop="surplusnum" label="本月合作次数" min-width="100"></el-table-column>
           <el-table-column prop label="操作" width="230">
             <template>
-              <i class="el-icon-timer"></i>
-              <i class="el-icon-view"></i>
-              <i class="el-icon-date" @click="toOwnersschedule"></i>
-              <i class="el-icon-map-location" @click="toOwnerssite"></i>
-              <i class="el-icon-delete" @click="delOwners"></i>
+              <el-tooltip class="item" effect="dark" content="预约记录" placement="top">
+                <i class="el-icon-time" @click="toRecord"></i>
+              </el-tooltip>
+              <el-tooltip class="item" effect="dark" content="车主信息" placement="top">
+                <i class="el-icon-view" @click="toDetail"></i>
+              </el-tooltip>
+              <el-tooltip class="item" effect="dark" content="日程管理" placement="top">
+                <i class="el-icon-date" @click="toOwnersschedule"></i>
+              </el-tooltip>
+              <el-tooltip class="item" effect="dark" content="场地信息" placement="top">
+                <i class="el-icon-map-location" @click="toOwnerssite"></i>
+              </el-tooltip>
+              <el-tooltip class="item" effect="dark" content="删除" placement="top">
+                <i class="el-icon-delete" @click="delOwners"></i>
+              </el-tooltip>
             </template>
           </el-table-column>
         </el-table>
@@ -169,11 +185,21 @@
           <el-table-column prop="surplusnum" label="本月合作次数" min-width="100"></el-table-column>
           <el-table-column prop label="操作" width="230">
             <template>
-              <i class="el-icon-timer"></i>
-              <i class="el-icon-view"></i>
-              <i class="el-icon-date"></i>
-              <i class="el-icon-map-location" @click="toOwnerssite"></i>
-              <i class="el-icon-delete" @click="delOwners"></i>
+              <el-tooltip class="item" effect="dark" content="预约记录" placement="top">
+                <i class="el-icon-time" @click="toRecord"></i>
+              </el-tooltip>
+              <el-tooltip class="item" effect="dark" content="车主信息" placement="top">
+                <i class="el-icon-view" @click="toDetail"></i>
+              </el-tooltip>
+              <el-tooltip class="item" effect="dark" content="日程管理" placement="top">
+                <i class="el-icon-date" @click="toOwnersschedule"></i>
+              </el-tooltip>
+              <el-tooltip class="item" effect="dark" content="场地信息" placement="top">
+                <i class="el-icon-map-location" @click="toOwnerssite"></i>
+              </el-tooltip>
+              <el-tooltip class="item" effect="dark" content="删除" placement="top">
+                <i class="el-icon-delete" @click="delOwners"></i>
+              </el-tooltip>
             </template>
           </el-table-column>
         </el-table>
@@ -254,8 +280,22 @@ export default {
   // 侦听器
   watch: {
     tab1act: function(newData, oldData) {
-      // console.log(newData)
-      if (newData == 1) {
+      this.tabItems()
+    }
+  },
+  // 钩子函数
+  beforeCreate() {},
+  beforeMount() {},
+  mounted() {
+    this.foreach()
+    this.tabItems()
+  },
+  // 方法
+  methods: {
+    ///////// 选项卡切换 start /////////
+    tabItems() {
+      let tab1act = this.tab1act
+      if (tab1act == 1) {
         this.tab2Items = [
           {
             id: 1,
@@ -278,7 +318,7 @@ export default {
             name: '文案约稿'
           }
         ]
-      } else if (newData == 2) {
+      } else if (tab1act == 2) {
         this.tab2Items = [
           {
             id: 5,
@@ -289,7 +329,7 @@ export default {
             name: '签约摄影师'
           }
         ]
-      } else if (newData == 3) {
+      } else if (tab1act == 3) {
         this.tab2Items = [
           {
             id: 2,
@@ -303,18 +343,11 @@ export default {
       }
 
       this.tab2act = 0
-      let tab1act = newData
-      let tab2act = this.tab2act
-    }
-  },
-  // 钩子函数
-  beforeCreate() {},
-  beforeMount() {},
-  mounted() {
-    this.foreach()
-  },
-  // 方法
-  methods: {
+      // let tab1act = newData
+      // let tab2act = this.tab2act
+    },
+    ///////// 选项卡切换 end /////////
+
     ///////// 循环 start /////////
     foreach() {
       for (let i = 0; i < 30; i++) {
@@ -356,9 +389,16 @@ export default {
     ///////// 跳转场地信息 start /////////
     toOwnerssite() {
       this.$router.push({ path: '/home/ownerssite' })
-      console.log(1)
+      // console.log(1)
     },
     ///////// 跳转场地信息 end /////////
+
+    ///////// 跳转预约记录页面 start /////////
+    toRecord() {
+      this.$router.push({ path: '/home/ownersrecord' })
+      console.log(1)
+    },
+    ///////// 跳转预约记录页面 end /////////
 
     ///////// 跳日程管理页面 start /////////
     toOwnersschedule() {
@@ -394,8 +434,16 @@ export default {
       this.$router.push({
         path: '/home/addowners'
       })
-    }
+    },
     ///////// 确认 end /////////
+
+    ///////// 跳转车主信息页面 start /////////
+    toDetail() {
+      this.$router.push({
+        path: '/home/ownersdetail'
+      })
+    }
+    ///////// 跳转车主信息页面 end /////////
   }
 }
 </script>

@@ -64,7 +64,7 @@
                 target="_blank"
                 class="omit"
                 :underline="false"
-                @click="toDetail"
+                @click="toDetail(scope.row.id)"
               >{{scope.row.name}}</el-link>
             </template>
           </el-table-column>
@@ -268,6 +268,7 @@ export default {
       for (let i = 0; i < 30; i++) {
         // const element = array[i];
         this.tableData.push({
+          id: i,
           name: '2020年6月-长城-#校服女神#日常超精拍摄邀约',
           type: '拍摄型车主',
           matter: '日常素材',
@@ -336,15 +337,18 @@ export default {
     ///////// 删除任务 end /////////
 
     ///////// 跳转任务详情页 start /////////
-    toDetail() {
-      this.$router.push({ path: '/home/taskdetail' })
+    toDetail(id) {
+      this.$router.push({
+        path: '/home/taskdetail',
+        query: { id: id }
+      })
     },
     ///////// 跳转任务详情页 end /////////
 
     ///////// 提交任务删除结算明列表 start /////////
     delDetailList() {
       let detailList = this.detailList
-      if (detailList.length>1) {
+      if (detailList.length > 1) {
         this.detailList.pop()
       }
     },

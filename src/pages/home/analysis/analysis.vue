@@ -260,34 +260,37 @@ export default {
       var myChart = echarts.init(document.getElementById('chartBar'))
       // 绘制图表
       let title = this.chartTitle
+      let chartKeyData = this.chartKeyData
+      let chartvalData = this.chartvalData
 
       myChart.setOption({
         title: {
-          text: '某站点用户访问来源',
-          subtext: '纯属虚构',
-          left: 'center'
+          text: title,
+          subtext: 13600 + '个',
+          subtextStyle: { fontSize: 20 },
+          left: 'left'
+          
         },
+        color: ['#2B4E76','#4175B1','#A4C3E2'],
         tooltip: {
           trigger: 'item',
           formatter: '{a} <br/>{b} : {c} ({d}%)'
         },
         legend: {
           orient: 'vertical',
-          left: 'left',
-          data: ['直接访问', '邮件营销', '联盟广告', '视频广告', '搜索引擎']
+          bottom: 'bottom',
+          data: ['吉利组', '长城组', '沃尔沃组']
         },
         series: [
           {
             name: '访问来源',
             type: 'pie',
-            radius: '55%',
-            center: ['50%', '60%'],
+            radius: '70%',
+            center: ['50%', '50%'],
             data: [
-              { value: 335, name: '直接访问' },
-              { value: 310, name: '邮件营销' },
-              { value: 234, name: '联盟广告' },
-              { value: 135, name: '视频广告' },
-              { value: 1548, name: '搜索引擎' }
+              { value: 335, name: '吉利组' },
+              { value: 310, name: '长城组' },
+              { value: 234, name: '沃尔沃组' }
             ],
             emphasis: {
               itemStyle: {
@@ -393,8 +396,8 @@ $icoColor: rgb(106, 145, 232);
     align-items: center;
     justify-content: center;
     #chartBar {
-      width: 80%;
-      height: 100%;
+      width: 95%;
+      height: 90%;
     }
   }
 }

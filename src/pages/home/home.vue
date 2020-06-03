@@ -69,5 +69,9 @@ export default {
   .el-scrollbar__wrap{
     overflow-x: hidden;
   }
+  .imp{
+    background: url('../../../static/images/ico/imp.png') left center no-repeat;
+    background-size: 9px 9px;
+  }
 }
 </style>

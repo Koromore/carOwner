@@ -34,7 +34,7 @@
     </el-col>
 
     <!-- 抽屉弹窗新增/编辑数据 start -->
-    <el-drawer :title="drawerTietle" :visible.sync="drawerData" size="720px">
+    <el-drawer :title="drawerTietle" :visible.sync="drawerData" size="566px">
       <el-row class="drawerData">
         <el-col :span="4">场地类型:</el-col>
         <el-col :span="18">

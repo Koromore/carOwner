@@ -70,13 +70,16 @@
           <el-table-column prop="car" label="对应车主" width="180">
             <template>
               <i class="el-icon-user" @click="toSitecarownerlist"></i>
-              
             </template>
           </el-table-column>
           <el-table-column prop="address" label="操作" width="100">
             <template>
-              <i class="el-icon-edit" @click="addSite(1)"></i>
-              <i class="el-icon-delete" @click="delSite"></i>
+              <el-tooltip class="item" effect="dark" content="修改场地" placement="top">
+                <i class="el-icon-edit" @click="addSite(1)"></i>
+              </el-tooltip>
+              <el-tooltip class="item" effect="dark" content="删除场地" placement="top">
+                <i class="el-icon-delete" @click="delSite"></i>
+              </el-tooltip>
             </template>
           </el-table-column>
         </el-table>
@@ -96,7 +99,7 @@
     </el-row>
     <!-- 内容列表 end -->
     <!-- 添加场地 start -->
-    <el-drawer :title="drawerAddTitle" :visible.sync="drawerAdd" size="720px">
+    <el-drawer :title="drawerAddTitle" :visible.sync="drawerAdd" size="600px">
       <el-row class="drawerAdd">
         <el-col :span="4">场地名称:</el-col>
         <el-col :span="20">
@@ -143,6 +146,16 @@
           <el-dialog :visible.sync="dialogVisible">
             <img width="100%" :src="dialogImageUrl" alt />
           </el-dialog>
+        </el-col>
+
+        <!-- 底部按钮 -->
+        <el-col :span="24" class="btn">
+          <el-col :span="6" :offset="5">
+            <el-button type="info">取消</el-button>
+          </el-col>
+          <el-col :span="6" :offset="2">
+            <el-button type="primary">提交</el-button>
+          </el-col>
         </el-col>
       </el-row>
     </el-drawer>
@@ -283,7 +296,7 @@ export default {
     ///////// 循环 end /////////
 
     ///////// 跳转车主列表 start /////////
-    toSitecarownerlist(){
+    toSitecarownerlist() {
       this.$router.push({ path: '/home/sitecarownerlist' })
     },
     ///////// 跳转车主列表 start /////////
@@ -487,8 +500,8 @@ $icoColor: rgb(106, 145, 232);
     align-items: center;
     align-content: flex-start;
     .el-col {
-      margin-bottom: 49px;
-      font-size: 20px;
+      margin-bottom: 24px;
+      font-size: 18px;
     }
     .keycontent {
       align-self: flex-start;
@@ -517,6 +530,18 @@ $icoColor: rgb(106, 145, 232);
     }
     .el-input {
       width: 100%;
+    }
+  }
+  .btn {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    margin-bottom: 0 !important;
+    .el-col {
+      margin-bottom: 0;
+      button {
+        width: 100%;
+      }
     }
   }
 }

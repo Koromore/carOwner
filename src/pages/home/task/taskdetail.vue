@@ -57,19 +57,35 @@
         <el-col :span="24" class="list">
           <div class="key">任务描述</div>
           <div class="val">
-            <div class="text"><span>邀约目的:活跃论坛</span></div>
-            <div class="text"><span>参与资格:xxxx</span></div>
-            <div class="text"><span>字数要求:xxxx</span></div>
-            <div class="text"><span>帖子类型:xxxxxxx</span></div>
-            <div class="text"><span>费用情况:xxxxx</span></div>
-            <div class="text"><span>其他说明:xxxxxxxxxxxxxxxxxx</span></div>
+            <div class="text">
+              <span>邀约目的:活跃论坛</span>
+            </div>
+            <div class="text">
+              <span>参与资格:xxxx</span>
+            </div>
+            <div class="text">
+              <span>字数要求:xxxx</span>
+            </div>
+            <div class="text">
+              <span>帖子类型:xxxxxxx</span>
+            </div>
+            <div class="text">
+              <span>费用情况:xxxxx</span>
+            </div>
+            <div class="text">
+              <span>其他说明:xxxxxxxxxxxxxxxxxx</span>
+            </div>
           </div>
         </el-col>
         <el-col :span="24" class="list">
           <div class="key">任务文件</div>
           <div class="val">
-            <div><img src="static/images/document/ppt.png" width="20" alt="">&nbsp;2020年6月-长城-#校服女神#创意标准文件</div>
-            <div><img src="static/images/document/ppt.png" width="20" alt="">&nbsp;2020年6月-长城-#校服女神#创意标准文件</div>
+            <div>
+              <img src="static/images/document/ppt.png" width="20" alt />&nbsp;2020年6月-长城-#校服女神#创意标准文件
+            </div>
+            <div>
+              <img src="static/images/document/ppt.png" width="20" alt />&nbsp;2020年6月-长城-#校服女神#创意标准文件
+            </div>
           </div>
         </el-col>
         <el-col :span="24" class="list">
@@ -79,7 +95,7 @@
       </el-col>
       <el-col :span="24" class="btn">
         <el-button type="primary">发送邀请函</el-button>
-        <el-button type="primary">复制任务</el-button>
+        <el-button type="primary" @click="toAddtask">复制任务</el-button>
       </el-col>
     </el-row>
     <!-- 内容列表 end -->
@@ -92,7 +108,10 @@ export default {
   name: 'taskdetail',
   components: {},
   data() {
-    return {}
+    return {
+      // 任务ID
+      taskId: 1,
+    }
   },
   // 侦听器
   watch: {},
@@ -104,9 +123,7 @@ export default {
   methods: {
     ///////// 返回上一页 start /////////
     previous() {
-      this.$router.push({
-        path: '/home/task'
-      })
+      this.$router.go(-1);//返回上一层
     },
     ///////// 返回上一页 end /////////
 
@@ -126,7 +143,17 @@ export default {
     },
     beforeRemove(file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`)
+    },
+
+    ///////// 跳转新增任务页面 end /////////
+    toAddtask() {
+      let id = this.taskId
+      this.$router.push({
+        path: '/home/addTask',
+        query: { id: id }
+      })
     }
+    ///////// 跳转新增任务页面 end /////////
   }
 }
 </script>
@@ -160,7 +187,7 @@ export default {
       .val {
         width: 420px;
         line-height: 40px;
-        .text{
+        .text {
           height: 32px;
           line-height: 32px;
         }
@@ -198,6 +225,11 @@ export default {
       padding-left: $pad;
       .list {
         justify-content: flex-start;
+        .val {
+          .text {
+            line-height: 40px;
+          }
+        }
       }
     }
     .btn {

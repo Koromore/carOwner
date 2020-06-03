@@ -29,7 +29,7 @@
     <!-- 头部选项框 end -->
 
     <!-- 内容列表 start -->
-    <el-row class="content content1" v-if="tabact==1">
+    <el-row class="content content1" v-show="tabact==1">
       <div class="table_list">
         <el-table
           :data="tableData"
@@ -41,20 +41,20 @@
           <el-table-column prop label width="24" show-overflow-tooltip></el-table-column>
           <el-table-column prop="serNum" label="采购编号" width="360"></el-table-column>
           <el-table-column prop="proTeam" label="项目组" width="240"></el-table-column>
-          <el-table-column prop="taskName" label="任务名称" width="240"></el-table-column>
+          <el-table-column prop="taskName" label="任务名称" min-width="240"></el-table-column>
           <el-table-column prop="subTime" label="提交时间" min-width="160"></el-table-column>
           <el-table-column prop="account" label="结算清单" width="130" align="center">
             <template>
-              <i class="el-icon-edit" @click="toDetail"></i>
+              <el-tooltip class="item" effect="dark" content="编辑" placement="top">
+                <i class="el-icon-edit" @click="toDetail"></i>
+              </el-tooltip>
             </template>
           </el-table-column>
           <el-table-column prop="address" label="操作" width="130" align="center">
             <template>
-              <img src="static/images/ico/reject.png" width="24" alt srcset @click="reject" />
-
-              <!-- <i class="el-icon-timer" @click="delay"></i>
-              <i class="el-icon-circle-check" @click="putTask"></i>
-              <i class="el-icon-circle-close" @click="delTask"></i>-->
+              <el-tooltip class="item" effect="dark" content="驳回" placement="top">
+                <img src="static/images/ico/reject.png" width="24" alt srcset @click="reject" />
+              </el-tooltip>
             </template>
           </el-table-column>
         </el-table>
@@ -73,7 +73,7 @@
       </el-col>
     </el-row>
 
-    <el-row class="content conten2" v-if="tabact==2">
+    <el-row class="content conten2" v-show="tabact==2">
       <div class="table_list">
         <el-table
           :data="tableData"
@@ -82,19 +82,16 @@
           :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
           height="100%"
         >
+          <el-table-column prop label width="24" show-overflow-tooltip></el-table-column>
           <el-table-column prop="serNum" label="采购编号" width="360"></el-table-column>
           <el-table-column prop="proTeam" label="项目组" width="240"></el-table-column>
-          <el-table-column prop="taskName" label="任务名称" width="240"></el-table-column>
+          <el-table-column prop="taskName" label="任务名称" min-width="240"></el-table-column>
           <el-table-column prop="subTime" label="提交时间" min-width="160"></el-table-column>
           <el-table-column prop="expenditure" label="实际支出" width="130" align="center"></el-table-column>
-          <el-table-column prop="address" label="结算清单" width="130" align="center">
-            <template>
+          <el-table-column label="结算清单" width="130" align="center">
+            <el-tooltip effect="dark" content="编辑" placement="top">
               <i class="el-icon-view" @click="toDetail"></i>
-
-              <!-- <i class="el-icon-timer" @click="delay"></i>
-              <i class="el-icon-circle-check" @click="putTask"></i>
-              <i class="el-icon-circle-close" @click="delTask"></i>-->
-            </template>
+            </el-tooltip>
           </el-table-column>
         </el-table>
       </div>

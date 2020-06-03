@@ -57,7 +57,7 @@
           <el-table-column prop="budget" label="预算" min-width="60" align="center"></el-table-column>
           <el-table-column prop="address" label="操作" width="64" align="center">
             <template>
-              <i class="el-icon-circle-check"></i>
+              <i class="el-icon-circle-check" @click="submit"></i>
             </template>
           </el-table-column>
         </el-table>
@@ -323,9 +323,7 @@ export default {
   methods: {
     ///////// 返回上一页 start /////////
     previous() {
-      this.$router.push({
-        path: '/home/settlement'
-      })
+      this.$router.go(-1);//返回上一层
     },
     ///////// 返回上一页 end /////////
 

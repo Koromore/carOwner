@@ -35,7 +35,7 @@
     </el-col>
 
     <!-- 抽屉弹窗新增/编辑数据 start -->
-    <el-drawer :title="drawerTietle" :visible.sync="drawerData" size="720px">
+    <el-drawer :title="drawerTietle" :visible.sync="drawerData" size="566px">
       <el-row class="drawerData">
         <el-col :span="4">品牌名称:</el-col>
         <el-col :span="18">
@@ -48,7 +48,7 @@
         <!-- 底部按钮 -->
         <el-col :span="24" class="btn">
           <el-col :span="6" :offset="5">
-            <el-button type="info">取消</el-button>
+            <el-button type="info" @click="cancel">取消</el-button>
           </el-col>
           <el-col :span="6" :offset="2">
             <el-button type="primary">提交</el-button>
@@ -152,8 +152,14 @@ export default {
     redact() {
       this.drawerData = true
       this.drawerTietle = '编辑数据'
-    }
+    },
     ///////// 编辑数据 start /////////
+
+    ///////// 点击取消按钮 end /////////
+    cancel() {
+      this.drawerData = false
+    }
+    ///////// 点击取消按钮 end /////////
   }
 }
 </script>
