@@ -32,24 +32,28 @@
     </el-table>
 
     <!--  -->
-    <el-calendar v-model="valueDate">
+    <el-calendar>
       <!-- 这里使用的是 2.5 slot 语法，对于新项目请使用 2.6 slot 语法-->
       <template slot="dateCell" slot-scope="{date, data}">
         <!-- {{date}} -->
         <p
           :class="data.isSelected ? 'is-selected' : ''"
         >{{ data.day.split('-').slice(1).join('-') }} {{ data.isSelected ? '✔️' : ''}}</p>
-        
+
         <!-- {{data.isSelected}}
-        {{data.day}} -->
+        {{data.day}}-->
         <!-- <div class="box">{{data}}</div> -->
         <!-- {{test(date)}} -->
       </template>
       <!-- 123 -->
     </el-calendar>
+
+    <div id="g2"></div>
   </div>
 </template>
 <script>
+import DataSet from '@antv/data-set'
+import { Chart } from '@antv/g2'
 export default {
   // 页面名称
   name: 'test',
@@ -101,6 +105,7 @@ export default {
       id: 1,
       name: '解雨臣'
     }
+    this.G2()
   },
   // 方法
   methods: {
@@ -129,8 +134,119 @@ export default {
       const property = column['property']
       return row[property] === value
     },
-    test(res){
-      return (res)
+    test(res) {
+      return res
+    },
+    G2() {
+      // 数据来源于 https://github.com/react-d3/react-d3-map-bubble
+      fetch('https:/g2.antv.vision/zh/examples/data/china-provinces.geo.json')
+        .then(res => res.json())
+        .then(mapData => {
+          fetch('../data/earthquake.json')
+            // .then(res => res.json())
+            .then(data => {
+              console.log(data)
+              const chart = new Chart({
+                container: 'g2',
+                autoFit: true,
+                width: 700,
+                height: 500,
+                padding: []
+              })
+              // force sync scales
+              chart.scale({
+                x: { sync: false },
+                y: { sync: false }
+              })
+              chart.coordinate('rect').reflect('y')
+              chart.legend(false)
+              chart.axis(false)
+
+              // style the tooltip
+              chart.tooltip({
+                showTitle: false,
+                shared: true,
+                showMarkers: false,
+                containerTpl:
+                  '<div class="g2-tooltip"><table class="g2-tooltip-list"></table></div>',
+                itemTpl:
+                  '<tr data-index="{index}"><td style="padding:5px;background-color:#545454;">{name}</td><td style="padding:5px;background-color:#fff;color:#000;">{value}</td></tr>',
+                domStyles: {
+                  'g2-tooltip': {
+                    borderRadius: '2px',
+                    backgroundColor: '#DDDDDD',
+                    padding: 0,
+                    border: '1px solid #333'
+                  }
+                }
+              })
+              // data set
+              const ds = new DataSet()
+
+              // draw the map
+              const dv = ds
+                .createView('back')
+                .source(mapData, {
+                  type: 'GeoJSON'
+                })
+                .transform({
+                  type: 'geo.projection',
+                  projection: 'geoMercator',
+                  as: ['x', 'y', 'centroidX', 'centroidY']
+                })
+              const bgView = chart.createView()
+              bgView.data(dv.rows)
+              bgView.tooltip(false)
+              bgView
+                .polygon()
+                .position('x*y')
+                .style({
+                  fill: '#DDDDDD',
+                  stroke: '#b1b1b1',
+                  lineWidth: 0.5,
+                  fillOpacity: 0.85
+                })
+
+              // draw the bubble plot
+              const userData = ds.createView().source(data)
+              userData.transform({
+                type: 'map',
+                callback: obj => {
+                  const projectedCoord = dv.geoProjectPosition(
+                    [obj.lng * 1, obj.lat * 1],
+                    'geoMercator'
+                  )
+                  obj.x = projectedCoord[0]
+                  obj.y = projectedCoord[1]
+                  obj.deaths = obj.deaths * 1
+                  obj.magnitude = obj.magnitude * 1
+                  return obj
+                }
+              })
+              const pointView = chart.createView()
+              pointView.data(userData.rows)
+              pointView
+                .point()
+                .position('x*y')
+                .size('deaths', [2, 30])
+                .shape('circle')
+                .color('#FF2F29')
+                .tooltip('date*location*lat*lng*deaths*magnitude')
+                .style({
+                  fillOpacity: 0.45
+                })
+                .state({
+                  active: {
+                    style: {
+                      lineWidth: 1,
+                      stroke: '#FF2F29'
+                    }
+                  }
+                })
+              pointView.interaction('element-active')
+              chart.render()
+            })
+        })
     }
   }
 }
@@ -139,7 +255,10 @@ export default {
 .is-selected {
   color: #1989fa;
 }
-.box:hover{
+.box:hover {
   background: red;
+}
+#g2{
+  width: 600px;
 }
 </style>

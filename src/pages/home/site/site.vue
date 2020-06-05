@@ -2,7 +2,7 @@
   <div id="site">
     <!-- 头部选项框 start -->
     <el-row class="top">
-      <el-col :span="12" class="left">
+      <el-col :span="16" class="left">
         <!-- 所在区域 -->
         <el-select v-model="value" clearable placeholder="所在区域" size="small">
           <el-option
@@ -32,7 +32,7 @@
         </el-select>
       </el-col>
 
-      <el-col :span="12" class="right">
+      <el-col :span="8" class="right">
         <div class="add_task" @click="addSite(0)">
           <i class="el-icon-circle-plus-outline"></i>
           <br />添加场地

@@ -5,13 +5,11 @@
     <el-row>
       <el-col :span="14" class="header_left">
         <!-- logo start -->
-        <el-col :span="4">
           <img src="static/images/hander/logo.png" class="logo" alt srcset />
-        </el-col>
         <!-- logo start -->
 
         <!-- 导航 start -->
-        <el-col :span="20" class="navList">
+        <div class="navList">
           <div @click="navTo(1)" :class="[routeName=='task'?'act':'']">任务管理</div>
           <div @click="navTo(2)" :class="[routeName=='settlement'?'act':'']">结算管理</div>
           <div @click="navTo(3)" :class="[routeName=='owners'?'act':'']">车主管理</div>
@@ -19,7 +17,7 @@
           <div @click="navTo(5)" :class="[routeName=='analysis'?'act':'']">数据分析</div>
           <div @click="navTo(6)" :class="[routeName=='metadata'?'act':'']">元数据管理</div>
           <div @click="navTo(7)" :class="[routeName=='document'?'act':'']">合作文档</div>
-        </el-col>
+        </div>
         <!-- 导航 end -->
       </el-col>
 
@@ -120,16 +118,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-// .homeHeader {
-//   width: 100%;
-//   height: 70px;
-//   box-sizing: border-box;
-//   background-color: rgb(197, 197, 197);
-//   position: fixed;
-//   top: 0;
 .el-header {
   background-color: #fff;
-  // padding: 0 18px 0 54px;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -146,6 +136,7 @@ export default {
       width: 128px;
     }
     .navList {
+      width: calc(100% - 128px);
       display: flex;
       flex-wrap: wrap;
       align-items: center;

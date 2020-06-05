@@ -39,9 +39,9 @@
           height="100%"
         >
           <el-table-column prop label width="24" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="serNum" label="采购编号" width="360"></el-table-column>
-          <el-table-column prop="proTeam" label="项目组" width="240"></el-table-column>
-          <el-table-column prop="taskName" label="任务名称" min-width="240"></el-table-column>
+          <el-table-column prop="serNum" label="采购编号" min-width="180"></el-table-column>
+          <el-table-column prop="proTeam" label="项目组" min-width="130"></el-table-column>
+          <el-table-column prop="taskName" label="任务名称" min-width="360"></el-table-column>
           <el-table-column prop="subTime" label="提交时间" min-width="160"></el-table-column>
           <el-table-column prop="account" label="结算清单" width="130" align="center">
             <template>
@@ -83,9 +83,9 @@
           height="100%"
         >
           <el-table-column prop label width="24" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="serNum" label="采购编号" width="360"></el-table-column>
-          <el-table-column prop="proTeam" label="项目组" width="240"></el-table-column>
-          <el-table-column prop="taskName" label="任务名称" min-width="240"></el-table-column>
+          <el-table-column prop="serNum" label="采购编号" min-width="180"></el-table-column>
+          <el-table-column prop="proTeam" label="项目组" min-width="130"></el-table-column>
+          <el-table-column prop="taskName" label="任务名称" min-width="360"></el-table-column>
           <el-table-column prop="subTime" label="提交时间" min-width="160"></el-table-column>
           <el-table-column prop="expenditure" label="实际支出" width="130" align="center"></el-table-column>
           <el-table-column label="结算清单" width="130" align="center">

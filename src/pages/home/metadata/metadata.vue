@@ -228,7 +228,7 @@ $icoColor: rgb(106, 145, 232);
   .keycontent {
     align-self: flex-start;
   }
-  .el-input {
+  .el-input,.el-select {
     width: 100%;
   }
   .btn {

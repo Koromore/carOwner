@@ -51,30 +51,47 @@
     <el-row class="content">
       <div class="table_list">
         <el-table
-          :data="tableData"
+          :data="taskListData"
           style="width: 100%"
           :header-row-style="{'height': '70px','background': 'rgb(242, 242, 242)'}"
           :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
           height="100%"
         >
           <el-table-column prop label width="24" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="name" label="任务名称" min-width="360" show-overflow-tooltip>
+          <el-table-column prop="taskName" label="任务名称" min-width="320" show-overflow-tooltip>
             <template slot-scope="scope">
               <el-link
                 target="_blank"
                 class="omit"
                 :underline="false"
                 @click="toDetail(scope.row.id)"
-              >{{scope.row.name}}</el-link>
+              >{{scope.row.taskName}}</el-link>
             </template>
           </el-table-column>
-          <el-table-column prop="type" label="邀约对象" min-width="130" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="matter" label="邀约事项" min-width="130" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="vehicle" label="邀约车型" min-width="160" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="state" label="状态" min-width="80"></el-table-column>
-          <el-table-column prop="taskNum" label="任务量" min-width="80"></el-table-column>
-          <el-table-column prop="carNum" label="车主数量" min-width="80"></el-table-column>
-          <el-table-column prop="expertTime" label="预计时间" min-width="100" sortable></el-table-column>
+          <el-table-column prop="type" label="邀约对象" min-width="100" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="matter" label="邀约事项" min-width="100" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="carTypeName" label="邀约车型" min-width="130" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="status" label="状态" min-width="80">
+            <template slot-scope="scope">
+              <!-- {{scope.row.status}} -->
+              <div v-if="scope.row.status==0" class="statusColor0">进行中</div>
+              <div v-if="scope.row.status==1" class="statusColor1">结算中</div>
+              <div v-if="scope.row.status==2" class="statusColor2">完成</div>
+              <div v-if="scope.row.status==3" class="statusColor3">延期</div>
+              <div v-if="scope.row.status==4" class="statusColor3">人工延期</div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="num" label="任务量" min-width="80"></el-table-column>
+          <el-table-column prop="listInvite" label="车主数量" min-width="80">
+            <template slot-scope="scope">
+              <!-- <div> -->
+              {{scope.row.listInvite.length}}
+              <!-- </div> -->
+            </template>
+          </el-table-column>
+          <el-table-column prop="endTime" label="预计时间" min-width="100" sortable>
+            <template slot-scope="scope">{{$date(scope.row.endTime)}}</template>
+          </el-table-column>
           <el-table-column prop="address" label="操作" width="200">
             <template>
               <el-tooltip class="item" effect="dark" content="编辑任务" placement="top">
@@ -240,7 +257,7 @@ export default {
       ],
       value: '',
       // 表格数据
-      tableData: [],
+      taskListData: [],
       // 抽屉弹窗延期原因
       drawerDelay: false,
       delayReason: '', // 延期原因
@@ -259,28 +276,53 @@ export default {
   beforeCreate() {},
   beforeMount() {},
   mounted() {
-    this.foreach()
+    // this.foreach()
+    ///////// 获取任务列表 /////////
+    this.getTaskListAjax()
   },
   // 方法
   methods: {
     ///////// 循环 start /////////
-    foreach() {
-      for (let i = 0; i < 30; i++) {
-        // const element = array[i];
-        this.tableData.push({
-          id: i,
-          name: '2020年6月-长城-#校服女神#日常超精拍摄邀约',
-          type: '拍摄型车主',
-          matter: '日常素材',
-          vehicle: '长城哈佛H6',
-          state: '执行中',
-          taskNum: '6',
-          carNum: '6',
-          expertTime: '20-06-01'
-        })
-      }
-    },
+    // foreach() {
+    //   for (let i = 0; i < 30; i++) {
+    //     // const element = array[i];
+    //     this.tableData.push({
+    //       id: i,
+    //       name: '2020年6月-长城-#校服女神#日常超精拍摄邀约',
+    //       type: '拍摄型车主',
+    //       matter: '日常素材',
+    //       vehicle: '长城哈佛H6',
+    //       state: '执行中',
+    //       taskNum: '6',
+    //       carNum: '6',
+    //       expertTime: '20-06-01'
+    //     })
+    //   }
+    // },
     ///////// 循环 end /////////
+
+    ///////// 获取任务列表 start /////////
+    getTaskListAjax() {
+      // let data = {
+      //   // ids: 0,
+      //   // pageNum: 1,
+      //   // pageSize: 30
+      // }
+      let data = {
+        taskt: {
+          initUserId: 266
+        }
+      }
+      this.$axios.post('/ocarplay/task/listAjax', data).then(res => {
+        console.log(res)
+        if (res.status == 200 && data) {
+          let data = res.data
+          this.taskListData = data.items
+        }
+      })
+    },
+
+    ///////// 获取任务列表 end /////////
 
     ///////// 添加任务 start /////////
     addTask(type) {
@@ -370,6 +412,10 @@ export default {
 <style lang="scss" scoped>
 $white: #fff;
 $icoColor: rgb(106, 145, 232);
+$statusColor0: #67c23a;
+$statusColor1: #e6a23c;
+$statusColor2: #909399;
+$statusColor3: #f56c6c;
 #task {
   height: 100%;
   .top {
@@ -417,6 +463,18 @@ $icoColor: rgb(106, 145, 232);
     background: #fff;
     .table_list {
       height: calc(100% - 64px);
+      .statusColor0 {
+        color: $statusColor0;
+      }
+      .statusColor1 {
+        color: $statusColor1;
+      }
+      .statusColor2 {
+        color: $statusColor2;
+      }
+      .statusColor3 {
+        color: $statusColor3;
+      }
       .el-table {
         .el-table__header {
           th {

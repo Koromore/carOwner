@@ -2,7 +2,8 @@
   <div id="brand">
     <div class="table_list">
       <el-table
-        :data="tableData"
+        v-loading="loading"
+        :data="carTypeListData"
         style="width: 100%"
         :header-row-style="{'height': '70px','background': 'rgb(242, 242, 242)'}"
         :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
@@ -11,12 +12,12 @@
         <el-table-column prop="name" label="序号" width="81" align="center">
           <template slot-scope="scope">0{{scope.$index+1}}</template>
         </el-table-column>
-        <el-table-column prop="siteName" label="品牌名称" width="240"></el-table-column>
-        <el-table-column prop="type" label="车型列表" min-width="240"></el-table-column>
+        <el-table-column prop="deptName" label="品牌名称" width="240"></el-table-column>
+        <el-table-column prop="carTypeName" label="车型列表" min-width="240"></el-table-column>
         <el-table-column prop="address" label="操作" width="100">
-          <template>
-            <i class="el-icon-edit" @click="redact"></i>
-            <i class="el-icon-delete" @click="delContent"></i>
+          <template slot-scope="scope">
+            <i class="el-icon-edit" @click="redact(scope.row)"></i>
+            <i class="el-icon-delete" @click="delContent(scope.row.carTypeId)"></i>
           </template>
         </el-table-column>
       </el-table>
@@ -39,11 +40,18 @@
       <el-row class="drawerData">
         <el-col :span="4">品牌名称:</el-col>
         <el-col :span="18">
-          <el-input placeholder="请输入内容" v-model="input" clearable></el-input>
+          <el-select v-model="deptId" clearable placeholder="请选择">
+            <el-option
+              v-for="item in deptIdList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
         </el-col>
         <el-col :span="4">车型列表:</el-col>
         <el-col :span="18">
-          <el-input placeholder="请输入内容" v-model="input" clearable></el-input>
+          <el-input placeholder="请输入内容" v-model="carTypeName" clearable></el-input>
         </el-col>
         <!-- 底部按钮 -->
         <el-col :span="24" class="btn">
@@ -51,7 +59,7 @@
             <el-button type="info" @click="cancel">取消</el-button>
           </el-col>
           <el-col :span="6" :offset="2">
-            <el-button type="primary">提交</el-button>
+            <el-button type="primary" @click="saveSubmit">提交</el-button>
           </el-col>
         </el-col>
       </el-row>
@@ -72,7 +80,7 @@ export default {
     return {
       input: '', // 输入框内容占位
       // 表格数据
-      tableData: [
+      carTypeListData: [
         {
           siteName: '张家古楼',
           type: '热门网红场地',
@@ -82,7 +90,27 @@ export default {
       ],
       // 弹窗开关
       drawerData: false,
-      drawerTietle: '新增数据'
+      drawerTietle: '新增数据',
+      // 加载Loading
+      loading: true,
+      // 品牌名称
+      deptId: '',
+      deptIdList: [
+        {
+          value: 110,
+          label: '吉利舆情'
+        }, {
+          value: 105,
+          label: '沃尔沃'
+        }, {
+          value: 153,
+          label: '长城'
+        }
+      ],
+      // 车型列表
+      carTypeName: '',
+      // 当前任务ID可用作判断是新增还是修改
+      carTypeId: ''
     }
   },
   // 侦听器
@@ -90,52 +118,36 @@ export default {
     openDrawer: function(newData, oldData) {
       this.drawerData = true
       this.drawerTietle = '新增数据'
+      this.saveType = 0
+      this.carTypeId = ''
     }
   },
   // 钩子函数
   beforeCreate() {},
   beforeMount() {},
   mounted() {
-    this.foreach()
-    console.log(this.$options.name)
+    // this.foreach()
+    // console.log(this.$options.name)
+    ///////// 获取车型列表 start /////////
+    this.getCarTypeLists()
   },
   // 方法
   methods: {
     ///////// 循环 start /////////
-    foreach() {
-      for (let i = 0; i < 30; i++) {
-        // const element = array[i];
-        this.tableData.push({
-          siteName: '张家古楼',
-          type: '热门网红场地',
-          city: '东北三省',
-          add: '东北三省'
-        })
-      }
-    },
+    // foreach() {
+    //   for (let i = 0; i < 30; i++) {
+    //     // const element = array[i];
+    //     this.tableData.push({
+    //       siteName: '张家古楼',
+    //       type: '热门网红场地',
+    //       city: '东北三省',
+    //       add: '东北三省'
+    //     })
+    //   }
+    // },
     ///////// 循环 end /////////
 
-    ///////// 删除任务 start /////////
-    delContent() {
-      this.$confirm('确认要删除该数据吗?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
-        .then(() => {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          })
-        })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          })
-        })
-    },
-    ///////// 删除任务 end /////////
+    
 
     ///////// 分页 start /////////
     // 每页条数变化时触发事件
@@ -149,17 +161,131 @@ export default {
     ///////// 分页 end /////////
 
     ///////// 编辑数据 start /////////
-    redact() {
+    redact(data) {
       this.drawerData = true
       this.drawerTietle = '编辑数据'
+      this.saveType = 1
+      // 编辑回填
+      this.carTypeId = data.carTypeId
+      this.deptId = data.deptId
+      this.carTypeName = data.carTypeName
+      console.log(data)
     },
     ///////// 编辑数据 start /////////
 
     ///////// 点击取消按钮 end /////////
     cancel() {
       this.drawerData = false
-    }
+    },
     ///////// 点击取消按钮 end /////////
+
+    ///////// 获取车型列表 start /////////
+    getCarTypeLists() {
+      this.loading = true
+      let data = {
+        ids: 0,
+        pageNum: 1,
+        pageSize: 30
+      }
+      this.$axios
+        .post('/ocarplay/api/carType/getCarTypeLists', data)
+        .then(res => {
+          // console.log(res)
+          this.loading = false
+          if (res.status == 200 && res.data.errcode == 0) {
+            let data = res.data
+            this.carTypeListData = data.data
+          }
+        })
+    },
+    ///////// 获取车型列表 end /////////
+
+    ///////// 新增/修改车型数据 start /////////
+    saveSubmit(){
+      let data = {
+        carTypeId: this.carTypeId,
+        carTypeName: this.carTypeName,
+        deptId: this.deptId
+      }
+      // console.log(data)
+      this.saveCarType(data)
+    },
+    saveCarType(data) {
+      this.drawerData = false
+      this.$axios
+        .post('/ocarplay/api/carType/saveCarType', data)
+        .then(res => {
+          if (res.status == 200 && res.data.errcode == 0) {
+            this.messageWin(res.data.msg)
+            this.getCarTypeLists()
+          }else{
+            this.messageWin(res.data.msg)
+          }
+        })
+    },
+    ///////// 新增/修改车型数据 end /////////
+
+    ///////// 删除车型数据 start /////////
+    deleteCarType(id) {
+      let data = {
+        carTypeId: id
+      }
+      this.$axios
+        .post('/ocarplay/api/carType/deleteCarType', data)
+        .then(res => {
+          if (res.status == 200 && res.data.errcode == 0) {
+            this.messageWin(res.data.msg)
+            this.getCarTypeLists()
+          }else{
+            this.messageError(res.data.msg)
+          }
+        })
+    },
+    ///////// 删除车型数据 end /////////
+
+    ///////// 删除数据 start /////////
+    delContent(id) {
+      this.$confirm('确认要删除该数据吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          this.deleteCarType(id)
+          // this.$message({
+          //   type: 'success',
+          //   message: '删除成功!'
+          // })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
+    },
+    ///////// 删除数据 end /////////
+
+    ///////// 消息提示 start /////////
+    messageWin(message) {
+      // 成功提示
+      this.$message({
+        message: message,
+        type: 'success'
+      })
+    },
+    messageWarning(message) {
+      // 警告提示
+      this.$message({
+        message: message,
+        type: 'warning'
+      })
+    },
+    messageError(message) {
+      // 错误提示
+      this.$message.error(message)
+    }
+    ///////// 消息提示 end /////////
   }
 }
 </script>

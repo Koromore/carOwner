@@ -163,9 +163,26 @@ export default {
   // 钩子函数
   beforeCreate() {},
   beforeMount() {},
-  mounted() {},
+  mounted() {
+    ///////// 获取文档列表 /////////
+    this.getCooperateListAjax()
+  },
   // 方法
   methods: {
+    ///////// 获取文档列表 start /////////
+    getCooperateListAjax() {
+      let data = {
+        ids: 0,
+        pageNum: 1,
+        pageSize: 30
+      }
+      this.$axios.post('/ocarplay/api/cooperate/listAjax', data).then(res => {
+        console.log(res)
+      })
+    },
+
+    ///////// 获取文档列表 end /////////
+
     ///////// 分页 start /////////
     // 每页条数变化时触发事件
     changeSize(pageSize) {

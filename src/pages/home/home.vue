@@ -17,6 +17,7 @@ export default {
   },
   data() {
     return {
+      // 0-进行中，1-结算中，2-完成，3-延期，4-人工延期
       routeName: 'task'
     }
   },
@@ -48,6 +49,7 @@ export default {
 #home {
   background: rgb(228, 230, 236);
   #content {
+    min-width: 1300px;
     box-sizing: border-box;
     height: calc(100vh - 70px);
     padding-top: 13px;
