@@ -17,7 +17,7 @@
         <el-table-column prop="address" label="操作" width="100">
           <template slot-scope="scope">
             <i class="el-icon-edit" @click="redact(scope.row)"></i>
-            <i class="el-icon-delete" @click="delContent(scope.row.carTypeId)"></i>
+            <!-- <i class="el-icon-delete" @click="delContent(scope.row.carTypeId)"></i> -->
           </template>
         </el-table-column>
       </el-table>
@@ -36,7 +36,12 @@
     </el-col>
 
     <!-- 抽屉弹窗新增/编辑数据 start -->
-    <el-drawer :title="drawerTietle" :visible.sync="drawerData" size="566px">
+    <el-drawer
+      :title="drawerTietle"
+      :visible.sync="drawerData"
+      size="566px"
+      @close="drawerDataClose"
+    >
       <el-row class="drawerData">
         <el-col :span="4">品牌名称:</el-col>
         <el-col :span="18">
@@ -49,10 +54,35 @@
             ></el-option>
           </el-select>
         </el-col>
-        <el-col :span="4">车型列表:</el-col>
-        <el-col :span="18">
-          <el-input placeholder="请输入内容" v-model="carTypeName" clearable></el-input>
-        </el-col>
+        <!-- saveType -->
+        <template v-if="saveType == 0">
+          <el-col :span="4">车型列表:</el-col>
+          <el-col :span="18">
+            <el-input placeholder="请输入内容" v-model="carTypeName" clearable></el-input>
+          </el-col>
+          <el-col :span="18" :offset="4">
+            <span>批量添加请用“/”隔开</span>
+          </el-col>
+        </template>
+
+        <template v-if="saveType == 1">
+          <el-col :span="4">车型列表:</el-col>
+          <el-col :span="18">
+            <el-select v-model="carTypeAct" clearable placeholder="请选择">
+              <el-option
+                v-for="item in carTypeList"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </el-col>
+          <el-col :span="4">车型名称:</el-col>
+          <el-col :span="18">
+            <el-input placeholder="请输入内容" v-model="carTypeName" clearable></el-input>
+          </el-col>
+        </template>
+
         <!-- 底部按钮 -->
         <el-col :span="24" class="btn">
           <el-col :span="6" :offset="5">
@@ -99,10 +129,12 @@ export default {
         {
           value: 110,
           label: '吉利舆情'
-        }, {
+        },
+        {
           value: 105,
           label: '沃尔沃'
-        }, {
+        },
+        {
           value: 153,
           label: '长城'
         }
@@ -110,7 +142,12 @@ export default {
       // 车型列表
       carTypeName: '',
       // 当前任务ID可用作判断是新增还是修改
-      carTypeId: ''
+      carTypeId: '',
+      // // 判断新增还是编辑
+      saveType: 0,
+      // 编辑选择修改车型
+      carTypeList: [],
+      carTypeAct: ''
     }
   },
   // 侦听器
@@ -147,8 +184,6 @@ export default {
     // },
     ///////// 循环 end /////////
 
-    
-
     ///////// 分页 start /////////
     // 每页条数变化时触发事件
     changeSize(pageSize) {
@@ -166,10 +201,23 @@ export default {
       this.drawerTietle = '编辑数据'
       this.saveType = 1
       // 编辑回填
-      this.carTypeId = data.carTypeId
+      // this.carTypeId = data.carTypeIds
       this.deptId = data.deptId
-      this.carTypeName = data.carTypeName
-      console.log(data)
+      // this.carTypeName = data.carTypeName
+      let carTypeIds = data.carTypeIds.split('/')
+      let carTypeNames = data.carTypeName.split('/')
+      console.log(carTypeIds)
+      console.log(carTypeNames)
+      let list = []
+      carTypeIds.forEach((element, i) => {
+        let data = {
+          value: element,
+          label: carTypeNames[i]
+        }
+        list.push(data)
+      })
+      this.carTypeList = list
+      // console.log(list)
     },
     ///////// 编辑数据 start /////////
 
@@ -178,6 +226,15 @@ export default {
       this.drawerData = false
     },
     ///////// 点击取消按钮 end /////////
+
+    ///////// 弹窗关闭回调 start /////////
+    drawerDataClose() {
+      this.carTypeId = ''
+      this.deptId = ''
+      this.carTypeName = ''
+      this.carTypeAct = ''
+    },
+    ///////// 弹窗关闭回调 end /////////
 
     ///////// 获取车型列表 start /////////
     getCarTypeLists() {
@@ -192,33 +249,80 @@ export default {
         .then(res => {
           // console.log(res)
           this.loading = false
-          if (res.status == 200 && res.data.errcode == 0) {
+          if (res.status == 200) {
             let data = res.data
-            this.carTypeListData = data.data
+            this.carTypeListData = data.items
+
           }
         })
     },
     ///////// 获取车型列表 end /////////
 
     ///////// 新增/修改车型数据 start /////////
-    saveSubmit(){
+    saveSubmit() {
       let data = {
-        carTypeId: this.carTypeId,
+        carTypeId: this.carTypeAct,
         carTypeName: this.carTypeName,
         deptId: this.deptId
       }
+      let datas = []
+        // carTypeId: this.carTypeAct,
+        // carTypes: 
+          // {
+          //   carTypeName: this.carTypeName,
+          //   deptId: this.deptId
+          // }
+        
+      
       // console.log(data)
-      this.saveCarType(data)
+      if (this.saveType == 0) {
+        // this.saveCarType(data)
+        if (this.carTypeName.indexOf('/') != -1) {
+          // 批量添加
+          let carTypeNameList = this.carTypeName.split('/')
+          console.log(carTypeNameList)
+          carTypeNameList.forEach(element => {
+            datas.push({
+              carTypeName: element,
+              deptId: this.deptId,
+              deleteFlag: false,
+              createTime: this.$time0(new Date()),
+              updateTime: this.$time0(new Date())
+            })
+          })
+          console.log(datas)
+          this.saveCarTypes(datas)
+        } else {
+          this.saveCarType(data)
+        }
+
+        // this.saveCarTypes(datas)
+      } else if (this.saveType == 1) {
+        this.saveCarType(data)
+      }
     },
+    // 单个添加
     saveCarType(data) {
       this.drawerData = false
+      this.$axios.post('/ocarplay/api/carType/saveCarType', data).then(res => {
+        if (res.status == 200 && res.data.errcode == 0) {
+          this.messageWin(res.data.msg)
+          this.getCarTypeLists()
+        } else {
+          this.messageWin(res.data.msg)
+        }
+      })
+    },
+    // 批量添加
+    saveCarTypes(datas) {
+      this.drawerData = false
       this.$axios
-        .post('/ocarplay/api/carType/saveCarType', data)
+        .post('/ocarplay/api/carType/saveCarTypes', datas)
         .then(res => {
           if (res.status == 200 && res.data.errcode == 0) {
             this.messageWin(res.data.msg)
             this.getCarTypeLists()
-          }else{
+          } else {
             this.messageWin(res.data.msg)
           }
         })
@@ -226,44 +330,44 @@ export default {
     ///////// 新增/修改车型数据 end /////////
 
     ///////// 删除车型数据 start /////////
-    deleteCarType(id) {
-      let data = {
-        carTypeId: id
-      }
-      this.$axios
-        .post('/ocarplay/api/carType/deleteCarType', data)
-        .then(res => {
-          if (res.status == 200 && res.data.errcode == 0) {
-            this.messageWin(res.data.msg)
-            this.getCarTypeLists()
-          }else{
-            this.messageError(res.data.msg)
-          }
-        })
-    },
+    // deleteCarType(id) {
+    //   let data = {
+    //     carTypeId: id
+    //   }
+    //   this.$axios
+    //     .post('/ocarplay/api/carType/deleteCarType', data)
+    //     .then(res => {
+    //       if (res.status == 200 && res.data.errcode == 0) {
+    //         this.messageWin(res.data.msg)
+    //         this.getCarTypeLists()
+    //       } else {
+    //         this.messageError(res.data.msg)
+    //       }
+    //     })
+    // },
     ///////// 删除车型数据 end /////////
 
     ///////// 删除数据 start /////////
-    delContent(id) {
-      this.$confirm('确认要删除该数据吗?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
-        .then(() => {
-          this.deleteCarType(id)
-          // this.$message({
-          //   type: 'success',
-          //   message: '删除成功!'
-          // })
-        })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          })
-        })
-    },
+    // delContent(id) {
+    //   this.$confirm('确认要删除该数据吗?', '提示', {
+    //     confirmButtonText: '确定',
+    //     cancelButtonText: '取消',
+    //     type: 'warning'
+    //   })
+    //     .then(() => {
+    //       this.deleteCarType(id)
+    //       // this.$message({
+    //       //   type: 'success',
+    //       //   message: '删除成功!'
+    //       // })
+    //     })
+    //     .catch(() => {
+    //       this.$message({
+    //         type: 'info',
+    //         message: '已取消删除'
+    //       })
+    //     })
+    // },
     ///////// 删除数据 end /////////
 
     ///////// 消息提示 start /////////

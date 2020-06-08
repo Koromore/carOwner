@@ -4,7 +4,7 @@
     <el-row class="content">
       <div class="table_list">
         <el-table
-          :data="tableData"
+          :data="cooperateleListData"
           style="width: 100%"
           :header-row-style="{'height': '70px','background': 'rgb(242, 242, 242)'}"
           :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
@@ -13,14 +13,14 @@
           <el-table-column label="序号" width="81" align="center">
             <template slot-scope="scope">0{{scope.$index+1}}</template>
           </el-table-column>
-          <el-table-column prop="type" label="车主类型" min-width="130"></el-table-column>
+          <el-table-column prop="carTypeName" label="车主类型" min-width="130"></el-table-column>
           <el-table-column prop="matter" label="合作事项" min-width="240"></el-table-column>
-          <el-table-column prop="carName" label="车主姓名" min-width="240"></el-table-column>
-          <el-table-column prop="contractTime" label="签约时间" min-width="130"></el-table-column>
-          <el-table-column prop="file" label="合同文件" min-width="360">
+          <el-table-column prop="name" label="车主姓名" min-width="240"></el-table-column>
+          <el-table-column prop="startTime" label="签约时间" min-width="130"></el-table-column>
+          <el-table-column label="合同文件" min-width="360">
             <template slot-scope="scope">
-              <img src="static/images/document/ppt.png" width="16" alt="" srcset="">
-              {{scope.row.file}}
+              <img src="static/images/document/ppt.png" width="16" alt srcset />
+              {{scope.row.fileName}}
             </template>
           </el-table-column>
         </el-table>
@@ -49,113 +49,7 @@ export default {
   components: {},
   data() {
     return {
-      tableData: [
-        {
-          type: '拍摄型',
-          matter: '文案约稿',
-          carName: '解雨臣',
-          contractTime: '2020-05-08',
-          file: '《拍摄规范》'
-        },
-        {
-          type: '拍摄型',
-          matter: '文案约稿',
-          carName: '解雨臣',
-          contractTime: '2020-05-08',
-          file: '《拍摄规范》'
-        },
-        {
-          type: '拍摄型',
-          matter: '文案约稿',
-          carName: '解雨臣',
-          contractTime: '2020-05-08',
-          file: '《拍摄规范》'
-        },
-        {
-          type: '拍摄型',
-          matter: '文案约稿',
-          carName: '解雨臣',
-          contractTime: '2020-05-08',
-          file: '《拍摄规范》'
-        },
-        {
-          type: '拍摄型',
-          matter: '文案约稿',
-          carName: '解雨臣',
-          contractTime: '2020-05-08',
-          file: '《拍摄规范》'
-        },
-        {
-          type: '拍摄型',
-          matter: '文案约稿',
-          carName: '解雨臣',
-          contractTime: '2020-05-08',
-          file: '《拍摄规范》'
-        },
-        {
-          type: '拍摄型',
-          matter: '文案约稿',
-          carName: '解雨臣',
-          contractTime: '2020-05-08',
-          file: '《拍摄规范》'
-        },
-        {
-          type: '拍摄型',
-          matter: '文案约稿',
-          carName: '解雨臣',
-          contractTime: '2020-05-08',
-          file: '《拍摄规范》'
-        },
-        {
-          type: '拍摄型',
-          matter: '文案约稿',
-          carName: '解雨臣',
-          contractTime: '2020-05-08',
-          file: '《拍摄规范》'
-        },
-        {
-          type: '拍摄型',
-          matter: '文案约稿',
-          carName: '解雨臣',
-          contractTime: '2020-05-08',
-          file: '《拍摄规范》'
-        },
-        {
-          type: '拍摄型',
-          matter: '文案约稿',
-          carName: '解雨臣',
-          contractTime: '2020-05-08',
-          file: '《拍摄规范》'
-        },
-        {
-          type: '拍摄型',
-          matter: '文案约稿',
-          carName: '解雨臣',
-          contractTime: '2020-05-08',
-          file: '《拍摄规范》'
-        },
-        {
-          type: '拍摄型',
-          matter: '文案约稿',
-          carName: '解雨臣',
-          contractTime: '2020-05-08',
-          file: '《拍摄规范》'
-        },
-        {
-          type: '拍摄型',
-          matter: '文案约稿',
-          carName: '解雨臣',
-          contractTime: '2020-05-08',
-          file: '《拍摄规范》'
-        },
-        {
-          type: '拍摄型',
-          matter: '文案约稿',
-          carName: '解雨臣',
-          contractTime: '2020-05-08',
-          file: '《拍摄规范》'
-        }
-      ]
+      cooperateleListData: []
     }
   },
   // 侦听器
@@ -171,13 +65,14 @@ export default {
   methods: {
     ///////// 获取文档列表 start /////////
     getCooperateListAjax() {
-      let data = {
-        ids: 0,
-        pageNum: 1,
-        pageSize: 30
-      }
+      let data = {}
       this.$axios.post('/ocarplay/api/cooperate/listAjax', data).then(res => {
         console.log(res)
+        if (res.status == 200) {
+          let data = res.data
+          this.cooperateleListData = data.items
+          console.log(this.cooperateleListData)
+        }
       })
     },
 

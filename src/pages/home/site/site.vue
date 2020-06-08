@@ -45,7 +45,7 @@
     <el-row class="content">
       <div class="table_list">
         <el-table
-          :data="tableData"
+          :data="placeListData"
           style="width: 100%"
           :header-row-style="{'height': '70px','background': 'rgb(242, 242, 242)'}"
           :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
@@ -72,7 +72,7 @@
               <i class="el-icon-user" @click="toSitecarownerlist"></i>
             </template>
           </el-table-column>
-          <el-table-column prop="address" label="操作" width="100">
+          <el-table-column label="操作" width="100">
             <template>
               <el-tooltip class="item" effect="dark" content="修改场地" placement="top">
                 <i class="el-icon-edit" @click="addSite(1)"></i>
@@ -103,13 +103,13 @@
       <el-row class="drawerAdd">
         <el-col :span="4">场地名称:</el-col>
         <el-col :span="20">
-          <el-input placeholder="请输入内容" v-model="input" clearable></el-input>
+          <el-input placeholder="请输入内容" v-model="placeName" clearable></el-input>
         </el-col>
         <el-col :span="4">场地类型:</el-col>
         <el-col :span="20">
-          <el-select v-model="value" clearable placeholder="场地类型" size="small">
+          <el-select v-model="placeTypeId" clearable placeholder="场地类型" size="small">
             <el-option
-              v-for="item in options"
+              v-for="item in placeTypeList"
               :key="item.value"
               :label="item.label"
               :value="item.value"
@@ -130,7 +130,7 @@
         </el-col>
         <el-col :span="4" class="key keycontent">详细地址:</el-col>
         <el-col :span="20">
-          <el-input type="textarea" :rows="6" placeholder="请输入内容" v-model="delayReason"></el-input>
+          <el-input type="textarea" :rows="6" placeholder="请输入内容" v-model="address"></el-input>
         </el-col>
 
         <el-col :span="4" class="key keycontent">场地照片:</el-col>
@@ -154,7 +154,7 @@
             <el-button type="info">取消</el-button>
           </el-col>
           <el-col :span="6" :offset="2">
-            <el-button type="primary">提交</el-button>
+            <el-button type="primary" @click="addSubmit">提交</el-button>
           </el-col>
         </el-col>
       </el-row>
@@ -233,7 +233,7 @@ export default {
       ],
       value: '',
       // 表格数据
-      tableData: [
+      placeListData: [
         {
           siteName: '张家古楼',
           type: '热门网红场地',
@@ -244,12 +244,22 @@ export default {
       // 抽屉弹窗添加场地
       drawerAdd: false,
       drawerAddTitle: '添加场地',
-      delayReason: '', // 详细地址
+      placeTypeList: [], // 场地类型列表
+      // delayReason: '', // 详细地址
       delayTime: '', // 延期预计时间时间
+
+      placeName: '', // 场地名称
+      placeTypeId: '', // 场地类型ID
+      district: '', // 区域名称
+      province: '', // 省
+      city: '', // 城市
+      area: '', // 区域
+      address: '', // 详细地址
       // 城市选择器数据
       optionsCity: cities,
       district_code: '', // 区域代码
-      district: '', // 区域名称
+      // district: '', // 区域名称
+      // placeTypeId: '', // 场地类型
       dialogVisible: false,
 
       // 抽屉弹窗提交任务
@@ -277,23 +287,74 @@ export default {
   beforeCreate() {},
   beforeMount() {},
   mounted() {
-    this.foreach()
+    // 场地列表
+    this.getPlaceList()
+    // 场地类型列表
+    this.getPlaceTypeList()
   },
   // 方法
   methods: {
     ///////// 循环 start /////////
-    foreach() {
-      for (let i = 0; i < 30; i++) {
-        // const element = array[i];
-        this.tableData.push({
-          siteName: '张家古楼',
-          type: '热门网红场地',
-          city: '东北三省',
-          add: '东北三省'
-        })
-      }
-    },
+    // foreach() {
+    //   for (let i = 0; i < 30; i++) {
+    //     // const element = array[i];
+    //     this.tableData.push({
+    //       siteName: '张家古楼',
+    //       type: '热门网红场地',
+    //       city: '东北三省',
+    //       add: '东北三省'
+    //     })
+    //   }
+    // },
     ///////// 循环 end /////////
+
+    ///////// 获取场地列表 start /////////
+    getPlaceList() {
+      this.loading = true
+      let data = {
+        ids: 0, // 账户ID
+        pageNum: 1,
+        pageSize: 30
+      }
+      this.$axios
+        .post('/ocarplay/api/place/listAjax', data)
+        .then(res => {
+          // console.log(res)
+          this.loading = false
+          if (res.status == 200) {
+            let data = res.data
+            this.placeListData = data.items
+          }
+        })
+    },
+    ///////// 获取场地列表 end /////////
+
+    ///////// 获取场地类型列表 start /////////
+    getPlaceTypeList() {
+      this.loading = true
+      let data = {}
+      this.$axios
+        .post('/ocarplay/api/placeType/listAjaxUnPage', data)
+        .then(res => {
+          // console.log(res)
+          this.loading = false
+          if (res.status == 200) {
+            let data = res.data
+            let placeTypeList = []
+            data.forEach(element => {
+              let placeTypeListData = {
+                value: element.placeTypeId,
+                label: element.placeTypeName
+              }
+              placeTypeList.push(placeTypeListData)
+            });
+            this.placeTypeList = placeTypeList
+            // console.log(this.placeTypeList)
+
+          }
+        })
+    },
+    ///////// 获取场地类型列表 end /////////
 
     ///////// 跳转车主列表 start /////////
     toSitecarownerlist() {
@@ -320,6 +381,17 @@ export default {
       } else if (type == 1) {
         this.drawerAddTitle = '修改场地'
       }
+      let data = {
+        placeName: this.placeName, // 场地名称
+        placeTypeId: this.placeTypeId, // 场地类型ID
+        province: this.province, // 省
+        city: this.city, // 城市
+        area: this.area, // 区域
+        address: this.address, // 详细地址
+      }
+    },
+    addSubmit(){
+
     },
     ///////// 添加场地 end /////////
 
@@ -385,7 +457,7 @@ export default {
       }
       this.district = Addtest
       console.log(Addtest)
-      // console.log(e)
+      console.log(e)
       // console.log(form)
     },
     // 城市选择器切换

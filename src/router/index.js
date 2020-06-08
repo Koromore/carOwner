@@ -27,9 +27,9 @@ axios.interceptors.request.use(
     // 每次发送请求之前判断是否存在token，如果存在，则统一在http请求的header都加上token，
     // 即使本地存在token，也有可能token是过期的，所以在响应拦截器中要对返回状态进行判断
     // if (config.url.indexOf('http://pms.guoxinad.com.cn') == -1) {
-    //   const token = store.state.token;
+      // const token = '';
     //   const userSign = store.state.userSign;
-    //   token && (config.headers.token = token);
+      // config.headers.token = 123
     //   userSign && (config.headers.userSign = userSign);
     //   config.data = Encrypt(JSON.stringify(config.data))
     // }

@@ -2,7 +2,8 @@
   <div id="carownersource">
     <div class="table_list">
       <el-table
-        :data="tableData"
+      v-loading="loading"
+        :data="sourceListData"
         style="width: 100%"
         :header-row-style="{'height': '70px','background': 'rgb(242, 242, 242)'}"
         :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
@@ -11,11 +12,11 @@
         <el-table-column prop="name" label="序号" width="81" align="center">
           <template slot-scope="scope">0{{scope.$index+1}}</template>
         </el-table-column>
-        <el-table-column prop="siteName" label="车主来源" min-width="240"></el-table-column>
-        <el-table-column prop="address" label="操作" width="100">
-          <template>
-            <i class="el-icon-edit" @click="redact"></i>
-            <i class="el-icon-delete" @click="delContent"></i>
+        <el-table-column prop="sourceName" label="车主来源" min-width="240"></el-table-column>
+        <el-table-column label="操作" width="100">
+          <template slot-scope="scope">
+            <i class="el-icon-edit" @click="redact(scope.row)"></i>
+            <i class="el-icon-delete" @click="delContent(scope.row.sourceId)"></i>
           </template>
         </el-table-column>
       </el-table>
@@ -34,18 +35,18 @@
     </el-col>
 
     <!-- 抽屉弹窗新增/编辑数据 start -->
-    <el-drawer :title="drawerTietle" :visible.sync="drawerData" size="566px">
+    <el-drawer :title="drawerTietle" :visible.sync="drawerData" size="566px" @close="drawerDataClose">
       <el-row class="drawerData">
         <el-col :span="4">车主来源:</el-col>
         <el-col :span="18">
-          <el-input placeholder="请输入内容" v-model="input" clearable></el-input>
+          <el-input placeholder="请输入内容" v-model="sourceName" clearable></el-input>
         </el-col>
         <el-col :span="24" class="btn">
           <el-col :span="6" :offset="5">
-            <el-button type="info">取消</el-button>
+            <el-button type="info" @click="cancel">取消</el-button>
           </el-col>
           <el-col :span="6" :offset="2">
-            <el-button type="primary">提交</el-button>
+            <el-button type="primary" @click="saveSubmit">提交</el-button>
           </el-col>
         </el-col>
       </el-row>
@@ -64,19 +65,16 @@ export default {
   components: {},
   data() {
     return {
+      loading: false,
       input: '', // 输入框内容占位
       // 表格数据
-      tableData: [
-        {
-          siteName: '张家古楼',
-          type: '热门网红场地',
-          city: '东北三省',
-          add: '东北三省'
-        }
-      ],
+      sourceListData: [],
       // 弹窗开关
       drawerData: false,
-      drawerTietle: '新增数据'
+      drawerTietle: '新增数据',
+      // 新增数据
+      sourceId: '',
+      sourceName: ''
     }
   },
   // 侦听器
@@ -84,51 +82,18 @@ export default {
     openDrawer: function(newData, oldData) {
       this.drawerData = true
       this.drawerTietle = '新增数据'
+      this.sourceId = ''
     }
   },
   // 钩子函数
   beforeCreate() {},
   beforeMount() {},
   mounted() {
-    this.foreach()
+    // 获取车主来源列表
+    this.getlistAjaxUnPage()
   },
   // 方法
   methods: {
-    ///////// 循环 start /////////
-    foreach() {
-      for (let i = 0; i < 30; i++) {
-        // const element = array[i];
-        this.tableData.push({
-          siteName: '张家古楼',
-          type: '热门网红场地',
-          city: '东北三省',
-          add: '东北三省'
-        })
-      }
-    },
-    ///////// 循环 end /////////
-
-    ///////// 删除任务 start /////////
-    delContent() {
-      this.$confirm('确认要删除该数据吗?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
-        .then(() => {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          })
-        })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          })
-        })
-    },
-    ///////// 删除任务 end /////////
 
     ///////// 分页 start /////////
     // 每页条数变化时触发事件
@@ -142,11 +107,128 @@ export default {
     ///////// 分页 end /////////
 
     ///////// 编辑数据 start /////////
-    redact() {
+    redact(data) {
       this.drawerData = true
       this.drawerTietle = '编辑数据'
-    }
+      this.sourceId = data.sourceId
+      this.sourceName = data.sourceName
+    },
     ///////// 编辑数据 start /////////
+
+    ///////// 点击取消按钮 end /////////
+    cancel() {
+      this.drawerData = false
+    },
+    ///////// 点击取消按钮 end /////////
+
+    ///////// 弹窗关闭回调 start /////////
+    drawerDataClose(){
+      this.sourceName = ''
+    },
+    ///////// 弹窗关闭回调 end /////////
+
+    ///////// 获取车主来源列表 start /////////
+    getlistAjaxUnPage() {
+      this.loading = true
+      let data = {
+        ids: 0,
+        pageNum: 1,
+        pageSize: 30
+      }
+      this.$axios
+        .post('/ocarplay/api/ownerSource/listAjaxUnPage', data)
+        .then(res => {
+          // console.log(res)
+          this.loading = false
+          if (res.status == 200) {
+            let data = res.data
+            this.sourceListData = data
+          }
+        })
+    },
+    ///////// 获取车主来源列表 end /////////
+
+    ///////// 新增/修改车主来源 start /////////
+    saveSubmit() {
+      this.saveOrUpdate()
+    },
+    saveOrUpdate() {
+      this.drawerData = false
+      // this.loading = true
+      let data = {
+        sourceId: this.sourceId,
+        sourceName: this.sourceName
+      }
+      this.$axios
+        .post('/ocarplay/api/ownerSource/saveOrUpdate', data)
+        .then(res => {
+          // console.log(res)
+          // this.loading = false
+          if (res.status == 200 && res.data.errcode == 0) {
+            this.messageWin(res.data.msg)
+            this.getlistAjaxUnPage()
+          } else {
+            this.messageWin(res.data.msg)
+          }
+        })
+    },
+    ///////// 新增/修改车主来源 end /////////
+
+    ///////// 删除数据 start /////////
+    delContent(id) {
+      this.$confirm('确认要删除该数据吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          // 点击确认执行删除事件
+          this.deleteOwnerSource(id)
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
+    },
+    deleteOwnerSource(id) {
+      let data = {
+        sourceId: id
+      }
+      this.$axios
+        .post('/ocarplay/api/ownerSource/delete', data)
+        .then(res => {
+          if (res.status == 200) {
+            this.messageWin(res.data.msg)
+            this.getlistAjaxUnPage()
+          } else {
+            this.messageError(res.data.msg)
+          }
+        })
+    },
+    ///////// 删除数据 end /////////
+
+    ///////// 消息提示 start /////////
+    messageWin(message) {
+      // 成功提示
+      this.$message({
+        message: message,
+        type: 'success'
+      })
+    },
+    messageWarning(message) {
+      // 警告提示
+      this.$message({
+        message: message,
+        type: 'warning'
+      })
+    },
+    messageError(message) {
+      // 错误提示
+      this.$message.error(message)
+    }
+    ///////// 消息提示 end /////////
   }
 }
 </script>
