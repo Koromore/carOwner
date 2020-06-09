@@ -60,24 +60,44 @@
     <el-row class="content content1" v-if="tab1act==1">
       <div class="table_list">
         <el-table
-          :data="tableData"
+          v-loading="listLoading"
+          :data="ownerListData"
           style="width: 100%"
           :header-row-style="{'height': '70px','background': 'rgb(242, 242, 242)'}"
           :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
           height="100%"
         >
           <el-table-column prop label="序号" width="81" align="center">
-            <template slot-scope="scope">0{{scope.$index+1}}</template>
+            <template slot-scope="scope">
+              <template v-if="scope.$index<9">
+                0{{scope.$index+1}}
+              </template>
+              <template v-else>
+                {{scope.$index+1}}
+              </template>
+            </template>
           </el-table-column>
-          <el-table-column prop="name" label="车主姓名" min-width="81" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="car" label="认证车型" min-width="180" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="matter" label="合作事项" min-width="81" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="time" label="合作时长" min-width="81"></el-table-column>
-          <el-table-column prop="mandnum" label="合作费用" min-width="81"></el-table-column>
+          <el-table-column prop="ownerName" label="车主姓名" min-width="81" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="carSeriesName" label="认证车型" min-width="180" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="itemName" label="合作事项" min-width="81" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="timeLimit" label="合作时长" min-width="81"></el-table-column>
+          <el-table-column prop="coopMoney" label="合作费用" min-width="81"></el-table-column>
           <el-table-column prop="addnum" label="固定合作总量" min-width="100"></el-table-column>
           <el-table-column prop="oldnum" label="历史合作次数" min-width="100"></el-table-column>
           <el-table-column prop="surplusnum" label="剩余合作次数" min-width="100"></el-table-column>
-          <el-table-column prop="period" label="结算周期" min-width="100"></el-table-column>
+          <el-table-column prop="period" label="结算周期" min-width="100">
+            <template slot-scope="scope">
+              <template v-if="scope.row.period == 0">
+                按月结算
+              </template>
+              <template v-if="scope.row.period == 1">
+                按年结算
+              </template>
+              <template v-if="scope.row.period == 2">
+                按季度结算
+              </template>
+            </template>
+          </el-table-column>
           <el-table-column prop label="操作" width="160">
             <template>
               <el-tooltip class="item" effect="dark" content="车主信息" placement="top">
@@ -108,10 +128,11 @@
     </el-row>
 
     <!-- content2 -->
-    <el-row class="content content2" v-if="tab1act==2">
+    <el-row class="content content2" v-else-if="tab1act==2">
       <div class="table_list">
         <el-table
-          :data="tableData"
+        v-loading="listLoading"
+          :data="ownerListData"
           style="width: 100%"
           :header-row-style="{'height': '70px','background': 'rgb(242, 242, 242)'}"
           :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
@@ -120,7 +141,7 @@
           <el-table-column prop label="序号" width="81" align="center">
             <template slot-scope="scope">0{{scope.$index+1}}</template>
           </el-table-column>
-          <el-table-column prop="name" label="车主姓名" min-width="81" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="carSeriesName" label="车主姓名" min-width="81" show-overflow-tooltip></el-table-column>
           <el-table-column prop="car" label="认证车型" min-width="180" show-overflow-tooltip></el-table-column>
           <el-table-column prop="matter" label="所在区域" min-width="81" show-overflow-tooltip></el-table-column>
           <el-table-column prop="time" label="特长" min-width="81"></el-table-column>
@@ -163,10 +184,11 @@
       </el-col>
     </el-row>
     <!-- content3 -->
-    <el-row class="content content3" v-if="tab1act==3">
+    <el-row class="content content3" v-else-if="tab1act==3">
       <div class="table_list">
         <el-table
-          :data="tableData"
+        v-loading="listLoading"
+          :data="ownerListData"
           style="width: 100%"
           :header-row-style="{'height': '70px','background': 'rgb(242, 242, 242)'}"
           :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
@@ -226,6 +248,8 @@ export default {
   components: {},
   data() {
     return {
+      listLoading: false, // 列表Loading控制
+      ownerListData: [],
       tab1act: 1,
       tab2act: 0,
       tab2Items: [
@@ -287,8 +311,10 @@ export default {
   beforeCreate() {},
   beforeMount() {},
   mounted() {
-    this.foreach()
+    // this.foreach()
     this.tabItems()
+    // 获取车主列表
+    this.getVehicleOwnerList()
   },
   // 方法
   methods: {
@@ -349,26 +375,50 @@ export default {
     ///////// 选项卡切换 end /////////
 
     ///////// 循环 start /////////
-    foreach() {
-      for (let i = 0; i < 30; i++) {
-        // const element = array[i];
-        this.tableData.push({
-          name: '解雨臣',
-          car: 'XC60 2017款 T5 AWD 个性运动升级版',
-          matter: '日常素材',
-          time: '6个月',
-          mandnum: '1500',
-          addnum: '20',
-          oldnum: '16',
-          surplusnum: '4',
-          period: '按月结算'
-        })
-      }
-    },
+    // foreach() {
+    //   for (let i = 0; i < 30; i++) {
+    //     // const element = array[i];
+    //     this.tableData.push({
+    //       name: '解雨臣',
+    //       car: 'XC60 2017款 T5 AWD 个性运动升级版',
+    //       matter: '日常素材',
+    //       time: '6个月',
+    //       mandnum: '1500',
+    //       addnum: '20',
+    //       oldnum: '16',
+    //       surplusnum: '4',
+    //       period: '按月结算'
+    //     })
+    //   }
+    // },
     ///////// 循环 end /////////
+
+    ///////// 车主列表获取 start /////////
+    getVehicleOwnerList() {
+      let data = {
+        vehicleOwner: {
+          typeId: this.tab1act
+        }
+      }
+      this.$axios
+        .post('/ocarplay/api/vehicleOwner/listAjax', data)
+        .then(res => {
+          // console.log(res)
+          // this.drawerLoading = false
+          // this.drawerAdd = false
+          if (res.status == 200) {
+            // this.ownerListData(res.data.msg)
+            // this.getPlaceList()
+            let data = res.data
+            this.ownerListData = data.items
+          }
+        })
+    },
+    ///////// 车主列表获取 end /////////
 
     tab1(e) {
       this.tab1act = e
+      this.getVehicleOwnerList()
     },
     tab2(e, id) {
       this.tab2act = e

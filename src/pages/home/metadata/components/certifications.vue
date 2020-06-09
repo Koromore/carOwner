@@ -2,7 +2,8 @@
   <div id="certifications">
     <div class="table_list">
       <el-table
-        :data="tableData"
+        v-loading="listLoading"
+        :data="carSeriesListData"
         style="width: 100%"
         :header-row-style="{'height': '70px','background': 'rgb(242, 242, 242)'}"
         :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
@@ -11,8 +12,8 @@
         <el-table-column prop="name" label="序号" width="81" align="center">
           <template slot-scope="scope">0{{scope.$index+1}}</template>
         </el-table-column>
-        <el-table-column prop="siteName" label="品牌名称" width="240"></el-table-column>
-        <el-table-column prop="type" label="车型列表" min-width="240"></el-table-column>
+        <el-table-column prop="deptName" label="品牌名称" width="240"></el-table-column>
+        <el-table-column prop="carTypeName" label="车型列表" min-width="240"></el-table-column>
         <el-table-column prop="address" label="操作" width="100">
           <template>
             <i class="el-icon-edit" @click="redact"></i>
@@ -35,7 +36,7 @@
     </el-col>
 
     <!-- 抽屉弹窗新增/编辑数据 start -->
-    <el-drawer :title="drawerTietle" :visible.sync="drawerData" size="566px">
+    <el-drawer :title="drawerTietle" :visible.sync="drawerData" size="566px" @close="drawerDataClose">
       <el-row class="drawerData">
         <el-col :span="4">品牌名称:</el-col>
         <el-col :span="18">
@@ -63,7 +64,7 @@
 
         <el-col :span="24" class="btn">
           <el-col :span="6" :offset="5">
-            <el-button type="info">取消</el-button>
+            <el-button type="info" @click="cancel">取消</el-button>
           </el-col>
           <el-col :span="6" :offset="2">
             <el-button type="primary">提交</el-button>
@@ -85,9 +86,10 @@ export default {
   components: {},
   data() {
     return {
+      listLoading: false,
       input: '', // 输入框内容占位
       // 表格数据
-      tableData: [
+      carSeriesListData: [
         {
           siteName: '张家古楼',
           type: '热门网红场地',
@@ -111,22 +113,22 @@ export default {
   beforeCreate() {},
   beforeMount() {},
   mounted() {
-    this.foreach()
+    this.getCarSeriesLists()
   },
   // 方法
   methods: {
     ///////// 循环 start /////////
-    foreach() {
-      for (let i = 0; i < 30; i++) {
-        // const element = array[i];
-        this.tableData.push({
-          siteName: '张家古楼',
-          type: '热门网红场地',
-          city: '东北三省',
-          add: '东北三省'
-        })
-      }
-    },
+    // foreach() {
+    //   for (let i = 0; i < 30; i++) {
+    //     // const element = array[i];
+    //     this.tableData.push({
+    //       siteName: '张家古楼',
+    //       type: '热门网红场地',
+    //       city: '东北三省',
+    //       add: '东北三省'
+    //     })
+    //   }
+    // },
     ///////// 循环 end /////////
 
     ///////// 删除任务 start /////////
@@ -166,8 +168,45 @@ export default {
     redact() {
       this.drawerData = true
       this.drawerTietle = '编辑数据'
-    }
+    },
     ///////// 编辑数据 start /////////
+
+    ///////// 点击取消按钮 end /////////
+    cancel() {
+      this.drawerData = false
+    },
+    ///////// 点击取消按钮 end /////////
+
+    ///////// 弹窗关闭回调 start /////////
+    drawerDataClose() {
+      // this.carTypeId = ''
+      // this.deptId = ''
+      // this.carTypeName = ''
+      // this.carTypeAct = ''
+    },
+    ///////// 弹窗关闭回调 end /////////
+
+    ///////// 获取车型列表 start /////////
+    getCarSeriesLists() {
+      this.listLoading = true
+      let data = {
+        ids: 0,
+        pageNum: 1,
+        pageSize: 30
+      }
+      this.$axios
+        .post('/ocarplay/api/carSeries/getCarSeriesLists', data)
+        .then(res => {
+          console.log(res)
+          this.listLoading = false
+          if (res.status == 200) {
+            let data = res.data
+            this.carSeriesListData = data.items
+
+          }
+        })
+    },
+    ///////// 获取车型列表 end /////////
   }
 }
 </script>

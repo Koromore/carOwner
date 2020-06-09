@@ -104,20 +104,7 @@ export default {
       // 加载Loading
       loading: false,
       // 车主类型
-      ownerType: [
-        {
-          value: '选项1',
-          label: '支持型'
-        },
-        {
-          value: '选项2',
-          label: '资源型'
-        },
-        {
-          value: '选项3',
-          label: '拍摄型'
-        }
-      ],
+      ownerType: [],
       typeId: ''
     }
   },

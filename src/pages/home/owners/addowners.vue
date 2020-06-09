@@ -17,10 +17,11 @@
         <el-col :span="24" class="upladImgBox">
           <el-upload
             class="upladImg"
-            action="https://jsonplaceholder.typicode.com/posts/"
+            action="/ocarplay/file/upload"
             list-type="picture-card"
             :on-preview="handlePictureCardPreview"
             :on-remove="handleRemove"
+            :on-success="headImgSuccess"
             :limit="1"
           >
             <i class="el-icon-plus"></i>
@@ -44,14 +45,14 @@
               <div class="key imp">合作事项</div>
               <div class="val">
                 <el-select
-                  v-model="event"
+                  v-model="eventData"
                   multiple
                   clearable
                   placeholder="请选择"
                   @change="changeEvent"
                 >
                   <el-option
-                    v-for="item in options"
+                    v-for="item in eventDataList"
                     :key="item.value"
                     :label="item.label"
                     :value="item.value"
@@ -62,10 +63,10 @@
             <el-col :span="24" class="list">
               <div class="key imp">车主性别</div>
               <div class="val">
-                <el-radio v-model="sex" label="1">
+                <el-radio v-model="sex" label="0">
                   <i class="el-icon-male"></i>
                 </el-radio>
-                <el-radio v-model="sex" label="2">
+                <el-radio v-model="sex" label="1">
                   <i class="el-icon-female"></i>
                 </el-radio>
               </div>
@@ -73,13 +74,13 @@
             <el-col :span="24" class="list">
               <div class="key">车主职业</div>
               <div class="val">
-                <el-input placeholder="请输入内容" v-model="occup" clearable></el-input>
+                <el-input placeholder="请输入内容" v-model="work" clearable></el-input>
               </div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">出生日期</div>
               <div class="val">
-                <el-date-picker v-model="value1" type="date" placeholder="选择日期"></el-date-picker>
+                <el-date-picker v-model="birthDate" type="date" placeholder="选择日期"></el-date-picker>
               </div>
             </el-col>
             <el-col :span="24" class="list">
@@ -99,7 +100,15 @@
             <el-col :span="24" class="list">
               <div class="key">特长</div>
               <div class="val">
-                <el-cascader :options="options" v-model="speciality" clearable></el-cascader>
+                <!-- <el-cascader :options="ownerSkilList" v-model="speciality" clearable></el-cascader> -->
+                <el-select v-model="speciality" clearable placeholder="请选择">
+                  <el-option
+                    v-for="item in ownerSkilList"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  ></el-option>
+                </el-select>
               </div>
             </el-col>
           </el-col>
@@ -131,7 +140,7 @@
               <div class="val">
                 <el-select v-model="source" clearable placeholder="请选择">
                   <el-option
-                    v-for="item in options"
+                    v-for="item in sourceList"
                     :key="item.value"
                     :label="item.label"
                     :value="item.value"
@@ -266,16 +275,16 @@
                   :key="index"
                 >
                   <el-col :span="5">
-                    <el-input placeholder="请输入内容" v-model="item.name"></el-input>
+                    <el-input placeholder="姓名" v-model="item.name"></el-input>
                   </el-col>
                   <el-col :span="5">
-                    <el-input placeholder="请输入内容" v-model="item.relation"></el-input>
+                    <el-input placeholder="家属关系" v-model="item.relation"></el-input>
                   </el-col>
                   <el-col :span="5">
-                    <el-input placeholder="请输入内容" v-model="item.birthDate"></el-input>
+                    <el-input placeholder="出生日期" v-model="item.birthDate"></el-input>
                   </el-col>
                   <el-col :span="5">
-                    <el-input placeholder="请输入内容" v-model="item.profession"></el-input>
+                    <el-input placeholder="职业" v-model="item.profession"></el-input>
                   </el-col>
                   <el-col :span="3">
                     <el-col :span="24" v-if="index == relationList.length-1">
@@ -304,8 +313,10 @@
               <div class="val">
                 <el-upload
                   class="upload-demo"
-                  action="https://jsonplaceholder.typicode.com/posts/"
-                  :on-change="handleChange"
+                  action="/ocarplay/file/upload"
+                  :on-success="pactSuccess"
+                  :on-exceed="pactExceed"
+                  :limit="1"
                 >
                   <el-button size="small" type="primary">点击上传</el-button>
                 </el-upload>
@@ -323,6 +334,7 @@
                   @change="changeTimeLimit"
                 ></el-date-picker>
               </div>
+              {{timeLimit}}
             </el-col>
             <el-col :span="24" class="list">
               <div class="key imp">合作时长</div>
@@ -437,18 +449,22 @@ export default {
       value: '',
 
       // 车主基础信息
-      event: [], // 合作事项
+      handerImg: '', // 头像
+      eventDataList: [], // 合作事项列表
+      eventData: [], // 合作事项
       sex: '', // 车主性别
-      occup: '', // 车主职业
+      work: '', // 车主职业
       birthDate: '', // 出生日期
       // 城市选择器数据  所在区域
       optionsCity: cities,
       district_code: '', // 区域代码
       district: '', // 区域名称
+      ownerSkilList: [], // 特长列表
       speciality: '', // 特长
       ownersName: '', // 车主姓名
       livelihood: [], // 用车生活
       livelihood0: '',
+      sourceList: [], // 车主来源列表
       source: '', // 车主来源
       carType: '', // 认证车型
       mail: '', // 车主邮箱
@@ -479,20 +495,11 @@ export default {
       ],
 
       // 签约合作信息
-      fileList: [
-        {
-          name: 'food.jpeg',
-          url:
-            'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-        },
-        {
-          name: 'food2.jpeg',
-          url:
-            'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-        }
-      ],
-      timeLimit: '',
-      duration: '',
+      pactName: '', // 合同文件名称
+      pactPath: '', // 合同文件地址
+      pactsuffix: '', // 合同文件后缀
+      timeLimit: '', // 合作期限
+      duration: '', // 合作时长
       // 合作概况列表
       eventList: [
         {
@@ -514,20 +521,115 @@ export default {
     }
   },
   // 侦听器
-  watch: {},
+  watch: {
+    tabact: function(newData, oldData) {
+      this.geteventDataList(newData)
+    }
+  },
   // 钩子函数
   beforeCreate() {},
   beforeMount() {},
   mounted() {
     // this.test()
+    ///////// 合作事项列表获取 start /////////
+    this.geteventDataList(1)
+    ///////// 车主来源列表获取 start /////////
+    this.getSourceList()
+    ///////// 获取特长列表 start /////////
+    this.getOwnerSkillList()
   },
   // 方法事件
   methods: {
     ///////// 返回上一页 start /////////
     previous() {
-      this.$router.go(-1);//返回上一层
+      this.$router.go(-1) //返回上一层
     },
     ///////// 返回上一页 end /////////
+
+    ///////// 合作事项列表获取 start /////////
+    geteventDataList(id) {
+      // console.log(data)
+      // console.log(1)
+      let eventList = []
+      let data = {
+        typeId: id
+      }
+      this.$axios
+        .post('/ocarplay/api/vehicleOwner/getOwnerTypeItems', data)
+        .then(res => {
+          // console.log(res)
+          // this.loading = false
+          if (res.status == 200) {
+            // console.log(res)
+            let data = res.data
+            let eventDataList = []
+            data.forEach(element => {
+              eventDataList.push({
+                value: element.itemId,
+                label: element.itemName
+              })
+            })
+            this.eventDataList = eventDataList
+            // console.log(this.eventDataList)
+          }
+        })
+    },
+    ///////// 合作事项列表获取 end /////////
+
+    ///////// 车主来源列表获取 start /////////
+    getSourceList() {
+      let data = {
+        ids: 0,
+        pageNum: 1,
+        pageSize: 100
+      }
+      this.$axios
+        .post('/ocarplay/api/ownerSource/listAjaxUnPage', data)
+        .then(res => {
+          // console.log(res)
+          // this.loading = false
+          if (res.status == 200) {
+            let data = res.data
+            let sourceList = []
+            data.forEach(element => {
+              sourceList.push({
+                value: element.sourceId,
+                label: element.sourceName
+              })
+            })
+            this.sourceList = sourceList
+          }
+        })
+    },
+    ///////// 车主来源列表获取 end /////////
+
+    ///////// 获取特长列表 start /////////
+    getOwnerSkillList() {
+      this.loading = true
+      let data = {
+        ids: 0,
+        pageNum: 1,
+        pageSize: 30
+      }
+      this.$axios
+        .post('/ocarplay/api/ownerSkill/listAjaxUnPage', data)
+        .then(res => {
+          // console.log(res)
+          this.loading = false
+          if (res.status == 200) {
+            let data = res.data
+            let ownerSkilList = []
+            data.forEach(element => {
+              ownerSkilList.push({
+                value: element.skillId,
+                label: element.skillName
+              })
+            })
+            this.ownerSkilList = ownerSkilList
+          }
+        })
+    },
+    ///////// 获取特长列表 end /////////
 
     ///////// 合作事项 start /////////
     changeEvent(data) {
@@ -550,7 +652,7 @@ export default {
       this.tabact = e
     },
 
-    // 文件上传
+    ///////// 头像上传 start //////////
     handleRemove(file, fileList) {
       console.log(file, fileList)
     },
@@ -558,6 +660,10 @@ export default {
       this.dialogImageUrl = file.url
       this.dialogVisible = true
     },
+    headImgSuccess(response, file, fileList) {
+      this.handerImg = response.data.localPath
+    },
+    ///////// 头像上传 end //////////
 
     ///////// 城市选择器 start /////////
     // 通过代码获取选择城市名称
@@ -641,8 +747,16 @@ export default {
     ///////// 删除IP孵化信息 start /////////
 
     ///////// 签约合同上传 start /////////
-    handleChange(file, fileList) {
+    pactSuccess(res, file, fileList) {
       // this.fileList = fileList.slice(-3)
+      // console.log(res)
+      let data = res.data
+      this.pactName = data.fileName
+      this.pactPath = data.localPath
+      this.pactsuffix = data.suffix
+    },
+    pactExceed() {
+      this.messageWarning('合同文档允许上传一个！')
     },
     ///////// 签约合同上传 end /////////
 
@@ -654,8 +768,151 @@ export default {
     ///////// 合作期限变化 end /////////
 
     ///////// 提交按钮 start /////////
-    submit() {}
+    submit() {
+      // 合同日期转换
+      let startTime = this.$date0(this.timeLimit[0])
+      let endTime = this.$date0(this.timeLimit[1])
+      // console.log(startTime)
+      // console.log(endTime)
+      // 用车生活
+      let livelihood = this.livelihood.toString()
+      let livelihood0 = this.livelihood0
+      let carUse = livelihood + ',' + livelihood0
+      // console.log(carUse)
+      let itemId = this.eventData.toString()
+      // 出生日期
+      let birthday = this.$date0(this.birthday)
+      let data = {
+        deptId: '',
+        image: this.handerImg,
+        typeId: this.tabact,
+
+        itemId: itemId,
+        name: this.ownersName,
+        sex: this.sex,
+        carUse: carUse,
+        work: this.work,
+        sourceId: this.source,
+        birthday: birthday,
+        seriesId: this.carType,
+        province: this.district[0],
+        city: this.district[1],
+        email: this.mail,
+        skillId: this.speciality,
+
+        phone: this.tel,
+        homeAddress: this.address,
+        wx: this.wx,
+        qq: this.qq,
+        // relations: [
+        //   {
+        //     birthday: '家属生日如：2020-06-09',
+        //     name: '姓名',
+        //     relation: '关系',
+        //     work: '职业'
+        //   }
+        // ],
+        bbsId: this.carId,
+        homeUrl: this.carHome,
+        weiboId: this.microblog,
+        dyId: this.tikTokId,
+        otherId: this.socialId,
+        plateNum: this.carNum,
+        vinno: this.vin,
+        buycarplace: this.branch,
+
+        cooperates: [
+          {
+            fileName: this.pactName,
+            localPath: this.pactPath,
+            startTime: startTime,
+            endTime: endTime,
+            suffix: this.pactsuffix,
+            timeLimit: this.duration
+          }
+        ]
+
+        // // 支持型车主需要填写
+        // ownerCoops: [
+        //   {
+        //     coopMoney: '固定合作总价',
+        //     coopNum: '固定合作总量',
+        //     itemId: '车主选择的合作事项ID',
+        //     period: '结算周期（0-按月结算，1-按年结算，2-按季度结算）',
+        //     timeLimit: '合作时长，文本输入',
+        //     typeId: '车主类型ID'
+        //   }
+        // ],
+
+        // // // 拍摄型、资源型车主
+        // ipGrows: [
+        //   {
+        //     itemId: '车主选择的合作事项ID',
+        //     nickname: '账号昵称',
+        //     plat: '平台名称',
+        //     platRole: '人设',
+        //     typeId: '车主类型ID',
+        //     url: '主页链接url'
+        //   }
+        // ]
+      }
+      let tabact = this.tabact
+      if (tabact == 1) {
+        data.ownerCoops = [
+          {
+            coopMoney: '固定合作总价',
+            coopNum: '固定合作总量',
+            itemId: '车主选择的合作事项ID',
+            period: '结算周期（0-按月结算，1-按年结算，2-按季度结算）',
+            timeLimit: '合作时长，文本输入',
+            typeId: '车主类型ID'
+          }
+        ]
+      }else{
+        data.ipGrows = [
+          {
+            itemId: '车主选择的合作事项ID',
+            nickname: '账号昵称',
+            plat: '平台名称',
+            platRole: '人设',
+            typeId: '车主类型ID',
+            url: '主页链接url'
+          }
+        ]
+      }
+      console.log(data)
+      this.$axios
+        .post('/ocarplay/api/vehicleOwner/saveOrUpdate', data)
+        .then(res => {
+          console.log(res)
+          this.loading = false
+          if (res.status == 200) {
+            let data = res.data
+          }
+        })
+    },
     ///////// 提交按钮 end /////////
+
+    ///////// 消息提示 start /////////
+    messageWin(message) {
+      // 成功提示
+      this.$message({
+        message: message,
+        type: 'success'
+      })
+    },
+    messageWarning(message) {
+      // 警告提示
+      this.$message({
+        message: message,
+        type: 'warning'
+      })
+    },
+    messageError(message) {
+      // 错误提示
+      this.$message.error(message)
+    }
+    ///////// 消息提示 end /////////
   }
 }
 </script>
