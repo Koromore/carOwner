@@ -14,11 +14,11 @@
         </el-table-column>
         <el-table-column prop="typeName" label="车主类型" width="240"></el-table-column>
         <el-table-column prop="itemName" label="合作事项" min-width="240"></el-table-column>
-        <el-table-column prop="money" label="结算金额" min-width="240"></el-table-column>
+        <!-- <el-table-column prop="money" label="结算金额" min-width="240"></el-table-column> -->
         <el-table-column prop="address" label="操作" width="100">
           <template>
             <i class="el-icon-edit" @click="redact"></i>
-            <i class="el-icon-delete" @click="delContent"></i>
+            <!-- <i class="el-icon-delete" @click="delContent"></i> -->
           </template>
         </el-table-column>
       </el-table>
@@ -40,7 +40,7 @@
       <el-row class="drawerData">
         <el-col :span="4">车主类型:</el-col>
         <el-col :span="18">
-          <el-select v-model="typeId" clearable placeholder="请选择">
+          <el-select v-model="typeId" clearable placeholder="请选择" @change="typeIdChange">
             <el-option
               v-for="item in ownerType"
               :key="item.value"
@@ -49,24 +49,28 @@
             ></el-option>
           </el-select>
         </el-col>
-        <el-col :span="4">合作事项:</el-col>
+        <el-col :span="4" style="align-self: start;">合作事项:</el-col>
         <el-col :span="18">
-          <el-col :span="24">
-            <el-col :span="13">
-              <el-input placeholder="请输入内容" v-model="input" clearable></el-input>
+          <el-col :span="24" v-for="(item, index) in cooperList" :key="index" class="list">
+            <el-col :span="10">
+              <el-input placeholder="请输入内容" v-model="item.itemName" clearable></el-input>
             </el-col>
             <el-col :span="6" :offset="1">
               <el-switch
                 style="display: block"
-                v-model="input2"
+                v-model="item.isCard"
                 active-color="#13ce66"
                 inactive-color="#ff4949"
-                active-text="油卡"
-                inactive-text="现金"
+                active-text="现金"
+                inactive-text="油卡"
               ></el-switch>
             </el-col>
-            <el-col :span="2" :offset="1">
-              <i class="el-icon-plus"></i>
+            <el-col :span="4">
+              <el-input placeholder="金额" v-model="item.money" clearable></el-input>
+            </el-col>
+            <el-col :span="3">
+              <i class="el-icon-plus" @click="addCooperList"></i>
+              <i class="el-icon-delete" @click="delCooperList"></i>
             </el-col>
           </el-col>
         </el-col>
@@ -95,7 +99,7 @@ export default {
   data() {
     return {
       input: '', // 输入框内容占位
-      input2: '', // 输入框内容占位
+      isCard: true, // 输入框内容占位
       // 表格数据
       ownerTypeListData: [],
       // 弹窗开关
@@ -105,7 +109,17 @@ export default {
       loading: false,
       // 车主类型
       ownerType: [],
-      typeId: ''
+      typeId: '',
+      // 新增合作事项
+      cooperList: [
+        {
+          typeId: '',
+          itemName: '',
+          money: '',
+          isCard: true,
+          deleteFlag: false
+        }
+      ]
     }
   },
   // 侦听器
@@ -126,19 +140,35 @@ export default {
   },
   // 方法
   methods: {
-    ///////// 循环 start /////////
-    // foreach() {
-    //   for (let i = 0; i < 30; i++) {
-    //     // const element = array[i];
-    //     this.tableData.push({
-    //       siteName: '张家古楼',
-    //       type: '热门网红场地',
-    //       city: '东北三省',
-    //       add: '东北三省'
-    //     })
-    //   }
-    // },
-    ///////// 循环 end /////////
+    ///////// 选择车主类型监听事件 start /////////
+    typeIdChange(data) {
+      let cooperList = this.cooperList
+      cooperList.forEach((element, i) => {
+        cooperList[i].typeId = data
+      })
+    },
+    ///////// 选择车主类型监听事件 end /////////
+
+    ///////// 添加合作事项 start /////////
+    addCooperList(data) {
+      this.cooperList.push({
+        typeId: this.typeId,
+        itemName: '',
+        money: '',
+        isCard: true,
+        deleteFlag: false
+      })
+    },
+    ///////// 添加合作事项 end /////////
+
+    ///////// 删除合作事项 start /////////
+    delCooperList(data) {
+      let cooperList = this.cooperList
+      if (cooperList.length > 1) {
+        this.cooperList.pop()
+      }
+    },
+    ///////// 删除合作事项 end /////////
 
     ///////// 删除任务 start /////////
     delContent() {
@@ -180,7 +210,7 @@ export default {
     },
     ///////// 编辑数据 start /////////
 
-    // 
+    //
     ///////// 获取车主类型 start /////////
     getOwnerType() {
       // this.loading = true
@@ -189,7 +219,7 @@ export default {
         .post('/ocarplay/api/vehicleOwner/getOwnerType', data)
         .then(res => {
           // console.log(res)
-          
+
           if (res.status == 200) {
             let data = res.data
             let ownerType = []
@@ -199,7 +229,7 @@ export default {
                 label: element.typeName
               }
               ownerType.push(ownerTypeData)
-            });
+            })
             this.ownerType = ownerType
           }
         })
@@ -228,24 +258,28 @@ export default {
     ///////// 获取车主类型列表 end /////////
 
     ///////// 新增/修改车型数据 start /////////
-    saveSubmit(){
-      let data = {
-        typeId: this.typeId,
-        carTypeName: this.carTypeName,
-        deptId: this.deptId
-      }
+    saveSubmit() {
+      let data = this.cooperList
       console.log(data)
-      // this.saveOwnerType(data)
+      data.forEach((element, i) => {
+        if (element.isCard) {
+          data[i].isCard = 1
+        }else{
+          data[i].isCard = 0
+        }
+      });
+      console.log(data)
+      this.saveOwnerType(data)
     },
     saveOwnerType(data) {
       this.drawerData = false
       this.$axios
-        .post('/ocarplay/api/ownerType/saveOwnerType', data)
+        .post('/ocarplay/api/ownerType/saveOwnerTypes', data)
         .then(res => {
           if (res.status == 200 && res.data.errcode == 0) {
             this.messageWin(res.data.msg)
-            this.getCarTypeLists()
-          }else{
+            this.getshowOwnerType()
+          } else {
             this.messageWin(res.data.msg)
           }
         })
@@ -305,6 +339,11 @@ $icoColor: rgb(106, 145, 232);
   .drawerData {
     i {
       cursor: pointer;
+    }
+    .list {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
     }
   }
 }

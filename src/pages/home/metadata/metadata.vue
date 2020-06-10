@@ -222,6 +222,8 @@ $icoColor: rgb(106, 145, 232);
   align-items: center;
   align-content: flex-start;
   > .el-col {
+    height: 40px;
+    line-height: 40px;
     margin-bottom: 49px;
     font-size: 18px;
   }

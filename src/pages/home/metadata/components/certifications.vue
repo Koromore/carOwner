@@ -13,11 +13,18 @@
           <template slot-scope="scope">0{{scope.$index+1}}</template>
         </el-table-column>
         <el-table-column prop="deptName" label="品牌名称" width="240"></el-table-column>
-        <el-table-column prop="carTypeName" label="车型列表" min-width="240"></el-table-column>
+        <el-table-column prop="carSeriesName" label="车型列表" min-width="240">
+          <template slot-scope="scope">
+            <el-table :data="scope.row.carType" style="width: 100%" :show-header="false" border>
+              <el-table-column prop="carTypeName" label="日期"></el-table-column>
+              <el-table-column prop="carSeriesName" label="地址"></el-table-column>
+            </el-table>
+          </template>
+        </el-table-column>
         <el-table-column prop="address" label="操作" width="100">
           <template>
             <i class="el-icon-edit" @click="redact"></i>
-            <i class="el-icon-delete" @click="delContent"></i>
+            <!-- <i class="el-icon-delete" @click="delContent"></i> -->
           </template>
         </el-table-column>
       </el-table>
@@ -36,28 +43,47 @@
     </el-col>
 
     <!-- 抽屉弹窗新增/编辑数据 start -->
-    <el-drawer :title="drawerTietle" :visible.sync="drawerData" size="566px" @close="drawerDataClose">
+    <el-drawer
+      :title="drawerTietle"
+      :visible.sync="drawerData"
+      size="566px"
+      @close="drawerDataClose"
+    >
       <el-row class="drawerData">
         <el-col :span="4">品牌名称:</el-col>
         <el-col :span="18">
-          <el-input placeholder="请输入内容" v-model="input" clearable></el-input>
+          <el-select v-model="deptId" clearable placeholder="请选择" @change="deptChange">
+            <el-option
+              v-for="item in deptIdList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
         </el-col>
         <el-col :span="4">车型名称:</el-col>
         <el-col :span="18">
-          <el-input placeholder="请输入内容" v-model="input" clearable></el-input>
+          <el-select v-model="carType" clearable placeholder="请选择">
+            <el-option
+              v-for="item in carTypesList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
         </el-col>
         <el-col :span="4">车型细分:</el-col>
         <el-col :span="18">
-          <el-col :span="24">
-            <el-col :span="6">
+          <el-col :span="24" v-for="(item, index) in subCarType" :key="index">
+            <!-- <el-col :span="6">
               <el-input placeholder="请输入内容" v-model="input" clearable></el-input>
+            </el-col>-->
+            <el-col :span="19">
+              <el-input placeholder="请输入内容" v-model="item.name" clearable></el-input>
             </el-col>
-            <el-col :span="12" :offset="1">
-              <el-input placeholder="请输入内容" v-model="input" clearable></el-input>
-            </el-col>
-            <el-col :span="3" :offset="1" class="opera">
+            <el-col :span="4" :offset="1" class="opera">
               <i class="el-icon-delete"></i>
-              <i class="el-icon-plus"></i>
+              <i class="el-icon-plus" @click="addSubCarType"></i>
             </el-col>
           </el-col>
         </el-col>
@@ -67,7 +93,7 @@
             <el-button type="info" @click="cancel">取消</el-button>
           </el-col>
           <el-col :span="6" :offset="2">
-            <el-button type="primary">提交</el-button>
+            <el-button type="primary" @click="saveSubmit">提交</el-button>
           </el-col>
         </el-col>
       </el-row>
@@ -97,9 +123,56 @@ export default {
           add: '东北三省'
         }
       ],
+      // 二级表格数据
+      tableData: [
+        {
+          date: '2016-05-02',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄'
+        },
+        {
+          date: '2016-05-04',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1517 弄'
+        },
+        {
+          date: '2016-05-01',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1519 弄'
+        },
+        {
+          date: '2016-05-03',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1516 弄'
+        }
+      ],
       // 弹窗开关
       drawerData: false,
-      drawerTietle: '新增数据'
+      drawerTietle: '新增数据',
+      // 品牌名称
+      deptIdList: [
+        {
+          value: 110,
+          label: '吉利舆情'
+        },
+        {
+          value: 105,
+          label: '沃尔沃'
+        },
+        {
+          value: 153,
+          label: '长城'
+        }
+      ],
+      deptId: '',
+      // 车型名称
+      carTypesList: [],
+      carType: '',
+      subCarType: [
+        {
+          name: ''
+        }
+      ]
     }
   },
   // 侦听器
@@ -113,7 +186,9 @@ export default {
   beforeCreate() {},
   beforeMount() {},
   mounted() {
+    // 获取数据列表
     this.getCarSeriesLists()
+    // this.getCarTypes()
   },
   // 方法
   methods: {
@@ -130,6 +205,59 @@ export default {
     //   }
     // },
     ///////// 循环 end /////////
+
+    // objectSpanMethod({ row, column, rowIndex, columnIndex }) {
+    //   if (columnIndex === 0 || columnIndex === 1) {
+    //     if (rowIndex % 2 === 0) {
+    //       return {
+    //         rowspan: 2,
+    //         colspan: 1
+    //       }
+    //     } else {
+    //       return {
+    //         rowspan: 0,
+    //         colspan: 0
+    //       }
+    //     }
+    //   }
+    // },
+    deptChange(id) {
+      this.getCarTypes(id)
+    },
+    ///////// 获取车型列表 start /////////
+    getCarTypes(id) {
+      // this.loading = true
+      let data = {
+        deptId: id
+      }
+      this.$axios
+        .post('/ocarplay/api/carType/getCarTypeList', data)
+        .then(res => {
+          // console.log(res)
+
+          if (res.status == 200) {
+            let data = res.data
+            let carTypesList = []
+            data.forEach(element => {
+              let carTypesListData = {
+                value: element.carTypeId,
+                label: element.carTypeName
+              }
+              carTypesList.push(carTypesListData)
+            })
+            this.carTypesList = carTypesList
+          }
+        })
+    },
+    ///////// 获取车型列表 end /////////
+
+    ///////// 添加车型细分 start /////////
+    addSubCarType() {
+      this.subCarType.push({
+        name: ''
+      })
+    },
+    ///////// 添加车型细分 end /////////
 
     ///////// 删除任务 start /////////
     delContent() {
@@ -200,13 +328,102 @@ export default {
           console.log(res)
           this.listLoading = false
           if (res.status == 200) {
-            let data = res.data
-            this.carSeriesListData = data.items
+            let data = res.data.items
 
+            let carSeriesListData = [
+              {
+                deptId: 105,
+                deptName: '沃尔沃',
+                carType: []
+              },
+              {
+                deptId: 110,
+                deptName: '吉利舆情',
+                carType: []
+              },
+              {
+                deptId: 153,
+                deptName: '长城',
+                carType: []
+              }
+            ]
+            data.forEach(element => {
+              if (element.deptId == 105) {
+                carSeriesListData[0].carType.push({
+                  carTypeId: element.carTypeId,
+                  carTypeName: element.carTypeName,
+                  carSeriesIds: element.carSeriesIds,
+                  carSeriesName: element.carSeriesName
+                })
+              } else if (element.deptId == 110) {
+                carSeriesListData[1].carType.push({
+                  carTypeId: element.carTypeId,
+                  carTypeName: element.carTypeName,
+                  carSeriesIds: element.carSeriesIds,
+                  carSeriesName: element.carSeriesName
+                })
+              } else if (element.deptId == 153) {
+                carSeriesListData[2].carType.push({
+                  carTypeId: element.carTypeId,
+                  carTypeName: element.carTypeName,
+                  carSeriesIds: element.carSeriesIds,
+                  carSeriesName: element.carSeriesName
+                })
+              }
+            })
+            this.carSeriesListData = carSeriesListData
+            console.log(carSeriesListData)
           }
         })
     },
     ///////// 获取车型列表 end /////////
+
+    ///////// 新增/修改车型数据 start /////////
+    saveSubmit() {
+      let data = []
+      let subCarType = this.subCarType
+      subCarType.forEach(element => {
+        data.push({
+          carTypeId: this.carType,
+          carSeriesName: element.name,
+          deleteFlag: false
+        })
+      })
+      console.log(data)
+      this.$axios
+        .post('/ocarplay/api/carSeries/saveCarSeriess', data)
+        .then(res => {
+          if (res.status == 200 && res.data.errcode == 0) {
+            this.messageWin(res.data.msg)
+            this.getCarSeriesLists()
+            this.drawerData = false
+          } else {
+            this.messageWin(res.data.msg)
+          }
+        })
+    },
+    ///////// 新增/修改车型数据 end /////////
+
+    ///////// 消息提示 start /////////
+    messageWin(message) {
+      // 成功提示
+      this.$message({
+        message: message,
+        type: 'success'
+      })
+    },
+    messageWarning(message) {
+      // 警告提示
+      this.$message({
+        message: message,
+        type: 'warning'
+      })
+    },
+    messageError(message) {
+      // 错误提示
+      this.$message.error(message)
+    }
+    ///////// 消息提示 end /////////
   }
 }
 </script>
@@ -248,7 +465,7 @@ $icoColor: rgb(106, 145, 232);
       justify-content: space-between;
       i {
         font-size: 24px;
-        cursor:pointer
+        cursor: pointer;
       }
     }
   }

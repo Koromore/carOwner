@@ -40,42 +40,42 @@
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">车主职业</div>
-              <div class="val">车主职业</div>
+              <div class="val">{{ownerDetil.work}}</div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">出生日期</div>
-              <div class="val">出生日期</div>
+              <div class="val">{{ownerDetil.birthday}}</div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">所在区域</div>
-              <div class="val">所在区域</div>
+              <div class="val">{{ownerDetil.province+ownerDetil.city}}</div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">特长</div>
-              <div class="val">特长</div>
+              <div class="val">{{ownerDetil.skillName}}</div>
             </el-col>
           </el-col>
           <!-- 左右分割线 -->
           <el-col :span="12" class="right">
             <el-col :span="24" class="list">
               <div class="key">车主姓名</div>
-              <div class="val">车主姓名</div>
+              <div class="val">{{ownerDetil.name}}</div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">用车生活</div>
-              <div class="val">用车生活</div>
+              <div class="val">{{ownerDetil.carUse}}</div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">车主来源</div>
-              <div class="val">车主来源</div>
+              <div class="val">{{ownerDetil.sourceName}}</div>
             </el-col>
             <el-col :span="24" class="list">
-              <div class="key">认证车主</div>
-              <div class="val">认证车主</div>
+              <div class="key">认证车型</div>
+              <div class="val">{{ownerDetil.seriesId}}</div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">车主邮箱</div>
-              <div class="val">车主邮箱</div>
+              <div class="val">{{ownerDetil.email}}</div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">项目组</div>
@@ -94,54 +94,54 @@
           <el-col :span="12" class="left">
             <el-col :span="24" class="list">
               <div class="key">手机号</div>
-              <div class="val">手机号</div>
+              <div class="val">{{ownerDetil.phone}}</div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">微信号</div>
-              <div class="val">微信号</div>
+              <div class="val">{{ownerDetil.wx}}</div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">QQ号</div>
-              <div class="val">QQ号</div>
+              <div class="val">{{ownerDetil.qq}}</div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">汽车之家ID</div>
-              <div class="val">汽车之家ID</div>
+              <div class="val">{{ownerDetil.bbsId}}</div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">汽车之家主页</div>
-              <div class="val">汽车之家主页</div>
+              <div class="val">{{ownerDetil.homeUrl}}</div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">微博ID</div>
-              <div class="val">微博ID</div>
+              <div class="val">{{ownerDetil.weiboId}}</div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">抖音ID</div>
-              <div class="val">抖音ID</div>
+              <div class="val">{{ownerDetil.dyId}}</div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">其他社交ID</div>
-              <div class="val">其他社交ID</div>
+              <div class="val">{{ownerDetil.otherId}}</div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">车牌号</div>
-              <div class="val">车牌号</div>
+              <div class="val">{{ownerDetil.plateNum}}</div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">车架号</div>
-              <div class="val">车架号</div>
+              <div class="val">{{ownerDetil.vinno}}</div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">购车网店</div>
-              <div class="val">购车网店</div>
+              <div class="val">{{ownerDetil.buycarplace}}</div>
             </el-col>
           </el-col>
           <!-- 左右分割线 -->
           <el-col :span="12" class="right">
             <el-col :span="24" class="list">
               <div class="key">家庭住址</div>
-              <div class="val">家庭住址</div>
+              <div class="val">{{ownerDetil.homeAddress}}</div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">收货地址</div>
@@ -180,11 +180,11 @@
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">合作期限</div>
-              <div class="val">合作期限</div>
+              <div class="val">{{ownerDetil.cooperates[0].startTime}}-{{ownerDetil.cooperates[0].endTime}}</div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">合作时长</div>
-              <div class="val">合作时长</div>
+              <div class="val">{{ownerDetil.cooperates[0].timeLimit}}</div>
             </el-col>
           </el-col>
           <!-- 左右分割线 -->
@@ -281,7 +281,9 @@ export default {
           label: '北京烤鸭'
         }
       ],
-      value: ''
+      value: '',
+      // 车主信息
+      ownerDetil: {}
     }
   },
   // 侦听器
@@ -291,12 +293,15 @@ export default {
   beforeMount() {},
   mounted() {
     // this.getQuery()
+    console.log(this.$route.params.typeId)
+    // 获取车主详细信息
+    this.getVehicleOwnerPreEdit()
   },
   // 方法事件
   methods: {
     ///////// 返回上一页 start /////////
     previous() {
-      this.$router.go(-1);//返回上一层
+      this.$router.go(-1) //返回上一层
     },
     ///////// 返回上一页 end /////////
 
@@ -308,9 +313,24 @@ export default {
     },
     ///////// 跳转编辑 end /////////
 
-    // tab(e) {
-    //   this.tabact = e
-    // },
+    ///////// 获取车主详细信息 start /////////
+    getVehicleOwnerPreEdit(id) {
+      let eventList = []
+      let data = {
+        typeId: this.$route.params.typeId,
+        vehicleOwnerId: this.$route.params.vehicleOwnerId
+      }
+      this.$axios.post('/ocarplay/api/vehicleOwner/preEdit', data).then(res => {
+        // console.log(res)
+        // this.loading = false
+        if (res.status == 200) {
+          // console.log(res)
+          let data = res.data
+          this.ownerDetil = data
+        }
+      })
+    },
+    ///////// 获取车主详细信息 end /////////
 
     // 文件上传
     handleRemove(file, fileList) {

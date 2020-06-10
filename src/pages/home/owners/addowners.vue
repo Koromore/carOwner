@@ -1,7 +1,7 @@
 <template>
   <div id="addOwners">
     <!-- 内容列表 start -->
-    <el-row class="content">
+    <el-row class="content" v-loading="loading">
       <el-scrollbar style="height:100%">
         <!-- 标题 -->
         <el-col :span="24" class="title">
@@ -151,7 +151,7 @@
             <el-col :span="24" class="list">
               <div class="key imp">认证车型</div>
               <div class="val">
-                <el-input placeholder="请输入内容" v-model="carType"></el-input>
+                <el-cascader v-model="carSeries" :options="carSeriesList"></el-cascader>
               </div>
             </el-col>
             <el-col :span="24" class="list">
@@ -277,14 +277,14 @@
                   <el-col :span="5">
                     <el-input placeholder="姓名" v-model="item.name"></el-input>
                   </el-col>
-                  <el-col :span="5">
-                    <el-input placeholder="家属关系" v-model="item.relation"></el-input>
+                  <el-col :span="4">
+                    <el-input placeholder="关系" v-model="item.relation"></el-input>
+                  </el-col>
+                  <el-col :span="6">
+                    <el-input placeholder="出生日期" v-model="item.birthday"></el-input>
                   </el-col>
                   <el-col :span="5">
-                    <el-input placeholder="出生日期" v-model="item.birthDate"></el-input>
-                  </el-col>
-                  <el-col :span="5">
-                    <el-input placeholder="职业" v-model="item.profession"></el-input>
+                    <el-input placeholder="职业" v-model="item.work"></el-input>
                   </el-col>
                   <el-col :span="3">
                     <el-col :span="24" v-if="index == relationList.length-1">
@@ -351,17 +351,30 @@
                 <el-col :span="21" class="list" v-for="(item, index) in eventList" :key="index">
                   <el-col :span="6">
                     <el-input placeholder="请输入" v-model="item.name" clearable :disabled="true"></el-input>
+                    <!-- <el-select
+                      v-model="item.name"
+                      multiple
+                      clearable
+                      placeholder="请选择"
+                    >
+                      <el-option
+                        v-for="items in eventDataList"
+                        :key="items.value"
+                        :label="items.label"
+                        :value="items.value"
+                      ></el-option>
+                    </el-select>-->
                   </el-col>
                   <el-col :span="6">
-                    <el-input placeholder="固定合作总量" v-model="input1" clearable></el-input>
+                    <el-input placeholder="固定合作总量" v-model="item.coopNum" clearable></el-input>
                   </el-col>
                   <el-col :span="6">
-                    <el-input placeholder="固定合作总价" v-model="input1" clearable></el-input>
+                    <el-input placeholder="固定合作总价" v-model="item.coopMoney" clearable></el-input>
                   </el-col>
                   <el-col :span="5">
-                    <el-select v-model="value" clearable placeholder="结算周期">
+                    <el-select v-model="item.period" clearable placeholder="结算周期">
                       <el-option
-                        v-for="item in options"
+                        v-for="item in periodList"
                         :key="item.value"
                         :label="item.label"
                         :value="item.value"
@@ -376,16 +389,16 @@
               <div class="val hatch">
                 <el-col :span="21" class="list" v-for="(item, index) in hatchList" :key="index">
                   <el-col :span="5">
-                    <el-input placeholder="请输入" v-model="item.name" clearable></el-input>
+                    <el-input placeholder="平台" v-model="item.plat" clearable></el-input>
                   </el-col>
                   <el-col :span="5">
-                    <el-input placeholder="人设" v-model="item.character" clearable></el-input>
+                    <el-input placeholder="人设" v-model="item.platRole" clearable></el-input>
                   </el-col>
                   <el-col :span="5">
                     <el-input placeholder="账号昵称" v-model="item.nickname" clearable></el-input>
                   </el-col>
                   <el-col :span="5">
-                    <el-input placeholder="主页链接" v-model="item.link" clearable></el-input>
+                    <el-input placeholder="主页链接" v-model="item.url" clearable></el-input>
                   </el-col>
                   <el-col :span="3">
                     <el-col :span="24" v-if="index == hatchList.length-1">
@@ -416,6 +429,7 @@ export default {
   components: {},
   data() {
     return {
+      loading: true, // 上传loading
       checked: false,
       radio: '',
       input1: '',
@@ -448,6 +462,21 @@ export default {
       ],
       value: '',
 
+      periodList: [
+        {
+          value: 0,
+          label: '按月结算'
+        },
+        {
+          value: 1,
+          label: '按年结算'
+        },
+        {
+          value: 2,
+          label: '按季度结算'
+        }
+      ],
+
       // 车主基础信息
       handerImg: '', // 头像
       eventDataList: [], // 合作事项列表
@@ -466,7 +495,8 @@ export default {
       livelihood0: '',
       sourceList: [], // 车主来源列表
       source: '', // 车主来源
-      carType: '', // 认证车型
+      carSeriesList: [], // 认证车型列表
+      carSeries: '', // 认证车型
       mail: '', // 车主邮箱
       team: '', // 项目组
 
@@ -489,8 +519,8 @@ export default {
         {
           name: '',
           relation: '',
-          birthDate: '',
-          profession: ''
+          birthday: '',
+          work: ''
         }
       ],
 
@@ -503,27 +533,45 @@ export default {
       // 合作概况列表
       eventList: [
         {
-          name: '',
-          character: '',
-          nickname: '',
-          link: ''
+          itemId: '', // 车主选择的合作事项ID
+          itemName: '', // 车主选择的合作事项Name
+          coopNum: '', // 固定合作总量
+          coopMoney: '', // 固定合作总价
+          period: '', // 结算周期
+          timeLimit: '', // 合作时长
+          typeId: ''
         }
       ],
       // IP孵化打造列表
       hatchList: [
         {
-          name: '',
-          character: '',
+          plat: '',
+          platRole: '',
           nickname: '',
-          link: ''
+          url: ''
         }
-      ]
+      ],
+      // 提交按钮开关
+      submitFlag: true
     }
   },
   // 侦听器
   watch: {
     tabact: function(newData, oldData) {
+      this.eventData = []
       this.geteventDataList(newData)
+      let eventList = this.eventList
+      eventList.forEach((element, i) => {
+        this.eventList[i].typeId = newData
+      })
+    },
+    duration: function(newData, oldData) {
+      // this.geteventDataList(newData)
+      let eventList = this.eventList
+      eventList.forEach((element, i) => {
+        this.eventList[i].timeLimit = newData
+      })
+      // console.log(this.eventList)
     }
   },
   // 钩子函数
@@ -537,6 +585,8 @@ export default {
     this.getSourceList()
     ///////// 获取特长列表 start /////////
     this.getOwnerSkillList()
+    ///////// 获取车型列表 start /////////
+    this.getCarSeriesLists()
   },
   // 方法事件
   methods: {
@@ -545,6 +595,41 @@ export default {
       this.$router.go(-1) //返回上一层
     },
     ///////// 返回上一页 end /////////
+
+    ///////// 合作事项 start /////////
+    changeEvent(data) {
+      console.log(data)
+      // console.log(1)
+      let eventDataList = this.eventDataList
+      // console.log(eventDataList)
+      let itemName = []
+      data.forEach(element => {
+        eventDataList.forEach(element_ => {
+          if (element_.value == element) {
+            itemName.push(element_.label)
+          }
+        })
+      })
+
+      // console.log(itemName)
+      let eventList = []
+      data.forEach((element, i) => {
+        eventList.push({
+          name: element,
+          itemId: element, // 车主选择的合作事项ID
+          itemName: itemName[i], // 车主选择的合作事项Name
+          coopNum: '', // 固定合作总量
+          coopMoney: '', // 固定合作总价
+          period: '', // 结算周期
+
+          timeLimit: this.duration,
+          typeId: this.tabact
+        })
+      })
+      this.eventList = eventList
+      // console.log(eventList)
+    },
+    ///////// 合作事项 end /////////
 
     ///////// 合作事项列表获取 start /////////
     geteventDataList(id) {
@@ -631,22 +716,68 @@ export default {
     },
     ///////// 获取特长列表 end /////////
 
-    ///////// 合作事项 start /////////
-    changeEvent(data) {
-      console.log(data)
-      // console.log(1)
-      let eventList = []
-      data.forEach(element => {
-        eventList.push({
-          name: element,
-          character: '',
-          nickname: '',
-          link: ''
+    ///////// 获取车型列表 start /////////
+    getCarSeriesLists() {
+      this.listLoading = true
+      let data = {
+        ids: 0,
+        pageNum: 1,
+        pageSize: 30
+      }
+      this.$axios
+        .post('/ocarplay/api/carSeries/getCarSeriesLists', data)
+        .then(res => {
+          // console.log(res)
+          this.listLoading = false
+          if (res.status == 200) {
+            let data = res.data.items
+
+            let carSeriesList = [
+              {
+                value: 105,
+                label: '沃尔沃',
+                children: []
+              },
+              {
+                value: 110,
+                label: '吉利舆情',
+                children: []
+              },
+              {
+                value: 153,
+                label: '长城',
+                children: []
+              }
+            ]
+            data.forEach(element => {
+              let data = {
+                value: element.carTypeId,
+                label: element.carTypeName,
+                children: []
+              }
+              let carSeriesIds = element.carSeriesIds.split('/')
+              let carSeriesName = element.carSeriesName.split('/')
+              carSeriesIds.forEach((element, i) => {
+                data.children.push({
+                  value: element,
+                  label: carSeriesName[i]
+                })
+              })
+              // console.log(carSeriesIds)
+              if (element.deptId == 105) {
+                carSeriesList[0].children.push(data)
+              } else if (element.deptId == 110) {
+                carSeriesList[1].children.push(data)
+              } else if (element.deptId == 153) {
+                carSeriesList[2].children.push(data)
+              }
+            })
+            this.carSeriesList = carSeriesList
+            // console.log(carSeriesListData)
+          }
         })
-      })
-      this.eventList = eventList
     },
-    ///////// 合作事项 end /////////
+    ///////// 获取车型列表 end /////////
 
     tab(e) {
       this.tabact = e
@@ -711,8 +842,8 @@ export default {
       this.relationList.push({
         name: '',
         relation: '',
-        birthDate: '',
-        profession: ''
+        birthday: '',
+        work: ''
       })
     },
     ///////// 添加家属信息 start /////////
@@ -769,11 +900,10 @@ export default {
 
     ///////// 提交按钮 start /////////
     submit() {
+      // this.loading = true
       // 合同日期转换
       let startTime = this.$date0(this.timeLimit[0])
       let endTime = this.$date0(this.timeLimit[1])
-      // console.log(startTime)
-      // console.log(endTime)
       // 用车生活
       let livelihood = this.livelihood.toString()
       let livelihood0 = this.livelihood0
@@ -787,14 +917,14 @@ export default {
         image: this.handerImg,
         typeId: this.tabact,
 
-        itemId: itemId,
+        // itemId: itemId,
         name: this.ownersName,
         sex: this.sex,
         carUse: carUse,
         work: this.work,
         sourceId: this.source,
         birthday: birthday,
-        seriesId: this.carType,
+        seriesId: this.carSeries[0],
         province: this.district[0],
         city: this.district[1],
         email: this.mail,
@@ -804,14 +934,7 @@ export default {
         homeAddress: this.address,
         wx: this.wx,
         qq: this.qq,
-        // relations: [
-        //   {
-        //     birthday: '家属生日如：2020-06-09',
-        //     name: '姓名',
-        //     relation: '关系',
-        //     work: '职业'
-        //   }
-        // ],
+        relations: this.relationList, // 家属信息表
         bbsId: this.carId,
         homeUrl: this.carHome,
         weiboId: this.microblog,
@@ -858,38 +981,65 @@ export default {
       }
       let tabact = this.tabact
       if (tabact == 1) {
-        data.ownerCoops = [
-          {
-            coopMoney: '固定合作总价',
-            coopNum: '固定合作总量',
-            itemId: '车主选择的合作事项ID',
-            period: '结算周期（0-按月结算，1-按年结算，2-按季度结算）',
-            timeLimit: '合作时长，文本输入',
-            typeId: '车主类型ID'
-          }
-        ]
-      }else{
-        data.ipGrows = [
-          {
-            itemId: '车主选择的合作事项ID',
-            nickname: '账号昵称',
-            plat: '平台名称',
-            platRole: '人设',
-            typeId: '车主类型ID',
-            url: '主页链接url'
-          }
-        ]
+        data.ownerCoops = this.eventList
+        // [
+        //   {
+        //     coopMoney: '固定合作总价',
+        //     coopNum: '固定合作总量',
+        //     itemId: '车主选择的合作事项ID',
+        //     period: '结算周期（0-按月结算，1-按年结算，2-按季度结算）',
+        //     timeLimit: this.duration,
+        //     typeId: this.tabact
+        //   }
+        // ]
+      } else {
+        // data.ipGrows = [
+        //   {
+        //     itemId: '车主选择的合作事项ID',
+        //     nickname: '账号昵称',
+        //     plat: '平台名称',
+        //     platRole: '人设',
+        //     url: '主页链接url',
+        //     typeId: this.tabact
+        //   }
+        // ]
+        let ipGrows = []
+        let eventData = this.eventData
+        let hatchList = this.hatchList
+        eventData.forEach(element => {
+          hatchList.forEach(element_ => {
+            ipGrows.push({
+              itemId: element,
+              nickname: element_.nickname,
+              plat: element_.plat,
+              platRole: element_.platRole,
+              url: element_.url,
+              typeId: this.tabact
+            })
+          })
+        })
+        data.ipGrows = ipGrows
       }
       console.log(data)
-      this.$axios
-        .post('/ocarplay/api/vehicleOwner/saveOrUpdate', data)
-        .then(res => {
-          console.log(res)
-          this.loading = false
-          if (res.status == 200) {
-            let data = res.data
-          }
-        })
+
+      if (this.submitFlag) {
+        this.submitFlag = false
+        this.$axios
+          .post('/ocarplay/api/vehicleOwner/saveOrUpdate', data)
+          .then(res => {
+            // console.log(res)
+            this.loading = false
+            if (res.status == 200 && res.data.errcode == 0) {
+              // let data = res.data
+              this.messageWin(res.data.msg)
+              setTimeout(() => {
+                this.$router.push({ path: '/home/owners' })
+              }, 1000)
+            } else {
+              this.messageError(res.data.msg)
+            }
+          })
+      }
     },
     ///////// 提交按钮 end /////////
 

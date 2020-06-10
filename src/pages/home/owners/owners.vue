@@ -11,8 +11,8 @@
 
         <div class="butBox2">
           <div
-            :class="[tab2act==index?'but act':'but']"
-            @click="tab2(index,item.id)"
+            :class="[tab2act==item.id?'but act':'but']"
+            @click="tab2(item.id)"
             v-for="(item,index) in tab2Items"
             :key="index"
           >{{item.name}}</div>
@@ -69,12 +69,8 @@
         >
           <el-table-column prop label="序号" width="81" align="center">
             <template slot-scope="scope">
-              <template v-if="scope.$index<9">
-                0{{scope.$index+1}}
-              </template>
-              <template v-else>
-                {{scope.$index+1}}
-              </template>
+              <template v-if="scope.$index<9">0{{scope.$index+1}}</template>
+              <template v-else>{{scope.$index+1}}</template>
             </template>
           </el-table-column>
           <el-table-column prop="ownerName" label="车主姓名" min-width="81" show-overflow-tooltip></el-table-column>
@@ -82,32 +78,26 @@
           <el-table-column prop="itemName" label="合作事项" min-width="81" show-overflow-tooltip></el-table-column>
           <el-table-column prop="timeLimit" label="合作时长" min-width="81"></el-table-column>
           <el-table-column prop="coopMoney" label="合作费用" min-width="81"></el-table-column>
-          <el-table-column prop="addnum" label="固定合作总量" min-width="100"></el-table-column>
+          <el-table-column prop="coopNum" label="固定合作总量" min-width="100"></el-table-column>
           <el-table-column prop="oldnum" label="历史合作次数" min-width="100"></el-table-column>
           <el-table-column prop="surplusnum" label="剩余合作次数" min-width="100"></el-table-column>
           <el-table-column prop="period" label="结算周期" min-width="100">
             <template slot-scope="scope">
-              <template v-if="scope.row.period == 0">
-                按月结算
-              </template>
-              <template v-if="scope.row.period == 1">
-                按年结算
-              </template>
-              <template v-if="scope.row.period == 2">
-                按季度结算
-              </template>
+              <template v-if="scope.row.period == 0">按月结算</template>
+              <template v-if="scope.row.period == 1">按年结算</template>
+              <template v-if="scope.row.period == 2">按季度结算</template>
             </template>
           </el-table-column>
           <el-table-column prop label="操作" width="160">
-            <template>
+            <template slot-scope="scope">
               <el-tooltip class="item" effect="dark" content="车主信息" placement="top">
-                <i class="el-icon-view" @click="toDetail"></i>
+                <i class="el-icon-view" @click="toDetail(scope.row)"></i>
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="场地信息" placement="top">
                 <i class="el-icon-map-location" @click="toOwnerssite"></i>
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="删除" placement="top">
-                <i class="el-icon-delete" @click="delOwners"></i>
+                <i class="el-icon-delete" @click="delContent(scope.row)"></i>
               </el-tooltip>
             </template>
           </el-table-column>
@@ -131,7 +121,7 @@
     <el-row class="content content2" v-else-if="tab1act==2">
       <div class="table_list">
         <el-table
-        v-loading="listLoading"
+          v-loading="listLoading"
           :data="ownerListData"
           style="width: 100%"
           :header-row-style="{'height': '70px','background': 'rgb(242, 242, 242)'}"
@@ -141,21 +131,21 @@
           <el-table-column prop label="序号" width="81" align="center">
             <template slot-scope="scope">0{{scope.$index+1}}</template>
           </el-table-column>
-          <el-table-column prop="carSeriesName" label="车主姓名" min-width="81" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="ownerName" label="车主姓名" min-width="81" show-overflow-tooltip></el-table-column>
           <el-table-column prop="car" label="认证车型" min-width="180" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="matter" label="所在区域" min-width="81" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="ownerArea" label="所在区域" min-width="81" show-overflow-tooltip></el-table-column>
           <el-table-column prop="time" label="特长" min-width="81"></el-table-column>
-          <el-table-column prop="mandnum" label="IP账号" min-width="81"></el-table-column>
-          <el-table-column prop="addnum" label="合作时长" min-width="100"></el-table-column>
+          <el-table-column prop="nickname" label="IP账号" min-width="81"></el-table-column>
+          <el-table-column prop="timeLimit" label="合作时长" min-width="100"></el-table-column>
           <el-table-column prop="oldnum" label="历史合作次数" min-width="100"></el-table-column>
           <el-table-column prop="surplusnum" label="本月合作次数" min-width="100"></el-table-column>
           <el-table-column prop label="操作" width="230">
-            <template>
+            <template slot-scope="scope">
               <el-tooltip class="item" effect="dark" content="预约记录" placement="top">
                 <i class="el-icon-time" @click="toRecord"></i>
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="车主信息" placement="top">
-                <i class="el-icon-view" @click="toDetail"></i>
+                <i class="el-icon-view" @click="toDetail(scope.row)"></i>
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="日程管理" placement="top">
                 <i class="el-icon-date" @click="toOwnersschedule"></i>
@@ -164,7 +154,7 @@
                 <i class="el-icon-map-location" @click="toOwnerssite"></i>
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="删除" placement="top">
-                <i class="el-icon-delete" @click="delOwners"></i>
+                <i class="el-icon-delete" @click="delContent(scope.row)"></i>
               </el-tooltip>
             </template>
           </el-table-column>
@@ -187,7 +177,7 @@
     <el-row class="content content3" v-else-if="tab1act==3">
       <div class="table_list">
         <el-table
-        v-loading="listLoading"
+          v-loading="listLoading"
           :data="ownerListData"
           style="width: 100%"
           :header-row-style="{'height': '70px','background': 'rgb(242, 242, 242)'}"
@@ -197,21 +187,21 @@
           <el-table-column prop label="序号" width="81" align="center">
             <template slot-scope="scope">0{{scope.$index+1}}</template>
           </el-table-column>
-          <el-table-column prop="name" label="车主姓名" min-width="81" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="ownerName" label="车主姓名" min-width="81" show-overflow-tooltip></el-table-column>
           <el-table-column prop="car" label="认证车型" min-width="180" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="matter" label="所在区域" min-width="81" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="ownerArea" label="所在区域" min-width="81" show-overflow-tooltip></el-table-column>
           <el-table-column prop="time" label="特长" min-width="81"></el-table-column>
-          <el-table-column prop="mandnum" label="IP账号" min-width="81"></el-table-column>
-          <el-table-column prop="addnum" label="合作时长" min-width="100"></el-table-column>
+          <el-table-column prop="nickname" label="IP账号" min-width="81"></el-table-column>
+          <el-table-column prop="timeLimit" label="合作时长" min-width="100"></el-table-column>
           <el-table-column prop="oldnum" label="历史合作次数" min-width="100"></el-table-column>
           <el-table-column prop="surplusnum" label="本月合作次数" min-width="100"></el-table-column>
           <el-table-column prop label="操作" width="230">
-            <template>
+            <template slot-scope="scope">
               <el-tooltip class="item" effect="dark" content="预约记录" placement="top">
                 <i class="el-icon-time" @click="toRecord"></i>
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="车主信息" placement="top">
-                <i class="el-icon-view" @click="toDetail"></i>
+                <i class="el-icon-view" @click="toDetail(scope.row)"></i>
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="日程管理" placement="top">
                 <i class="el-icon-date" @click="toOwnersschedule"></i>
@@ -220,7 +210,7 @@
                 <i class="el-icon-map-location" @click="toOwnerssite"></i>
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="删除" placement="top">
-                <i class="el-icon-delete" @click="delOwners"></i>
+                <i class="el-icon-delete" @click="delContent(scope.row)"></i>
               </el-tooltip>
             </template>
           </el-table-column>
@@ -252,24 +242,7 @@ export default {
       ownerListData: [],
       tab1act: 1,
       tab2act: 0,
-      tab2Items: [
-        {
-          id: 1,
-          name: '状态分布'
-        },
-        {
-          id: 2,
-          name: '时间分布'
-        },
-        {
-          id: 3,
-          name: '对象分布'
-        },
-        {
-          id: 4,
-          name: '项目组分布'
-        }
-      ],
+      tab2Items: [],
       // 图表数据
       chartTitle: '任务完成数量',
       chartKeyData: ['执行中', '结算中', '延期', '已完成'],
@@ -304,76 +277,19 @@ export default {
   // 侦听器
   watch: {
     tab1act: function(newData, oldData) {
-      this.tabItems()
+      // this.tabItems()
+      this.geteventDataList(newData)
     }
   },
   // 钩子函数
   beforeCreate() {},
   beforeMount() {},
   mounted() {
-    // this.foreach()
-    this.tabItems()
-    // 获取车主列表
-    this.getVehicleOwnerList()
+    // 获取合作事项列表
+    this.geteventDataList(1)
   },
   // 方法
   methods: {
-    ///////// 选项卡切换 start /////////
-    tabItems() {
-      let tab1act = this.tab1act
-      if (tab1act == 1) {
-        this.tab2Items = [
-          {
-            id: 1,
-            name: '租借车辆'
-          },
-          {
-            id: 2,
-            name: '发布'
-          },
-          {
-            id: 3,
-            name: 'ID账号'
-          },
-          {
-            id: 4,
-            name: '日常素材'
-          },
-          {
-            id: 5,
-            name: '文案约稿'
-          }
-        ]
-      } else if (tab1act == 2) {
-        this.tab2Items = [
-          {
-            id: 5,
-            name: 'IP孵化型'
-          },
-          {
-            id: 2,
-            name: '签约摄影师'
-          }
-        ]
-      } else if (tab1act == 3) {
-        this.tab2Items = [
-          {
-            id: 2,
-            name: '自驾'
-          },
-          {
-            id: 4,
-            name: '越野'
-          }
-        ]
-      }
-
-      this.tab2act = 0
-      // let tab1act = newData
-      // let tab2act = this.tab2act
-    },
-    ///////// 选项卡切换 end /////////
-
     ///////// 循环 start /////////
     // foreach() {
     //   for (let i = 0; i < 30; i++) {
@@ -393,11 +309,45 @@ export default {
     // },
     ///////// 循环 end /////////
 
+    ///////// 合作事项列表获取 start /////////
+    geteventDataList(id) {
+      // console.log(data)
+      // console.log(1)
+      let eventList = []
+      let data = {
+        typeId: id
+      }
+      this.$axios
+        .post('/ocarplay/api/vehicleOwner/getOwnerTypeItems', data)
+        .then(res => {
+          // console.log(res)
+          // this.loading = false
+          if (res.status == 200) {
+            // console.log(res)
+            let data = res.data
+            let eventDataList = []
+            data.forEach(element => {
+              eventDataList.push({
+                id: element.itemId,
+                name: element.itemName
+              })
+            })
+            this.tab2Items = eventDataList
+            this.tab2act = eventDataList[0].id
+            // console.log(this.tab2Items)
+            // 获取车主列表
+            this.getVehicleOwnerList()
+          }
+        })
+    },
+    ///////// 合作事项列表获取 end /////////
+
     ///////// 车主列表获取 start /////////
     getVehicleOwnerList() {
       let data = {
         vehicleOwner: {
-          typeId: this.tab1act
+          typeId: this.tab1act,
+          itemId: this.tab2act
         }
       }
       this.$axios
@@ -420,9 +370,10 @@ export default {
       this.tab1act = e
       this.getVehicleOwnerList()
     },
-    tab2(e, id) {
-      this.tab2act = e
-      console.log(id)
+    tab2(id) {
+      this.tab2act = id
+      this.getVehicleOwnerList()
+      // console.log(id)
     },
 
     ///////// 分页 start /////////
@@ -457,24 +408,44 @@ export default {
     },
     ///////// 跳日程管理页面 end /////////
 
-    ///////// 删除车主 start /////////
-    delOwners() {
+    ///////// 删除车主信息 start /////////
+    delContent(par) {
       this.$confirm('确认要删除该场地吗?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       })
         .then(() => {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          })
+          // this.$message({
+          //   type: 'success',
+          //   message: '删除成功!'
+          // })
+          this.delOwners(par)
         })
         .catch(() => {
           this.$message({
             type: 'info',
             message: '已取消删除'
           })
+        })
+    },
+    delOwners(par) {
+      let data = {
+        coopId: par.coopId,
+        typeId: par.typeId
+      }
+      this.$axios
+        .post('/ocarplay/api/vehicleOwner/deleteVehicleOwner', data)
+        .then(res => {
+          // console.log(res)
+          if (res.status == 200 && res.data.errcode == 0) {
+            let data = res.data
+            this.ownerListData = data.items
+            this.messageWin(res.data.msg)
+            this.getVehicleOwnerList()
+          } else {
+            this.messageError(res.data.msg)
+          }
         })
     },
     ///////// 删除车主 end /////////
@@ -488,12 +459,37 @@ export default {
     ///////// 确认 end /////////
 
     ///////// 跳转车主信息页面 start /////////
-    toDetail() {
+    toDetail(prm) {
       this.$router.push({
-        path: '/home/ownersdetail'
+        name: 'ownersdetail',
+        params: {
+          typeId: prm.typeId,
+          vehicleOwnerId: prm.ownerId
+        }
       })
-    }
+    },
     ///////// 跳转车主信息页面 end /////////
+
+    ///////// 消息提示 start /////////
+    messageWin(message) {
+      // 成功提示
+      this.$message({
+        message: message,
+        type: 'success'
+      })
+    },
+    messageWarning(message) {
+      // 警告提示
+      this.$message({
+        message: message,
+        type: 'warning'
+      })
+    },
+    messageError(message) {
+      // 错误提示
+      this.$message.error(message)
+    }
+    ///////// 消息提示 end /////////
   }
 }
 </script>
