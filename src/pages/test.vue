@@ -136,6 +136,214 @@ export default {
     },
     test(res) {
       return res
+      let data = [
+        {
+          createTime: '2020-06-02 14:54:31',
+          deleteFlag: false,
+          ownerItems: [
+            {
+              card: true,
+              createTime: '2020-06-03 14:50:21',
+              deleteFlag: false,
+              isCard: true,
+              isCards: null,
+              itemId: 1,
+              itemIds: null,
+              itemName: '合作事项1',
+              money: null,
+              typeId: 1,
+              typeName: null,
+              updateTime: null,
+              vehicleOwners: [
+                {
+                  bbsId: '汽车之家ID',
+                  birthday: '2020-06-02',
+                  buycarplace: '光谷广场店',
+                  carSeriesName: null,
+                  carUse: '家用车',
+                  city: '武汉市',
+                  coopId: null,
+                  cooperates: null,
+                  createTime: '2020-06-04 06:56:21',
+                  deleteFlag: false,
+                  deptId: 93,
+                  doUserId: null,
+                  dyId: '打野先锋',
+                  email: '11111@163.com',
+                  homeAddress: '武大科技园',
+                  homeUrl: 'www.baidu.com',
+                  image: null,
+                  invites: null,
+                  ipGrows: null,
+                  itemId: 1,
+                  name: '测试车主',
+                  otherId: null,
+                  ownerCoops: null,
+                  phone: '1567895565',
+                  plateNum: null,
+                  province: '湖北省',
+                  qq: '56565656',
+                  relations: null,
+                  seriesId: 5,
+                  sex: true,
+                  skillId: null,
+                  skillName: null,
+                  sourceId: null,
+                  sourceName: null,
+                  typeId: 1,
+                  updateTime: null,
+                  vehicleOwnerId: 1,
+                  vinno: '111111',
+                  weiboId: '1111',
+                  work: '111',
+                  wx: '1111'
+                }
+              ]
+            },
+            {
+              card: true,
+              createTime: '2020-06-03 03:00:22',
+              deleteFlag: false,
+              isCard: true,
+              isCards: null,
+              itemId: 4,
+              itemIds: null,
+              itemName: '合作事项2',
+              money: 0,
+              typeId: 1,
+              typeName: null,
+              updateTime: '2020-06-03 03:01:07',
+              vehicleOwners: []
+            },
+            {
+              card: true,
+              createTime: null,
+              deleteFlag: false,
+              isCard: true,
+              isCards: null,
+              itemId: 5,
+              itemIds: null,
+              itemName: '租借车辆',
+              money: 30,
+              typeId: 1,
+              typeName: null,
+              updateTime: null,
+              vehicleOwners: []
+            },
+            {
+              card: true,
+              createTime: null,
+              deleteFlag: false,
+              isCard: true,
+              isCards: null,
+              itemId: 6,
+              itemIds: null,
+              itemName: '发布',
+              money: 30,
+              typeId: 1,
+              typeName: null,
+              updateTime: null,
+              vehicleOwners: []
+            },
+            {
+              card: true,
+              createTime: null,
+              deleteFlag: false,
+              isCard: true,
+              isCards: null,
+              itemId: 7,
+              itemIds: null,
+              itemName: 'ID',
+              money: 30,
+              typeId: 1,
+              typeName: null,
+              updateTime: null,
+              vehicleOwners: []
+            }
+          ],
+          typeId: 1,
+          typeName: '支持型',
+          updateTime: null
+        },
+        {
+          createTime: '2020-06-02 14:54:47',
+          deleteFlag: false,
+          ownerItems: [
+            {
+              card: true,
+              createTime: null,
+              deleteFlag: false,
+              isCard: true,
+              isCards: null,
+              itemId: 8,
+              itemIds: null,
+              itemName: 'IP孵化器',
+              money: 1000,
+              typeId: 2,
+              typeName: null,
+              updateTime: null,
+              vehicleOwners: []
+            },
+            {
+              card: true,
+              createTime: null,
+              deleteFlag: false,
+              isCard: true,
+              isCards: null,
+              itemId: 9,
+              itemIds: null,
+              itemName: '签约摄影师',
+              money: 1000,
+              typeId: 2,
+              typeName: null,
+              updateTime: null,
+              vehicleOwners: []
+            }
+          ],
+          typeId: 2,
+          typeName: '拍摄型',
+          updateTime: null
+        },
+        {
+          createTime: '2020-06-02 14:55:00',
+          deleteFlag: false,
+          ownerItems: [
+            {
+              card: true,
+              createTime: null,
+              deleteFlag: false,
+              isCard: true,
+              isCards: null,
+              itemId: 10,
+              itemIds: null,
+              itemName: '自驾',
+              money: 100,
+              typeId: 3,
+              typeName: null,
+              updateTime: null,
+              vehicleOwners: []
+            },
+            {
+              card: true,
+              createTime: null,
+              deleteFlag: false,
+              isCard: true,
+              isCards: null,
+              itemId: 11,
+              itemIds: null,
+              itemName: '越野',
+              money: 100,
+              typeId: 3,
+              typeName: null,
+              updateTime: null,
+              vehicleOwners: []
+            }
+          ],
+          typeId: 3,
+          typeName: '资源型',
+          updateTime: null
+        }
+      ]
     },
     G2() {
       // 数据来源于 https://github.com/react-d3/react-d3-map-bubble
@@ -258,7 +466,7 @@ export default {
 .box:hover {
   background: red;
 }
-#g2{
+#g2 {
   width: 600px;
 }
 </style>

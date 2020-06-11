@@ -70,8 +70,8 @@
             </template>
           </el-table-column>
           <el-table-column prop="car" label="对应车主" width="180">
-            <template>
-              <i class="el-icon-user" @click="toSitecarownerlist"></i>
+            <template slot-scope="scope">
+              <i class="el-icon-user" @click="toSitecarownerlist(scope.row.city)"></i>
             </template>
           </el-table-column>
           <el-table-column label="操作" width="100">
@@ -150,6 +150,8 @@
             :on-success="siteImgSuccess"
             :limit="1"
             :on-exceed="siteImgExceed"
+            ref="imageUpload"
+            :file-list="imagFileList"
           >
             <i class="el-icon-plus"></i>
           </el-upload>
@@ -161,7 +163,7 @@
         <!-- 底部按钮 -->
         <el-col :span="24" class="btn">
           <el-col :span="6" :offset="5">
-            <el-button type="info">取消</el-button>
+            <el-button type="info" @click="cancel">取消</el-button>
           </el-col>
           <el-col :span="6" :offset="2">
             <el-button type="primary" @click="addSubmit">提交</el-button>
@@ -172,7 +174,7 @@
     <!-- 添加场地 end -->
 
     <!-- 抽屉弹窗提交任务 start -->
-    <el-drawer title="提交任务" :visible.sync="drawerPuttask" size="720px">
+    <!-- <el-drawer title="提交任务" :visible.sync="drawerPuttask" size="720px">
       <el-row class="drawerPuttask">
         <el-col :span="4">任务名称:</el-col>
         <el-col :span="20">日常超精拍摄邀约</el-col>
@@ -206,7 +208,7 @@
           <el-col :span="24"></el-col>
         </el-col>
       </el-row>
-    </el-drawer>
+    </el-drawer> -->
     <!-- 抽屉弹窗提交任务 end -->
   </div>
 </template>
@@ -248,14 +250,7 @@ export default {
       ],
       value: '',
       // 表格数据
-      placeListData: [
-        {
-          siteName: '张家古楼',
-          type: '热门网红场地',
-          city: '东北三省',
-          add: '东北三省'
-        }
-      ],
+      placeListData: [],
       // 抽屉弹窗添加场地
       drawerAdd: false,
       drawerAddTitle: '添加场地',
@@ -287,6 +282,7 @@ export default {
       dialogImageUrl: '',
       dialogVisible: false,
       siteImgDisabled: false,
+      imagFileList: [], // 回填场地图片
       // 场地预览
       urlImg:
         'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
@@ -338,20 +334,6 @@ export default {
   },
   // 方法
   methods: {
-    ///////// 循环 start /////////
-    // foreach() {
-    //   for (let i = 0; i < 30; i++) {
-    //     // const element = array[i];
-    //     this.tableData.push({
-    //       siteName: '张家古楼',
-    //       type: '热门网红场地',
-    //       city: '东北三省',
-    //       add: '东北三省'
-    //     })
-    //   }
-    // },
-    ///////// 循环 end /////////
-
     ///////// 获取场地列表 start /////////
     getPlaceList() {
       // this.loading = true
@@ -372,7 +354,7 @@ export default {
           let data = res.data
           data.items.forEach((element, i) => {
             data.items[i].image = [
-              'http://176.10.10.235:8080/ocarplay/' + element.image
+              '/ocarplay/' + element.image
             ]
           })
           this.placeListData = data.items
@@ -410,8 +392,14 @@ export default {
     ///////// 获取场地类型列表 end /////////
 
     ///////// 跳转车主列表 start /////////
-    toSitecarownerlist() {
-      this.$router.push({ path: '/home/sitecarownerlist' })
+    toSitecarownerlist(res) {
+      // this.$router.push({ path: '/home/sitecarownerlist' })
+      this.$router.push({
+        name: 'sitecarownerlist',
+        params: {
+          city: res
+        }
+      })
     },
     ///////// 跳转车主列表 start /////////
 
@@ -447,6 +435,12 @@ export default {
     },
     ///////// 场地图片上传 end /////////
 
+    ///////// 点击取消按钮 end /////////
+    cancel() {
+      this.drawerAdd = false
+    },
+    ///////// 点击取消按钮 end /////////
+
     ///////// 关闭弹窗回调 start /////////
     drawerAddClose() {
       this.placeId = ''
@@ -455,6 +449,8 @@ export default {
       this.address = ''
       // console.log(this.getValue(value,optionsCity))
       this.district_code = ''
+      this.siteImgUrl = ''
+      this.$refs['imageUpload'].clearFiles()
     },
     ///////// 关闭弹窗回调 end /////////
 
@@ -489,6 +485,13 @@ export default {
           let optionsCity = this.optionsCity
           // console.log(this.getValue(value,optionsCity))
           this.district_code = this.getValue(value, optionsCity)
+          this.siteImgUrl = data.image
+          this.imagFileList = [
+            {
+              name: '场景',
+              url: '/ocarplay/'+data.image
+            }
+          ]
         }
       })
     },
@@ -500,11 +503,20 @@ export default {
         placeId: this.placeId, // 场地ID
         placeName: this.placeName, // 场地名称
         placeTypeId: this.placeTypeId, // 场地类型ID
-        province: district[0], // 省
-        city: district[1], // 城市
-        area: district[2] || '', // 区域
+        // province: district[0], // 省
+        // city: district[1], // 城市
+        // area: district[2] || '', // 区域
         address: this.address, // 详细地址
         image: this.siteImgUrl // 图片地址
+      }
+      if (district.length == 2) {
+        data.province = ''
+        data.city = district[0]
+        data.area = district[1]
+      }else if(district.length == 2){
+        data.province = district[0]
+        data.city = district[1]
+        data.area = district[2]
       }
       this.saveOrUpdate(data)
     },
@@ -530,7 +542,7 @@ export default {
 
     ///////// 删除场地 start /////////
     delSite(id) {
-      this.$confirm('确认要删除该任务吗?', '提示', {
+      this.$confirm('确认要删除该场地吗?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'

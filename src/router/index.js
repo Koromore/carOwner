@@ -53,9 +53,9 @@ axios.interceptors.response.use(
     //   // console.log(response)
     //   response.data = JSON.parse(Decrypt(response.data));
     // }
-    if (typeof response.data == "string") {
-      response.data = JSON.parse(Decrypt(response.data));
-    }
+    // if (typeof response.data == "string") {
+    //   response.data = JSON.parse(Decrypt(response.data));
+    // }
     // console.log(response)
     // console.log(response.headers.status)   
     // response.data = JSON.parse(Decrypt(response.data));

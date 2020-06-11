@@ -27,7 +27,7 @@
         <el-col :span="24" class="list">
           <div class="key">品牌车型</div>
           <div class="val">
-            <el-cascader :options="options2" :props="props" v-model="input2" clearable></el-cascader>
+            <el-cascader :options="carSeriesList" :props="props" v-model="input2" clearable></el-cascader>
           </div>
         </el-col>
         <el-col :span="24" class="list">
@@ -112,69 +112,14 @@ export default {
       type: 0,
       title: '新建任务',
       // 任务名称
+      options2: [],
       input: '',
       input1: '',
       // 任务对象选择数据
       input2: '',
       textarea: '',
       props: { multiple: true },
-      options2: [
-        {
-          value: 1,
-          label: '东南',
-          children: [
-            {
-              value: 2,
-              label: '上海',
-              children: [
-                { value: 3, label: '普陀' },
-                { value: 4, label: '黄埔' },
-                { value: 5, label: '徐汇' }
-              ]
-            },
-            {
-              value: 7,
-              label: '江苏',
-              children: [
-                { value: 8, label: '南京' },
-                { value: 9, label: '苏州' },
-                { value: 10, label: '无锡' }
-              ]
-            },
-            {
-              value: 12,
-              label: '浙江',
-              children: [
-                { value: 13, label: '杭州' },
-                { value: 14, label: '宁波' },
-                { value: 15, label: '嘉兴' }
-              ]
-            }
-          ]
-        },
-        {
-          value: 17,
-          label: '西北',
-          children: [
-            {
-              value: 18,
-              label: '陕西',
-              children: [
-                { value: 19, label: '西安' },
-                { value: 20, label: '延安' }
-              ]
-            },
-            {
-              value: 21,
-              label: '新疆维吾尔族自治区',
-              children: [
-                { value: 22, label: '乌鲁木齐' },
-                { value: 23, label: '克拉玛依' }
-              ]
-            }
-          ]
-        }
-      ],
+      carSeriesList: [],
       // 品牌车型
       input3: '',
       options: [
@@ -225,21 +170,128 @@ export default {
   beforeMount() {},
   mounted() {
     this.getQuery()
+    ///////// 获取车型列表 start /////////
+    this.getCarSeriesLists()
+    ///////// 获取车主列表 start /////////
+    this.getOwnerList()
   },
   // 方法事件
   methods: {
     ///////// 接受页面传参 start /////////
-    getQuery(){
+    getQuery() {
       let type = this.$route.query.type
       this.type = type
       if (type == 0) {
         this.title = '新建任务'
-      }else if (type == 1) {
+      } else if (type == 1) {
         this.title = '编辑任务'
       }
       // console.log(type)
     },
     ///////// 接受页面传参 end /////////
+
+    ///////// 获取车主列表 start /////////
+    getOwnerList() {
+      // this.listLoading = true
+      let data = {}
+      this.$axios
+        .post('/ocarplay/api/vehicleOwner/ownerTypeCoopItemOwners', data)
+        .then(res => {
+          console.log(res)
+          if ((res.status = 200)) {
+            let data = res.data
+            let list = []
+            data.forEach((element, i) => {
+              list.push({
+                value: element.typeId,
+                label: element.typeName,
+                children: []
+              })
+              element.ownerItems.forEach((element1, j) => {
+                list[i].children.push({
+                  value: element1.itemId,
+                  label: element1.itemName,
+                  children: []
+                })
+                element1.vehicleOwners.forEach(element2 => {
+                  list[i].children[j].children.push({
+                    value: element2.vehicleOwnerId,
+                    label: element2.name
+                  })
+                  // console.log(list[i].children[j])
+                })
+              })
+            })
+
+            this.options2 = list
+            console.log(list)
+          }
+        })
+    },
+    ///////// 获取车主列表 end /////////
+
+    ///////// 获取车型列表 start /////////
+    getCarSeriesLists() {
+      // this.listLoading = true
+      let data = {
+        ids: 0,
+        pageNum: 1,
+        pageSize: 30
+      }
+      this.$axios
+        .post('/ocarplay/api/carSeries/getCarSeriesLists', data)
+        .then(res => {
+          // console.log(res)
+          // this.listLoading = false
+          if (res.status == 200) {
+            let data = res.data.items
+
+            let carSeriesList = [
+              {
+                value: 105,
+                label: '沃尔沃',
+                children: []
+              },
+              {
+                value: 110,
+                label: '吉利舆情',
+                children: []
+              },
+              {
+                value: 153,
+                label: '长城',
+                children: []
+              }
+            ]
+            data.forEach(element => {
+              let data = {
+                value: element.carTypeId,
+                label: element.carTypeName,
+                children: []
+              }
+              let carSeriesIds = element.carSeriesIds.split('/')
+              let carSeriesName = element.carSeriesName.split('/')
+              carSeriesIds.forEach((element, i) => {
+                data.children.push({
+                  value: element,
+                  label: carSeriesName[i]
+                })
+              })
+              // console.log(carSeriesIds)
+              if (element.deptId == 105) {
+                carSeriesList[0].children.push(data)
+              } else if (element.deptId == 110) {
+                carSeriesList[1].children.push(data)
+              } else if (element.deptId == 153) {
+                carSeriesList[2].children.push(data)
+              }
+            })
+            this.carSeriesList = carSeriesList
+            // console.log(carSeriesListData)
+          }
+        })
+    },
+    ///////// 获取车型列表 end /////////
 
     ///////// 返回上一页 start /////////
     previous() {
@@ -350,7 +402,7 @@ export default {
           > div {
             margin-bottom: 9px;
           }
-          .miKey{
+          .miKey {
             font-size: 14px;
             color: #aaa;
           }

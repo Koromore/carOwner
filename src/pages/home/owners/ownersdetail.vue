@@ -133,7 +133,7 @@
               <div class="val">{{ownerDetil.vinno}}</div>
             </el-col>
             <el-col :span="24" class="list">
-              <div class="key">购车网店</div>
+              <div class="key">购车网点</div>
               <div class="val">{{ownerDetil.buycarplace}}</div>
             </el-col>
           </el-col>
@@ -175,16 +175,17 @@
               <div class="key">签约合同</div>
               <div class="val">
                 <img src="static/images/document/ppt.png" width="24" alt srcset />
-                &nbsp;签约合同
+                &nbsp;
+                <el-link>{{ownerDetil.cooperates[0].fileName}}</el-link>
               </div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">合作期限</div>
-              <div class="val">{{ownerDetil.cooperates[0].startTime}}-{{ownerDetil.cooperates[0].endTime}}</div>
+              <div class="val" v-for="(item, index) in ownerDetil.cooperates" :key="index">{{$date(item.startTime)}}---{{$date(item.endTime)}}</div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">合作时长</div>
-              <div class="val">{{ownerDetil.cooperates[0].timeLimit}}</div>
+              <div class="val" v-for="(item, index) in ownerDetil.cooperates" :key="index">{{parseInt(item.timeLimit/30)}}个月</div>
             </el-col>
           </el-col>
           <!-- 左右分割线 -->
@@ -200,20 +201,27 @@
         <!-- 签约合作信息 end -->
         <el-col :span="22" :offset="1">
           <el-table
-            :data="tableData"
+            :data="ownerDetil.invites"
             style="width: 100%"
             :header-row-style="{'height': '70px','background': 'rgb(242, 242, 242)'}"
             :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
-            height="100%"
           >
             <el-table-column prop label="序号" width="81" align="center">
               <template slot-scope="scope">0{{scope.$index+1}}</template>
             </el-table-column>
-            <el-table-column prop="name" label="受邀时间" min-width="81" show-overflow-tooltip></el-table-column>
-            <el-table-column prop="car" label="受邀任务" min-width="180" show-overflow-tooltip></el-table-column>
-            <el-table-column prop="matter" label="受邀事项" min-width="81" show-overflow-tooltip></el-table-column>
-            <el-table-column prop="time" label="内容标题" min-width="81"></el-table-column>
-            <el-table-column prop="mandnum" label="内容链接" min-width="81"></el-table-column>
+            <el-table-column prop="createTime" label="受邀时间" min-width="81" show-overflow-tooltip>
+              <template slot-scope="scope">
+                {{$date(scope.row.createTime)}}
+              </template>
+            </el-table-column>
+            <el-table-column prop="task.taskName" label="受邀任务" min-width="180" show-overflow-tooltip></el-table-column>
+            <el-table-column prop="itemName" label="受邀事项" min-width="81" show-overflow-tooltip></el-table-column>
+            <el-table-column prop="title" label="内容标题" min-width="81"></el-table-column>
+            <el-table-column prop="url" label="内容链接" min-width="81">
+              <template slot-scope="scope">
+                <el-link type="primary" :href="'http://'+scope.row.url" target="_blank">{{scope.row.url}}</el-link>
+              </template>
+            </el-table-column>
             <el-table-column prop="addnum" label="成果" min-width="100"></el-table-column>
           </el-table>
         </el-col>
@@ -283,7 +291,10 @@ export default {
       ],
       value: '',
       // 车主信息
-      ownerDetil: {}
+      ownerDetil: {
+        cooperates: [{}],
+        invites: []
+      }
     }
   },
   // 侦听器
@@ -293,7 +304,7 @@ export default {
   beforeMount() {},
   mounted() {
     // this.getQuery()
-    console.log(this.$route.params.typeId)
+    // console.log(this.$route.params.typeId)
     // 获取车主详细信息
     this.getVehicleOwnerPreEdit()
   },
@@ -320,6 +331,7 @@ export default {
         typeId: this.$route.params.typeId,
         vehicleOwnerId: this.$route.params.vehicleOwnerId
       }
+      console.log(data)
       this.$axios.post('/ocarplay/api/vehicleOwner/preEdit', data).then(res => {
         // console.log(res)
         // this.loading = false

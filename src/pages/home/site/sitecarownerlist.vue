@@ -11,7 +11,7 @@
       </el-col>
       <el-col :span="8" class="center cont">车主信息</el-col>
       <el-col :span="8" class="right cont">
-        <el-select v-model="memuValue" clearable placeholder="项目组" size="small">
+        <el-select v-model="memuValue" clearable placeholder="项目组" size="small" @change="memuValueChange">
           <el-option
             v-for="item in options"
             :key="item.value"
@@ -25,29 +25,33 @@
     <!-- 头部选项框 end -->
 
     <!-- 内容列表 start -->
-    <el-row class="content">
+    <el-row class="content" v-loading="listLoading">
       <el-col :span="24" class="table_list">
-        <div class="items" v-for="{item,index} in tableData" :key="index">
+        <div class="items" v-for="(item,index) in ownerList" :key="index" @click="toDetail(item)">
           <div class="left">
-            <el-image src="static/images/carow/list1.png" fit="cover"></el-image>
+            <!-- <el-image :src="'/ocarplay/'+item.image" fit="cover"></el-image> -->
+            <el-image src="/ocarplay/uploadtemp//doc/1591854750967.jpg" fit="cover"></el-image>
           </div>
           <div class="right">
-            <p>车主姓名：解雨臣</p>
-            <p>车主类型：资源型</p>
-            <p>车主来源：一点</p>
+            <p>车主姓名：{{item.name}}</p>
+            <p>
+              车主类型：
+              <template v-if="item.typeId == 1">支持型</template>
+              <template v-else-if="item.typeId == 2">拍摄型</template>
+              <template v-else-if="item.typeId == 3">资源型</template>
+            </p>
+            <p>车主来源：{{item.sourceName}}</p>
           </div>
-          <div class="bottom">XC60 2017款 T5 AWD 个性运动升级版</div>
+          <div class="bottom">{{item.carSeriesName}}</div>
         </div>
       </el-col>
       <el-col :span="24" class="paging">
         <el-pagination
-          @size-change="changeSize"
           @current-change="changePage"
           :current-page="1"
-          :page-sizes="[10, 20, 30, 40]"
-          :page-size="10"
-          layout="total, prev, pager, next ,sizes"
-          :total="100"
+          :page-size="pageSize"
+          layout="total, prev, pager, next"
+          :total="total"
           background
         ></el-pagination>
       </el-col>
@@ -66,7 +70,7 @@ export default {
     return {
       options: [
         {
-          value: 0,
+          value: "",
           label: '全部车主'
         },
         {
@@ -82,44 +86,14 @@ export default {
           label: '资源型车主'
         }
       ],
-      memuValue: 0,
+      memuValue: "",
       // 表格数据
-      tableData: [
-        {
-          siteName: '张家古楼',
-          type: '热门网红场地',
-          city: '东北三省',
-          add: '东北三省'
-        }
-      ],
-      // 抽屉弹窗添加场地
-      drawerAdd: false,
-      drawerAddTitle: '添加场地',
-      delayReason: '', // 详细地址
-      delayTime: '', // 延期预计时间时间
-      // 城市选择器数据
-      optionsCity: cities,
-      district_code: '', // 区域代码
-      district: '', // 区域名称
-      dialogVisible: false,
-
-      // 抽屉弹窗提交任务
-      drawerPuttask: false,
-
-      // 场地图片上传
-      dialogImageUrl: '',
-      dialogVisible: false,
-      // 场地预览
-      urlImg:
-        'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
-      srcList: [
-        'https://fuss10.elemecdn.com/8/27/f01c15bb73e1ef3793e64e6b7bbccjpeg.jpeg',
-        'https://fuss10.elemecdn.com/1/8e/aeffeb4de74e2fde4bd74fc7b4486jpeg.jpeg'
-      ],
-
-      input: '',
-      input1: '',
-      value2: ''
+      ownerList: [],
+      listLoading: false,
+      // 分页
+      total: 0,
+      pageNum: '',
+      pageSize: 12
     }
   },
   // 侦听器
@@ -128,41 +102,68 @@ export default {
   beforeCreate() {},
   beforeMount() {},
   mounted() {
-    this.foreach()
+    ///////// 获取车主列表 start /////////
+    this.getlistOwnerByCity()
   },
   // 方法
   methods: {
-    ///////// 循环 start /////////
-    foreach() {
-      for (let i = 1; i < 12; i++) {
-        // const element = array[i];
-        this.tableData.push({
-          siteName: '张家古楼',
-          type: '热门网红场地',
-          city: '东北三省',
-          add: '东北三省'
-        })
-      }
-      console.log(this.tableData)
+    memuValueChange(res){
+      this.getlistOwnerByCity()
     },
-    ///////// 循环 end /////////
+    ///////// 获取车主列表 start /////////
+    getlistOwnerByCity() {
+      this.listLoading = true
+      let data = {
+        pageNum: 1,
+        pageSize: 12,
+        place: {
+          city: this.$route.params.city
+        },
+        typeId: this.memuValue
+      }
+      this.$axios
+        .post('/ocarplay/api/place/listOwnerByCity', data)
+        .then(res => {
+          // console.log(res)
+          this.listLoading = false
+          // this.drawerAdd = false
+          if (res.status == 200) {
+            let data = res.data
+            this.ownerList = data.items
+            console.log(this.ownerList)
+            this.total = data.totalRows
+          }
+        })
+    },
+    ///////// 获取车主列表 end /////////
+
+    ///////// 跳转车主详情页 end /////////
+    toDetail(res){
+      // console.log(res)
+      this.$router.push({
+        name: 'ownersdetail',
+        params: {
+          typeId: res.typeId,
+          vehicleOwnerId: res.vehicleOwnerId
+        }
+      })
+    },
+    ///////// 跳转车主详情页 end /////////
 
     ///////// 返回上一页 start /////////
     previous() {
-      this.$router.push({
-        path: '/home/site'
-      })
+      this.$router.go(-1) //返回上一层
     },
     ///////// 返回上一页 end /////////
 
     ///////// 分页 start /////////
     // 每页条数变化时触发事件
-    changeSize(pageSize) {
-      console.log(pageSize)
-    },
+    // changeSize(pageSize) {
+    //   console.log(pageSize)
+    // },
     // 页码变换时触发事件
     changePage(pageNum) {
-      console.log(pageNum)
+      this.pageNum = pageNum
     }
     ///////// 分页 end /////////
   }
@@ -223,7 +224,7 @@ $icoColor: rgb(106, 145, 232);
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
-      align-items: center;
+      align-items: flex-start;
       .items {
         width: 420px;
         height: 200px;

@@ -268,7 +268,7 @@ export default {
           data[i].isCard = 0
         }
       });
-      console.log(data)
+      // console.log(data)
       this.saveOwnerType(data)
     },
     saveOwnerType(data) {

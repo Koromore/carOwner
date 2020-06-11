@@ -201,9 +201,7 @@ export default {
       this.drawerTietle = '编辑数据'
       this.saveType = 1
       // 编辑回填
-      // this.carTypeId = data.carTypeIds
       this.deptId = data.deptId
-      // this.carTypeName = data.carTypeName
       let carTypeIds = data.carTypeIds.split('/')
       let carTypeNames = data.carTypeName.split('/')
       console.log(carTypeIds)

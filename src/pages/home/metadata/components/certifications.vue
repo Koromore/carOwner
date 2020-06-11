@@ -16,8 +16,8 @@
         <el-table-column prop="carSeriesName" label="车型列表" min-width="240">
           <template slot-scope="scope">
             <el-table :data="scope.row.carType" style="width: 100%" :show-header="false" border>
-              <el-table-column prop="carTypeName" label="日期"></el-table-column>
-              <el-table-column prop="carSeriesName" label="地址"></el-table-column>
+              <el-table-column prop="carTypeName" label="车型" width="240"></el-table-column>
+              <el-table-column prop="carSeriesName" label="小车型"></el-table-column>
             </el-table>
           </template>
         </el-table-column>
@@ -307,8 +307,13 @@ export default {
 
     ///////// 弹窗关闭回调 start /////////
     drawerDataClose() {
-      // this.carTypeId = ''
-      // this.deptId = ''
+      this.carType = ''
+      this.deptId = ''
+      this.subCarType = [
+        {
+          name: ''
+        }
+      ]
       // this.carTypeName = ''
       // this.carTypeAct = ''
     },

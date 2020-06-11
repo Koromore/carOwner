@@ -151,7 +151,7 @@
             <el-col :span="24" class="list">
               <div class="key imp">认证车型</div>
               <div class="val">
-                <el-cascader v-model="carSeries" :options="carSeriesList"></el-cascader>
+                <el-cascader v-model="carSeries" :options="carSeriesList" filterable></el-cascader>
               </div>
             </el-col>
             <el-col :span="24" class="list">
@@ -334,7 +334,6 @@
                   @change="changeTimeLimit"
                 ></el-date-picker>
               </div>
-              {{timeLimit}}
             </el-col>
             <el-col :span="24" class="list">
               <div class="key imp">合作时长</div>
@@ -429,7 +428,7 @@ export default {
   components: {},
   data() {
     return {
-      loading: true, // 上传loading
+      loading: false, // 上传loading
       checked: false,
       radio: '',
       input1: '',
@@ -690,7 +689,7 @@ export default {
 
     ///////// 获取特长列表 start /////////
     getOwnerSkillList() {
-      this.loading = true
+      // this.loading = true
       let data = {
         ids: 0,
         pageNum: 1,
@@ -700,7 +699,7 @@ export default {
         .post('/ocarplay/api/ownerSkill/listAjaxUnPage', data)
         .then(res => {
           // console.log(res)
-          this.loading = false
+          // this.loading = false
           if (res.status == 200) {
             let data = res.data
             let ownerSkilList = []
@@ -718,7 +717,7 @@ export default {
 
     ///////// 获取车型列表 start /////////
     getCarSeriesLists() {
-      this.listLoading = true
+      // this.listLoading = true
       let data = {
         ids: 0,
         pageNum: 1,
@@ -728,7 +727,7 @@ export default {
         .post('/ocarplay/api/carSeries/getCarSeriesLists', data)
         .then(res => {
           // console.log(res)
-          this.listLoading = false
+          // this.listLoading = false
           if (res.status == 200) {
             let data = res.data.items
 
@@ -900,18 +899,21 @@ export default {
 
     ///////// 提交按钮 start /////////
     submit() {
-      // this.loading = true
+      this.loading = true
       // 合同日期转换
       let startTime = this.$date0(this.timeLimit[0])
       let endTime = this.$date0(this.timeLimit[1])
       // 用车生活
       let livelihood = this.livelihood.toString()
       let livelihood0 = this.livelihood0
-      let carUse = livelihood + ',' + livelihood0
+      let carUse = livelihood
+      if (livelihood0) {
+        carUse = livelihood + ',' + livelihood0
+      }
       // console.log(carUse)
-      let itemId = this.eventData.toString()
+      let itemId = this.eventData
       // 出生日期
-      let birthday = this.$date0(this.birthday)
+      let birthday = this.$date0(this.birthDate)
       let data = {
         deptId: '',
         image: this.handerImg,
@@ -924,9 +926,7 @@ export default {
         work: this.work,
         sourceId: this.source,
         birthday: birthday,
-        seriesId: this.carSeries[0],
-        province: this.district[0],
-        city: this.district[1],
+        seriesId: this.carSeries[2],
         email: this.mail,
         skillId: this.speciality,
 
@@ -954,30 +954,15 @@ export default {
             timeLimit: this.duration
           }
         ]
-
-        // // 支持型车主需要填写
-        // ownerCoops: [
-        //   {
-        //     coopMoney: '固定合作总价',
-        //     coopNum: '固定合作总量',
-        //     itemId: '车主选择的合作事项ID',
-        //     period: '结算周期（0-按月结算，1-按年结算，2-按季度结算）',
-        //     timeLimit: '合作时长，文本输入',
-        //     typeId: '车主类型ID'
-        //   }
-        // ],
-
-        // // // 拍摄型、资源型车主
-        // ipGrows: [
-        //   {
-        //     itemId: '车主选择的合作事项ID',
-        //     nickname: '账号昵称',
-        //     plat: '平台名称',
-        //     platRole: '人设',
-        //     typeId: '车主类型ID',
-        //     url: '主页链接url'
-        //   }
-        // ]
+      }
+      // province: this.district[0],
+      // city: this.district[1],
+      let district = this.district
+      if (district.length == 2) {
+        data.city = district[0]
+      } else if (district.length == 3) {
+        data.province = district[0]
+        data.city = district[1]
       }
       let tabact = this.tabact
       if (tabact == 1) {
@@ -1021,16 +1006,22 @@ export default {
         data.ipGrows = ipGrows
       }
       console.log(data)
+      let judgeList = [data.image,itemId,data.sex,data.sourceId,data.seriesId,data.email,data.cooperates.localPath,data.cooperates.timeLimit]
+      let judge = true
+      judgeList.forEach(element => {
+        if (!element) {
+          judge = false
+          
+        }
+      });
 
-      if (this.submitFlag) {
+      if (this.submitFlag&&judge) {
         this.submitFlag = false
         this.$axios
           .post('/ocarplay/api/vehicleOwner/saveOrUpdate', data)
           .then(res => {
             // console.log(res)
-            this.loading = false
             if (res.status == 200 && res.data.errcode == 0) {
-              // let data = res.data
               this.messageWin(res.data.msg)
               setTimeout(() => {
                 this.$router.push({ path: '/home/owners' })
@@ -1039,6 +1030,16 @@ export default {
               this.messageError(res.data.msg)
             }
           })
+          .catch(res => {
+            this.loading = false
+            if (res.status != 200) {
+              this.submitFlag = true
+              this.$message('网络错误'+res.status);
+            }
+          });
+      }else if(!judge){
+        this.loading = false
+        this.messageError("请检查信息是否完整！")
       }
     },
     ///////// 提交按钮 end /////////
