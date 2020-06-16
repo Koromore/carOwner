@@ -1,7 +1,7 @@
 <template>
   <div id="addTask">
     <!-- 内容列表 start -->
-    <el-row class="content">
+    <el-row class="content" v-loading="putLoading">
       <el-col :span="24" class="title">
         <el-col :span="6" class="previousBox">
           <div @click="previous">
@@ -15,26 +15,32 @@
         <el-col :span="24" class="list">
           <div class="key">任务名称</div>
           <div class="val">
-            <el-input placeholder="请输入内容" v-model="input1" clearable></el-input>
+            <el-input placeholder="请输入内容" v-model="taskName" clearable></el-input>
           </div>
         </el-col>
         <el-col :span="24" class="list">
           <div class="key">任务对象</div>
           <div class="val">
-            <el-cascader :options="options2" :props="props" v-model="input2" clearable></el-cascader>
+            <el-cascader
+              :options="options2"
+              :props="props"
+              v-model="listInviteList"
+              clearable
+              filterable
+            ></el-cascader>
           </div>
         </el-col>
         <el-col :span="24" class="list">
           <div class="key">品牌车型</div>
           <div class="val">
-            <el-cascader :options="carSeriesList" :props="props" v-model="input2" clearable></el-cascader>
+            <el-cascader v-model="carSeriesId" :options="carSeriesList" clearable filterable></el-cascader>
           </div>
         </el-col>
         <el-col :span="24" class="list">
           <div class="key">计划周期</div>
           <div class="val">
             <el-date-picker
-              v-model="input4"
+              v-model="periodTime"
               type="daterange"
               range-separator="至"
               start-placeholder="开始日期"
@@ -45,7 +51,7 @@
         <el-col :span="24" class="list">
           <div class="key">计划邀约量</div>
           <div class="val">
-            <el-input placeholder="请输入内容" v-model="input5" clearable></el-input>
+            <el-input placeholder="请输入内容" v-model="taskNum" clearable></el-input>
           </div>
         </el-col>
         <el-col :span="24" class="list">
@@ -53,14 +59,9 @@
           <div class="val">
             <el-upload
               class="upload-demo"
-              action="https://jsonplaceholder.typicode.com/posts/"
-              :on-preview="handlePreview"
-              :on-remove="handleRemove"
-              :before-remove="beforeRemove"
-              multiple
-              :limit="3"
-              :on-exceed="handleExceed"
-              :file-list="fileList"
+              action="/ocarplay/file/upload"
+              :on-remove="taskFileRemove"
+              :on-success="taskFileSuccess"
             >
               <el-button size="small" type="primary">点击上传</el-button>
               <div slot="tip" class="el-upload__tip"></div>
@@ -72,29 +73,30 @@
         <el-col :span="24" class="list">
           <div class="key">任务描述</div>
           <div class="val valList">
-            <div class="miKey">邀约目的:</div>
-            <el-input placeholder="请输入内容" v-model="input1"></el-input>
+            <el-input type="textarea" :rows="7" placeholder="请输入内容" v-model="taskDesc"></el-input>
+            <!-- <div class="miKey">邀约目的:</div>
+            <el-input placeholder="请输入内容" v-model="taskDesc.input1"></el-input>
             <div class="miKey">参与资格:</div>
-            <el-input placeholder="请输入内容" v-model="input1"></el-input>
+            <el-input placeholder="请输入内容" v-model="taskDesc.input2"></el-input>
             <div class="miKey">字数要求:</div>
-            <el-input placeholder="请输入内容" v-model="input1"></el-input>
+            <el-input placeholder="请输入内容" v-model="taskDesc.input3"></el-input>
             <div class="miKey">帖子类型:</div>
-            <el-input placeholder="请输入内容" v-model="input1"></el-input>
+            <el-input placeholder="请输入内容" v-model="taskDesc.input4"></el-input>
             <div class="miKey">费用情况:</div>
-            <el-input placeholder="请输入内容" v-model="input1"></el-input>
+            <el-input placeholder="请输入内容" v-model="taskDesc.input5"></el-input>
             <div class="miKey">其他说明:</div>
-            <el-input placeholder="请输入内容" v-model="input1"></el-input>
+            <el-input placeholder="请输入内容" v-model="taskDesc.input6"></el-input>-->
           </div>
         </el-col>
         <el-col :span="24" class="list">
           <div class="key">备注</div>
           <div class="val">
-            <el-input placeholder="请输入内容" v-model="input" clearable></el-input>
+            <el-input placeholder="请输入内容" v-model="remark" clearable></el-input>
           </div>
         </el-col>
       </el-col>
       <el-col :span="24" class="put">
-        <el-button type="primary">提交</el-button>
+        <el-button type="primary" @click="saveTask">提交</el-button>
       </el-col>
     </el-row>
     <!-- 内容列表 end -->
@@ -108,7 +110,10 @@ export default {
   components: {},
   data() {
     return {
+      userId: this.$store.state.user.userId,
+      deptId: this.$store.state.user.deptId,
       // 页面类型
+      taskId: '',
       type: 0,
       title: '新建任务',
       // 任务名称
@@ -149,18 +154,21 @@ export default {
       // 计划邀约量
       input5: '',
       // 文件上传
-      fileList: [
-        {
-          name: 'food.jpeg',
-          url:
-            'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-        },
-        {
-          name: 'food2.jpeg',
-          url:
-            'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-        }
-      ]
+      fileList: [],
+      // 任务新增信息
+      taskName: '',
+      listInviteList: [],
+      carSeriesList: [],
+      carSeriesId: [],
+      periodTime: [],
+      taskNum: '',
+      listTaskFile: [],
+      taskDesc: '',
+      remark: '',
+      taskFileList: '',
+      // 按钮开关
+      submitFlag: true,
+      putLoading: false
     }
   },
   // 侦听器
@@ -169,6 +177,7 @@ export default {
   beforeCreate() {},
   beforeMount() {},
   mounted() {
+    ///////// 接受页面传参 start /////////
     this.getQuery()
     ///////// 获取车型列表 start /////////
     this.getCarSeriesLists()
@@ -180,15 +189,35 @@ export default {
     ///////// 接受页面传参 start /////////
     getQuery() {
       let type = this.$route.query.type
+      let id = this.$route.query.id
       this.type = type
       if (type == 0) {
         this.title = '新建任务'
+        this.taskId = ''
       } else if (type == 1) {
         this.title = '编辑任务'
+        this.taskId = id
+        ///////// 获取任务详情 start /////////
+        this.getTaskDetail(id)
       }
       // console.log(type)
     },
     ///////// 接受页面传参 end /////////
+
+    ///////// 获取任务详情 start /////////
+    getTaskDetail(id) {
+      let data = {
+        taskId: id
+      }
+      this.$axios.post('/ocarplay/task/edit', data).then(res => {
+        console.log(res)
+        if (res.status == 200) {
+          let data = res.data
+          this.taskName = data.taskName
+        }
+      })
+    },
+    ///////// 获取任务详情 end /////////
 
     ///////// 获取车主列表 start /////////
     getOwnerList() {
@@ -197,8 +226,8 @@ export default {
       this.$axios
         .post('/ocarplay/api/vehicleOwner/ownerTypeCoopItemOwners', data)
         .then(res => {
-          console.log(res)
-          if ((res.status = 200)) {
+          // console.log(res)
+          if (res.status == 200) {
             let data = res.data
             let list = []
             data.forEach((element, i) => {
@@ -224,7 +253,7 @@ export default {
             })
 
             this.options2 = list
-            console.log(list)
+            // console.log(list)
           }
         })
     },
@@ -273,9 +302,10 @@ export default {
               let carSeriesName = element.carSeriesName.split('/')
               carSeriesIds.forEach((element, i) => {
                 data.children.push({
-                  value: element,
+                  value: element * 1,
                   label: carSeriesName[i]
                 })
+                // console.log(element)
               })
               // console.log(carSeriesIds)
               if (element.deptId == 105) {
@@ -287,7 +317,7 @@ export default {
               }
             })
             this.carSeriesList = carSeriesList
-            // console.log(carSeriesListData)
+            // console.log(carSeriesList)
           }
         })
     },
@@ -301,23 +331,142 @@ export default {
     },
     ///////// 返回上一页 end /////////
 
-    // 文件上传
-    handleRemove(file, fileList) {
-      console.log(file, fileList)
+    ///////// 文件上传 start /////////
+    // 上传成功回调
+    taskFileSuccess(res, file, fileList) {
+      // this.taskFileList = res
+      let list = []
+      fileList.forEach(element => {
+        list.push(element.response.data)
+        // console.log(element.response)
+      })
+      this.taskFileList = list
+      // console.log(res)
+      // console.log(file)
+      // console.log(fileList)
+      // console.log(list)
     },
-    handlePreview(file) {
-      console.log(file)
+    // 删除成功回调
+    taskFileRemove(file, fileList) {
+      let list = []
+      fileList.forEach(element => {
+        list.push(element.response.data)
+      })
+      this.taskFileList = list
     },
-    handleExceed(files, fileList) {
-      this.$message.warning(
-        `当前限制选择 3 个文件，本次选择了 ${
-          files.length
-        } 个文件，共选择了 ${files.length + fileList.length} 个文件`
-      )
-    },
+    // taskExceed(files, fileList) {
+    //   this.$message.warning('只允许上传一个文件')
+    // },
     beforeRemove(file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`)
+    },
+
+    ///////// 文件上传 end /////////
+
+    ///////// 新增任务 start /////////
+    // （0-进行中，1-结算中，2-完成，3-延期，4-人工延期
+    saveTask() {
+      let periodTime = this.periodTime
+      let startTime = ''
+      let endTime = ''
+      if (periodTime.length != 0) {
+        startTime = this.$date0(periodTime[0])
+        endTime = this.$date0(periodTime[1])
+      }
+      // let taskDesc = this.taskDesc
+      // let taskDesc0 = `${taskDesc.input1}${taskDesc.input2}${taskDesc.input3}${taskDesc.input4}${taskDesc.input5}${taskDesc.input6}`
+      let listInviteList = this.listInviteList
+      let data = {
+        initUserId: this.userId,
+        deptId: this.deptId,
+        createTime: this.$time0(new Date()),
+        taskName: this.taskName,
+        status: 0,
+        startTime: startTime,
+        endTime: endTime,
+        num: this.taskNum,
+
+        carSeriesId: this.carSeriesId[2],
+        taskDesc: this.taskDesc,
+        remark: this.remark,
+        listInvite: [],
+        listTaskFile: this.taskFileList
+      }
+
+      listInviteList.forEach(element => {
+        data.listInvite.push({
+          typeId: element[0],
+          itemId: element[1],
+          ownerId: element[2]
+        })
+      })
+      let flag = true
+      let list = [
+        data.taskName,
+        data.startTime,
+        data.num,
+        data.carSeriesId,
+        data.taskDesc,
+        data.remark,
+        data.listInvite.length,
+        data.listTaskFile.length
+      ]
+
+      list.forEach(element => {
+        if (!element) {
+          flag = false
+        }
+      })
+
+      console.log(data)
+      if (flag) {
+        this.putLoading = true
+        this.$axios
+          .post('/ocarplay/task/save', data)
+          .then(res => {
+            // console.log(res)
+            if (res.status == 200 && res.data == 1) {
+              this.$message.success('任务新建成功！')
+              setTimeout(() => {
+                this.$router.push({
+                  name: 'task'
+                })
+              }, 1000)
+            } else {
+              this.$message.error('任务新建失败！')
+              this.putLoading = false
+            }
+          })
+          .catch(res => {
+            console.log(res)
+            this.putLoading = false
+          })
+      } else {
+        this.$message.error('请检查信息是否填写完整！')
+      }
+    },
+    ///////// 新增任务 start /////////
+
+    ///////// 消息提示 start /////////
+    messageWin(message) {
+      // 成功提示
+      this.$message({
+        message: message,
+        type: 'success'
+      })
+    },
+    messageWarning(message) {
+      // 警告提示
+      this.$message({
+        message: message,
+        type: 'warning'
+      })
+    },
+    messageError(message) {
+      // 错误提示
+      this.$message.error(message)
     }
+    ///////// 消息提示 end /////////
   }
 }
 </script>
@@ -392,9 +541,9 @@ export default {
         justify-content: flex-start;
         .valList {
           box-sizing: border-box;
-          border: 1px solid #dcdfe6;
-          border-radius: 4px;
-          padding: 16px;
+          // border: 1px solid #dcdfe6;
+          // border-radius: 4px;
+          // padding: 16px;
           display: flex;
           flex-wrap: wrap;
           justify-content: space-between;

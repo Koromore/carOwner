@@ -72,7 +72,7 @@ a:hover {
 input,
 textarea {
   font-family: Microsoft Yahei;
-  font-size: 18px;
+  font-size: inherit;
 }
 select {
   outline: none;

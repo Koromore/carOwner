@@ -911,7 +911,7 @@ export default {
         carUse = livelihood + ',' + livelihood0
       }
       // console.log(carUse)
-      let itemId = this.eventData
+      let itemId = this.eventData.toString()
       // 出生日期
       let birthday = this.$date0(this.birthDate)
       let data = {
@@ -919,7 +919,7 @@ export default {
         image: this.handerImg,
         typeId: this.tabact,
 
-        // itemId: itemId,
+        itemId: itemId,
         name: this.ownersName,
         sex: this.sex,
         carUse: carUse,
@@ -1006,13 +1006,14 @@ export default {
         data.ipGrows = ipGrows
       }
       console.log(data)
-      let judgeList = [data.image,itemId,data.sex,data.sourceId,data.seriesId,data.email,data.cooperates.localPath,data.cooperates.timeLimit]
+      let judgeList = [data.image,itemId,data.sex,data.sourceId,data.seriesId,data.email,data.cooperates[0].localPath,data.cooperates[0].timeLimit]
       let judge = true
       judgeList.forEach(element => {
         if (!element) {
           judge = false
-          
+          // console.log(element)
         }
+        console.log(element)
       });
 
       if (this.submitFlag&&judge) {

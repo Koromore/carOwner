@@ -265,7 +265,8 @@ export default {
       city: '', // 城市
       area: '', // 区域
       address: '', // 详细地址
-      siteImgUrl: '', // 场地图片
+      siteImgUrl: '', // 场地图片单张
+      siteImgUrlFileList: [], // 场地图片多张
       cityList: cityList, // 城市筛列表
       // 城市选择器数据
       optionsCity: cities,
@@ -419,6 +420,13 @@ export default {
     ///////// 场地图片上传 start /////////
     handleRemove(file, fileList) {
       // console.log(file, fileList)
+      let list = []
+      // fileList.forEach(element => {
+      //   list.push(element.response.data)
+      //   // console.log(element.response)
+      // });
+      // this.siteImgUrlFileList = list.
+      this.siteImgUrl = ''
     },
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url
@@ -428,6 +436,12 @@ export default {
     siteImgSuccess(response, file, fileList) {
       // console.log(response)
       this.siteImgUrl = response.data.localPath
+      // let list = []
+      // fileList.forEach(element => {
+      //   list.push(element.response.data)
+      //   // console.log(element.response)
+      // });
+      // this.siteImgUrlFileList = list
     },
     // 限制上传文件数量
     siteImgExceed(files, fileList) {

@@ -13,7 +13,7 @@
         <!-- <div @click="submit">
           <i class="el-icon-circle-check"></i>
           <br />提交并完成
-        </div> -->
+        </div>-->
       </el-col>
     </el-row>
     <!-- 头部选项框 end -->
@@ -22,7 +22,7 @@
     <el-row class="content">
       <div class="table_list">
         <el-table
-          :data="tableData"
+          :data="ownerRelate"
           style="width: 100%"
           :header-row-style="{'height': '70px','background': 'rgb(242, 242, 242)'}"
           :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
@@ -31,15 +31,19 @@
           <el-table-column prop label="序号" width="81" align="center">
             <template slot-scope="scope">0{{scope.$index+1}}</template>
           </el-table-column>
-          <el-table-column prop="addressee" label="场地名称" width="100"></el-table-column>
-          <el-table-column prop="matter" label="场地类型" width="180"></el-table-column>
-          <el-table-column prop="title" label="详细地址" min-width="320"></el-table-column>
+          <el-table-column prop="placeName" label="场地名称" width="100"></el-table-column>
+          <el-table-column prop="placeTypeName" label="场地类型" width="180"></el-table-column>
+          <el-table-column prop="title" label="详细地址" min-width="320">
+            <template slot-scope="scope">
+              {{scope.row.province}}{{scope.row.city}}{{scope.row.area}}{{scope.row.address}}
+            </template>
+          </el-table-column>
           <el-table-column prop="address" label="环境图片" width="130" align="center">
-            <template>
+            <template slot-scope="scope">
               <el-image
                 style="width: 30px"
                 src="static/images/ico/eye.png"
-                :preview-src-list="srcList"
+                :preview-src-list="['/ocarplay/'+scope.row.image]"
               ></el-image>
             </template>
           </el-table-column>
@@ -70,7 +74,7 @@ export default {
   data() {
     return {
       // 表格数据
-      tableData: [
+      ownerRelate: [
         {
           time: '20-05-04',
           addressee: '解雨臣',
@@ -101,29 +105,32 @@ export default {
   beforeCreate() {},
   beforeMount() {},
   mounted() {
-    this.foreach()
+    console.log(this.$route.params.ownerId)
+    // this.foreach()
+    ///////// 获取场地信息 start /////////
+    this.getOwnerRelatePlace()
   },
   // 方法
   methods: {
     ///////// 循环 start /////////
-    foreach() {
-      for (let i = 0; i < 30; i++) {
-        // const element = array[i];
-        this.tableData.push({
-          time: '20-05-04',
-          addressee: '解雨臣',
-          matter: '文案约稿',
-          title: '我和我的XC60生活，此刻是美好的开端',
-          link: '',
-          tele: '15996325468',
-          site: '湖北省武汉市洪山区武大园路武大航宇一期',
-          type: '1',
-          trackNum: '7894561234561',
-          evidence: '7894561234561',
-          budget: 500
-        })
-      }
-    },
+    // foreach() {
+    //   for (let i = 0; i < 30; i++) {
+    //     // const element = array[i];
+    //     this.tableData.push({
+    //       time: '20-05-04',
+    //       addressee: '解雨臣',
+    //       matter: '文案约稿',
+    //       title: '我和我的XC60生活，此刻是美好的开端',
+    //       link: '',
+    //       tele: '15996325468',
+    //       site: '湖北省武汉市洪山区武大园路武大航宇一期',
+    //       type: '1',
+    //       trackNum: '7894561234561',
+    //       evidence: '7894561234561',
+    //       budget: 500
+    //     })
+    //   }
+    // },
     ///////// 循环 end /////////
 
     ///////// 返回上一页 start /////////
@@ -133,6 +140,23 @@ export default {
       })
     },
     ///////// 返回上一页 end /////////
+
+    ///////// 获取场地信息 start /////////
+    getOwnerRelatePlace() {
+      let data = {
+        vehicleOwnerId: this.$route.params.ownerId
+      }
+      this.$axios
+        .post('/ocarplay/api/vehicleOwner/getOwnerRelatePlace', data)
+        .then(res => {
+          console.log(res)
+          if (res.status == 200) {
+            let data = res.data
+            this.ownerRelate = data.items
+          }
+        })
+    },
+    ///////// 获取场地信息 end /////////
 
     ///////// 确认 start /////////
     submit() {
@@ -166,8 +190,6 @@ export default {
       console.log(pageNum)
     }
     ///////// 分页 end /////////
-
-    
   }
 }
 </script>

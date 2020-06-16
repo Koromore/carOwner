@@ -7,9 +7,17 @@ import 'element-ui/lib/theme-chalk/index.css'
 import App from './App'
 import router from './router'
 // import echarts from 'echarts/lib/echarts'
-import {date,date_,time} from '@/utils/date'
-import {date0,time0} from '@/utils/time'
+import { date, date_, time } from '@/utils/date'
+import { date0, time0 } from '@/utils/time'
 // import {Decrypt,Encrypt} from '@/utils/cryptoJS'
+
+// router.beforeEach((to, from, next) => {
+//     /* 路由发生变化修改页面title */
+//     if (to.meta.title) {
+//         document.title = to.meta.title
+//     }
+//     next()
+// })
 
 // 引入柱状图
 // require('echarts/lib/chart/bar')

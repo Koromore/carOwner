@@ -136,6 +136,7 @@ const router = new Router({
         component: resolve => require(['@/pages/home/task/task'], resolve),
         meta: {
           requireAuth: true,
+          title: '任务管理'
         }
       },
       {
@@ -160,6 +161,7 @@ const router = new Router({
         component: resolve => require(['@/pages/home/settlement/settlement'], resolve),
         meta: {
           requireAuth: true,
+          title: '结算管理'
         }
       },
       {

@@ -121,7 +121,7 @@ export default {
     },
     ///////// 弹窗关闭回调 end /////////
 
-    ///////// 获取特长列表 start /////////
+    ///////// 获取日程类型列表 start /////////
     getDayTypeList() {
       this.loading = true
       let data = {
@@ -141,7 +141,7 @@ export default {
           }
         })
     },
-    ///////// 获取特长列表 end /////////
+    ///////// 获取日程类型列表 end /////////
 
     ///////// 新增/修改车型数据 start /////////
     saveSubmit() {

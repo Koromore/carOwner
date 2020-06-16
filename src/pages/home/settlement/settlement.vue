@@ -11,7 +11,13 @@
 
       <el-col :span="12" class="right">
         <div class="memu">
-          <el-select v-model="memuValue" clearable placeholder="项目组" size="small">
+          <el-select
+            v-model="memuValue"
+            clearable
+            placeholder="项目组"
+            size="small"
+            @change="memuChange"
+          >
             <el-option
               v-for="item in options"
               :key="item.value"
@@ -29,31 +35,80 @@
     <!-- 头部选项框 end -->
 
     <!-- 内容列表 start -->
+    <!-- 未结算 -->
     <el-row class="content content1" v-show="tabact==1">
       <div class="table_list">
         <el-table
-          :data="tableData"
+          :data="inviteListData"
           style="width: 100%"
           :header-row-style="{'height': '70px','background': 'rgb(242, 242, 242)'}"
           :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
           height="100%"
         >
           <el-table-column prop label width="24" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="serNum" label="采购编号" min-width="180"></el-table-column>
-          <el-table-column prop="proTeam" label="项目组" min-width="130"></el-table-column>
+          <!-- <el-table-column prop="serNum" label="采购编号" min-width="180"></el-table-column> -->
+          <el-table-column prop="deptName" label="项目组" min-width="130"></el-table-column>
           <el-table-column prop="taskName" label="任务名称" min-width="360"></el-table-column>
-          <el-table-column prop="subTime" label="提交时间" min-width="160"></el-table-column>
+          <el-table-column prop="createTime" label="提交时间" min-width="160">
+            <template slot-scope="scope">{{$date(scope.row.createTime)}}</template>
+          </el-table-column>
           <el-table-column prop="account" label="结算清单" width="130" align="center">
-            <template>
-              <el-tooltip class="item" effect="dark" content="编辑" placement="top">
-                <i class="el-icon-edit" @click="toDetail"></i>
+            <template slot-scope="scope">
+              <el-tooltip class="item" effect="dark" content="清单" placement="top">
+                <i class="el-icon-edit" @click="toDetail(scope.row.taskId)"></i>
               </el-tooltip>
             </template>
           </el-table-column>
           <el-table-column prop="address" label="操作" width="130" align="center">
-            <template>
+            <template slot-scope="scope">
               <el-tooltip class="item" effect="dark" content="驳回" placement="top">
-                <img src="static/images/ico/reject.png" width="24" alt srcset @click="reject" />
+                <img
+                  src="static/images/ico/reject.png"
+                  width="24"
+                  alt
+                  srcset
+                  @click="reject(scope.row.taskId)"
+                />
+              </el-tooltip>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+      <el-col :span="24" class="paging">
+        <el-pagination
+          @size-change="changeSize"
+          @current-change="changePage"
+          :current-page="1"
+          :page-sizes="[10, 20, 30, 40, 50]"
+          :page-size="pageSize"
+          layout="total, prev, pager, next ,sizes"
+          :total="total"
+          background
+        ></el-pagination>
+      </el-col>
+    </el-row>
+    <!-- 已结算 -->
+    <el-row class="content conten2" v-show="tabact==2">
+      <div class="table_list">
+        <el-table
+          :data="inviteListData1"
+          style="width: 100%"
+          :header-row-style="{'height': '70px','background': 'rgb(242, 242, 242)'}"
+          :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
+          height="100%"
+        >
+          <el-table-column prop label width="24" show-overflow-tooltip></el-table-column>
+          <!-- <el-table-column prop="serNum" label="采购编号" min-width="180"></el-table-column> -->
+          <el-table-column prop="deptName" label="项目组" min-width="130"></el-table-column>
+          <el-table-column prop="taskName" label="任务名称" min-width="360"></el-table-column>
+          <el-table-column prop="subTime" label="提交时间" min-width="160">
+            <template slot-scope="scope">{{$date(scope.row.createTime)}}</template>
+          </el-table-column>
+          <el-table-column prop="invMoney" label="实际支出" width="130" align="center"></el-table-column>
+          <el-table-column label="结算清单" width="130" align="center">
+            <template slot-scope="scope">
+              <el-tooltip effect="dark" content="查看清单" placement="top">
+                <i class="el-icon-view" @click="toDetail(scope.row.taskId)"></i>
               </el-tooltip>
             </template>
           </el-table-column>
@@ -65,45 +120,9 @@
           @current-change="changePage"
           :current-page="1"
           :page-sizes="[10, 20, 30, 40]"
-          :page-size="10"
+          :page-size="pageSize"
           layout="total, prev, pager, next ,sizes"
-          :total="100"
-          background
-        ></el-pagination>
-      </el-col>
-    </el-row>
-
-    <el-row class="content conten2" v-show="tabact==2">
-      <div class="table_list">
-        <el-table
-          :data="tableData"
-          style="width: 100%"
-          :header-row-style="{'height': '70px','background': 'rgb(242, 242, 242)'}"
-          :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
-          height="100%"
-        >
-          <el-table-column prop label width="24" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="serNum" label="采购编号" min-width="180"></el-table-column>
-          <el-table-column prop="proTeam" label="项目组" min-width="130"></el-table-column>
-          <el-table-column prop="taskName" label="任务名称" min-width="360"></el-table-column>
-          <el-table-column prop="subTime" label="提交时间" min-width="160"></el-table-column>
-          <el-table-column prop="expenditure" label="实际支出" width="130" align="center"></el-table-column>
-          <el-table-column label="结算清单" width="130" align="center">
-            <el-tooltip effect="dark" content="编辑" placement="top">
-              <i class="el-icon-view" @click="toDetail"></i>
-            </el-tooltip>
-          </el-table-column>
-        </el-table>
-      </div>
-      <el-col :span="24" class="paging">
-        <el-pagination
-          @size-change="changeSize"
-          @current-change="changePage"
-          :current-page="1"
-          :page-sizes="[10, 20, 30, 40]"
-          :page-size="10"
-          layout="total, prev, pager, next ,sizes"
-          :total="100"
+          :total="total"
           background
         ></el-pagination>
       </el-col>
@@ -119,6 +138,8 @@ export default {
   components: {},
   data() {
     return {
+      userId: this.$store.state.user.userId,
+      deptId: this.$store.state.user.deptId,
       // // top left 选项卡
       // tab1act: 1,
       // top right 选项卡
@@ -126,118 +147,27 @@ export default {
       // 表格数据
       options: [
         {
-          value: '1',
+          value: 1,
           label: '沃尔沃项目组'
         },
         {
-          value: '2',
+          value: 2,
           label: '吉利项目组'
         },
         {
-          value: '3',
+          value: 3,
           label: '长城项目组'
         }
       ],
-      memuValue: '1',
-      tableData: [
-        {
-          serNum: '106945851123',
-          proTeam: '吉利组',
-          taskName: '6-7月 长城汽车哈佛H系日常',
-          subTime: '20-04-29',
-          expenditure: 10000
-        },
-        {
-          serNum: '106945851123',
-          proTeam: '吉利组',
-          taskName: '6-7月 长城汽车哈佛H系日常',
-          subTime: '20-04-29'
-        },
-        {
-          serNum: '106945851123',
-          proTeam: '吉利组',
-          taskName: '6-7月 长城汽车哈佛H系日常',
-          subTime: '20-04-29'
-        },
-        {
-          serNum: '106945851123',
-          proTeam: '吉利组',
-          taskName: '6-7月 长城汽车哈佛H系日常',
-          subTime: '20-04-29'
-        },
-        {
-          serNum: '106945851123',
-          proTeam: '吉利组',
-          taskName: '6-7月 长城汽车哈佛H系日常',
-          subTime: '20-04-29'
-        },
-        {
-          serNum: '106945851123',
-          proTeam: '吉利组',
-          taskName: '6-7月 长城汽车哈佛H系日常',
-          subTime: '20-04-29'
-        },
-        {
-          serNum: '106945851123',
-          proTeam: '吉利组',
-          taskName: '6-7月 长城汽车哈佛H系日常',
-          subTime: '20-04-29'
-        },
-        {
-          serNum: '106945851123',
-          proTeam: '吉利组',
-          taskName: '6-7月 长城汽车哈佛H系日常',
-          subTime: '20-04-29'
-        },
-        {
-          serNum: '106945851123',
-          proTeam: '吉利组',
-          taskName: '6-7月 长城汽车哈佛H系日常',
-          subTime: '20-04-29'
-        },
-        {
-          serNum: '106945851123',
-          proTeam: '吉利组',
-          taskName: '6-7月 长城汽车哈佛H系日常',
-          subTime: '20-04-29'
-        },
-        {
-          serNum: '106945851123',
-          proTeam: '吉利组',
-          taskName: '6-7月 长城汽车哈佛H系日常',
-          subTime: '20-04-29'
-        },
-        {
-          serNum: '106945851123',
-          proTeam: '吉利组',
-          taskName: '6-7月 长城汽车哈佛H系日常',
-          subTime: '20-04-29'
-        },
-        {
-          serNum: '106945851123',
-          proTeam: '吉利组',
-          taskName: '6-7月 长城汽车哈佛H系日常',
-          subTime: '20-04-29'
-        },
-        {
-          serNum: '106945851123',
-          proTeam: '吉利组',
-          taskName: '6-7月 长城汽车哈佛H系日常',
-          subTime: '20-04-29'
-        },
-        {
-          serNum: '106945851123',
-          proTeam: '吉利组',
-          taskName: '6-7月 长城汽车哈佛H系日常',
-          subTime: '20-04-29'
-        },
-        {
-          serNum: '106945851123',
-          proTeam: '吉利组',
-          taskName: '6-7月 长城汽车哈佛H系日常',
-          subTime: '20-04-29'
-        }
-      ]
+      memuValue: '',
+      // 未结算数据列表
+      inviteListData: [],
+      // 已结算数据列表
+      inviteListData1: [],
+      // 分页数据
+      pageNum: 1,
+      pageSize: 10,
+      total: 0
     }
   },
   // 侦听器
@@ -245,7 +175,10 @@ export default {
   // 钩子函数
   beforeCreate() {},
   beforeMount() {},
-  mounted() {},
+  mounted() {
+    ///////// 获取结算列表 start /////////
+    this.getInviteList(this.memuValue)
+  },
   // 方法
   methods: {
     // tab1(e) {
@@ -255,30 +188,81 @@ export default {
     tab(e) {
       console.log(e)
       this.tabact = e
+      this.getInviteList(this.memuValue)
     },
+
+    ///////// 选择项目组 start /////////
+    memuChange(res) {
+      ///////// 获取结算列表 start /////////
+      this.getInviteList(res)
+    },
+    ///////// 选择项目组 end /////////
+
+    ///////// 获取结算列表 start /////////
+    getInviteList(id) {
+      let data = {
+        task: {
+          deleteFlag: false,
+          status: 0
+        },
+        pageNum: this.pageNum,
+        pageSize: this.pageSize
+      }
+      let tabact = this.tabact
+      if (tabact == 1) {
+        data.task.status = 1
+        this.$axios.post('/ocarplay/api/invite/getTaskOfInviteList', data).then(res => {
+          console.log(res)
+          if (res.status == 200) {
+            let data = res.data
+            this.inviteListData = data.items
+            this.total = data.totalRows
+          }
+        })
+      } else if (tabact == 2) {
+        data.task.status = 2
+        this.$axios
+          .post('/ocarplay/api/invite/getTaskOfInviteList', data)
+          .then(res => {
+            console.log(res)
+            if (res.status == 200) {
+              let data = res.data
+              this.inviteListData1 = data.items
+              this.total = data.totalRows
+            }
+          })
+      }
+    },
+    ///////// 获取结算列表 end /////////
+
     ///////// 分页 start /////////
     // 每页条数变化时触发事件
     changeSize(pageSize) {
       console.log(pageSize)
+      this.pageNum = 1
+      this.pageSize = pageSize
+      let id = this.memuValue
+      this.getInviteList(id)
     },
     // 页码变换时触发事件
     changePage(pageNum) {
       console.log(pageNum)
+      this.pageNum = pageNum
+      // this.pageSize = pageSize
+      let id = this.memuValue
+      this.getInviteList(id)
     },
     ///////// 分页 end /////////
 
     ///////// 驳回操作 start /////////
-    reject() {
+    reject(id) {
       this.$confirm('确认要驳回该任务吗?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       })
         .then(() => {
-          this.$message({
-            type: 'success',
-            message: '驳回成功!'
-          })
+          this.repulseInvite(id)
         })
         .catch(() => {
           this.$message({
@@ -287,12 +271,36 @@ export default {
           })
         })
     },
+    // 驳回任务请求
+    repulseInvite(id) {
+      let data = {
+        taskId: id,
+        status: 0
+      }
+      this.$axios.post('/ocarplay/api/invite/repulseInvite', data).then(res => {
+        console.log(res)
+        if (res.status == 200 && res.data.errcode == 0) {
+          this.$message.success(res.data.msg)
+          // this.drawerLoading = false
+          // this.drawerPuttask = false
+          // this.getTaskListAjax()
+          ///////// 获取结算列表 start /////////
+          this.getInviteList(this.memuValue)
+        } else {
+          // this.$message.error("任务提交失败！")
+          // this.drawerLoading = false
+        }
+      })
+    },
     ///////// 驳回操作 end /////////
 
     ///////// 结算清单 start /////////
-    toDetail() {
+    toDetail(id) {
       this.$router.push({
-        path: '/home/settlementDetail'
+        name: 'settlementDetail',
+        params: {
+          id: id
+        }
       })
     }
     ///////// 结算清单 end /////////

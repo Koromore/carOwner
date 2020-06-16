@@ -10,7 +10,7 @@
       </el-col>
       <el-col :span="8" class="center cont">《哈弗4月日常邀约》</el-col>
       <el-col :span="8" class="right cont">
-        <div @click="submit">
+        <div @click="submitList">
           <i class="el-icon-circle-check"></i>
           <br />提交并完成
         </div>
@@ -22,42 +22,65 @@
     <el-row class="content">
       <div class="table_list">
         <el-table
-          :data="tableData"
+          v-loading="listLoading"
+          :data="inviteList"
           style="width: 100%"
           :header-row-style="{'height': '70px','background': 'rgb(242, 242, 242)'}"
           :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
           height="100%"
         >
           <el-table-column prop label width="24" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="time" label="时间" width="81"></el-table-column>
-          <el-table-column prop="addressee" label="收件人" width="64"></el-table-column>
-          <el-table-column prop="matter" label="合作事项" width="81"></el-table-column>
-          <el-table-column prop="title" label="内容标题" min-width="240" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="link" label="链接" width="80">【原】</el-table-column>
-          <el-table-column prop="tele" label="电话" min-width="110"></el-table-column>
-          <el-table-column prop="site" label="地址" min-width="240" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="type" label="油卡或现金" width="100" align="center">
+          <el-table-column prop="createTime" label="时间" width="81">
+            <template slot-scope="scope">{{$date(scope.row.createTime)}}</template>
+          </el-table-column>
+          <el-table-column prop="name" label="收件人" min-width="100"></el-table-column>
+          <el-table-column prop="itemName" label="合作事项" min-width="100"></el-table-column>
+          <el-table-column prop="title" label="内容标题" min-width="200" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="link" label="链接" width="80">
             <template slot-scope="scope">
-              <template v-if="scope.row.type == 1">油卡</template>
-              <template v-else-if="scope.row.type == 2">现金</template>
+              <el-link :href="'http://'+scope.row.url" target="_blank">【原】</el-link>
             </template>
           </el-table-column>
-          <el-table-column prop="evidence" label="结算凭证" width="200" align="center">
+          <el-table-column prop="phone" label="电话" min-width="110"></el-table-column>
+          <el-table-column prop="homeAddress" label="地址" min-width="240" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="isCard" label="油卡或现金" width="100" align="center">
             <template slot-scope="scope">
-              <template v-if="scope.row.type == '1'&&scope.row.trackNum == ''">
-                <el-input placeholder="请输入内容" v-model="input" clearable size="mini"></el-input>
+              <template v-if="scope.row.isCard">现金</template>
+              <template v-else>油卡</template>
+            </template>
+          </el-table-column>
+          <el-table-column prop="prove" label="结算凭证" width="200" align="center">
+            <template slot-scope="scope">
+              <template v-if="!scope.row.isCard&&!scope.row.prove">
+                <el-input placeholder="请输入内容" v-model="scope.row.prove0" clearable size="mini"></el-input>
               </template>
-              <template
-                v-else-if="scope.row.type == '1'&&scope.row.trackNum != ''"
-              >{{scope.row.trackNum}}</template>
-              <template v-else-if="scope.row.type == '2'&&scope.row.evidence == ''">上传凭证</template>
-              <template v-else-if="scope.row.type == '2'&&scope.row.evidence != ''">查看凭证</template>
+              <template v-else-if="!scope.row.isCard&&scope.row.prove">{{scope.row.prove}}</template>
+              <template v-else-if="scope.row.isCard&&!scope.row.prove">
+                <el-upload
+                  class="upload-demo"
+                  action="/ocarplay/file/upload"
+                  :on-preview="handlePreview"
+                  :on-success="filesuccess"
+                  :limit="1"
+                  :show-file-list="false"
+                >
+                  <el-button size="mini" type="primary" @click="uploadClick(scope.$index)">上传凭证</el-button>
+                </el-upload>
+              </template>
+              <template v-else-if="scope.row.isCard&&scope.row.prove">
+                <!-- <el-button size="mini" type="success">查看凭证</el-button> -->
+                <el-image
+                  style="width: 80px; height: 28px; cursor: pointer;font-size: 0;"
+                  src="static/images/ico/btn.jpg"
+                  :preview-src-list="['/ocarplay/'+scope.row.prove]"
+                ></el-image>
+              </template>
             </template>
           </el-table-column>
-          <el-table-column prop="budget" label="预算" min-width="60" align="center"></el-table-column>
+          <el-table-column prop="money" label="预算" min-width="60" align="center"></el-table-column>
           <el-table-column prop="address" label="操作" width="64" align="center">
-            <template>
-              <i class="el-icon-circle-check" @click="submit"></i>
+            <template slot-scope="scope" v-if="!scope.row.isOver">
+              <i class="el-icon-circle-check" @click="submit(scope.row)"></i>
             </template>
           </el-table-column>
         </el-table>
@@ -68,9 +91,9 @@
           @current-change="changePage"
           :current-page="1"
           :page-sizes="[10, 20, 30, 40]"
-          :page-size="10"
+          :page-size="pageSize"
           layout="total, prev, pager, next ,sizes"
-          :total="100"
+          :total="total"
           background
         ></el-pagination>
       </el-col>
@@ -86,231 +109,19 @@ export default {
   components: {},
   data() {
     return {
+      userId: this.$store.state.user.userId,
+      deptId: this.$store.state.user.deptId,
+      // 任务ID
+      taskId: this.$route.params.id,
       // 表格数据
-      tableData: [
-        {
-          time: '20-05-04',
-          addressee: '解雨臣',
-          matter: '文案约稿',
-          title: '我和我的XC60生活，此刻是美好的开端',
-          link: '',
-          tele: '15996325468',
-          site: '湖北省武汉市洪山区武大园路武大航宇一期',
-          type: '1',
-          trackNum: '7894561234561',
-          evidence: '7894561234561',
-          budget: 500
-        },
-        {
-          time: '20-05-04',
-          addressee: '解雨臣',
-          matter: '文案约稿',
-          title: '我和我的XC60生活，此刻是美好的开端',
-          link: '',
-          tele: '15996325468',
-          site: '湖北省武汉市洪山区武大园路武大航宇一期',
-          type: '2',
-          trackNum: '7894561234561',
-          evidence: '',
-          budget: 500
-        },
-        {
-          time: '20-05-04',
-          addressee: '解雨臣',
-          matter: '文案约稿',
-          title: '我和我的XC60生活，此刻是美好的开端',
-          link: '',
-          tele: '15996325468',
-          site: '湖北省武汉市洪山区武大园路武大航宇一期',
-          type: '2',
-          trackNum: '7894561234561',
-          evidence: '',
-          budget: 500
-        },
-        {
-          time: '20-05-04',
-          addressee: '解雨臣',
-          matter: '文案约稿',
-          title: '我和我的XC60生活，此刻是美好的开端',
-          link: '',
-          tele: '15996325468',
-          site: '湖北省武汉市洪山区武大园路武大航宇一期',
-          type: '1',
-          trackNum: '',
-          evidence: '',
-          budget: 500
-        },
-        {
-          time: '20-05-04',
-          addressee: '解雨臣',
-          matter: '文案约稿',
-          title: '我和我的XC60生活，此刻是美好的开端',
-          link: '',
-          tele: '15996325468',
-          site: '湖北省武汉市洪山区武大园路武大航宇一期',
-          type: '1',
-          trackNum: '',
-          evidence: '',
-          budget: 500
-        },
-        {
-          time: '20-05-04',
-          addressee: '解雨臣',
-          matter: '文案约稿',
-          title: '我和我的XC60生活，此刻是美好的开端',
-          link: '',
-          tele: '15996325468',
-          site: '湖北省武汉市洪山区武大园路武大航宇一期',
-          type: '2',
-          trackNum: '7894561234561',
-          evidence: '',
-          budget: 500
-        },
-        {
-          time: '20-05-04',
-          addressee: '解雨臣',
-          matter: '文案约稿',
-          title: '我和我的XC60生活，此刻是美好的开端',
-          link: '',
-          tele: '15996325468',
-          site: '湖北省武汉市洪山区武大园路武大航宇一期',
-          type: '1',
-          trackNum: '7894561234561',
-          evidence: '',
-          budget: 500
-        },
-        {
-          time: '20-05-04',
-          addressee: '解雨臣',
-          matter: '文案约稿',
-          title: '我和我的XC60生活，此刻是美好的开端',
-          link: '',
-          tele: '15996325468',
-          site: '湖北省武汉市洪山区武大园路武大航宇一期',
-          type: '2',
-          trackNum: '7894561234561',
-          evidence: '',
-          budget: 500
-        },
-        {
-          time: '20-05-04',
-          addressee: '解雨臣',
-          matter: '文案约稿',
-          title: '我和我的XC60生活，此刻是美好的开端',
-          link: '',
-          tele: '15996325468',
-          site: '湖北省武汉市洪山区武大园路武大航宇一期',
-          type: '1',
-          trackNum: '7894561234561',
-          evidence: '',
-          budget: 500
-        },
-        {
-          time: '20-05-04',
-          addressee: '解雨臣',
-          matter: '文案约稿',
-          title: '我和我的XC60生活，此刻是美好的开端',
-          link: '',
-          tele: '15996325468',
-          site: '湖北省武汉市洪山区武大园路武大航宇一期',
-          type: '1',
-          trackNum: '7894561234561',
-          evidence: '',
-          budget: 500
-        },
-        {
-          time: '20-05-04',
-          addressee: '解雨臣',
-          matter: '文案约稿',
-          title: '我和我的XC60生活，此刻是美好的开端',
-          link: '',
-          tele: '15996325468',
-          site: '湖北省武汉市洪山区武大园路武大航宇一期',
-          type: '1',
-          trackNum: '7894561234561',
-          evidence: '',
-          budget: 500
-        },
-        {
-          time: '20-05-04',
-          addressee: '解雨臣',
-          matter: '文案约稿',
-          title: '我和我的XC60生活，此刻是美好的开端',
-          link: '',
-          tele: '15996325468',
-          site: '湖北省武汉市洪山区武大园路武大航宇一期',
-          type: '2',
-          trackNum: '7894561234561',
-          evidence: '',
-          budget: 500
-        },
-        {
-          time: '20-05-04',
-          addressee: '解雨臣',
-          matter: '文案约稿',
-          title: '我和我的XC60生活，此刻是美好的开端',
-          link: '',
-          tele: '15996325468',
-          site: '湖北省武汉市洪山区武大园路武大航宇一期',
-          type: '1',
-          trackNum: '',
-          evidence: '',
-          budget: 500
-        },
-        {
-          time: '20-05-04',
-          addressee: '解雨臣',
-          matter: '文案约稿',
-          title: '我和我的XC60生活，此刻是美好的开端',
-          link: '',
-          tele: '15996325468',
-          site: '湖北省武汉市洪山区武大园路武大航宇一期',
-          type: '1',
-          trackNum: '7894561234561',
-          evidence: '',
-          budget: 500
-        },
-        {
-          time: '20-05-04',
-          addressee: '解雨臣',
-          matter: '文案约稿',
-          title: '我和我的XC60生活，此刻是美好的开端',
-          link: '',
-          tele: '15996325468',
-          site: '湖北省武汉市洪山区武大园路武大航宇一期',
-          type: '2',
-          trackNum: '7894561234561',
-          evidence: '',
-          budget: 500
-        },
-        {
-          time: '20-05-04',
-          addressee: '解雨臣',
-          matter: '文案约稿',
-          title: '我和我的XC60生活，此刻是美好的开端',
-          link: '',
-          tele: '15996325468',
-          site: '湖北省武汉市洪山区武大园路武大航宇一期',
-          type: '1',
-          trackNum: '7894561234561',
-          evidence: '',
-          budget: 500
-        },
-        {
-          time: '20-05-04',
-          addressee: '解雨臣',
-          matter: '文案约稿',
-          title: '我和我的XC60生活，此刻是美好的开端',
-          link: '',
-          tele: '15996325468',
-          site: '湖北省武汉市洪山区武大园路武大航宇一期',
-          type: '1',
-          trackNum: '7894561234561',
-          evidence: '',
-          budget: 500
-        }
-      ],
-      input: ''
+      listLoading: false,
+      uploadIndex: '',
+      total: 0,
+      pageSize: 10,
+      pageNum: 1,
+      tableData: [],
+      prove: '',
+      inviteList: []
     }
   },
   // 侦听器
@@ -318,27 +129,75 @@ export default {
   // 钩子函数
   beforeCreate() {},
   beforeMount() {},
-  mounted() {},
+  mounted() {
+    ///////// 获取结算清单 start /////////
+    this.getInvite()
+  },
   // 方法
   methods: {
     ///////// 返回上一页 start /////////
     previous() {
-      this.$router.go(-1);//返回上一层
+      this.$router.go(-1) //返回上一层
     },
     ///////// 返回上一页 end /////////
 
-    ///////// 确认 start /////////
-    submit() {
+    // /api/invite/getInvitePageListByTaskId
+    ///////// 获取结算清单 start /////////
+    getInvite() {
+      let data = {
+        invite: {
+          taskId: this.taskId
+        },
+        pageNum: this.pageNum,
+        pageSize: this.pageSize
+      }
+      this.$axios
+        .post('/ocarplay/api/invite/getInvitePageListByTaskId', data)
+        .then(res => {
+          console.log(res)
+          if (res.status == 200) {
+            let data = res.data
+
+            res.data.items.forEach(element => {
+              element.prove0 = ''
+            })
+            this.inviteList = res.data.items
+            console.log(this.inviteList)
+            this.total = data.totalRows
+            //       total: 0,
+            // pageSize: 10,
+            // pageNum: 1,
+          }
+        })
+    },
+    ///////// 获取结算清单 end /////////
+    uploadClick(index) {
+      this.uploadIndex = index
+      console.log(this.uploadIndex)
+    },
+    handlePreview() {},
+    filesuccess(res, file, fileList) {
+      console.log(res)
+      // console.log(res2)
+      // console.log(res3)
+      // console.log(res4)
+      this.inviteList[this.uploadIndex].prove = res.data.localPath
+    },
+
+    ///////// 确认提交任务 start /////////
+    submit(prm) {
+      // console.log(prm)
       this.$confirm('确认提交任务吗?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       })
         .then(() => {
-          this.$message({
-            type: 'success',
-            message: '提交成功!'
-          })
+          // this.$message({
+          //   type: 'success',
+          //   message: '提交成功!'
+          // })
+          this.inviteSave(prm)
         })
         .catch(() => {
           this.$message({
@@ -347,16 +206,86 @@ export default {
           })
         })
     },
-    ///////// 确认 end /////////
+    // 单条凭证上传
+    inviteSave(prm) {
+      console.log(prm)
+      this.listLoading = true
+      let data = {
+        inviteId: prm.inviteId,
+        prove: prm.prove,
+        isOver: 1,
+        userId: this.userId
+      }
+      if (prm.isCard) {
+        data.prove = prm.prove
+      } else {
+        data.prove = prm.prove0
+      }
+      this.$axios.post('/ocarplay/api/invite/save', data).then(res => {
+        console.log(res)
+        this.listLoading = false
+        if (res.status == 200 && res.data.errcode == 0) {
+          this.$message.success(res.data.msg)
+          ///////// 获取结算清单 start /////////
+          this.getInvite()
+        } else {
+          this.$message.error(res.data.msg)
+        }
+      })
+    },
+
+    submitList() {
+      this.$confirm('确认提交任务吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          // this.$message({
+          //   type: 'success',
+          //   message: '提交成功!'
+          // })
+          this.inviteUpdate()
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消提交'
+          })
+        })
+    },
+    // 任务提交完成
+    inviteUpdate() {
+      this.listLoading = true
+      let data = {
+        taskId: this.taskId
+      }
+      this.$axios.post('/ocarplay/api/invite/updateBatch', data).then(res => {
+        console.log(res)
+        this.listLoading = true
+        if (res.status == 200 && res.data.errcode == 0) {
+          this.$message.success(res.data.msg)
+          setTimeout(() => {
+            this.$router.go(-1)
+          }, 1000)
+        } else {
+          this.$message.error(res.data.msg)
+        }
+      })
+    },
+    ///////// 确认提交任务 end /////////
 
     ///////// 分页 start /////////
     // 每页条数变化时触发事件
     changeSize(pageSize) {
       console.log(pageSize)
+      this.pageSize = pageSize
     },
     // 页码变换时触发事件
     changePage(pageNum) {
       console.log(pageNum)
+      ///////// 获取结算清单 start /////////
+      this.getInvite()
     }
     ///////// 分页 end /////////
   }

@@ -21,9 +21,9 @@
       </el-col>
       <el-col :span="8" class="right">
         <!-- 邀约对象 -->
-        <el-select v-model="value" clearable placeholder="空挡车主" size="small">
+        <el-select v-model="leisureOwners" clearable placeholder="空挡车主" size="small">
           <el-option
-            v-for="item in options"
+            v-for="item in leisureOwnersList"
             :key="item.value"
             :label="item.label"
             :value="item.value"
@@ -57,7 +57,7 @@
 
     <!-- 内容列表 start -->
     <!-- content1 -->
-    <el-row class="content content1" v-if="tab1act==1">
+    <el-row class="content content1" v-show="tab1act==1">
       <div class="table_list">
         <el-table
           v-loading="listLoading"
@@ -79,8 +79,12 @@
           <el-table-column prop="timeLimit" label="合作时长" min-width="81"></el-table-column>
           <el-table-column prop="coopMoney" label="合作费用" min-width="81"></el-table-column>
           <el-table-column prop="coopNum" label="固定合作总量" min-width="100"></el-table-column>
-          <el-table-column prop="oldnum" label="历史合作次数" min-width="100"></el-table-column>
-          <el-table-column prop="surplusnum" label="剩余合作次数" min-width="100"></el-table-column>
+          <el-table-column prop="alreadyCooperateNum" label="历史合作次数" min-width="100"></el-table-column>
+          <el-table-column prop="surplusnum" label="剩余合作次数" min-width="100">
+            <template slot-scope="scope">
+              {{scope.row.coopNum-scope.row.alreadyCooperateNum}}
+            </template>
+          </el-table-column>
           <el-table-column prop="period" label="结算周期" min-width="100">
             <template slot-scope="scope">
               <template v-if="scope.row.period == 0">按月结算</template>
@@ -94,7 +98,7 @@
                 <i class="el-icon-view" @click="toDetail(scope.row)"></i>
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="场地信息" placement="top">
-                <i class="el-icon-map-location" @click="toOwnerssite"></i>
+                <i class="el-icon-map-location" @click="toOwnerssite(scope.row)"></i>
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="删除" placement="top">
                 <i class="el-icon-delete" @click="delContent(scope.row)"></i>
@@ -118,7 +122,7 @@
     </el-row>
 
     <!-- content2 -->
-    <el-row class="content content2" v-else-if="tab1act==2">
+    <el-row class="content content2" v-show="tab1act==2">
       <div class="table_list">
         <el-table
           v-loading="listLoading"
@@ -132,23 +136,23 @@
             <template slot-scope="scope">0{{scope.$index+1}}</template>
           </el-table-column>
           <el-table-column prop="ownerName" label="车主姓名" min-width="81" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="car" label="认证车型" min-width="180" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="carSeriesName" label="认证车型" min-width="180" show-overflow-tooltip></el-table-column>
           <el-table-column prop="ownerArea" label="所在区域" min-width="81" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="time" label="特长" min-width="81"></el-table-column>
+          <el-table-column prop="skillName" label="特长" min-width="81"></el-table-column>
           <el-table-column prop="nickname" label="IP账号" min-width="81"></el-table-column>
           <el-table-column prop="timeLimit" label="合作时长" min-width="100"></el-table-column>
-          <el-table-column prop="oldnum" label="历史合作次数" min-width="100"></el-table-column>
-          <el-table-column prop="surplusnum" label="本月合作次数" min-width="100"></el-table-column>
+          <el-table-column prop="alreadyCooperateNum" label="历史合作次数" min-width="100"></el-table-column>
+          <el-table-column prop="currMonthCooperateNum" label="本月合作次数" min-width="100"></el-table-column>
           <el-table-column prop label="操作" width="230">
             <template slot-scope="scope">
               <el-tooltip class="item" effect="dark" content="预约记录" placement="top">
-                <i class="el-icon-time" @click="toRecord"></i>
+                <i class="el-icon-time" @click="toRecord(scope.row.ownerId)"></i>
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="车主信息" placement="top">
                 <i class="el-icon-view" @click="toDetail(scope.row)"></i>
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="日程管理" placement="top">
-                <i class="el-icon-date" @click="toOwnersschedule"></i>
+                <i class="el-icon-date" @click="toOwnersschedule(scope.row.ownerId)"></i>
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="场地信息" placement="top">
                 <i class="el-icon-map-location" @click="toOwnerssite"></i>
@@ -174,7 +178,7 @@
       </el-col>
     </el-row>
     <!-- content3 -->
-    <el-row class="content content3" v-else-if="tab1act==3">
+    <el-row class="content content3" v-show="tab1act==3">
       <div class="table_list">
         <el-table
           v-loading="listLoading"
@@ -188,23 +192,23 @@
             <template slot-scope="scope">0{{scope.$index+1}}</template>
           </el-table-column>
           <el-table-column prop="ownerName" label="车主姓名" min-width="81" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="car" label="认证车型" min-width="180" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="carSeriesName" label="认证车型" min-width="180" show-overflow-tooltip></el-table-column>
           <el-table-column prop="ownerArea" label="所在区域" min-width="81" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="time" label="特长" min-width="81"></el-table-column>
+          <el-table-column prop="skillName" label="特长" min-width="81"></el-table-column>
           <el-table-column prop="nickname" label="IP账号" min-width="81"></el-table-column>
           <el-table-column prop="timeLimit" label="合作时长" min-width="100"></el-table-column>
-          <el-table-column prop="oldnum" label="历史合作次数" min-width="100"></el-table-column>
-          <el-table-column prop="surplusnum" label="本月合作次数" min-width="100"></el-table-column>
+          <el-table-column prop="alreadyCooperateNum" label="历史合作次数" min-width="100"></el-table-column>
+          <el-table-column prop="currMonthCooperateNum" label="本月合作次数" min-width="100"></el-table-column>
           <el-table-column prop label="操作" width="230">
             <template slot-scope="scope">
               <el-tooltip class="item" effect="dark" content="预约记录" placement="top">
-                <i class="el-icon-time" @click="toRecord"></i>
+                <i class="el-icon-time" @click="toRecord(scope.row.ownerId)"></i>
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="车主信息" placement="top">
                 <i class="el-icon-view" @click="toDetail(scope.row)"></i>
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="日程管理" placement="top">
-                <i class="el-icon-date" @click="toOwnersschedule"></i>
+                <i class="el-icon-date" @click="toOwnersschedule(scope.row.ownerId)"></i>
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="场地信息" placement="top">
                 <i class="el-icon-map-location" @click="toOwnerssite"></i>
@@ -271,7 +275,30 @@ export default {
           label: '北京烤鸭'
         }
       ],
-      value: ''
+      value: '',
+      leisureOwnersList: [
+        {
+          value: '空挡车主',
+          label: '空挡车主'
+        },
+        {
+          value: '未来3天',
+          label: '未来3天'
+        },
+        {
+          value: '未来5天',
+          label: '未来5天'
+        },
+        {
+          value: '未来一周',
+          label: '未来一周'
+        },
+        {
+          value: '未来一月',
+          label: '未来一月'
+        }
+      ],
+      leisureOwners: ''
     }
   },
   // 侦听器
@@ -388,23 +415,40 @@ export default {
     ///////// 分页 end /////////
 
     ///////// 跳转场地信息 start /////////
-    toOwnerssite() {
-      this.$router.push({ path: '/home/ownerssite' })
-      // console.log(1)
+    toOwnerssite(prm) {
+      this.$router.push({
+        name: 'ownerssite',
+        params: {
+          ownerId: prm.ownerId
+        }
+      })
+      console.log(prm)
     },
     ///////// 跳转场地信息 end /////////
 
     ///////// 跳转预约记录页面 start /////////
-    toRecord() {
-      this.$router.push({ path: '/home/ownersrecord' })
-      console.log(1)
+    toRecord(id) {
+      this.$router.push({
+        name: 'ownersrecord',
+        // query: { id: id }
+        params: {
+          id: id
+        }
+      })
     },
     ///////// 跳转预约记录页面 end /////////
 
     ///////// 跳日程管理页面 start /////////
-    toOwnersschedule() {
-      this.$router.push({ path: '/home/ownersschedule' })
-      console.log(1)
+    toOwnersschedule(id) {
+      // this.$router.push({ path: '/home/ownersschedule' })
+      // console.log(id)
+      this.$router.push({
+        name: 'ownersschedule',
+        // query: { id: id }
+        params: {
+          id: id
+        }
+      })
     },
     ///////// 跳日程管理页面 end /////////
 
@@ -464,7 +508,8 @@ export default {
         name: 'ownersdetail',
         params: {
           typeId: prm.typeId,
-          vehicleOwnerId: prm.ownerId
+          vehicleOwnerId: prm.ownerId,
+          itemName: prm.itemName
         }
       })
     },

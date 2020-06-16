@@ -22,7 +22,7 @@
     <el-row class="content">
       <div class="table_list">
         <el-table
-          :data="tableData"
+          :data="ownerScheduleListData"
           style="width: 100%"
           :header-row-style="{'height': '70px','background': 'rgb(242, 242, 242)'}"
           :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
@@ -31,12 +31,20 @@
           <el-table-column prop label="序号" width="81" align="center">
             <template slot-scope="scope">0{{scope.$index+1}}</template>
           </el-table-column>
-          <el-table-column prop="addressee" label="预约时间" min-width="130"></el-table-column>
-          <el-table-column prop="matter" label="日程主题" min-width="100"></el-table-column>
-          <el-table-column prop="title" label="时长" min-width="81"></el-table-column>
-          <el-table-column prop="matter" label="类型" min-width="100"></el-table-column>
-          <el-table-column prop="matter" label="路线" min-width="180"></el-table-column>
-          <el-table-column prop="matter" label="地点" min-width="180"></el-table-column>
+          <el-table-column prop="addressee" label="预约时间" min-width="130">
+            <template slot-scope="scope">
+              {{$date(scope.row.startTime)}}
+            </template>
+          </el-table-column>
+          <el-table-column prop="schName" label="日程主题" min-width="100"></el-table-column>
+          <el-table-column prop="during" label="时长" min-width="81"></el-table-column>
+          <el-table-column prop="dayTypeName" label="类型" min-width="100"></el-table-column>
+          <el-table-column prop="schLine" label="路线" min-width="180"></el-table-column>
+          <el-table-column prop="" label="地点" min-width="180">
+            <template slot-scope="scope">
+              {{scope.row.province}}
+            </template>
+          </el-table-column>
           <el-table-column prop="address" label="预约组别" min-width="100" align="center"></el-table-column>
           <el-table-column prop="address" label="预约车辆" min-width="100" align="center"></el-table-column>
           <el-table-column prop="address" label="计划预约量" width="100" align="center"></el-table-column>
@@ -67,7 +75,7 @@ export default {
   data() {
     return {
       // 表格数据
-      tableData: [
+      ownerScheduleListData: [
         {
           time: '20-05-04',
           addressee: '解雨臣',
@@ -98,29 +106,29 @@ export default {
   beforeCreate() {},
   beforeMount() {},
   mounted() {
-    this.foreach()
+    this.getOwnerScheduleList()
   },
   // 方法
   methods: {
     ///////// 循环 start /////////
-    foreach() {
-      for (let i = 0; i < 30; i++) {
-        // const element = array[i];
-        this.tableData.push({
-          time: '20-05-04',
-          addressee: '解雨臣',
-          matter: '文案约稿',
-          title: 1,
-          link: '',
-          tele: '15996325468',
-          site: '湖北省武汉市洪山区武大园路武大航宇一期',
-          type: '1',
-          trackNum: '7894561234561',
-          evidence: '7894561234561',
-          budget: 500
-        })
-      }
-    },
+    // foreach() {
+    //   for (let i = 0; i < 30; i++) {
+    //     // const element = array[i];
+    //     this.tableData.push({
+    //       time: '20-05-04',
+    //       addressee: '解雨臣',
+    //       matter: '文案约稿',
+    //       title: 1,
+    //       link: '',
+    //       tele: '15996325468',
+    //       site: '湖北省武汉市洪山区武大园路武大航宇一期',
+    //       type: '1',
+    //       trackNum: '7894561234561',
+    //       evidence: '7894561234561',
+    //       budget: 500
+    //     })
+    //   }
+    // },
     ///////// 循环 end /////////
 
     ///////// 返回上一页 start /////////
@@ -130,6 +138,24 @@ export default {
       })
     },
     ///////// 返回上一页 end /////////
+
+    ///////// 获取预约日程列表 start /////////
+    getOwnerScheduleList() {
+      let data = {
+        vehicleOwnerId: this.$route.params.id,
+        isDo: true
+      }
+      this.$axios
+        .post('/ocarplay/api/vehicleOwner/ownerScheduleListAjax', data)
+        .then(res => {
+          console.log(res)
+          if (res.status == 200) {
+            let data = res.data
+            this.ownerScheduleListData = data.items
+          }
+        })
+    },
+    ///////// 获取预约日程列表 end /////////
 
     ///////// 确认 start /////////
     submit() {

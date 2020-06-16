@@ -9,6 +9,9 @@ export default {
   data() {
     return {}
   },
+  mounted() {
+    this.loginFn()
+  },
   methods: {
     loginFn() {
       //优先判断缓存中是否存在token 以及用户信息
@@ -32,9 +35,9 @@ export default {
       } // if (!aesStr) { //   console.log(aesStr) //   aesStr = localStorage.getItem('userSign') // } // console.log(aesStr)
 
       this.$axios
-        .post('/pmbs/api/login', {
-          // aesStr: 'NTI3LGZ1ZmVxdWFuLDIwMjAtMDMtMDk='
-          aesStr: aesStr
+        .post('/ocarplay/api/login', {
+          aesStr: 'MTUyLHRhbnl1bm1lbmcsMjAyMC0wMy0wOQ==='
+          // aesStr: aesStr
         })
         .then(res => {
           // console.log(res)
@@ -56,8 +59,7 @@ export default {
   },
   created() {
     // this.loginFn()
-  },
-  mounted() {}
+  }
 }
 </script>
 <style scoped>

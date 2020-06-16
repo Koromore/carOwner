@@ -20,7 +20,7 @@
           <el-table-column label="合同文件" min-width="360">
             <template slot-scope="scope">
               <img src="static/images/document/ppt.png" width="16" alt srcset />
-              {{scope.row.fileName}}
+              <el-link @click="download(scope.row)">{{scope.row.fileName}}</el-link>
             </template>
           </el-table-column>
         </el-table>
@@ -86,8 +86,22 @@ export default {
     // 页码变换时触发事件
     changePage(pageNum) {
       console.log(pageNum)
-    }
+    },
     ///////// 分页 end /////////
+
+    ///////// 下载 start /////////
+    download(row) {
+      console.log(row)
+      let localPath = row.localPath
+      let a = document.createElement('a')
+      a.download = `${row.fileName}.${row.suffix}`
+      a.setAttribute(
+        'href',
+        'http://176.10.10.235:8080/ocarplay/' + localPath
+      )
+      a.click()
+    }
+    ///////// 下载 end /////////
   }
 }
 </script>

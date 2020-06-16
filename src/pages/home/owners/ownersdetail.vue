@@ -18,24 +18,34 @@
         </el-col>
         <!-- 上传照片 -->
         <el-col :span="24" class="upladImgBox">
-          <el-image class="upladImg" :src="url" fit="cover"></el-image>
+          <el-image class="upladImg" :src="'/ocarplay/'+ownerDetil.image" fit="cover"></el-image>
         </el-col>
         <!-- 车主信息 start -->
         <el-col :span="24" class="information information1">
           <el-col :span="12" class="left">
             <el-col :span="24" class="list">
-              <div class="key">合作事项</div>
-              <div class="val">拍摄型车主</div>
+              <div class="key">车主类型</div>
+              <div class="val">
+                <template v-if="ownerDetil.typeId==1">支持型</template>
+                <template v-if="ownerDetil.typeId==2">拍摄型</template>
+                <template v-if="ownerDetil.typeId==3">资源型</template>
+              </div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">车主性别</div>
               <div class="val">
-                <el-radio v-model="radio" label="1">
+                <!-- <el-radio v-model="ownerDetil.sex" label="false">
                   <i class="el-icon-male"></i>
                 </el-radio>
-                <el-radio v-model="radio" label="2">
+                <el-radio v-model="ownerDetil.sex" label="true">
                   <i class="el-icon-female"></i>
-                </el-radio>
+                </el-radio>-->
+                <template v-if="ownerDetil.sex">
+                  <i class="el-icon-female sex1"></i>
+                </template>
+                <template v-else>
+                  <i class="el-icon-male sex0"></i>
+                </template>
               </div>
             </el-col>
             <el-col :span="24" class="list">
@@ -48,7 +58,7 @@
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">所在区域</div>
-              <div class="val">{{ownerDetil.province+ownerDetil.city}}</div>
+              <div class="val">{{ownerDetil.province}}{{ownerDetil.city}}</div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">特长</div>
@@ -57,6 +67,10 @@
           </el-col>
           <!-- 左右分割线 -->
           <el-col :span="12" class="right">
+            <el-col :span="24" class="list">
+              <div class="key">合作事项</div>
+              <div class="val">{{this.$route.params.itemName}}</div>
+            </el-col>
             <el-col :span="24" class="list">
               <div class="key">车主姓名</div>
               <div class="val">{{ownerDetil.name}}</div>
@@ -71,16 +85,16 @@
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">认证车型</div>
-              <div class="val">{{ownerDetil.seriesId}}</div>
+              <div class="val">{{ownerDetil.carSeriesName}}</div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">车主邮箱</div>
               <div class="val">{{ownerDetil.email}}</div>
             </el-col>
-            <el-col :span="24" class="list">
+            <!-- <el-col :span="24" class="list">
               <div class="key">项目组</div>
               <div class="val">项目组</div>
-            </el-col>
+            </el-col>-->
           </el-col>
         </el-col>
         <!-- 车主信息 end -->
@@ -147,16 +161,16 @@
               <div class="key">收货地址</div>
               <div class="val">收货地址</div>
             </el-col>
-            <!-- <el-col :span="24" class="list">
-              <div class="key">车主来源</div>
-              <div class="val">
-                <el-input placeholder="请输入内容" v-model="input1"></el-input>
-              </div>
-            </el-col>-->
             <el-col :span="24" class="list">
               <div class="key">家属信息</div>
               <div class="val">
-                <el-input placeholder="请输入内容" v-model="input1"></el-input>
+                <!-- <el-input placeholder="请输入内容" v-model="input1"></el-input> -->
+                <el-col :span="24" v-for="(item, index) in ownerDetil.relations" :key="index">
+                  <el-col :span="5">{{item.name}}</el-col>
+                  <el-col :span="5">{{item.relation}}</el-col>
+                  <el-col :span="7">{{$date0(item.birthday)}}</el-col>
+                  <el-col :span="7">{{item.work}}</el-col>
+                </el-col>
               </div>
             </el-col>
           </el-col>
@@ -181,11 +195,19 @@
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">合作期限</div>
-              <div class="val" v-for="(item, index) in ownerDetil.cooperates" :key="index">{{$date(item.startTime)}}---{{$date(item.endTime)}}</div>
+              <div
+                class="val"
+                v-for="(item, index) in ownerDetil.cooperates"
+                :key="index"
+              >{{$date(item.startTime)}}---{{$date(item.endTime)}}</div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">合作时长</div>
-              <div class="val" v-for="(item, index) in ownerDetil.cooperates" :key="index">{{parseInt(item.timeLimit/30)}}个月</div>
+              <div
+                class="val"
+                v-for="(item, index) in ownerDetil.cooperates"
+                :key="index"
+              >{{parseInt(item.timeLimit/30)}}个月</div>
             </el-col>
           </el-col>
           <!-- 左右分割线 -->
@@ -194,7 +216,14 @@
               <div class="key">合作事项要求频次</div>
               <div class="val"></div>
               <div class="key">IP孵化打造</div>
-              <div class="val"></div>
+              <div class="val">
+                <el-col :span="24" v-for="(item, index) in ownerDetil.ipGrows" :key="index">
+                  <el-col :span="6">{{item.plat}}</el-col>
+                  <el-col :span="6">{{item.platRole}}</el-col>
+                  <el-col :span="6">{{item.nickname}}</el-col>
+                  <el-col :span="6">{{item.url}}</el-col>
+                </el-col>
+              </div>
             </el-col>
           </el-col>
         </el-col>
@@ -210,16 +239,23 @@
               <template slot-scope="scope">0{{scope.$index+1}}</template>
             </el-table-column>
             <el-table-column prop="createTime" label="受邀时间" min-width="81" show-overflow-tooltip>
-              <template slot-scope="scope">
-                {{$date(scope.row.createTime)}}
-              </template>
+              <template slot-scope="scope">{{$date(scope.row.createTime)}}</template>
             </el-table-column>
-            <el-table-column prop="task.taskName" label="受邀任务" min-width="180" show-overflow-tooltip></el-table-column>
+            <el-table-column
+              prop="task.taskName"
+              label="受邀任务"
+              min-width="180"
+              show-overflow-tooltip
+            ></el-table-column>
             <el-table-column prop="itemName" label="受邀事项" min-width="81" show-overflow-tooltip></el-table-column>
             <el-table-column prop="title" label="内容标题" min-width="81"></el-table-column>
             <el-table-column prop="url" label="内容链接" min-width="81">
               <template slot-scope="scope">
-                <el-link type="primary" :href="'http://'+scope.row.url" target="_blank">{{scope.row.url}}</el-link>
+                <el-link
+                  type="primary"
+                  :href="'http://'+scope.row.url"
+                  target="_blank"
+                >{{scope.row.url}}</el-link>
               </template>
             </el-table-column>
             <el-table-column prop="addnum" label="成果" min-width="100"></el-table-column>
@@ -293,7 +329,8 @@ export default {
       // 车主信息
       ownerDetil: {
         cooperates: [{}],
-        invites: []
+        invites: [],
+        ipGrows: [{}]
       }
     }
   },
@@ -401,6 +438,14 @@ $icoColor: rgb(106, 145, 232);
 #ownersdetail {
   height: 100%;
   background: white;
+  .sex0 {
+    font-size: 21px;
+    color: #67a9d6;
+  }
+  .sex1 {
+    font-size: 21px;
+    color: #e57470;
+  }
   .content {
     position: relative;
     height: 100%;
@@ -503,6 +548,8 @@ $icoColor: rgb(106, 145, 232);
         }
         .val {
           width: 420px;
+          height: 40px;
+          line-height: 40px;
           .el-cascader,
           .el-select,
           .el-date-editor,
