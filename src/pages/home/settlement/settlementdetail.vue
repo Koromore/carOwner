@@ -157,7 +157,6 @@ export default {
           console.log(res)
           if (res.status == 200) {
             let data = res.data
-
             res.data.items.forEach(element => {
               element.prove0 = ''
             })

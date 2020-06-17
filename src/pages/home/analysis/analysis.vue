@@ -4,10 +4,10 @@
     <el-row class="top">
       <el-col :span="24" class="cont">
         <div class="butBox1">
-          <div :class="[tab1act==1?'but act':'but']" @click="tab1(1)">任务完成数</div>
-          <div :class="[tab1act==2?'but act':'but']" @click="tab1(2)">车主发展数</div>
-          <div :class="[tab1act==3?'but act':'but']" @click="tab1(3)">累计支出费用</div>
-          <div :class="[tab1act==4?'but act':'but']" @click="tab1(4)">累计合作次数</div>
+          <div :class="[tab1act==0?'but act':'but']" @click="tab1(0)">任务完成数</div>
+          <div :class="[tab1act==1?'but act':'but']" @click="tab1(1)">车主发展数</div>
+          <div :class="[tab1act==2?'but act':'but']" @click="tab1(2)">累计支出费用</div>
+          <div :class="[tab1act==3?'but act':'but']" @click="tab1(3)">累计合作次数</div>
         </div>
 
         <div class="butBox2">
@@ -47,28 +47,29 @@ export default {
   components: {},
   data() {
     return {
-      tab1act: 1,
+      tab1act: 0,
       tab2act: 0,
       tab2Items: [
         {
-          id: 1,
+          id: 0,
           name: '状态分布'
         },
         {
-          id: 2,
+          id: 1,
           name: '时间分布'
         },
         {
-          id: 3,
+          id: 2,
           name: '对象分布'
         },
         {
-          id: 4,
+          id: 3,
           name: '项目组分布'
         }
       ],
       // 图表数据
       chartTitle: '任务完成数量',
+      chartNum: 0,
       chartKeyData: ['执行中', '结算中', '延期', '已完成'],
       chartvalData: [520, 360, 130, 240]
     }
@@ -77,63 +78,67 @@ export default {
   watch: {
     tab1act: function(newData, oldData) {
       // console.log(newData)
-      if (newData == 1) {
+      if (newData == 0) {
+        this.chartTitle = '任务完成数量'
         this.tab2Items = [
           {
-            id: 1,
+            id: 0,
             name: '状态分布'
           },
           {
-            id: 2,
+            id: 1,
             name: '时间分布'
           },
           {
-            id: 3,
+            id: 2,
             name: '对象分布'
           },
           {
-            id: 4,
+            id: 3,
+            name: '项目组分布'
+          }
+        ]
+      } else if (newData == 1) {
+        this.chartTitle = '车主发展数'
+        this.tab2Items = [
+          {
+            id: 0,
+            name: '类型分布'
+          },
+          {
+            id: 1,
+            name: '时间分布'
+          },
+          {
+            id: 2,
+            name: '地域分布'
+          },
+          {
+            id: 3,
             name: '项目组分布'
           }
         ]
       } else if (newData == 2) {
+        this.chartTitle = '累计支出费'
         this.tab2Items = [
           {
-            id: 5,
-            name: '类型分布'
-          },
-          {
-            id: 2,
+            id: 0,
             name: '时间分布'
           },
           {
-            id: 6,
-            name: '地域分布'
-          },
-          {
-            id: 4,
+            id: 1,
             name: '项目组分布'
           }
         ]
       } else if (newData == 3) {
+        this.chartTitle = '累计合作次'
         this.tab2Items = [
           {
-            id: 2,
-            name: '时间分布'
-          },
-          {
-            id: 4,
-            name: '项目组分布'
-          }
-        ]
-      } else if (newData == 4) {
-        this.tab2Items = [
-          {
-            id: 7,
+            id: 0,
             name: '邀约对象'
           },
           {
-            id: 4,
+            id: 1,
             name: '项目组分布'
           }
         ]
@@ -142,6 +147,8 @@ export default {
       this.tab2act = 0
       let tab1act = newData
       let tab2act = this.tab2act
+      // 获取数据
+      this.getData()
     },
     tab2act: function(newData, oldData) {
       let tab1act = this.tab1act
@@ -192,7 +199,8 @@ export default {
         this.echartsBar(0)
         this.echartsPie()
       }
-
+      // 获取数据
+      this.getData()
       // this.chartvalData = [520, 360, 130, 240]
       // console.log(this.chartvalData)
       // this.echartsBar()
@@ -202,6 +210,9 @@ export default {
   beforeCreate() {},
   beforeMount() {},
   mounted() {
+    // 获取数据
+    this.getData()
+    // 生成图表
     this.echartsBar()
     // this.echartsPie()
   },
@@ -210,9 +221,173 @@ export default {
     tab1(e) {
       this.tab1act = e
     },
-    tab2(e,id) {
+    tab2(e, id) {
       this.tab2act = e
       console.log(id)
+    },
+    getData() {
+      // webType 0-任务完成数量 1-车主发展数量 2-累计支出费用 3-累计合作次数
+      // type 任务分心类型 0-状态 1-时间 2-对象 3-项目组
+      let data = {
+        webType: this.tab1act,
+        type: this.tab2act,
+        // deptId: '',
+        // years: ''
+      }
+      this.$axios
+        .post('/ocarplay/api/analysis/taskAnalysis', data)
+        .then(res => {
+          console.log(res)
+          if (res.status == 200) {
+            let data = res.data
+            let tab1act = this.tab1act
+            let tab2act = this.tab2act
+            let chartKeyData = []
+            let chartvalData = []
+            this.chartNum = data.count
+            if (tab1act == 0) {
+              if (tab2act == 0) {
+                data.data.forEach(element => {
+                  chartKeyData.push(element.TYPE)
+                  chartvalData.push(element.num)
+                })
+                this.chartKeyData = chartKeyData
+                this.chartvalData = chartvalData
+                // 图表生成
+                this.echartsPie(0)
+                this.echartsBar()
+              } else if (tab2act == 1) {
+                data.data.forEach(element => {
+                  chartKeyData.push(element.TYPE)
+                  chartvalData.push(element.num)
+                })
+                this.chartKeyData = chartKeyData
+                this.chartvalData = chartvalData
+                // 图表生成
+                this.echartsPie(0)
+                this.echartsBar()
+              } else if (tab2act == 2) {
+                data.data.forEach(element => {
+                  chartKeyData.push(element.TYPE)
+                  chartvalData.push(element.num)
+                })
+                this.chartKeyData = chartKeyData
+                this.chartvalData = chartvalData
+                // 图表生成
+                this.echartsPie(0)
+                this.echartsBar()
+              } else if (tab2act == 3) {
+                data.data.forEach(element => {
+                  chartKeyData.push(element.TYPE)
+                  chartvalData.push({
+                    value: element.num,
+                    label: element.TYPE
+                  })
+                })
+                this.chartKeyData = chartKeyData
+                this.chartvalData = chartvalData
+                // 图表生成
+                this.echartsBar(0)
+                this.echartsPie()
+              }
+            } else if (tab1act == 1) {
+              if (tab2act == 0) {
+                data.data.forEach(element => {
+                  chartKeyData.push(element.TYPE)
+                  chartvalData.push(element.num)
+                })
+                this.chartKeyData = chartKeyData
+                this.chartvalData = chartvalData
+                // 图表生成
+                this.echartsPie(0)
+                this.echartsBar()
+              } else if (tab2act == 1) {
+                data.data.forEach(element => {
+                  chartKeyData.push(element.TYPE)
+                  chartvalData.push(element.num)
+                })
+                this.chartKeyData = chartKeyData
+                this.chartvalData = chartvalData
+                // 图表生成
+                this.echartsPie(0)
+                this.echartsBar()
+              } else if (tab2act == 2) {
+                data.data.forEach(element => {
+                  chartKeyData.push(element.TYPE)
+                  chartvalData.push(element.num)
+                })
+                this.chartKeyData = chartKeyData
+                this.chartvalData = chartvalData
+                // 图表生成
+                this.echartsPie(0)
+                this.echartsBar()
+              } else if (tab2act == 3) {
+                data.data.forEach(element => {
+                  chartKeyData.push(element.TYPE)
+                  chartvalData.push({
+                    value: element.num,
+                    label: element.TYPE
+                  })
+                })
+                this.chartKeyData = chartKeyData
+                this.chartvalData = chartvalData
+                // 图表生成
+                this.echartsBar(0)
+                this.echartsPie()
+              }
+            } else if (tab1act == 2) {
+              if (tab2act == 0) {
+                data.data.forEach(element => {
+                  chartKeyData.push(element.TYPE)
+                  chartvalData.push(element.num)
+                })
+                this.chartKeyData = chartKeyData
+                this.chartvalData = chartvalData
+                // 图表生成
+                this.echartsPie(0)
+                this.echartsBar()
+              } else if (tab2act == 1) {
+                data.data.forEach(element => {
+                  chartKeyData.push(element.TYPE)
+                  chartvalData.push({
+                    value: element.num,
+                    label: element.TYPE
+                  })
+                })
+                this.chartKeyData = chartKeyData
+                this.chartvalData = chartvalData
+                // 图表生成
+                this.echartsBar(0)
+                this.echartsPie()
+              }
+            } else if (tab1act == 3) {
+              if (tab2act == 0) {
+                data.data.forEach(element => {
+                  chartKeyData.push(element.TYPE)
+                  chartvalData.push(element.num)
+                })
+                this.chartKeyData = chartKeyData
+                this.chartvalData = chartvalData
+                // 图表生成
+                this.echartsPie(0)
+                this.echartsBar()
+              } else if (tab2act == 1) {
+                data.data.forEach(element => {
+                  chartKeyData.push(element.TYPE)
+                  chartvalData.push({
+                    value: element.num,
+                    label: element.TYPE
+                  })
+                })
+                this.chartKeyData = chartKeyData
+                this.chartvalData = chartvalData
+                // 图表生成
+                this.echartsBar(0)
+                this.echartsPie()
+              }
+            }
+          }
+        })
     },
     // 图表
     echartsBar(res) {
@@ -220,12 +395,13 @@ export default {
       var myChart = echarts.init(document.getElementById('chartBar'))
       // 绘制图表
       let title = this.chartTitle
+      let chartNum = this.chartNum
       let chartKeyData = this.chartKeyData
       let chartvalData = this.chartvalData
       myChart.setOption({
         title: {
           text: title,
-          subtext: 13600 + '个',
+          subtext: chartNum + '个',
           subtextStyle: { fontSize: 20 }
           // fontSize
         },
@@ -260,18 +436,18 @@ export default {
       var myChart = echarts.init(document.getElementById('chartBar'))
       // 绘制图表
       let title = this.chartTitle
+      let chartNum = this.chartNum
       let chartKeyData = this.chartKeyData
       let chartvalData = this.chartvalData
 
       myChart.setOption({
         title: {
           text: title,
-          subtext: 13600 + '个',
+          subtext: chartNum + '个',
           subtextStyle: { fontSize: 20 },
           left: 'left'
-          
         },
-        color: ['#2B4E76','#4175B1','#A4C3E2'],
+        color: ['#2B4E76', '#4175B1', '#A4C3E2'],
         tooltip: {
           trigger: 'item',
           formatter: '{a} <br/>{b} : {c} ({d}%)'
@@ -279,7 +455,7 @@ export default {
         legend: {
           orient: 'vertical',
           bottom: 'bottom',
-          data: ['吉利组', '长城组', '沃尔沃组']
+          data: chartKeyData
         },
         series: [
           {
@@ -287,11 +463,7 @@ export default {
             type: 'pie',
             radius: '70%',
             center: ['50%', '50%'],
-            data: [
-              { value: 335, name: '吉利组' },
-              { value: 310, name: '长城组' },
-              { value: 234, name: '沃尔沃组' }
-            ],
+            data: chartvalData,
             emphasis: {
               itemStyle: {
                 shadowBlur: 10,

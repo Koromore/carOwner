@@ -156,6 +156,14 @@ const router = new Router({
         }
       },
       {
+        path: '/home/tasksettlement',
+        name: 'tasksettlement',
+        component: resolve => require(['@/pages/home/task/tasksettlement'], resolve),
+        meta: {
+          requireAuth: true,
+        }
+      },
+      {
         path: '/home/settlement',
         name: 'settlement',
         component: resolve => require(['@/pages/home/settlement/settlement'], resolve),

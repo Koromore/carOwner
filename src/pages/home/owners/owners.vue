@@ -21,7 +21,14 @@
       </el-col>
       <el-col :span="8" class="right">
         <!-- 邀约对象 -->
-        <el-select v-model="leisureOwners" clearable placeholder="空挡车主" size="small">
+        <el-select
+          v-model="leisureOwners"
+          filterable
+          clearable
+          placeholder="空挡车主"
+          size="small"
+          @change="leisureOwnersChange"
+        >
           <el-option
             v-for="item in leisureOwnersList"
             :key="item.value"
@@ -30,23 +37,38 @@
           ></el-option>
         </el-select>
         <!-- 邀约事项 -->
-        <el-select v-model="value" clearable placeholder="车型" size="small">
+        <el-select
+          v-model="carSeriesId"
+          filterable
+          clearable
+          placeholder="车型"
+          size="small"
+          @change="carSeriesIdChange"
+        >
           <el-option
-            v-for="item in options"
+            v-for="item in carSeriesList"
             :key="item.value"
             :label="item.label"
             :value="item.value"
           ></el-option>
         </el-select>
         <!-- 邀约车型 -->
-        <el-select v-model="value" clearable placeholder="城市" size="small">
+        <el-select
+          v-model="cityName"
+          filterable
+          clearable
+          placeholder="城市"
+          size="small"
+          @change="cityNameChange"
+        >
           <el-option
-            v-for="item in options"
+            v-for="item in cityList"
             :key="item.value"
             :label="item.label"
             :value="item.value"
           ></el-option>
         </el-select>
+        <!-- {{cityName}} -->
         <div @click="submit" class="add">
           <i class="el-icon-circle-plus-outline"></i>
           <br />添加车主
@@ -81,9 +103,7 @@
           <el-table-column prop="coopNum" label="固定合作总量" min-width="100"></el-table-column>
           <el-table-column prop="alreadyCooperateNum" label="历史合作次数" min-width="100"></el-table-column>
           <el-table-column prop="surplusnum" label="剩余合作次数" min-width="100">
-            <template slot-scope="scope">
-              {{scope.row.coopNum-scope.row.alreadyCooperateNum}}
-            </template>
+            <template slot-scope="scope">{{scope.row.coopNum-scope.row.alreadyCooperateNum}}</template>
           </el-table-column>
           <el-table-column prop="period" label="结算周期" min-width="100">
             <template slot-scope="scope">
@@ -113,9 +133,9 @@
           @current-change="changePage"
           :current-page="1"
           :page-sizes="[10, 20, 30, 40]"
-          :page-size="10"
+          :page-size="pageSize"
           layout="total, prev, pager, next ,sizes"
-          :total="100"
+          :total="total"
           background
         ></el-pagination>
       </el-col>
@@ -170,9 +190,9 @@
           @current-change="changePage"
           :current-page="1"
           :page-sizes="[10, 20, 30, 40]"
-          :page-size="10"
+          :page-size="pageSize"
           layout="total, prev, pager, next ,sizes"
-          :total="100"
+          :total="total"
           background
         ></el-pagination>
       </el-col>
@@ -226,9 +246,9 @@
           @current-change="changePage"
           :current-page="1"
           :page-sizes="[10, 20, 30, 40]"
-          :page-size="10"
+          :page-size="pageSize"
           layout="total, prev, pager, next ,sizes"
-          :total="100"
+          :total="total"
           background
         ></el-pagination>
       </el-col>
@@ -237,6 +257,7 @@
   </div>
 </template>
 <script>
+import cityList from '@/common/city.js' // 引入城市数据
 export default {
   name: 'owners',
   components: {},
@@ -278,27 +299,37 @@ export default {
       value: '',
       leisureOwnersList: [
         {
-          value: '空挡车主',
+          value: 0,
           label: '空挡车主'
         },
         {
-          value: '未来3天',
+          value: 1,
           label: '未来3天'
         },
         {
-          value: '未来5天',
+          value: 2,
           label: '未来5天'
         },
         {
-          value: '未来一周',
+          value: 3,
           label: '未来一周'
         },
         {
-          value: '未来一月',
+          value: 4,
           label: '未来一月'
         }
       ],
-      leisureOwners: ''
+      leisureOwners: '',
+      // 车系列表
+      carSeriesList: [],
+      carSeriesId: '',
+      // 城市列表
+      cityList: cityList, // 城市筛列表
+      cityName: '',
+      // 分页数据
+      pageName: 1,
+      pageSize: 10,
+      total: 0
     }
   },
   // 侦听器
@@ -312,6 +343,8 @@ export default {
   beforeCreate() {},
   beforeMount() {},
   mounted() {
+    ///////// 获取车系列表 start /////////
+    this.getCarSeriesLists()
     // 获取合作事项列表
     this.geteventDataList(1)
   },
@@ -335,6 +368,43 @@ export default {
     //   }
     // },
     ///////// 循环 end /////////
+
+    ///////// 获取车系列表 start /////////
+    getCarSeriesLists() {
+      // console.log(data)
+      // console.log(1)
+      let eventList = []
+      this.$axios
+        .post('/ocarplay/api/carSeries/getCarSeriesLists', {})
+        .then(res => {
+          // console.log(res)
+          // this.loading = false
+          if (res.status == 200) {
+            // console.log(res)
+            let data = res.data.items
+            let carSeriesList = []
+            data.forEach(element => {
+              // console.log(element)
+              let listId = element.carSeriesIds.split('/')
+              let listName = element.carSeriesName.split('/')
+              listId.forEach((element0, i) => {
+                carSeriesList.push({
+                  value: element0,
+                  label: listName[i]
+                })
+              })
+            })
+            this.carSeriesList = carSeriesList
+            console.log(this.carSeriesList)
+            // this.tab2Items = eventDataList
+            // this.tab2act = eventDataList[0].id
+            // // console.log(this.tab2Items)
+            // // 获取车主列表
+            // this.CarSeriesLists()
+          }
+        })
+    },
+    ///////// 获取车系列表 end /////////
 
     ///////// 合作事项列表获取 start /////////
     geteventDataList(id) {
@@ -369,13 +439,44 @@ export default {
     },
     ///////// 合作事项列表获取 end /////////
 
+    ///////// 城市选择 start /////////
+    cityNameChange() {
+      ///////// 车主列表获取 start /////////
+      this.getVehicleOwnerList()
+    },
+    ///////// 城市选择 end /////////
+
+    ///////// 车型选择 start /////////
+    carSeriesIdChange() {
+      ///////// 车主列表获取 start /////////
+      this.getVehicleOwnerList()
+    },
+    ///////// 车型选择 end /////////
+
+    ///////// 档期选择 start /////////
+    leisureOwnersChange() {
+      ///////// 车主列表获取 start /////////
+      this.getVehicleOwnerList()
+    },
+    ///////// 档期选择 end /////////
+
     ///////// 车主列表获取 start /////////
     getVehicleOwnerList() {
       let data = {
+        city: '',
+        seriesId: this.carSeriesId,
+        futurePeriodType: this.leisureOwners,
         vehicleOwner: {
           typeId: this.tab1act,
           itemId: this.tab2act
-        }
+        },
+        pageName: this.pageName,
+        pageSize: this.pageSize
+      }
+      if (this.cityName) {
+        data.city = this.cityName + '市'
+      } else {
+        data.city = ''
       }
       this.$axios
         .post('/ocarplay/api/vehicleOwner/listAjax', data)
@@ -388,6 +489,7 @@ export default {
             // this.getPlaceList()
             let data = res.data
             this.ownerListData = data.items
+            this.total = data.totalRows
           }
         })
     },
@@ -407,10 +509,16 @@ export default {
     // 每页条数变化时触发事件
     changeSize(pageSize) {
       console.log(pageSize)
+      this.pageSize = pageSize
+      ///////// 车主列表获取 start /////////
+      this.getVehicleOwnerList()
     },
     // 页码变换时触发事件
     changePage(pageNum) {
       console.log(pageNum)
+      this.pageNum = pageNum
+      ///////// 车主列表获取 start /////////
+      this.getVehicleOwnerList()
     },
     ///////// 分页 end /////////
 

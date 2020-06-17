@@ -16,8 +16,8 @@
         <el-table-column prop="itemName" label="合作事项" min-width="240"></el-table-column>
         <!-- <el-table-column prop="money" label="结算金额" min-width="240"></el-table-column> -->
         <el-table-column prop="address" label="操作" width="100">
-          <template>
-            <i class="el-icon-edit" @click="redact"></i>
+          <template slot-scope="scope">
+            <i class="el-icon-edit" @click="redact(scope.row)"></i>
             <!-- <i class="el-icon-delete" @click="delContent"></i> -->
           </template>
         </el-table-column>
@@ -51,7 +51,7 @@
         </el-col>
         <el-col :span="4" style="align-self: start;">合作事项:</el-col>
         <el-col :span="18">
-          <el-col :span="24" v-for="(item, index) in cooperList" :key="index" class="list">
+          <el-col :span="24" v-for="(item, index) in cooperList" :key="index" class="list" v-show="!item.deleteFlag">
             <el-col :span="10">
               <el-input placeholder="请输入内容" v-model="item.itemName" clearable></el-input>
             </el-col>
@@ -70,7 +70,7 @@
             </el-col>
             <el-col :span="3">
               <i class="el-icon-plus" @click="addCooperList"></i>
-              <i class="el-icon-delete" @click="delCooperList"></i>
+              <i class="el-icon-delete" @click="delCooperList(index)"></i>
             </el-col>
           </el-col>
         </el-col>
@@ -113,7 +113,7 @@ export default {
       // 新增合作事项
       cooperList: [
         {
-          typeId: '',
+          typeId: this.typeId,
           itemName: '',
           money: '',
           isCard: true,
@@ -162,10 +162,10 @@ export default {
     ///////// 添加合作事项 end /////////
 
     ///////// 删除合作事项 start /////////
-    delCooperList(data) {
+    delCooperList(index) {
       let cooperList = this.cooperList
       if (cooperList.length > 1) {
-        this.cooperList.pop()
+        this.cooperList[index].deleteFlag = true
       }
     },
     ///////// 删除合作事项 end /////////
@@ -204,9 +204,34 @@ export default {
     ///////// 分页 end /////////
 
     ///////// 编辑数据 start /////////
-    redact() {
+    redact(prm) {
       this.drawerData = true
       this.drawerTietle = '编辑数据'
+      console.log(prm)
+      this.typeId = prm.typeId
+      let itemIds = prm.itemIds.split('/')
+      let itemNames = prm.itemName.split('/')
+      let isCards = prm.isCards.split('/')
+      let moneys = prm.moneys.split('/')
+      let cooperList = []
+      itemIds.forEach((element, i) => {
+        let data = {
+          typeId: this.typeId,
+          itemId: element,
+          itemName: itemNames[i],
+          money: moneys[i]*1,
+          isCard: '',
+          deleteFlag: false
+        }
+        if (isCards[i] == 1) {
+          data.isCard = true
+        } else {
+          data.isCard = false
+        }
+        cooperList.push(data)
+      })
+      this.cooperList = cooperList
+      // console.log(prm.itemIds.split('/'))
     },
     ///////// 编辑数据 start /////////
 
@@ -264,10 +289,10 @@ export default {
       data.forEach((element, i) => {
         if (element.isCard) {
           data[i].isCard = 1
-        }else{
+        } else {
           data[i].isCard = 0
         }
-      });
+      })
       // console.log(data)
       this.saveOwnerType(data)
     },
@@ -344,6 +369,7 @@ $icoColor: rgb(106, 145, 232);
       display: flex;
       flex-wrap: wrap;
       align-items: center;
+      margin-bottom: 9px;
     }
   }
 }

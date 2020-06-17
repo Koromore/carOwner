@@ -74,7 +74,7 @@
         </el-col>
         <el-col :span="4">车型细分:</el-col>
         <el-col :span="18">
-          <el-col :span="24" v-for="(item, index) in subCarType" :key="index">
+          <el-col class="carSeriesList" :span="24" v-for="(item, index) in subCarType" :key="index">
             <!-- <el-col :span="6">
               <el-input placeholder="请输入内容" v-model="input" clearable></el-input>
             </el-col>-->
@@ -82,7 +82,7 @@
               <el-input placeholder="请输入内容" v-model="item.name" clearable></el-input>
             </el-col>
             <el-col :span="4" :offset="1" class="opera">
-              <i class="el-icon-delete"></i>
+              <i class="el-icon-delete" @click="delSubCarType(index)"></i>
               <i class="el-icon-plus" @click="addSubCarType"></i>
             </el-col>
           </el-col>
@@ -256,6 +256,15 @@ export default {
       this.subCarType.push({
         name: ''
       })
+    },
+    ///////// 添加车型细分 end /////////
+
+    ///////// 删除车型细分 start /////////
+    delSubCarType(index) {
+      let subCarType = this.subCarType
+      if (subCarType.length > 1) {
+        this.subCarType.splice(index, 1)
+      }
     },
     ///////// 添加车型细分 end /////////
 
@@ -462,15 +471,18 @@ $icoColor: rgb(106, 145, 232);
 
   // 抽屉弹窗新增/编辑数据
   .drawerData {
-    .opera {
-      height: 40px;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      i {
-        font-size: 24px;
-        cursor: pointer;
+    .carSeriesList {
+      margin-bottom: 9px;
+      .opera {
+        height: 40px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        i {
+          font-size: 24px;
+          cursor: pointer;
+        }
       }
     }
   }

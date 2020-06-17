@@ -4,27 +4,48 @@
     <el-row class="top">
       <el-col :span="12" class="left">
         <!-- 邀约对象 -->
-        <el-select v-model="value" clearable placeholder="邀约对象" size="small">
+        <el-select
+          v-model="typeId"
+          filterable
+          clearable
+          placeholder="邀约对象"
+          size="small"
+          @change="typeIdChange"
+        >
           <el-option
-            v-for="item in options"
+            v-for="item in typeList"
             :key="item.value"
             :label="item.label"
             :value="item.value"
           ></el-option>
         </el-select>
         <!-- 邀约事项 -->
-        <el-select v-model="value" clearable placeholder="邀约事项" size="small">
+        <el-select
+          v-model="itemId"
+          filterable
+          clearable
+          placeholder="邀约事项"
+          size="small"
+          @change="itemIdChange"
+        >
           <el-option
-            v-for="item in options"
+            v-for="item in itemIdList"
             :key="item.value"
             :label="item.label"
             :value="item.value"
           ></el-option>
         </el-select>
         <!-- 邀约车型 -->
-        <el-select v-model="value" clearable placeholder="邀约车型" size="small">
+        <el-select
+          v-model="carSeriesId"
+          filterable
+          clearable
+          placeholder="邀约车型"
+          size="small"
+          @change="carSeriesIdChange"
+        >
           <el-option
-            v-for="item in options"
+            v-for="item in carSeriesIdList"
             :key="item.value"
             :label="item.label"
             :value="item.value"
@@ -69,9 +90,9 @@
               >{{scope.row.taskName}}</el-link>
             </template>
           </el-table-column>
-          <el-table-column prop="ownerName" label="邀约对象" min-width="100" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="typeList" label="邀约对象" min-width="100" show-overflow-tooltip></el-table-column>
           <el-table-column prop="ownerItemList" label="邀约事项" min-width="100" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="typeList" label="邀约车型" min-width="130" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="carSeriesId" label="邀约车型" min-width="130" show-overflow-tooltip></el-table-column>
           <el-table-column prop="status" label="状态" min-width="80">
             <template slot-scope="scope">
               <!-- {{scope.row.status}} -->
@@ -149,9 +170,9 @@
               >{{scope.row.taskName}}</el-link>
             </template>
           </el-table-column>
-          <el-table-column prop="ownerName" label="邀约对象" min-width="100" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="typeList" label="邀约对象" min-width="100" show-overflow-tooltip></el-table-column>
           <el-table-column prop="ownerItemList" label="邀约事项" min-width="100" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="typeList" label="邀约车型" min-width="130" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="carSeriesId" label="邀约车型" min-width="130" show-overflow-tooltip></el-table-column>
           <el-table-column prop="status" label="状态" min-width="80">
             <template slot-scope="scope">
               <!-- {{scope.row.status}} -->
@@ -230,9 +251,9 @@
               >{{scope.row.taskName}}</el-link>
             </template>
           </el-table-column>
-          <el-table-column prop="ownerName" label="邀约对象" min-width="100" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="typeList" label="邀约对象" min-width="100" show-overflow-tooltip></el-table-column>
           <el-table-column prop="ownerItemList" label="邀约事项" min-width="100" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="typeList" label="邀约车型" min-width="130" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="carSeriesId" label="邀约车型" min-width="130" show-overflow-tooltip></el-table-column>
           <el-table-column prop="status" label="状态" min-width="80">
             <template slot-scope="scope">
               <!-- {{scope.row.status}} -->
@@ -246,14 +267,15 @@
           <el-table-column prop="num" label="任务量" min-width="80"></el-table-column>
 
           <el-table-column prop="listInvite" label="结算进度" min-width="80">
-            <!-- <template slot-scope="scope"> -->
-            <i class="el-icon-view"></i>
-            <!-- </template> -->
+            <template slot-scope="scope">
+              <i class="el-icon-view" @click="toSettlement(scope.row)"></i>
+            </template>
           </el-table-column>
           <el-table-column prop="address" label="结算清单" width="200">
-            <!-- <template slot-scope="scope"> -->
-            <img src="static/images/document/excle.png" width="16" alt srcset />
-            <!-- </template> -->
+            <template slot-scope="scope">
+              <img src="static/images/document/excle.png" width="16" alt srcset />
+              <el-link>{{scope.row.taskName}}</el-link>
+            </template>
           </el-table-column>
         </el-table>
       </div>
@@ -292,9 +314,9 @@
               >{{scope.row.taskName}}</el-link>
             </template>
           </el-table-column>
-          <el-table-column prop="ownerName" label="邀约对象" min-width="100" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="typeList" label="邀约对象" min-width="100" show-overflow-tooltip></el-table-column>
           <el-table-column prop="ownerItemList" label="邀约事项" min-width="100" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="typeList" label="邀约车型" min-width="130" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="carSeriesId" label="邀约车型" min-width="130" show-overflow-tooltip></el-table-column>
           <el-table-column prop="status" label="状态" min-width="80">
             <template slot-scope="scope">
               <!-- {{scope.row.status}} -->
@@ -316,9 +338,10 @@
           </el-table-column>
           <el-table-column prop="invMoney" label="总费用" min-width="100"></el-table-column>
           <el-table-column prop="address" label="结算清单" width="200">
-            <!-- <template slot-scope="scope"> -->
-            <img src="static/images/document/excle.png" width="16" alt srcset />
-            <!-- </template> -->
+            <template slot-scope="scope">
+              <img src="static/images/document/excle.png" width="16" alt srcset />
+              <el-link>{{scope.row.taskName}}</el-link>
+            </template>
           </el-table-column>
         </el-table>
       </div>
@@ -461,6 +484,27 @@ export default {
           type: true
         }
       ],
+      // 筛选start
+      typeList: [
+        {
+          value: 1,
+          label: '支持型'
+        },
+        {
+          value: 2,
+          label: '拍摄型'
+        },
+        {
+          value: 3,
+          label: '资源型'
+        }
+      ],
+      typeId: '',
+      itemIdList: [],
+      itemId: '',
+      carSeriesIdList: [],
+      carSeriesId: '',
+      // 筛选end
       options: [
         {
           value: '选项1',
@@ -522,6 +566,10 @@ export default {
   beforeMount() {},
   mounted() {
     // this.foreach()
+    ///////// 获取合作事项列表 start /////////
+    this.getshowOwnerType()
+    ///////// 获取车系列表 start /////////
+    this.getCarSeriesLists()
     ///////// 获取任务列表 /////////
     this.getTaskListAjax()
     ///////// 获取车主列表 start /////////
@@ -529,24 +577,93 @@ export default {
   },
   // 方法
   methods: {
-    ///////// 循环 start /////////
-    // foreach() {
-    //   for (let i = 0; i < 30; i++) {
-    //     // const element = array[i];
-    //     this.tableData.push({
-    //       id: i,
-    //       name: '2020年6月-长城-#校服女神#日常超精拍摄邀约',
-    //       type: '拍摄型车主',
-    //       matter: '日常素材',
-    //       vehicle: '长城哈佛H6',
-    //       state: '执行中',
-    //       taskNum: '6',
-    //       carNum: '6',
-    //       expertTime: '20-06-01'
-    //     })
-    //   }
-    // },
-    ///////// 循环 end /////////
+    ///////// 获取合作事项列表 start /////////
+    getshowOwnerType() {
+      let eventList = []
+      this.$axios
+        .post('/ocarplay/api/ownerType/showOwnerType', {})
+        .then(res => {
+          // console.log(res)
+          // this.loading = false
+          if (res.status == 200) {
+            // console.log(res)
+            let data = res.data.data
+            let itemIdList = []
+            data.forEach(element => {
+              // console.log(element)
+              let listId = element.itemIds.split('/')
+              let listName = element.itemName.split('/')
+              listId.forEach((element0, i) => {
+                itemIdList.push({
+                  value: element0,
+                  label: listName[i]
+                })
+              })
+            })
+            this.itemIdList = itemIdList
+            console.log(this.carSeriesList)
+          }
+        })
+    },
+    ///////// 获取合作事项列表 end /////////
+
+    ///////// 获取车系列表 start /////////
+    getCarSeriesLists() {
+      // console.log(data)
+      // console.log(1)
+      let eventList = []
+      this.$axios
+        .post('/ocarplay/api/carSeries/getCarSeriesLists', {})
+        .then(res => {
+          // console.log(res)
+          // this.loading = false
+          if (res.status == 200) {
+            // console.log(res)
+            let data = res.data.items
+            let carSeriesList = []
+            data.forEach(element => {
+              // console.log(element)
+              let listId = element.carSeriesIds.split('/')
+              let listName = element.carSeriesName.split('/')
+              listId.forEach((element0, i) => {
+                carSeriesList.push({
+                  value: element0,
+                  label: listName[i]
+                })
+              })
+            })
+            this.carSeriesIdList = carSeriesList
+            console.log(this.carSeriesList)
+            // this.tab2Items = eventDataList
+            // this.tab2act = eventDataList[0].id
+            // // console.log(this.tab2Items)
+            // // 获取车主列表
+            // this.CarSeriesLists()
+          }
+        })
+    },
+    ///////// 获取车系列表 end /////////
+
+    ///////// 任务列表对象筛选 start /////////
+    typeIdChange(id) {
+      // this.status = id
+      this.getTaskListAjax()
+    },
+    ///////// 任务列表对象筛选 end /////////
+
+    ///////// 任务列表事项筛选 start /////////
+    itemIdChange(id) {
+      // this.status = id
+      this.getTaskListAjax()
+    },
+    ///////// 任务列表事项筛选 end /////////
+
+    ///////// 任务列表车型筛选 start /////////
+    carSeriesIdChange(id) {
+      // this.status = id
+      this.getTaskListAjax()
+    },
+    ///////// 任务列表状态筛选 end /////////
 
     ///////// 获取任务列表状态筛选 start /////////
     statusChange(id) {
@@ -567,7 +684,10 @@ export default {
         pageSize: this.pageSize,
         task: {
           deleteFlag: false,
-          status: this.status
+          status: this.status,
+          typeId: this.typeId,
+          itemId: this.itemId,
+          carSeriesId: this.carSeriesId
         }
 
         // task: {
@@ -769,11 +889,11 @@ export default {
       }
       data.listInvite.forEach(element => {
         if (element.isCard) {
-          element.isCard=1
-        }else{
-          element.isCard=0
+          element.isCard = 1
+        } else {
+          element.isCard = 0
         }
-      });
+      })
       console.log(data)
       this.$axios
         .post('/ocarplay/task/save', data)
@@ -807,6 +927,17 @@ export default {
       })
     },
     ///////// 跳转任务详情页 end /////////
+
+    ///////// 跳转结算进度页 start /////////
+    toSettlement(prm) {
+      this.$router.push({
+        name: 'tasksettlement',
+        params: {
+          id: prm.taskId
+        }
+      })
+    },
+    ///////// 跳转结算进度页 end /////////
 
     ///////// 删除任务 start /////////
     delContent(id) {

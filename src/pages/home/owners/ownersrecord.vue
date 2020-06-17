@@ -42,12 +42,12 @@
           <el-table-column prop="schLine" label="路线" min-width="180"></el-table-column>
           <el-table-column prop="" label="地点" min-width="180">
             <template slot-scope="scope">
-              {{scope.row.province}}
+              {{scope.row.province}}{{scope.row.city}}{{scope.row.area}}
             </template>
           </el-table-column>
-          <el-table-column prop="address" label="预约组别" min-width="100" align="center"></el-table-column>
-          <el-table-column prop="address" label="预约车辆" min-width="100" align="center"></el-table-column>
-          <el-table-column prop="address" label="计划预约量" width="100" align="center"></el-table-column>
+          <el-table-column prop="deptName" label="预约组别" min-width="100" align="center"></el-table-column>
+          <el-table-column prop="carTypeName" label="预约车辆" min-width="100" align="center"></el-table-column>
+          <el-table-column prop="schNum" label="计划预约量" width="100" align="center"></el-table-column>
         </el-table>
       </div>
       <el-col :span="24" class="paging">

@@ -495,7 +495,14 @@ export default {
           this.placeName = data.placeName
           this.placeTypeId = data.placeTypeId
           this.address = data.address
-          let value = [data.province, data.city, data.area]
+          console.log()
+          
+          let value = []
+          if (data.province == '') {
+            value = [data.city, data.area]
+          }else{
+            value = [data.province, data.city, data.area]
+          }
           let optionsCity = this.optionsCity
           // console.log(this.getValue(value,optionsCity))
           this.district_code = this.getValue(value, optionsCity)

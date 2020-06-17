@@ -1,5 +1,5 @@
 <template>
-  <div id="sitecarownerlist">
+  <div id="tasksettlement">
     <!-- 头部选项框 start -->
     <el-row class="top">
       <!-- <el-row class="top"> -->
@@ -9,25 +9,23 @@
           返回
         </div>
       </el-col>
-      <el-col :span="8" class="center cont">车主信息</el-col>
-      <el-col :span="8" class="right cont">
-        <el-select v-model="memuValue" clearable placeholder="项目组" size="small" @change="memuValueChange">
-          <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          ></el-option>
-        </el-select>
-      </el-col>
-      <!-- </el-row> -->
+      <el-col :span="8" class="center cont">车主结算进度</el-col>
     </el-row>
     <!-- 头部选项框 end -->
 
     <!-- 内容列表 start -->
     <el-row class="content" v-loading="listLoading">
+      <el-col :span="5">
+        <div class="butBox">
+          <div :class="[tabact==1?'but act':'but']" @click="tab(1)">已结算</div>
+          <div :class="[tabact==0?'but act':'but']" @click="tab(0)">未结算</div>
+        </div>
+      </el-col>
+      <el-col :span="18">
+        <div style="height: 36px;line-height: 36px;">已结算{{isOverNum}}个车主</div>
+      </el-col>
       <el-col :span="24" class="table_list">
-        <div class="items" v-for="(item,index) in ownerList" :key="index" @click="toDetail(item)">
+        <div class="items" v-for="(item,index) in tasksettlementList" :key="index">
           <div class="left">
             <el-image :src="'/ocarplay/'+item.image" fit="cover"></el-image>
             <!-- <el-image src="/ocarplay/uploadtemp//doc/1591854750967.jpg" fit="cover"></el-image> -->
@@ -35,14 +33,15 @@
           <div class="right">
             <p>车主姓名：{{item.name}}</p>
             <p>
-              车主类型：
-              <template v-if="item.typeId == 1">支持型</template>
-              <template v-else-if="item.typeId == 2">拍摄型</template>
-              <template v-else-if="item.typeId == 3">资源型</template>
+              车主类型：{{item.typeName}}
             </p>
             <p>车主来源：{{item.sourceName}}</p>
           </div>
-          <div class="bottom">{{item.carSeriesName}}</div>
+          <div class="bottom">
+            结算费用{{item.money}}
+            <template v-if="item.isCard">现金</template>
+            <template v-else>油卡</template>
+          </div>
         </div>
       </el-col>
       <el-col :span="24" class="paging">
@@ -64,13 +63,14 @@ import cities from '@/common/cities.js' // 引入城市数据
 // import { matchType } from '@/utils/matchType' // 引入文件格式判断方法
 
 export default {
-  name: 'sitecarownerlist',
+  name: 'tasksettlement',
   components: {},
   data() {
     return {
+      tabact: 1,
       options: [
         {
-          value: "",
+          value: '',
           label: '全部车主'
         },
         {
@@ -86,9 +86,10 @@ export default {
           label: '资源型车主'
         }
       ],
-      memuValue: "",
+      memuValue: '',
       // 表格数据
-      ownerList: [],
+      tasksettlementList: [],
+      isOverNum: 0,
       listLoading: false,
       // 分页
       total: 0,
@@ -103,52 +104,57 @@ export default {
   beforeMount() {},
   mounted() {
     ///////// 获取车主列表 start /////////
-    this.getlistOwnerByCity()
+    this.getTasksettlementList(true)
+    console.log(this.$route.params.id)
   },
   // 方法
   methods: {
-    memuValueChange(res){
-      this.getlistOwnerByCity()
+    ///////// tab切换 start /////////
+    tab(e) {
+      this.tabact = e
+      let isOver = ''
+      if (e == 1) {
+        isOver = true
+      }else{
+        isOver = null
+      }
+      ///////// 获取结算进度 start /////////
+      this.getTasksettlementList(isOver)
     },
-    ///////// 获取车主列表 start /////////
-    getlistOwnerByCity() {
-      this.listLoading = true
+    ///////// tab切换 end /////////
+
+    ///////// 获取结算进度 start /////////
+    getTasksettlementList(isOver) {
       let data = {
-        pageNum: 1,
-        pageSize: 12,
-        place: {
-          city: this.$route.params.city
+        invite: {
+          taskId: this.$route.params.id,
+          isOver: isOver
         },
-        typeId: this.memuValue
+        pageNum: this.pageNum,
+        pageSize: this.pageSize
       }
       this.$axios
-        .post('/ocarplay/api/place/listOwnerByCity', data)
+        .post('/ocarplay/api/invite/getInvitePageListByTaskId', data)
         .then(res => {
-          // console.log(res)
-          this.listLoading = false
-          // this.drawerAdd = false
+          console.log(res)
           if (res.status == 200) {
             let data = res.data
-            this.ownerList = data.items
-            console.log(this.ownerList)
+            res.data.items.forEach(element => {
+              element.prove0 = ''
+            })
+            this.tasksettlementList = res.data.items
+            console.log(this.tasksettlementList)
             this.total = data.totalRows
+            if (isOver) {
+              this.isOverNum = data.totalRows
+            }
+            //       total: 0,
+            // pageSize: 10,
+            // pageNum: 1,
           }
         })
     },
-    ///////// 获取车主列表 end /////////
-
-    ///////// 跳转车主详情页 end /////////
-    toDetail(res){
-      // console.log(res)
-      this.$router.push({
-        name: 'ownersdetail',
-        params: {
-          typeId: res.typeId,
-          vehicleOwnerId: res.vehicleOwnerId
-        }
-      })
-    },
-    ///////// 跳转车主详情页 end /////////
+    ///////// 获取结算进度 end /////////
 
     ///////// 返回上一页 start /////////
     previous() {
@@ -172,7 +178,7 @@ export default {
 <style lang="scss" scoped>
 $white: #fff;
 $icoColor: rgb(106, 145, 232);
-#sitecarownerlist {
+#tasksettlement {
   height: 100%;
   .top {
     height: 88px;
@@ -218,8 +224,37 @@ $icoColor: rgb(106, 145, 232);
   .content {
     height: calc(100% - 88px);
     background: #fff;
+    .butBox {
+      width: 162px;
+      margin-left: 36px;
+      margin-bottom: 13px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      border-radius: 6px;
+      border: 1px solid rgb(205, 205, 205);
+      .but {
+        width: 81px;
+        height: 36px;
+        line-height: 36px;
+        text-align: center;
+        font-size: 14px;
+        cursor: pointer;
+        box-sizing: border-box;
+        border-left: 1px solid rgb(205, 205, 205);
+      }
+      .but:nth-of-type(1) {
+        border: none;
+      }
+      .but.act,
+      .but:hover {
+        font-weight: bold;
+        color: white;
+        background: rgb(106, 145, 232);
+      }
+    }
     .table_list {
-      height: calc(100% - 64px);
+      height: calc(100% - 115px);
       padding: 0 36px;
       display: flex;
       flex-wrap: wrap;

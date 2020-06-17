@@ -147,15 +147,15 @@ export default {
       // 表格数据
       options: [
         {
-          value: 1,
+          value: 105,
           label: '沃尔沃项目组'
         },
         {
-          value: 2,
+          value: 110,
           label: '吉利项目组'
         },
         {
-          value: 3,
+          value: 153,
           label: '长城项目组'
         }
       ],
@@ -203,7 +203,8 @@ export default {
       let data = {
         task: {
           deleteFlag: false,
-          status: 0
+          status: 0,
+          deptId: this.memuValue
         },
         pageNum: this.pageNum,
         pageSize: this.pageSize

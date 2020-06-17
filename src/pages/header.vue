@@ -46,7 +46,7 @@
         <!-- 用户信息 start -->
         <div class="admin">
           <!-- <i class="el-icon-bell"></i> -->
-          <div class="name">超级管理员</div>
+          <div class="name">{{this.$store.state.user.realName}}</div>
 
           <el-tooltip class="item" effect="dark" content="退出" placement="bottom">
             <i class="el-icon-switch-button"></i>

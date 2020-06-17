@@ -20,6 +20,9 @@
 
     <!-- 内容列表 start -->
     <el-row class="content">
+      <el-col :sapn="24" class="openAddBox">
+        <div class="openAdd" @click="openAddSchedule">新建日程</div>
+      </el-col>
       <el-calendar>
         <!-- 这里使用的是 2.5 slot 语法，对于新项目请使用 2.6 slot 语法-->
         <template slot="dateCell" slot-scope="{date, data}">
@@ -29,12 +32,25 @@
             >{{ data.day.split('-').slice(1).join('-') }} {{ data.isSelected ? '✔️' : ''}}</div>
 
             <!-- <div
-              class="schedule"
-              @click="scheduleDetail"
+              
               v-if="$date0(date) == $date0(new Date)"
-            >云图系统</div>
-            <div class="openAdd" v-else @click="openAddSchedule">新建日程</div>-->
-            <div v-for="(item, index) in ownerScheduleListData" :key="index">{{item.schName}}</div>
+            >云图系统</div>-->
+
+            <!-- {{date}} -->
+
+            <div
+              class="schedule"
+              @click="scheduleDetail(item.schId)"
+              v-for="(item, index) in ownerScheduleListData"
+              :key="index"
+              v-if="item.startGetTime<=date.getTime()&&item.endGetTime>=date.getTime()"
+            >
+              {{item.schName}}
+              <!-- {{item.startGetTime}} -->
+              <!-- {{item.endGetTime}} -->
+            </div>
+
+            <!-- {{date.getTime()}} -->
           </div>
         </template>
       </el-calendar>
@@ -43,35 +59,44 @@
 
     <!-- 抽屉弹窗提交任务 start -->
     <el-drawer title="日程预约" :visible.sync="scheduleRecord" size="572px">
-      <el-row class="scheduleRecord">
+      <el-row class="scheduleRecord" v-loading="drawerLoading">
         <el-col :span="4" class="key">任务名称</el-col>
         <el-col :span="1">:</el-col>
-        <el-col :span="19">日常超精拍摄邀约</el-col>
+        <el-col :span="19">{{preEditSchedule.schName}}</el-col>
         <el-col :span="4" class="key">开始时间</el-col>
         <el-col :span="1">:</el-col>
-        <el-col :span="19">2020-05-01 15:00</el-col>
+        <el-col :span="19">{{preEditSchedule.startTime}}</el-col>
         <el-col :span="4" class="key">时长</el-col>
         <el-col :span="1">:</el-col>
-        <el-col :span="19">5小时</el-col>
+        <el-col :span="19">
+          {{preEditSchedule.during}}
+          <template
+            v-if="preEditSchedule.duringType == false||preEditSchedule.duringType == 0"
+          >小时</template>
+          <template v-if="preEditSchedule.duringType == true||preEditSchedule.duringType == 1">天</template>
+          <template v-if="preEditSchedule.duringType == 2">月</template>
+        </el-col>
         <el-col :span="4" class="key">类型</el-col>
         <el-col :span="1">:</el-col>
-        <el-col :span="19">日常邀约拍摄</el-col>
+        <el-col :span="19">{{preEditSchedule.dayTypeName}}</el-col>
         <el-col :span="4" class="key">路线</el-col>
         <el-col :span="1">:</el-col>
-        <el-col :span="19">xxxxxxxx</el-col>
+        <el-col :span="19">{{preEditSchedule.schLine}}</el-col>
         <el-col :span="4" class="key">地点</el-col>
         <el-col :span="1">:</el-col>
-        <el-col :span="19">湖北省武汉市洪山区</el-col>
+        <el-col
+          :span="19"
+        >{{preEditSchedule.province}}{{preEditSchedule.city}}{{preEditSchedule.area}}</el-col>
         <el-col :span="4" class="key">备注</el-col>
         <el-col :span="1">:</el-col>
-        <el-col :span="19">xxxxxxxx</el-col>
+        <el-col :span="19">{{preEditSchedule.remark}}</el-col>
         <el-col :span="4" class="key">预约车主</el-col>
         <el-col :span="1">:</el-col>
         <el-col :span="19" class="appoin">
           <el-col :span="7">
-            <el-select v-model="value" clearable placeholder="预约组别">
+            <el-select v-model="deptId" clearable placeholder="预约组别">
               <el-option
-                v-for="item in options"
+                v-for="item in deptIdList"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -79,17 +104,18 @@
             </el-select>
           </el-col>
           <el-col :span="7">
-            <el-select v-model="value" clearable placeholder="预约车型">
+            <el-select v-model="carTypeId" clearable placeholder="预约车型">
               <el-option
-                v-for="item in options"
+                v-for="item in carTypeIdList"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
               ></el-option>
             </el-select>
+            <!-- <el-cascader v-model="carTypeId" :options="carTypeIdList" filterable></el-cascader> -->
           </el-col>
           <el-col :span="8">
-            <el-input placeholder="计划预约量" v-model="input" clearable></el-input>
+            <el-input placeholder="计划预约量" v-model="schNum" clearable></el-input>
           </el-col>
         </el-col>
 
@@ -98,7 +124,7 @@
             <el-button type="info">取消</el-button>
           </el-col>
           <el-col :span="8" :offset="3">
-            <el-button type="primary">下单预约</el-button>
+            <el-button type="primary" @click="schedulePlaceOrder">下单预约</el-button>
           </el-col>
         </el-col>
       </el-row>
@@ -116,7 +142,14 @@
         <el-col :span="4" class="key">开始时间</el-col>
         <el-col :span="1">:</el-col>
         <el-col :span="18">
-          <el-date-picker v-model="startTime" type="date" placeholder="选择日期"></el-date-picker>
+          <!-- <el-date-picker v-model="startTime" type="date" placeholder="选择日期"></el-date-picker> -->
+          <el-date-picker
+            v-model="tiemQuan"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          ></el-date-picker>
         </el-col>
         <el-col :span="4" class="key">时长</el-col>
         <el-col :span="1">:</el-col>
@@ -188,6 +221,7 @@ export default {
   components: {},
   data() {
     return {
+      num: [1],
       // 日程记录
       ownerId: this.$route.params.id,
       newDate: new Date(),
@@ -200,28 +234,7 @@ export default {
       addSchedule: false,
       prepend: '1',
       select: '',
-      options: [
-        {
-          value: '选项1',
-          label: '黄金糕'
-        },
-        {
-          value: '选项2',
-          label: '双皮奶'
-        },
-        {
-          value: '选项3',
-          label: '蚵仔煎'
-        },
-        {
-          value: '选项4',
-          label: '龙须面'
-        },
-        {
-          value: '选项5',
-          label: '北京烤鸭'
-        }
-      ],
+      options: [],
       value: '',
       // 日程类型列表
       dayTypeListData: [],
@@ -232,15 +245,38 @@ export default {
       drawerLoading: false,
       // 日程添加数据
       schName: '',
+      tiemQuan: '',
       startTime: '',
+      endTime: '',
       during: '',
       duringType: '',
       dayTypeId: '',
       schLine: '',
+      carTypeId: '',
       // province: 'string',
       // city: 'string',
       // area: 'string',
-      remark: ''
+      remark: '',
+      deptId: '',
+      schNum: '',
+      // 日程详情
+      preEditSchedule: '',
+      // 组别列表
+      deptIdList: [
+        {
+          value: 105,
+          label: '沃尔沃'
+        },
+        {
+          value: 110,
+          label: '吉利'
+        },
+        {
+          value: 153,
+          label: '长城'
+        }
+      ],
+      carTypeIdList: []
     }
   },
   // 侦听器
@@ -254,6 +290,8 @@ export default {
     this.getOwnerScheduleList()
     ///////// 获取日程类型列表 start /////////
     this.getDayTypeList()
+    ///////// 获取车型列表 start /////////
+    this.getCarSeriesLists()
   },
   // 方法
   methods: {
@@ -266,6 +304,18 @@ export default {
     ///////// 返回上一页 end /////////
 
     ///////// 获取城市名称 end /////////
+    // 通过代码获取选择城市名称
+    getCascaderObj(val, opt) {
+      return val.map(function(value, index, array) {
+        for (var itm of opt) {
+          if (itm.value == value) {
+            opt = itm.children
+            return itm
+          }
+        }
+        return null
+      })
+    },
     handleChangeCity(e, form) {
       // 选择区域
       let add = this.getCascaderObj(e, this.optionsCity)
@@ -291,6 +341,15 @@ export default {
           console.log(res)
           if (res.status == 200) {
             let data = res.data
+            data.items.forEach(element => {
+              element.startGetTime = new Date(
+                element.startTime.replace(/-/g, '/')
+              ).getTime()
+              element.endGetTime =
+                new Date(element.endTime.replace(/-/g, '/')).getTime() +
+                2 * 8 * 60 * 60 * 1000
+            })
+
             this.ownerScheduleListData = data.items
             console.log(this.ownerScheduleListData)
           }
@@ -326,6 +385,34 @@ export default {
     },
     ///////// 获取日程类型列表 end /////////
 
+    ///////// 获取车型列表 start /////////
+    getCarSeriesLists() {
+      // this.listLoading = true
+      let data = {
+        ids: 0,
+        pageNum: 1,
+        pageSize: 30
+      }
+      this.$axios.post('/ocarplay/api/carType/getCarTypes', data).then(res => {
+        // console.log(res)
+        // this.listLoading = false
+        if (res.status == 200) {
+          let data = res.data.data
+          let carTypeIdList = []
+          data.forEach(element => {
+            carTypeIdList.push({
+              value: element.carTypeId,
+              label: element.carTypeName
+            })
+          })
+
+          this.carTypeIdList = carTypeIdList
+          // console.log(carSeriesListData)
+        }
+      })
+    },
+    ///////// 获取车型列表 end /////////
+
     ///////// 新建日程 start /////////
     saveOwnerSchedule() {
       this.drawerLoading = true
@@ -333,7 +420,8 @@ export default {
       let data = {
         ownerId: this.ownerId,
         schName: this.schName,
-        startTime: this.$date0(this.startTime),
+        startTime: this.$date0(this.tiemQuan[0]),
+        endTime: this.$date0(this.tiemQuan[1]),
         during: this.during,
         duringType: this.duringType,
         dayTypeId: this.dayTypeId,
@@ -378,11 +466,38 @@ export default {
             ///////// 获取日程列表 start /////////
             this.getOwnerScheduleList()
           } else {
-            this.$message.error('任务延期失败！')
+            this.$message.error(res.data.msg)
           }
         })
     },
     ///////// 新建日程 end /////////
+
+    ///////// 下单预约 start /////////
+    schedulePlaceOrder() {
+      this.drawerLoading = true
+      let district = this.district
+      let data = {
+        // ownerId: this.ownerId,
+        schId: this.preEditSchedule.schId,
+        deptId: this.deptId,
+        carTypeId: this.carTypeId,
+        schNum: this.schNum
+      }
+
+      this.$axios.post('/ocarplay/api/schedule/placeOrder', data).then(res => {
+        console.log(res)
+        if (res.status == 200) {
+          this.$message.success(res.data.msg)
+          this.drawerLoading = false
+          this.scheduleRecord = false
+          ///////// 获取日程列表 start /////////
+          this.getOwnerScheduleList()
+        } else {
+          this.$message.error(res.data.msg)
+        }
+      })
+    },
+    ///////// 下单预约 end /////////
 
     ///////// 确认 start /////////
     submit() {
@@ -424,8 +539,21 @@ export default {
     ///////// 打开新建日程 end /////////
 
     ///////// 打开日程详情 start /////////
-    scheduleDetail() {
+    scheduleDetail(id) {
       this.scheduleRecord = true
+      let data = {
+        schId: id
+      }
+      this.$axios
+        .post('/ocarplay/api/schedule/preEditSchedule', data)
+        .then(res => {
+          console.log(res)
+          if (res.status == 200) {
+            let data = res.data
+            this.preEditSchedule = data
+            // console.log(this.ownerScheduleListData)
+          }
+        })
     }
     ///////// 打开日程详情 end /////////
   }
@@ -487,6 +615,21 @@ $icoColor: rgb(106, 145, 232);
     height: calc(100% - 88px);
     background: #fff;
     overflow: hidden;
+    .openAddBox {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: flex-end;
+      .openAdd {
+        width: 150px;
+        height: 36px;
+        line-height: 36px;
+        background: #eee;
+        text-align: center;
+        cursor: pointer;
+        margin-right: 36px;
+      }
+    }
     .is-selected {
       color: $isColor;
     }
@@ -500,12 +643,7 @@ $icoColor: rgb(106, 145, 232);
       .time {
         width: 100%;
       }
-      .openAdd {
-        display: none;
-        width: 100%;
-        color: $isColor;
-        text-align: center;
-      }
+
       .schedule {
         margin: 0 auto;
         width: 90%;
@@ -515,11 +653,6 @@ $icoColor: rgb(106, 145, 232);
         text-align: center;
         background: $isColor;
         color: #fff;
-      }
-    }
-    .box:hover {
-      .openAdd {
-        display: block;
       }
     }
   }
