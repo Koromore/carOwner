@@ -34,6 +34,8 @@ export default {
   mounted() {
     // 路由获取
     this.getRoute()
+    // 清空缓存
+    this.$store.commit('clearToken')
   },
   // 方法
   methods: {
@@ -59,6 +61,9 @@ export default {
 </style>
 <style lang="scss">
 #home {
+  .el-drawer__body{
+    height: calc(100% - 87px);
+  }
   .omit {
     width: 100%;
     text-align: left;

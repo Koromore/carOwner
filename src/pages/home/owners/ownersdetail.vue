@@ -18,7 +18,11 @@
         </el-col>
         <!-- 上传照片 -->
         <el-col :span="24" class="upladImgBox">
-          <el-image class="upladImg" :src="'/ocarplay/'+ownerDetil.image" fit="cover"></el-image>
+          <el-image class="upladImg" :src="'/ocarplay/'+ownerDetil.image" fit="cover">
+            <div slot="error" class="image-slot">
+              <i class="el-icon-picture-outline"></i>
+            </div>
+          </el-image>
         </el-col>
         <!-- 车主信息 start -->
         <el-col :span="24" class="information information1">
@@ -190,7 +194,9 @@
               <div class="val">
                 <img src="static/images/document/ppt.png" width="24" alt srcset />
                 &nbsp;
-                <el-link>{{ownerDetil.cooperates[0].fileName}}</el-link>
+                <el-link
+                  @click="download(ownerDetil.cooperates[0])"
+                >{{ownerDetil.cooperates[0].fileName}}</el-link>
               </div>
             </el-col>
             <el-col :span="24" class="list">
@@ -203,11 +209,10 @@
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">合作时长</div>
-              <div
-                class="val"
-                v-for="(item, index) in ownerDetil.cooperates"
-                :key="index"
-              >{{parseInt(item.timeLimit/30)}}个月</div>
+              <div class="val" v-for="(item, index) in ownerDetil.cooperates" :key="index">
+                <template v-if="item.timeLimit>=30">{{parseInt(item.timeLimit/30)}}个月</template>
+                <template v-else>{{item.timeLimit}}天</template>
+              </div>
             </el-col>
           </el-col>
           <!-- 左右分割线 -->
@@ -423,13 +428,24 @@ export default {
         Addtest.push(add[i].label)
       }
       this.district = Addtest
-      console.log(Addtest)
+      // console.log(Addtest)
       // console.log(e)
       // console.log(form)
     },
     // 城市选择器切换
-    handleChange(val) {}
+    handleChange(val) {},
     ///////// 城市选择器 start /////////
+
+    ///////// 下载 start /////////
+    download(row) {
+      console.log(row)
+      let localPath = row.localPath
+      let a = document.createElement('a')
+      a.download = `${row.fileName}.${row.suffix}`
+      a.setAttribute('href', 'http://176.10.10.235:8080/ocarplay/' + localPath)
+      a.click()
+    }
+    ///////// 下载 end /////////
   }
 }
 </script>

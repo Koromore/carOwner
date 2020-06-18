@@ -52,7 +52,7 @@
           <el-table-column prop="prove" label="结算凭证" width="200" align="center">
             <template slot-scope="scope">
               <template v-if="!scope.row.isCard&&!scope.row.prove">
-                <el-input placeholder="请输入内容" v-model="scope.row.prove0" clearable size="mini"></el-input>
+                <el-input placeholder="请输入单号" v-model="scope.row.prove0" clearable size="mini"></el-input>
               </template>
               <template v-else-if="!scope.row.isCard&&scope.row.prove">{{scope.row.prove}}</template>
               <template v-else-if="scope.row.isCard&&!scope.row.prove">
@@ -154,14 +154,14 @@ export default {
       this.$axios
         .post('/ocarplay/api/invite/getInvitePageListByTaskId', data)
         .then(res => {
-          console.log(res)
+          // console.log(res)
           if (res.status == 200) {
             let data = res.data
             res.data.items.forEach(element => {
               element.prove0 = ''
             })
             this.inviteList = res.data.items
-            console.log(this.inviteList)
+            // console.log(this.inviteList)
             this.total = data.totalRows
             //       total: 0,
             // pageSize: 10,

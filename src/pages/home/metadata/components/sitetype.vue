@@ -26,9 +26,9 @@
         @current-change="changePage"
         :current-page="1"
         :page-sizes="[10, 20, 30, 40]"
-        :page-size="10"
+        :page-size="pageSize"
         layout="total, prev, pager, next ,sizes"
-        :total="100"
+        :total="total"
         background
       ></el-pagination>
     </el-col>
@@ -40,7 +40,9 @@
         <el-col :span="18">
           <el-input placeholder="请输入内容" v-model="placeTypeName" clearable></el-input>
         </el-col>
-        <el-col :span="24" class="btn">
+        
+      </el-row>
+      <el-col :span="24" class="btn">
           <el-col :span="6" :offset="5">
             <el-button type="info" @click="cancel">取消</el-button>
           </el-col>
@@ -48,7 +50,6 @@
             <el-button type="primary" @click="saveSubmit">提交</el-button>
           </el-col>
         </el-col>
-      </el-row>
     </el-drawer>
     <!-- 抽屉弹窗新增/编辑数据 end -->
   </div>
@@ -77,7 +78,11 @@ export default {
       ],
       // 弹窗开关
       drawerData: false,
-      drawerTietle: '新增数据'
+      drawerTietle: '新增数据',
+      // 分页数据
+      total: 0,
+      pageNum: 1,
+      pageSize: 10
     }
   },
   // 侦听器
@@ -99,10 +104,16 @@ export default {
     // 每页条数变化时触发事件
     changeSize(pageSize) {
       console.log(pageSize)
+      this.pageSize = pageSize
+      ///////// 获取场地类型列表 start /////////
+      this.getPlaceTypeList()
     },
     // 页码变换时触发事件
     changePage(pageNum) {
       console.log(pageNum)
+      this.pageNum = pageNum
+      ///////// 获取场地类型列表 start /////////
+      this.getPlaceTypeList()
     },
     ///////// 分页 end /////////
 
@@ -133,8 +144,8 @@ export default {
       this.loading = true
       let data = {
         ids: 0,
-        pageNum: 1,
-        pageSize: 30
+        pageNum: this.pageNum,
+        pageSize: this.pageSize
       }
       this.$axios
         .post('/ocarplay/api/placeType/listAjax', data)
@@ -144,7 +155,7 @@ export default {
           if (res.status == 200) {
             let data = res.data
             this.placeTypeListData = data.items
-
+            this.total = data.totalRows
           }
         })
     },

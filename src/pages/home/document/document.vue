@@ -14,7 +14,7 @@
             <template slot-scope="scope">0{{scope.$index+1}}</template>
           </el-table-column>
           <el-table-column prop="carTypeName" label="车主类型" min-width="130"></el-table-column>
-          <el-table-column prop="matter" label="合作事项" min-width="240"></el-table-column>
+          <el-table-column prop="coopItemsStr" label="合作事项" min-width="240"></el-table-column>
           <el-table-column prop="name" label="车主姓名" min-width="240"></el-table-column>
           <el-table-column prop="startTime" label="签约时间" min-width="130"></el-table-column>
           <el-table-column label="合同文件" min-width="360">
@@ -31,9 +31,9 @@
           @current-change="changePage"
           :current-page="1"
           :page-sizes="[10, 20, 30, 40]"
-          :page-size="10"
+          :page-size="pageSize"
           layout="total, prev, pager, next ,sizes"
-          :total="100"
+          :total="total"
           background
         ></el-pagination>
       </el-col>
@@ -49,7 +49,11 @@ export default {
   components: {},
   data() {
     return {
-      cooperateleListData: []
+      cooperateleListData: [],
+      // 分页数据
+      total: 0,
+      pageNum: 1,
+      pageSize: 10
     }
   },
   // 侦听器
@@ -65,12 +69,16 @@ export default {
   methods: {
     ///////// 获取文档列表 start /////////
     getCooperateListAjax() {
-      let data = {}
+      let data = {
+        pageNum: this.pageNum,
+        pageSize: this.pageSize,
+      }
       this.$axios.post('/ocarplay/api/cooperate/listAjax', data).then(res => {
         console.log(res)
         if (res.status == 200) {
           let data = res.data
           this.cooperateleListData = data.items
+          this.total = data.totalRows
           console.log(this.cooperateleListData)
         }
       })
@@ -82,16 +90,22 @@ export default {
     // 每页条数变化时触发事件
     changeSize(pageSize) {
       console.log(pageSize)
+      this.pageSize = pageSize
+      ///////// 获取文档列表 start /////////
+      this.getCooperateListAjax()
     },
     // 页码变换时触发事件
     changePage(pageNum) {
       console.log(pageNum)
+      this.pageNum = pageNum
+      ///////// 获取文档列表 start /////////
+      this.getCooperateListAjax()
     },
     ///////// 分页 end /////////
 
     ///////// 下载 start /////////
     download(row) {
-      console.log(row)
+      // console.log(row)
       let localPath = row.localPath
       let a = document.createElement('a')
       a.download = `${row.fileName}.${row.suffix}`

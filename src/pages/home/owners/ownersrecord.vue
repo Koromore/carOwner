@@ -25,7 +25,7 @@
           :data="ownerScheduleListData"
           style="width: 100%"
           :header-row-style="{'height': '70px','background': 'rgb(242, 242, 242)'}"
-          :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
+          :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)'}"
           height="100%"
         >
           <el-table-column prop label="序号" width="81" align="center">
@@ -75,29 +75,11 @@ export default {
   data() {
     return {
       // 表格数据
-      ownerScheduleListData: [
-        {
-          time: '20-05-04',
-          addressee: '解雨臣',
-          matter: '文案约稿',
-          title: 1,
-          link: '',
-          tele: '15996325468',
-          site: '湖北省武汉市洪山区武大园路武大航宇一期',
-          type: '1',
-          trackNum: '7894561234561',
-          evidence: '7894561234561',
-          budget: 500
-        }
-      ],
+      ownerScheduleListData: [],
       input: '',
       // 场地预览
-      urlImg:
-        'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
-      srcList: [
-        'https://fuss10.elemecdn.com/8/27/f01c15bb73e1ef3793e64e6b7bbccjpeg.jpeg',
-        'https://fuss10.elemecdn.com/1/8e/aeffeb4de74e2fde4bd74fc7b4486jpeg.jpeg'
-      ]
+      urlImg:'',
+      srcList: []
     }
   },
   // 侦听器

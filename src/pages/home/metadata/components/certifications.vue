@@ -29,7 +29,7 @@
         </el-table-column>
       </el-table>
     </div>
-    <el-col :span="24" class="paging">
+    <!-- <el-col :span="24" class="paging">
       <el-pagination
         @size-change="changeSize"
         @current-change="changePage"
@@ -40,7 +40,7 @@
         :total="100"
         background
       ></el-pagination>
-    </el-col>
+    </el-col> -->
 
     <!-- 抽屉弹窗新增/编辑数据 start -->
     <el-drawer
@@ -49,54 +49,60 @@
       size="566px"
       @close="drawerDataClose"
     >
-      <el-row class="drawerData">
-        <el-col :span="4">品牌名称:</el-col>
-        <el-col :span="18">
-          <el-select v-model="deptId" clearable placeholder="请选择" @change="deptChange">
-            <el-option
-              v-for="item in deptIdList"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            ></el-option>
-          </el-select>
-        </el-col>
-        <el-col :span="4">车型名称:</el-col>
-        <el-col :span="18">
-          <el-select v-model="carType" clearable placeholder="请选择">
-            <el-option
-              v-for="item in carTypesList"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            ></el-option>
-          </el-select>
-        </el-col>
-        <el-col :span="4">车型细分:</el-col>
-        <el-col :span="18">
-          <el-col class="carSeriesList" :span="24" v-for="(item, index) in subCarType" :key="index">
-            <!-- <el-col :span="6">
+      <el-scrollbar style="height:100%">
+        <el-row class="drawerData">
+          <el-col :span="4">品牌名称:</el-col>
+          <el-col :span="18">
+            <el-select v-model="deptId" clearable placeholder="请选择" @change="deptChange">
+              <el-option
+                v-for="item in deptIdList"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </el-col>
+          <el-col :span="4">车型名称:</el-col>
+          <el-col :span="18">
+            <el-select v-model="carType" clearable placeholder="请选择">
+              <el-option
+                v-for="item in carTypesList"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </el-col>
+          <el-col :span="4">车型细分:</el-col>
+          <el-col :span="18" style="height: auto">
+            <el-col
+              class="carSeriesList"
+              :span="24"
+              v-for="(item, index) in subCarType"
+              :key="index"
+            >
+              <!-- <el-col :span="6">
               <el-input placeholder="请输入内容" v-model="input" clearable></el-input>
-            </el-col>-->
-            <el-col :span="19">
-              <el-input placeholder="请输入内容" v-model="item.name" clearable></el-input>
+              </el-col>-->
+              <el-col :span="19">
+                <el-input placeholder="请输入内容" v-model="item.name" clearable></el-input>
+              </el-col>
+              <el-col :span="4" :offset="1" class="opera">
+                <i class="el-icon-delete" @click="delSubCarType(index)"></i>
+                <i class="el-icon-plus" @click="addSubCarType"></i>
+              </el-col>
             </el-col>
-            <el-col :span="4" :offset="1" class="opera">
-              <i class="el-icon-delete" @click="delSubCarType(index)"></i>
-              <i class="el-icon-plus" @click="addSubCarType"></i>
-            </el-col>
           </el-col>
+        </el-row>
+      </el-scrollbar>
+      <el-col :span="24" class="btn">
+        <el-col :span="6" :offset="5">
+          <el-button type="info" @click="cancel">取消</el-button>
         </el-col>
-
-        <el-col :span="24" class="btn">
-          <el-col :span="6" :offset="5">
-            <el-button type="info" @click="cancel">取消</el-button>
-          </el-col>
-          <el-col :span="6" :offset="2">
-            <el-button type="primary" @click="saveSubmit">提交</el-button>
-          </el-col>
+        <el-col :span="6" :offset="2">
+          <el-button type="primary" @click="saveSubmit">提交</el-button>
         </el-col>
-      </el-row>
+      </el-col>
     </el-drawer>
     <!-- 抽屉弹窗新增/编辑数据 end -->
   </div>
@@ -172,7 +178,11 @@ export default {
         {
           name: ''
         }
-      ]
+      ],
+      // 分页数据
+      total: 0,
+      pageNum: 1,
+      pageSize: 10
     }
   },
   // 侦听器
@@ -333,8 +343,8 @@ export default {
       this.listLoading = true
       let data = {
         ids: 0,
-        pageNum: 1,
-        pageSize: 30
+        pageNum: this.pageNum,
+        pageSize: this.pageSize
       }
       this.$axios
         .post('/ocarplay/api/carSeries/getCarSeriesLists', data)

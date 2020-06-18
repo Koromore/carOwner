@@ -212,28 +212,10 @@ $icoColor: rgb(106, 145, 232);
 </style>
 <style lang="scss">
 // 抽屉弹窗新增/编辑数据
-.drawerData {
-  position: relative;
-  box-sizing: border-box;
-  padding: 20px;
-  height: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  align-content: flex-start;
-  > .el-col {
-    height: 40px;
-    line-height: 40px;
-    margin-bottom: 49px;
-    font-size: 18px;
-  }
-  .keycontent {
-    align-self: flex-start;
-  }
-  .el-input,.el-select {
-    width: 100%;
-  }
+.el-drawer {
   .btn {
+    height: 54px;
+    background: white;
     position: absolute;
     left: 0;
     bottom: 0;
@@ -243,6 +225,32 @@ $icoColor: rgb(106, 145, 232);
       button {
         width: 100%;
       }
+    }
+  }
+  // el-scrollbar__view
+  .drawerData {
+    position: relative;
+    box-sizing: border-box;
+    padding: 20px;
+    padding-bottom: 54px;
+    // height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    align-content: flex-start;
+    > .el-col {
+      align-self: flex-start;
+      height: 40px;
+      line-height: 40px;
+      margin-bottom: 49px;
+      font-size: 18px;
+    }
+    .keycontent {
+      align-self: flex-start;
+    }
+    .el-input,
+    .el-select {
+      width: 100%;
     }
   }
 }

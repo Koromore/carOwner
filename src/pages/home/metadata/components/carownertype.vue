@@ -23,7 +23,7 @@
         </el-table-column>
       </el-table>
     </div>
-    <el-col :span="24" class="paging">
+    <!-- <el-col :span="24" class="paging">
       <el-pagination
         @size-change="changeSize"
         @current-change="changePage"
@@ -34,55 +34,63 @@
         :total="100"
         background
       ></el-pagination>
-    </el-col>
+    </el-col> -->
     <!-- 抽屉弹窗新增/编辑数据 start -->
     <el-drawer :title="drawerTietle" :visible.sync="drawerData" size="720px">
-      <el-row class="drawerData">
-        <el-col :span="4">车主类型:</el-col>
-        <el-col :span="18">
-          <el-select v-model="typeId" clearable placeholder="请选择" @change="typeIdChange">
-            <el-option
-              v-for="item in ownerType"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            ></el-option>
-          </el-select>
-        </el-col>
-        <el-col :span="4" style="align-self: start;">合作事项:</el-col>
-        <el-col :span="18">
-          <el-col :span="24" v-for="(item, index) in cooperList" :key="index" class="list" v-show="!item.deleteFlag">
-            <el-col :span="10">
-              <el-input placeholder="请输入内容" v-model="item.itemName" clearable></el-input>
-            </el-col>
-            <el-col :span="6" :offset="1">
-              <el-switch
-                style="display: block"
-                v-model="item.isCard"
-                active-color="#13ce66"
-                inactive-color="#ff4949"
-                active-text="现金"
-                inactive-text="油卡"
-              ></el-switch>
-            </el-col>
-            <el-col :span="4">
-              <el-input placeholder="金额" v-model="item.money" clearable></el-input>
-            </el-col>
-            <el-col :span="3">
-              <i class="el-icon-plus" @click="addCooperList"></i>
-              <i class="el-icon-delete" @click="delCooperList(index)"></i>
+      <el-scrollbar style="height:100%">
+        <el-row class="drawerData">
+          <el-col :span="4">车主类型:</el-col>
+          <el-col :span="18">
+            <el-select v-model="typeId" clearable placeholder="请选择" @change="typeIdChange">
+              <el-option
+                v-for="item in ownerType"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </el-col>
+          <el-col :span="4" style="align-self: start;">合作事项:</el-col>
+          <el-col :span="18" style="height: auto;">
+            <el-col
+              :span="24"
+              v-for="(item, index) in cooperList"
+              :key="index"
+              class="list"
+              v-show="!item.deleteFlag"
+            >
+              <el-col :span="10">
+                <el-input placeholder="请输入内容" v-model="item.itemName" clearable></el-input>
+              </el-col>
+              <el-col :span="6" :offset="1">
+                <el-switch
+                  style="display: block"
+                  v-model="item.isCard"
+                  active-color="#13ce66"
+                  inactive-color="#ff4949"
+                  active-text="现金"
+                  inactive-text="油卡"
+                ></el-switch>
+              </el-col>
+              <el-col :span="4">
+                <el-input placeholder="金额" v-model="item.money" clearable></el-input>
+              </el-col>
+              <el-col :span="3">
+                <i class="el-icon-plus" @click="addCooperList"></i>
+                <i class="el-icon-delete" @click="delCooperList(index)"></i>
+              </el-col>
             </el-col>
           </el-col>
+        </el-row>
+      </el-scrollbar>
+      <el-col :span="24" class="btn">
+        <el-col :span="6" :offset="5">
+          <el-button type="info">取消</el-button>
         </el-col>
-        <el-col :span="24" class="btn">
-          <el-col :span="6" :offset="5">
-            <el-button type="info">取消</el-button>
-          </el-col>
-          <el-col :span="6" :offset="2">
-            <el-button type="primary" @click="saveSubmit">提交</el-button>
-          </el-col>
+        <el-col :span="6" :offset="2">
+          <el-button type="primary" @click="saveSubmit">提交</el-button>
         </el-col>
-      </el-row>
+      </el-col>
     </el-drawer>
     <!-- 抽屉弹窗新增/编辑数据 end -->
   </div>
@@ -219,7 +227,7 @@ export default {
           typeId: this.typeId,
           itemId: element,
           itemName: itemNames[i],
-          money: moneys[i]*1,
+          money: moneys[i] * 1,
           isCard: '',
           deleteFlag: false
         }

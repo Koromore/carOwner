@@ -60,15 +60,17 @@ export default new Vuex.Store({
     userSign: '', // 用户信息带参
     // isLogin: 'error', //error/success, // 是否登陆
     isLogin: 'success', //error/success, // 是否登陆
-    isRouterAlive: true // 控制页面刷新
+    isRouterAlive: true, // 控制页面刷新
+    taskStatusNum: 0
   },
   action: {
 
   },
   mutations: {
     // 项目列表我参与/我发起显示
-    projectListShow(state, data) {
-      state.projectListNum = data
+    taskStatus(state, data) {
+      state.taskStatusNum = data
+      console.log(data)
     },
     // 项目列表我发起分页记录
     projectPageNumRecord(state, data) {
@@ -114,25 +116,27 @@ export default new Vuex.Store({
      * [clearToken 清除token信息]
      */
     clearToken(state, data) {
-      console.log('拦截错误信息,应该跳登录了');
+      console.log('清空缓存');
       // window.sessionStorage.setItem('isLogin','error');
       // state.isLogin = 'error';
 
       //清空 localStorage 的值 并跳转扫码页
-      // localStorage.removeItem('user');
-      // localStorage.removeItem('token');
-      // localStorage.removeItem('userSign');
-      // window.location.replace('http://guoxin.insun-china.com/hrm');
+      localStorage.removeItem('user');
+      localStorage.removeItem('token');
+      localStorage.removeItem('userSign');
 
     },
     //退出登录
     logout(state, data) {
+      console.log('退出登录');
       // window.sessionStorage.setItem('isLogin', 'error');
       // state.isLogin = 'error';
       // //清空 localStorage 的值
-      // localStorage.removeItem('user');
-      // localStorage.removeItem('token');
-      // localStorage.removeItem('userSign');
+      localStorage.removeItem('user');
+      localStorage.removeItem('token');
+      localStorage.removeItem('userSign');
+      window.location.replace('http://guoxin.insun-china.com/hrm');
+
     }
   }
 })

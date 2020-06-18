@@ -248,9 +248,23 @@ export default {
             if (tab1act == 0) {
               if (tab2act == 0) {
                 data.data.forEach(element => {
-                  chartKeyData.push(element.TYPE)
+                  chartKeyData.push(element.type)
                   chartvalData.push(element.num)
                 })
+                chartKeyData.forEach((element, i) => {
+                  if (element == 0) {
+                    chartKeyData[i] = '执行中'
+                  }else if (element == 1) {
+                    chartKeyData[i] = '结算中'
+                  }else if (element == 2) {
+                    chartKeyData[i] = '已完成'
+                  }else if (element == 3) {
+                    chartKeyData[i] = '延期'
+                  }
+                  else if (element == 4) {
+                    chartKeyData[i] = '延期'
+                  }
+                });
                 this.chartKeyData = chartKeyData
                 this.chartvalData = chartvalData
                 // 图表生成
@@ -278,12 +292,14 @@ export default {
                 this.echartsBar()
               } else if (tab2act == 3) {
                 data.data.forEach(element => {
-                  chartKeyData.push(element.TYPE)
+                  chartKeyData.push(element.TYPE || '默认')
                   chartvalData.push({
                     value: element.num,
-                    label: element.TYPE
+                    name: element.TYPE || '默认'
                   })
                 })
+                console.log(chartKeyData)
+                console.log(chartvalData)
                 this.chartKeyData = chartKeyData
                 this.chartvalData = chartvalData
                 // 图表生成
@@ -323,10 +339,10 @@ export default {
                 this.echartsBar()
               } else if (tab2act == 3) {
                 data.data.forEach(element => {
-                  chartKeyData.push(element.TYPE)
+                  chartKeyData.push(element.TYPE || '默认')
                   chartvalData.push({
                     value: element.num,
-                    label: element.TYPE
+                    name: element.TYPE || '默认'
                   })
                 })
                 this.chartKeyData = chartKeyData
@@ -348,10 +364,10 @@ export default {
                 this.echartsBar()
               } else if (tab2act == 1) {
                 data.data.forEach(element => {
-                  chartKeyData.push(element.TYPE)
+                  chartKeyData.push(element.TYPE || '默认')
                   chartvalData.push({
                     value: element.num,
-                    label: element.TYPE
+                    name: element.TYPE || '默认'
                   })
                 })
                 this.chartKeyData = chartKeyData
@@ -373,10 +389,10 @@ export default {
                 this.echartsBar()
               } else if (tab2act == 1) {
                 data.data.forEach(element => {
-                  chartKeyData.push(element.TYPE)
+                  chartKeyData.push(element.TYPE || '默认')
                   chartvalData.push({
                     value: element.num,
-                    label: element.TYPE
+                    name: element.TYPE || '默认'
                   })
                 })
                 this.chartKeyData = chartKeyData
@@ -459,7 +475,7 @@ export default {
         },
         series: [
           {
-            name: '访问来源',
+            name: '项目组',
             type: 'pie',
             radius: '70%',
             center: ['50%', '50%'],

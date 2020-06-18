@@ -21,18 +21,18 @@
         </el-table-column>
       </el-table>
     </div>
-    <el-col :span="24" class="paging">
+    <!-- <el-col :span="24" class="paging">
       <el-pagination
         @size-change="changeSize"
         @current-change="changePage"
         :current-page="1"
         :page-sizes="[10, 20, 30, 40]"
-        :page-size="10"
+        :page-size="pageSize"
         layout="total, prev, pager, next ,sizes"
-        :total="100"
+        :total="total"
         background
       ></el-pagination>
-    </el-col>
+    </el-col> -->
 
     <!-- 抽屉弹窗新增/编辑数据 start -->
     <el-drawer :title="drawerTietle" :visible.sync="drawerData" size="566px" @close="drawerDataClose">
@@ -41,7 +41,9 @@
         <el-col :span="18">
           <el-input placeholder="请输入内容" v-model="skillName" clearable></el-input>
         </el-col>
-        <el-col :span="24" class="btn">
+        
+      </el-row>
+      <el-col :span="24" class="btn">
           <el-col :span="6" :offset="5">
             <el-button type="info" @click="cancel">取消</el-button>
           </el-col>
@@ -49,7 +51,6 @@
             <el-button type="primary" @click="saveSubmit">提交</el-button>
           </el-col>
         </el-col>
-      </el-row>
     </el-drawer>
     <!-- 抽屉弹窗新增/编辑数据 end -->
   </div>
@@ -72,7 +73,11 @@ export default {
       ownerSkillData: [],
       // 弹窗开关
       drawerData: false,
-      drawerTietle: '新增数据'
+      drawerTietle: '新增数据',
+      // 分页数据
+      total: 0,
+      pageNum: 1,
+      pageSize: 10
     }
   },
   // 侦听器
@@ -94,10 +99,16 @@ export default {
     // 每页条数变化时触发事件
     changeSize(pageSize) {
       console.log(pageSize)
+      this.pageSize = pageSize
+      ///////// 获取特长列表 start /////////
+      this.getOwnerSkillList()
     },
     // 页码变换时触发事件
     changePage(pageNum) {
       console.log(pageNum)
+      this.pageNum = pageNum
+      ///////// 获取特长列表 start /////////
+      this.getOwnerSkillList()
     },
     ///////// 分页 end /////////
 
@@ -139,7 +150,7 @@ export default {
           if (res.status == 200) {
             let data = res.data
             this.ownerSkillData = data
-
+            this.total = data.totalRows
           }
         })
     },

@@ -92,7 +92,7 @@
           </el-table-column>
           <el-table-column prop="typeList" label="邀约对象" min-width="100" show-overflow-tooltip></el-table-column>
           <el-table-column prop="ownerItemList" label="邀约事项" min-width="100" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="carSeriesId" label="邀约车型" min-width="130" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="carSeriesName" label="邀约车型" min-width="130" show-overflow-tooltip></el-table-column>
           <el-table-column prop="status" label="状态" min-width="80">
             <template slot-scope="scope">
               <!-- {{scope.row.status}} -->
@@ -172,7 +172,7 @@
           </el-table-column>
           <el-table-column prop="typeList" label="邀约对象" min-width="100" show-overflow-tooltip></el-table-column>
           <el-table-column prop="ownerItemList" label="邀约事项" min-width="100" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="carSeriesId" label="邀约车型" min-width="130" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="carSeriesName" label="邀约车型" min-width="130" show-overflow-tooltip></el-table-column>
           <el-table-column prop="status" label="状态" min-width="80">
             <template slot-scope="scope">
               <!-- {{scope.row.status}} -->
@@ -206,7 +206,7 @@
               </el-tooltip>
 
               <el-tooltip class="item" effect="dark" content="提交任务" placement="top">
-                <i class="el-icon-circle-check" @click="putTask"></i>
+                <i class="el-icon-circle-check" @click="putTask(scope.row)"></i>
               </el-tooltip>
 
               <el-tooltip class="item" effect="dark" content="删除任务" placement="top">
@@ -253,7 +253,7 @@
           </el-table-column>
           <el-table-column prop="typeList" label="邀约对象" min-width="100" show-overflow-tooltip></el-table-column>
           <el-table-column prop="ownerItemList" label="邀约事项" min-width="100" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="carSeriesId" label="邀约车型" min-width="130" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="carSeriesName" label="邀约车型" min-width="130" show-overflow-tooltip></el-table-column>
           <el-table-column prop="status" label="状态" min-width="80">
             <template slot-scope="scope">
               <!-- {{scope.row.status}} -->
@@ -274,7 +274,7 @@
           <el-table-column prop="address" label="结算清单" width="200">
             <template slot-scope="scope">
               <img src="static/images/document/excle.png" width="16" alt srcset />
-              <el-link>{{scope.row.taskName}}</el-link>
+              <el-link @click="exportInvite(scope.row)">{{scope.row.taskName}}</el-link>
             </template>
           </el-table-column>
         </el-table>
@@ -316,7 +316,7 @@
           </el-table-column>
           <el-table-column prop="typeList" label="邀约对象" min-width="100" show-overflow-tooltip></el-table-column>
           <el-table-column prop="ownerItemList" label="邀约事项" min-width="100" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="carSeriesId" label="邀约车型" min-width="130" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="carSeriesName" label="邀约车型" min-width="130" show-overflow-tooltip></el-table-column>
           <el-table-column prop="status" label="状态" min-width="80">
             <template slot-scope="scope">
               <!-- {{scope.row.status}} -->
@@ -340,7 +340,7 @@
           <el-table-column prop="address" label="结算清单" width="200">
             <template slot-scope="scope">
               <img src="static/images/document/excle.png" width="16" alt srcset />
-              <el-link>{{scope.row.taskName}}</el-link>
+              <el-link @click="exportInvite(scope.row)">{{scope.row.taskName}}</el-link>
             </template>
           </el-table-column>
         </el-table>
@@ -381,7 +381,7 @@
         <!-- 底部按钮 -->
         <el-col :span="24" class="btn">
           <el-col :span="6" :offset="5">
-            <el-button type="info">取消</el-button>
+            <el-button type="info" @click="cancel">取消</el-button>
           </el-col>
           <el-col :span="6" :offset="2">
             <el-button type="primary" @click="putDelay">提交</el-button>
@@ -393,74 +393,78 @@
 
     <!-- 抽屉弹窗提交任务 start -->
     <el-drawer title="提交任务" :visible.sync="drawerPuttask" size="720px">
-      <el-row class="drawerPuttask" v-loading="drawerLoading">
-        <el-col :span="4">任务名称:</el-col>
-        <el-col :span="20">{{taskName}}</el-col>
-        <el-col :span="4" class="keycontent">结算明细:</el-col>
-        <el-col :span="20">
+      <el-scrollbar style="height:100%">
+        <el-row class="drawerPuttask" v-loading="drawerLoading">
+          <el-col :span="4">任务名称:</el-col>
+          <el-col :span="20">{{taskName}}</el-col>
+          <el-col :span="4" class="keycontent">结算明细:</el-col>
           <el-col :span="20">
-            <el-input placeholder="搜索车主" suffix-icon="el-icon-search" v-model="input"></el-input>
+            <el-col :span="20">
+              <el-input placeholder="搜索车主" suffix-icon="el-icon-search" v-model="input"></el-input>
+            </el-col>
+            <el-col
+              :span="24"
+              class="detailList"
+              v-for="(item, index) in listInviteList"
+              :key="index"
+            >
+              <el-col :span="5">
+                <!-- <el-input placeholder="车主姓名" v-model="item.ownersName" clearable></el-input> -->
+                <el-cascader
+                  :options="options2"
+                  v-model="item.inviteData"
+                  clearable
+                  filterable
+                  :show-all-levels="false"
+                ></el-cascader>
+              </el-col>
+              <el-col :span="6">
+                <el-input placeholder="链接" v-model="item.url" clearable></el-input>
+              </el-col>
+              <el-col :span="4">
+                <el-input placeholder="金额" v-model="item.money" clearable></el-input>
+              </el-col>
+              <el-col :span="6">
+                <el-switch
+                  style="display: block"
+                  v-model="item.isCard"
+                  active-color="#13ce66"
+                  inactive-color="#ff4949"
+                  active-text="现金"
+                  inactive-text="油卡"
+                ></el-switch>
+              </el-col>
+              <!-- {{item}}-{{index}} -->
+              <el-col :span="2">
+                <!-- <template v-if="index == listInviteList.length-1"> -->
+                <i class="el-icon-delete" @click="delDetailList(index)"></i>
+                <i class="el-icon-circle-plus-outline" @click="addDetailList"></i>
+                <!-- </template> -->
+              </el-col>
+            </el-col>
+            <!-- <el-col :span="24"></el-col>
+            <el-col :span="24"></el-col>-->
           </el-col>
-          <el-col
-            :span="24"
-            class="detailList"
-            v-for="(item, index) in listInviteList"
-            :key="index"
-          >
-            <el-col :span="5">
-              <!-- <el-input placeholder="车主姓名" v-model="item.ownersName" clearable></el-input> -->
-              <el-cascader
-                :options="options2"
-                v-model="item.inviteData"
-                clearable
-                filterable
-                :show-all-levels="false"
-              ></el-cascader>
-            </el-col>
-            <el-col :span="6">
-              <el-input placeholder="链接" v-model="item.url" clearable></el-input>
-            </el-col>
-            <el-col :span="4">
-              <el-input placeholder="金额" v-model="item.money" clearable></el-input>
-            </el-col>
-            <el-col :span="6">
-              <el-switch
-                style="display: block"
-                v-model="item.isCard"
-                active-color="#13ce66"
-                inactive-color="#ff4949"
-                active-text="现金"
-                inactive-text="油卡"
-              ></el-switch>
-            </el-col>
-            <!-- {{item}}-{{index}} -->
-            <el-col :span="2">
-              <!-- <template v-if="index == listInviteList.length-1"> -->
-              <i class="el-icon-delete" @click="delDetailList(index)"></i>
-              <i class="el-icon-circle-plus-outline" @click="addDetailList"></i>
-              <!-- </template> -->
-            </el-col>
-          </el-col>
-          <!-- <el-col :span="24"></el-col>
-          <el-col :span="24"></el-col>-->
-        </el-col>
+        </el-row>
+      </el-scrollbar>
 
-        <!-- 底部按钮 -->
-        <el-col :span="24" class="btn">
-          <el-col :span="6" :offset="5">
-            <el-button type="info">取消</el-button>
-          </el-col>
-          <el-col :span="6" :offset="2">
-            <el-button type="primary" @click="submitBtn">提交</el-button>
-          </el-col>
+      <!-- 底部按钮 -->
+      <el-col :span="24" class="btn">
+        <el-col :span="6" :offset="5">
+          <el-button type="info" @click="cancel">取消</el-button>
         </el-col>
-      </el-row>
+        <el-col :span="6" :offset="2">
+          <el-button type="primary" @click="submitBtn">提交</el-button>
+        </el-col>
+      </el-col>
     </el-drawer>
     <!-- 抽屉弹窗提交任务 end -->
   </div>
 </template>
 <script>
 // import { matchType } from '@/utils/matchType' // 引入文件格式判断方法
+import FileSaver from 'file-save'
+import { saveAs } from 'file-saver'
 
 export default {
   name: 'task',
@@ -505,32 +509,11 @@ export default {
       carSeriesIdList: [],
       carSeriesId: '',
       // 筛选end
-      options: [
-        {
-          value: '选项1',
-          label: '黄金糕'
-        },
-        {
-          value: '选项2',
-          label: '双皮奶'
-        },
-        {
-          value: '选项3',
-          label: '蚵仔煎'
-        },
-        {
-          value: '选项4',
-          label: '龙须面'
-        },
-        {
-          value: '选项5',
-          label: '北京烤鸭'
-        }
-      ],
+      options: [],
       value: '',
       // 表格数据
       loading: false,
-      status: 0,
+      status: this.$store.state.taskStatusNum,
       taskListData: [],
       // 分页信息
       pageNum: 1,
@@ -601,7 +584,6 @@ export default {
               })
             })
             this.itemIdList = itemIdList
-            console.log(this.carSeriesList)
           }
         })
     },
@@ -609,20 +591,15 @@ export default {
 
     ///////// 获取车系列表 start /////////
     getCarSeriesLists() {
-      // console.log(data)
-      // console.log(1)
       let eventList = []
       this.$axios
         .post('/ocarplay/api/carSeries/getCarSeriesLists', {})
         .then(res => {
           // console.log(res)
-          // this.loading = false
           if (res.status == 200) {
-            // console.log(res)
             let data = res.data.items
             let carSeriesList = []
             data.forEach(element => {
-              // console.log(element)
               let listId = element.carSeriesIds.split('/')
               let listName = element.carSeriesName.split('/')
               listId.forEach((element0, i) => {
@@ -633,12 +610,6 @@ export default {
               })
             })
             this.carSeriesIdList = carSeriesList
-            console.log(this.carSeriesList)
-            // this.tab2Items = eventDataList
-            // this.tab2act = eventDataList[0].id
-            // // console.log(this.tab2Items)
-            // // 获取车主列表
-            // this.CarSeriesLists()
           }
         })
     },
@@ -702,6 +673,7 @@ export default {
             element.typeList = []
             element.ownerItemList = []
             element.ownerName = []
+            element.invMoney = 0
             element.listInvite.forEach(element1 => {
               // console.log(element1)
               if (element1.listOwnerType) {
@@ -709,6 +681,7 @@ export default {
                 element.ownerItemList.push(element1.listOwnerItem[0].itemName)
                 element.ownerName.push(element1.realName)
               }
+              element.invMoney += element1.money
             })
             element.typeList = element.typeList.join(',')
             element.ownerItemList = element.ownerItemList.join(',')
@@ -725,6 +698,7 @@ export default {
 
     ///////// 添加任务 start /////////
     addTask(type, id) {
+      this.$store.commit('taskStatus', this.status)
       this.$router.push({
         path: '/home/addtask',
         query: { type: type, id: id }
@@ -800,7 +774,7 @@ export default {
           // console.log(res)
           if (res.status == 200) {
             let data = res.data
-            console.log(data)
+            // console.log(data)
             let list = []
             data.forEach((element, i) => {
               list.push({
@@ -885,6 +859,7 @@ export default {
       let data = {
         taskId: this.taskId,
         status: 1,
+        updateTime: this.$time0(new Date()),
         listInvite: listInviteList
       }
       data.listInvite.forEach(element => {
@@ -930,6 +905,7 @@ export default {
 
     ///////// 跳转结算进度页 start /////////
     toSettlement(prm) {
+      this.$store.commit('taskStatus', this.status)
       this.$router.push({
         name: 'tasksettlement',
         params: {
@@ -973,8 +949,85 @@ export default {
       //     this.$message.error('网络错误！')
       //   // }
       // })
-    }
+    },
     ///////// 删除任务 end /////////
+
+    ///////// 导出结算清单 end /////////
+    exportInvite(prm) {
+      let data = {
+        taskId: prm.taskId
+      }
+      this.$axios
+        .post('/ocarplay/api/invite/exportInvite', data, {
+          responseType: 'blob' //--设置请求数据格式
+        })
+        .then(res => {
+          console.log(res)
+          if (res.status == 200) {
+            // this.$message.success('删除任务成功！')
+            // ///////// 获取任务列表 start /////////
+            // this.getTaskListAjax()
+            var blob = new Blob([res.data], {
+              type: 'text/plain;charset=utf-8'
+            })
+            saveAs(blob, prm.taskName + '.xls')
+          } else {
+            this.$message.error('删除任务失败！')
+          }
+        })
+    },
+    ///////// 导出结算清单 end /////////
+
+    ///////// 取消按钮 start /////////
+    cancel() {
+      this.drawerDelay = false
+      this.drawerPuttask = false
+      // 延期任务数据清除
+      this.delayTime = ''
+      this.delayReason = ''
+      // 提交任务数据清除
+      this.input = ''
+    },
+    ///////// 取消按钮 end /////////
+
+    /**
+     * [exportBtn] 导出Excel
+     */
+    exportBtn() {
+      // console.log(this.Cpoint)
+      // console.log(this.Structure)
+      var type = ''
+      if (this.Cpoint && this.Structure) {
+        type = 3
+      } else if (this.Cpoint) {
+        type = 1
+      } else if (this.Structure) {
+        type = 2
+      } // return;
+      this.exportExl = false // this.$axios.post("/nmbs_back/api/idea/exportMyExcel?type=3&ideaId=" + this.ideaId,{},{
+      this.$axios
+        .post(
+          '/nmbs_back/api/idea/exportMyExcel?type=' +
+            type +
+            '&ideaId=' +
+            this.ideaId,
+          {},
+          {
+            headers: {
+              'content-type': 'application/json; charset=utf-8'
+            },
+            responseType: 'blob' //--设置请求数据格式
+          }
+        )
+        .then(res => {
+          console.log(res.data)
+          var blob = new Blob([res.data], { type: 'text/plain;charset=utf-8' })
+          // saveAs(blob, '导出excel.xls')
+        })
+        .catch(() => {
+          console.log('捕获错误')
+        })
+    }
   }
 }
 </script>
@@ -1097,6 +1150,8 @@ $statusColor4: #ea8a85;
     position: relative;
     box-sizing: border-box;
     padding: 20px;
+    padding-bottom: 54px;
+    padding-bottom: 20px;
     height: 100%;
     display: flex;
     flex-wrap: wrap;
@@ -1125,6 +1180,7 @@ $statusColor4: #ea8a85;
     }
   }
   .btn {
+    height: 54px;
     position: absolute;
     left: 0;
     bottom: 0;

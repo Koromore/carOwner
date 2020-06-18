@@ -101,7 +101,16 @@
           <el-table-column prop="timeLimit" label="合作时长" min-width="81"></el-table-column>
           <el-table-column prop="coopMoney" label="合作费用" min-width="81"></el-table-column>
           <el-table-column prop="coopNum" label="固定合作总量" min-width="100"></el-table-column>
-          <el-table-column prop="alreadyCooperateNum" label="历史合作次数" min-width="100"></el-table-column>
+          <el-table-column prop="alreadyCooperateNum" label="历史合作次数" min-width="100">
+            <template slot-scope="scope">
+              <template v-if="scope.row.alreadyCooperateNum">
+                {{scope.row.alreadyCooperateNum}}
+              </template>
+              <template v-else>
+                0
+              </template>
+            </template>
+          </el-table-column>
           <el-table-column prop="surplusnum" label="剩余合作次数" min-width="100">
             <template slot-scope="scope">{{scope.row.coopNum-scope.row.alreadyCooperateNum}}</template>
           </el-table-column>
@@ -161,7 +170,16 @@
           <el-table-column prop="skillName" label="特长" min-width="81"></el-table-column>
           <el-table-column prop="nickname" label="IP账号" min-width="81"></el-table-column>
           <el-table-column prop="timeLimit" label="合作时长" min-width="100"></el-table-column>
-          <el-table-column prop="alreadyCooperateNum" label="历史合作次数" min-width="100"></el-table-column>
+          <el-table-column prop="alreadyCooperateNum" label="历史合作次数" min-width="100">
+            <template slot-scope="scope">
+              <template v-if="scope.row.alreadyCooperateNum">
+                {{scope.row.alreadyCooperateNum}}
+              </template>
+              <template v-else>
+                0
+              </template>
+            </template>
+          </el-table-column>
           <el-table-column prop="currMonthCooperateNum" label="本月合作次数" min-width="100"></el-table-column>
           <el-table-column prop label="操作" width="230">
             <template slot-scope="scope">
@@ -217,7 +235,16 @@
           <el-table-column prop="skillName" label="特长" min-width="81"></el-table-column>
           <el-table-column prop="nickname" label="IP账号" min-width="81"></el-table-column>
           <el-table-column prop="timeLimit" label="合作时长" min-width="100"></el-table-column>
-          <el-table-column prop="alreadyCooperateNum" label="历史合作次数" min-width="100"></el-table-column>
+          <el-table-column prop="alreadyCooperateNum" label="历史合作次数" min-width="100">
+            <template slot-scope="scope">
+              <template v-if="scope.row.alreadyCooperateNum">
+                {{scope.row.alreadyCooperateNum}}
+              </template>
+              <template v-else>
+                0
+              </template>
+            </template>
+          </el-table-column>
           <el-table-column prop="currMonthCooperateNum" label="本月合作次数" min-width="100"></el-table-column>
           <el-table-column prop label="操作" width="230">
             <template slot-scope="scope">

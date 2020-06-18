@@ -5,7 +5,7 @@
     <el-row>
       <el-col :span="14" class="header_left">
         <!-- logo start -->
-          <img src="static/images/hander/logo.png" class="logo" alt srcset />
+        <img src="static/images/hander/logo.png" class="logo" alt srcset />
         <!-- logo start -->
 
         <!-- 导航 start -->
@@ -23,7 +23,7 @@
 
       <el-col :span="10" class="header_right">
         <!-- 搜索框 start -->
-        <el-input
+        <!-- <el-input
           placeholder="请输入内容"
           v-model="searchWord"
           class="input-with-select search"
@@ -40,7 +40,7 @@
             <el-option label="文档" value="5"></el-option>
           </el-select>
           <el-button slot="append" icon="el-icon-search" @click="searchStart"></el-button>
-        </el-input>
+        </el-input> -->
         <!-- 搜索框 end -->
 
         <!-- 用户信息 start -->
@@ -49,7 +49,7 @@
           <div class="name">{{this.$store.state.user.realName}}</div>
 
           <el-tooltip class="item" effect="dark" content="退出" placement="bottom">
-            <i class="el-icon-switch-button"></i>
+            <i class="el-icon-switch-button" @click="logout"></i>
           </el-tooltip>
         </div>
         <!-- 用户信息 end -->
@@ -84,6 +84,21 @@ export default {
     // this.countIsRead()
   },
   methods: {
+    logout() {
+      //退出登录
+      this.$confirm('是否退出?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          this.$store.commit('logout')
+        })
+        .catch(() => {
+          this.$message.info('已取消退出！')
+        })
+    },
+
     ///////// 搜索事件 start /////////
     searchStart() {
       let searchWord = this.searchWord
@@ -94,6 +109,7 @@ export default {
 
     ///////// 导航页面跳转 start /////////
     navTo(index) {
+      this.$store.commit('taskStatus', 0)
       let url = ''
       if (index == 1) {
         url = '/home/task'

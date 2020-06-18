@@ -49,8 +49,8 @@
           <!-- <el-table-column prop="serNum" label="采购编号" min-width="180"></el-table-column> -->
           <el-table-column prop="deptName" label="项目组" min-width="130"></el-table-column>
           <el-table-column prop="taskName" label="任务名称" min-width="360"></el-table-column>
-          <el-table-column prop="createTime" label="提交时间" min-width="160">
-            <template slot-scope="scope">{{$date(scope.row.createTime)}}</template>
+          <el-table-column prop="updateTime" label="提交时间" min-width="160">
+            <template slot-scope="scope">{{$date(scope.row.updateTime)}}</template>
           </el-table-column>
           <el-table-column prop="account" label="结算清单" width="130" align="center">
             <template slot-scope="scope">
@@ -94,15 +94,15 @@
           :data="inviteListData1"
           style="width: 100%"
           :header-row-style="{'height': '70px','background': 'rgb(242, 242, 242)'}"
-          :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
+          :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)'}"
           height="100%"
         >
           <el-table-column prop label width="24" show-overflow-tooltip></el-table-column>
           <!-- <el-table-column prop="serNum" label="采购编号" min-width="180"></el-table-column> -->
           <el-table-column prop="deptName" label="项目组" min-width="130"></el-table-column>
           <el-table-column prop="taskName" label="任务名称" min-width="360"></el-table-column>
-          <el-table-column prop="subTime" label="提交时间" min-width="160">
-            <template slot-scope="scope">{{$date(scope.row.createTime)}}</template>
+          <el-table-column prop="updateTime" label="提交时间" min-width="160">
+            <template slot-scope="scope">{{$date(scope.row.updateTime)}}</template>
           </el-table-column>
           <el-table-column prop="invMoney" label="实际支出" width="130" align="center"></el-table-column>
           <el-table-column label="结算清单" width="130" align="center">
@@ -225,7 +225,7 @@ export default {
         this.$axios
           .post('/ocarplay/api/invite/getTaskOfInviteList', data)
           .then(res => {
-            console.log(res)
+            // console.log(res)
             if (res.status == 200) {
               let data = res.data
               this.inviteListData1 = data.items

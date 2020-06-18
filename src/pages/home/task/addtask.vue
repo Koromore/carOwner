@@ -34,6 +34,7 @@
           <div class="key">品牌车型</div>
           <div class="val">
             <el-cascader v-model="carSeriesId" :options="carSeriesList" clearable filterable></el-cascader>
+            <!-- {{carSeriesId}} -->
           </div>
         </el-col>
         <el-col :span="24" class="list">
@@ -62,6 +63,7 @@
               action="/ocarplay/file/upload"
               :on-remove="taskFileRemove"
               :on-success="taskFileSuccess"
+              :file-list="fileList"
             >
               <el-button size="small" type="primary">点击上传</el-button>
               <div slot="tip" class="el-upload__tip"></div>
@@ -160,19 +162,32 @@ export default {
       listInviteList: [],
       carSeriesList: [],
       carSeriesId: [],
+      seriesId: '',
       periodTime: [],
       taskNum: '',
       listTaskFile: [],
       taskDesc: '',
       remark: '',
       taskFileList: '',
+      fileList: [],
       // 按钮开关
       submitFlag: true,
       putLoading: false
     }
   },
   // 侦听器
-  watch: {},
+  watch: {
+    carSeriesList: function(newData, oldData) {
+      if (newData.length != 0) {
+        this.getCarSeriesId()
+      }
+    },
+    seriesId: function(newData, oldData) {
+      if (newData != '') {
+        this.getCarSeriesId()
+      }
+    }
+  },
   // 钩子函数
   beforeCreate() {},
   beforeMount() {},
@@ -204,16 +219,66 @@ export default {
     },
     ///////// 接受页面传参 end /////////
 
+    ///////// 循环查找品牌这车型 start /////////
+    getCarSeriesId() {
+      // console.log(this.seriesId)
+      let carSeriesId = []
+
+      this.carSeriesList.forEach(element0 => {
+        element0.children.forEach(element1 => {
+          element1.children.forEach(element2 => {
+            if (element2.value == this.seriesId) {
+              carSeriesId.push(element0.value)
+              carSeriesId.push(element1.value)
+              carSeriesId.push(element2.value)
+            }
+          })
+        })
+      })
+      this.carSeriesId = carSeriesId
+      // console.log(carSeriesId)
+    },
+    ///////// 获取任务详情 start /////////
+
     ///////// 获取任务详情 start /////////
     getTaskDetail(id) {
       let data = {
         taskId: id
       }
       this.$axios.post('/ocarplay/task/edit', data).then(res => {
-        console.log(res)
+        // console.log(res)
         if (res.status == 200) {
           let data = res.data
           this.taskName = data.taskName
+          let listInviteList = []
+          data.listInvite.forEach(element => {
+            listInviteList.push([
+              element.listOwnerType[0].typeId,
+              element.listOwnerItem[0].itemId,
+              element.ownerId
+            ])
+          })
+
+          this.listInviteList = listInviteList
+          // this.carSeriesId = [null,null,data.carSeriesId]
+
+          this.seriesId = data.carSeriesId
+          this.periodTime = [
+            new Date(data.startTime.replace(/-/g, '/')),
+            new Date(data.endTime.replace(/-/g, '/'))
+          ]
+          this.taskNum = data.num
+          this.taskDesc = data.taskDesc
+          this.remark = data.remark
+          let fileList = []
+
+          data.listTaskFile.forEach(element => {
+            fileList.push({
+              name: element.fileName,
+              url: element.localPath
+            })
+          })
+          this.fileList = fileList
         }
       })
     },
@@ -243,11 +308,19 @@ export default {
                   children: []
                 })
                 element1.vehicleOwners.forEach(element2 => {
-                  list[i].children[j].children.push({
-                    value: element2.vehicleOwnerId,
-                    label: element2.name
-                  })
-                  // console.log(list[i].children[j])
+                  if (element2.coopNum&&element2.alreadyCooperateNum&&element2.coopNum - element2.alreadyCooperateNum <= 0) {
+                    list[i].children[j].children.push({
+                      value: element2.vehicleOwnerId,
+                      label: element2.name,
+                      disabled: true
+                    })
+                  } else {
+                    list[i].children[j].children.push({
+                      value: element2.vehicleOwnerId,
+                      label: element2.name
+                    })
+                  }
+                  // console.log(element2)
                 })
               })
             })
@@ -386,6 +459,8 @@ export default {
         endTime: endTime,
         num: this.taskNum,
 
+        // typeId: this.carSeriesId[0],
+        // carTypeId: this.carSeriesId[1],
         carSeriesId: this.carSeriesId[2],
         taskDesc: this.taskDesc,
         remark: this.remark,
