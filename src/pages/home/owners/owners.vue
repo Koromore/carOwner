@@ -193,7 +193,7 @@
                 <i class="el-icon-date" @click="toOwnersschedule(scope.row.ownerId)"></i>
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="场地信息" placement="top">
-                <i class="el-icon-map-location" @click="toOwnerssite"></i>
+                <i class="el-icon-map-location" @click="toOwnerssite(scope.row)"></i>
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="删除" placement="top">
                 <i class="el-icon-delete" @click="delContent(scope.row)"></i>
@@ -258,7 +258,7 @@
                 <i class="el-icon-date" @click="toOwnersschedule(scope.row.ownerId)"></i>
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="场地信息" placement="top">
-                <i class="el-icon-map-location" @click="toOwnerssite"></i>
+                <i class="el-icon-map-location" @click="toOwnerssite(scope.row)"></i>
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="删除" placement="top">
                 <i class="el-icon-delete" @click="delContent(scope.row)"></i>
@@ -292,8 +292,8 @@ export default {
     return {
       listLoading: false, // 列表Loading控制
       ownerListData: [],
-      tab1act: 1,
-      tab2act: 0,
+      tab1act: this.$store.state.ownersTypeNum,
+      tab2act: 1,
       tab2Items: [],
       // 图表数据
       chartTitle: '任务完成数量',
@@ -373,7 +373,8 @@ export default {
     ///////// 获取车系列表 start /////////
     this.getCarSeriesLists()
     // 获取合作事项列表
-    this.geteventDataList(1)
+    let tab1act = this.tab1act
+    this.geteventDataList(tab1act)
   },
   // 方法
   methods: {
@@ -422,7 +423,7 @@ export default {
               })
             })
             this.carSeriesList = carSeriesList
-            console.log(this.carSeriesList)
+            // console.log(this.carSeriesList)
             // this.tab2Items = eventDataList
             // this.tab2act = eventDataList[0].id
             // // console.log(this.tab2Items)
@@ -458,7 +459,8 @@ export default {
             })
             this.tab2Items = eventDataList
             this.tab2act = eventDataList[0].id
-            // console.log(this.tab2Items)
+            console.log(this.tab2Items)
+            console.log(this.tab2act)
             // 获取车主列表
             this.getVehicleOwnerList()
           }
@@ -551,6 +553,10 @@ export default {
 
     ///////// 跳转场地信息 start /////////
     toOwnerssite(prm) {
+      // 记录类型
+      let tab1act = this.tab1act
+      let tab2act = this.tab2act
+      this.$store.commit('ownersType', tab1act)
       this.$router.push({
         name: 'ownerssite',
         params: {
@@ -563,6 +569,10 @@ export default {
 
     ///////// 跳转预约记录页面 start /////////
     toRecord(id) {
+      // 记录类型
+      let tab1act = this.tab1act
+      let tab2act = this.tab2act
+      this.$store.commit('ownersType', tab1act)
       this.$router.push({
         name: 'ownersrecord',
         // query: { id: id }
@@ -575,8 +585,10 @@ export default {
 
     ///////// 跳日程管理页面 start /////////
     toOwnersschedule(id) {
-      // this.$router.push({ path: '/home/ownersschedule' })
-      // console.log(id)
+      // 记录类型
+      let tab1act = this.tab1act
+      let tab2act = this.tab2act
+      this.$store.commit('ownersType', tab1act)
       this.$router.push({
         name: 'ownersschedule',
         // query: { id: id }
@@ -632,13 +644,24 @@ export default {
     ///////// 确认 start /////////
     submit() {
       this.$router.push({
-        path: '/home/addowners'
+        // path: '/home/addowners'
+        name: 'addowners',
+        // query: { id: id }
+        params: {
+          type: 0
+        }
       })
     },
     ///////// 确认 end /////////
 
     ///////// 跳转车主信息页面 start /////////
     toDetail(prm) {
+      // 记录类型
+      let tab1act = this.tab1act
+      let tab2act = this.tab2act
+      this.$store.commit('ownersType', tab1act)
+      // 记录车主ID
+      this.$store.commit('ownerDetailId', [prm.typeId, prm.ownerId])
       this.$router.push({
         name: 'ownersdetail',
         params: {

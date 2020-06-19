@@ -399,9 +399,9 @@
           <el-col :span="20">{{taskName}}</el-col>
           <el-col :span="4" class="keycontent">结算明细:</el-col>
           <el-col :span="20">
-            <el-col :span="20">
+            <!-- <el-col :span="20">
               <el-input placeholder="搜索车主" suffix-icon="el-icon-search" v-model="input"></el-input>
-            </el-col>
+            </el-col> -->
             <el-col
               :span="24"
               class="detailList"
@@ -893,6 +893,7 @@ export default {
 
     ///////// 跳转任务详情页 start /////////
     toDetail(id) {
+      this.$store.commit('taskStatus', this.status)
       this.$router.push({
         name: 'taskDetail',
         // query: { id: id }
@@ -1170,7 +1171,7 @@ $statusColor4: #ea8a85;
       flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
-      margin-top: 18px;
+      margin-bottom: 18px;
     }
     .keycontent {
       align-self: flex-start;

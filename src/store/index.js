@@ -61,21 +61,27 @@ export default new Vuex.Store({
     // isLogin: 'error', //error/success, // 是否登陆
     isLogin: 'success', //error/success, // 是否登陆
     isRouterAlive: true, // 控制页面刷新
-    taskStatusNum: 0
+    taskStatusNum: 0,
+    ownersTypeNum: 1,
+    vehicleOwnerDetailNum: [0, 0],
   },
   action: {
 
   },
   mutations: {
-    // 项目列表我参与/我发起显示
+    // 任务管理状态记录
     taskStatus(state, data) {
       state.taskStatusNum = data
       console.log(data)
     },
-    // 项目列表我发起分页记录
-    projectPageNumRecord(state, data) {
-      state.projectPageNum = data
+    // 车主管理类型记录
+    ownersType(state, data) {
+      state.ownersTypeNum = data
       // console.log('我发起'+state.projectPageNum)
+    },
+    // 车主详情ID记录
+    ownerDetailId(state, data){
+      state.vehicleOwnerDetailNum = data
     },
     // 项目列表我参与分页记录
     projectPageNumRecord_(state, data) {

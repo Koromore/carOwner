@@ -20,29 +20,20 @@
         <el-col :span="24" class="list">
           <div class="key">任务状态</div>
           <div class="val">
-            <template v-if="taskDetail.status==0">
-              执行中
-            </template>
-            <template v-else-if="taskDetail.status==1">
-              审核中
-            </template>
-            <template v-else-if="taskDetail.status==2">
-              已完成
-            </template>
-            <template v-else-if="taskDetail.status==3">
-              延期
-            </template>
-            <template v-else-if="taskDetail.status==4">
-              人工延期
-            </template>
+            <template v-if="taskDetail.status==0">执行中</template>
+            <template v-else-if="taskDetail.status==1">审核中</template>
+            <template v-else-if="taskDetail.status==2">已完成</template>
+            <template v-else-if="taskDetail.status==3">延期</template>
+            <template v-else-if="taskDetail.status==4">人工延期</template>
           </div>
         </el-col>
         <el-col :span="24" class="list">
           <div class="key">品牌车型</div>
           <div class="val">
-            <div v-for="(item, index) in taskDetail.listInvite" :key="index">
-              {{item.listOwnerType[0].typeName}}—{{item.listOwnerItem[0].itemName}}—{{item.realName}}
-            </div>
+            <div
+              v-for="(item, index) in taskDetail.listInvite"
+              :key="index"
+            >{{item.listOwnerType[0].typeName}}—{{item.listOwnerItem[0].itemName}}—{{item.realName}}</div>
           </div>
         </el-col>
         <el-col :span="24" class="list">
@@ -92,18 +83,19 @@
             </div>
             <div class="text">
               <span>其他说明:xxxxxxxxxxxxxxxxxx</span>
-            </div> -->
+            </div>-->
           </div>
         </el-col>
         <el-col :span="24" class="list">
           <div class="key">任务文件</div>
           <div class="val">
             <div v-for="(item, index) in (taskDetail.listTaskFile)" :key="index">
-              <img src="static/images/document/ppt.png" width="20" alt />&nbsp;<el-link @click="download(item)">{{item.fileName}}</el-link>
+              <img src="static/images/document/ppt.png" width="20" alt />&nbsp;
+              <el-link @click="download(item)">{{item.fileName}}</el-link>
             </div>
             <!-- <div>
               <img src="static/images/document/ppt.png" width="20" alt />&nbsp;2020年6月-长城-#校服女神#创意标准文件
-            </div> -->
+            </div>-->
           </div>
         </el-col>
         <el-col :span="24" class="list">
@@ -112,7 +104,7 @@
         </el-col>
       </el-col>
       <el-col :span="24" class="btn">
-        <el-button type="primary">发送邀请函</el-button>
+        <el-button type="primary" @click="sendInvitation">发送邀请函</el-button>
         <el-button type="primary" @click="toAddtask">复制任务</el-button>
       </el-col>
     </el-row>
@@ -178,7 +170,7 @@ export default {
         // console.log(res)
         if (res.status == 200) {
           let data = res.data
-          
+
           // data.typeList = []
           // data.ownerItemList = []
           // data.ownerName = []
@@ -202,21 +194,37 @@ export default {
       let id = this.taskId
       this.$router.push({
         path: '/home/addTask',
-        query: { id: id }
+        query: { type: 2, id: id }
       })
     },
     ///////// 跳转新增任务页面 end /////////
+
+    ///////// 发送邀请函 start /////////
+    sendInvitation() {
+      let data = {
+        taskId: this.taskId
+      }
+      this.$axios.post('/ocarplay/task/sendInvitation', data).then(res => {
+        console.log(res)
+        if (res.status == 200) {
+          if (res.data.errcode == 0) {
+            this.$message.success(res.data.msg)
+          }else{
+            this.$message.error(res.data.msg)
+          }
+        }
+      })
+    },
+    ///////// 发送邀请函 end /////////
+
     download(row) {
       let localPath = row.localPath
       let a = document.createElement('a')
       a.download = `${row.fileName}.${row.suffix}`
       // a.setAttribute('href', 'http://218.106.254.122:8084/pmbs/' + localPath)
-      a.setAttribute(
-        'href',
-        'http://176.10.10.235:8080/ocarplay/' + localPath
-      )
+      a.setAttribute('href', 'http://176.10.10.235:8080/ocarplay/' + localPath)
       a.click()
-    },
+    }
   }
 }
 </script>

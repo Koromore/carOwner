@@ -34,9 +34,9 @@
           <el-table-column prop="placeName" label="场地名称" width="100"></el-table-column>
           <el-table-column prop="placeTypeName" label="场地类型" width="180"></el-table-column>
           <el-table-column prop="title" label="详细地址" min-width="320">
-            <template slot-scope="scope">
-              {{scope.row.province}}{{scope.row.city}}{{scope.row.area}}{{scope.row.address}}
-            </template>
+            <template
+              slot-scope="scope"
+            >{{scope.row.province}}{{scope.row.city}}{{scope.row.area}}{{scope.row.address}}</template>
           </el-table-column>
           <el-table-column prop="address" label="环境图片" width="130" align="center">
             <template slot-scope="scope">
@@ -55,9 +55,9 @@
           @current-change="changePage"
           :current-page="1"
           :page-sizes="[10, 20, 30, 40]"
-          :page-size="10"
+          :page-size="pageSize"
           layout="total, prev, pager, next ,sizes"
-          :total="100"
+          :total="total"
           background
         ></el-pagination>
       </el-col>
@@ -91,12 +91,12 @@ export default {
       ],
       input: '',
       // 场地预览
-      urlImg:
-        'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
-      srcList: [
-        'https://fuss10.elemecdn.com/8/27/f01c15bb73e1ef3793e64e6b7bbccjpeg.jpeg',
-        'https://fuss10.elemecdn.com/1/8e/aeffeb4de74e2fde4bd74fc7b4486jpeg.jpeg'
-      ]
+      urlImg: '',
+      srcList: [],
+      // 分页数据
+      total: 0,
+      pageNum: 1,
+      pageSize: 10
     }
   },
   // 侦听器
@@ -144,6 +144,8 @@ export default {
     ///////// 获取场地信息 start /////////
     getOwnerRelatePlace() {
       let data = {
+        pageNum: this.pageNum,
+        pageSize: this.pageSize,
         vehicleOwnerId: this.$route.params.ownerId
       }
       this.$axios
@@ -153,6 +155,7 @@ export default {
           if (res.status == 200) {
             let data = res.data
             this.ownerRelate = data.items
+            this.total = data.totalRows
           }
         })
     },
@@ -184,10 +187,16 @@ export default {
     // 每页条数变化时触发事件
     changeSize(pageSize) {
       console.log(pageSize)
+      this.pageSize = pageSize
+      ///////// 获取场地信息 start /////////
+      this.getOwnerRelatePlace()
     },
     // 页码变换时触发事件
     changePage(pageNum) {
       console.log(pageNum)
+      this.pageNum = pageNum
+      ///////// 获取场地信息 start /////////
+      this.getOwnerRelatePlace()
     }
     ///////// 分页 end /////////
   }

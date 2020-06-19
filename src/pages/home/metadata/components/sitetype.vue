@@ -20,7 +20,7 @@
         </el-table-column>
       </el-table>
     </div>
-    <el-col :span="24" class="paging">
+    <!-- <el-col :span="24" class="paging">
       <el-pagination
         @size-change="changeSize"
         @current-change="changePage"
@@ -31,7 +31,7 @@
         :total="total"
         background
       ></el-pagination>
-    </el-col>
+    </el-col> -->
 
     <!-- 抽屉弹窗新增/编辑数据 start -->
     <el-drawer :title="drawerTietle" :visible.sync="drawerData" size="566px" @close="drawerDataClose">

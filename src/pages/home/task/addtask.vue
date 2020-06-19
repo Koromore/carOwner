@@ -168,7 +168,7 @@ export default {
       listTaskFile: [],
       taskDesc: '',
       remark: '',
-      taskFileList: '',
+      taskFileList: [],
       fileList: [],
       // 按钮开关
       submitFlag: true,
@@ -207,11 +207,16 @@ export default {
       let id = this.$route.query.id
       this.type = type
       if (type == 0) {
-        this.title = '新建任务'
+        this.title = '新增任务'
         this.taskId = ''
       } else if (type == 1) {
         this.title = '编辑任务'
         this.taskId = id
+        ///////// 获取任务详情 start /////////
+        this.getTaskDetail(id)
+      } else if (type == 2) {
+        this.title = '新增任务'
+        // this.taskId = id
         ///////// 获取任务详情 start /////////
         this.getTaskDetail(id)
       }
@@ -271,14 +276,21 @@ export default {
           this.taskDesc = data.taskDesc
           this.remark = data.remark
           let fileList = []
+          let taskFileList = []
 
           data.listTaskFile.forEach(element => {
             fileList.push({
               name: element.fileName,
               url: element.localPath
             })
+            taskFileList.push({
+              fileName: '端午大礼包',
+              localPath: 'uploadtemp//doc/1592452790041.jpg',
+              suffix: 'jpg'
+            })
           })
           this.fileList = fileList
+          this.taskFileList = taskFileList
         }
       })
     },
@@ -308,7 +320,11 @@ export default {
                   children: []
                 })
                 element1.vehicleOwners.forEach(element2 => {
-                  if (element2.coopNum&&element2.alreadyCooperateNum&&element2.coopNum - element2.alreadyCooperateNum <= 0) {
+                  if (
+                    element2.coopNum &&
+                    element2.alreadyCooperateNum &&
+                    element2.coopNum - element2.alreadyCooperateNum <= 0
+                  ) {
                     list[i].children[j].children.push({
                       value: element2.vehicleOwnerId,
                       label: element2.name,
@@ -453,6 +469,7 @@ export default {
         initUserId: this.userId,
         deptId: this.deptId,
         createTime: this.$time0(new Date()),
+        taskId: this.taskId,
         taskName: this.taskName,
         status: 0,
         startTime: startTime,
@@ -501,7 +518,11 @@ export default {
           .then(res => {
             // console.log(res)
             if (res.status == 200 && res.data == 1) {
-              this.$message.success('任务新建成功！')
+              if (this.taskId) {
+                this.$message.success('任务更新成功！')
+              } else {
+                this.$message.success('任务新建成功！')
+              }
               setTimeout(() => {
                 this.$router.push({
                   name: 'task'

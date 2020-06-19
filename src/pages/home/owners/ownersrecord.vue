@@ -9,12 +9,6 @@
         </div>
       </el-col>
       <el-col :span="8" class="center cont">车主解雨臣-预约记录</el-col>
-      <el-col :span="8" class="right cont">
-        <div @click="submit">
-          <!-- <i class="el-icon-circle-check"></i>
-          <br />提交并完成 -->
-        </div>
-      </el-col>
     </el-row>
     <!-- 头部选项框 end -->
 
@@ -32,18 +26,14 @@
             <template slot-scope="scope">0{{scope.$index+1}}</template>
           </el-table-column>
           <el-table-column prop="addressee" label="预约时间" min-width="130">
-            <template slot-scope="scope">
-              {{$date(scope.row.startTime)}}
-            </template>
+            <template slot-scope="scope">{{$date(scope.row.startTime)}}</template>
           </el-table-column>
           <el-table-column prop="schName" label="日程主题" min-width="100"></el-table-column>
           <el-table-column prop="during" label="时长" min-width="81"></el-table-column>
           <el-table-column prop="dayTypeName" label="类型" min-width="100"></el-table-column>
           <el-table-column prop="schLine" label="路线" min-width="180"></el-table-column>
-          <el-table-column prop="" label="地点" min-width="180">
-            <template slot-scope="scope">
-              {{scope.row.province}}{{scope.row.city}}{{scope.row.area}}
-            </template>
+          <el-table-column prop label="地点" min-width="180">
+            <template slot-scope="scope">{{scope.row.province}}{{scope.row.city}}{{scope.row.area}}</template>
           </el-table-column>
           <el-table-column prop="deptName" label="预约组别" min-width="100" align="center"></el-table-column>
           <el-table-column prop="carTypeName" label="预约车辆" min-width="100" align="center"></el-table-column>
@@ -56,9 +46,9 @@
           @current-change="changePage"
           :current-page="1"
           :page-sizes="[10, 20, 30, 40]"
-          :page-size="10"
+          :page-size="pageSize"
           layout="total, prev, pager, next ,sizes"
-          :total="100"
+          :total="total"
           background
         ></el-pagination>
       </el-col>
@@ -78,8 +68,12 @@ export default {
       ownerScheduleListData: [],
       input: '',
       // 场地预览
-      urlImg:'',
-      srcList: []
+      urlImg: '',
+      srcList: [],
+      // 分页数据
+      total: 0,
+      pageNum: 1,
+      pageSize: 10
     }
   },
   // 侦听器
@@ -124,6 +118,8 @@ export default {
     ///////// 获取预约日程列表 start /////////
     getOwnerScheduleList() {
       let data = {
+        pageNum: this.pageNum,
+        pageSize: this.pageSize,
         vehicleOwnerId: this.$route.params.id,
         isDo: true
       }
@@ -134,45 +130,28 @@ export default {
           if (res.status == 200) {
             let data = res.data
             this.ownerScheduleListData = data.items
+            this.total = data.totalRows
           }
         })
     },
     ///////// 获取预约日程列表 end /////////
 
-    ///////// 确认 start /////////
-    submit() {
-      this.$confirm('确认提交任务吗?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
-        .then(() => {
-          this.$message({
-            type: 'success',
-            message: '提交成功!'
-          })
-        })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消提交'
-          })
-        })
-    },
-    ///////// 确认 end /////////
-
     ///////// 分页 start /////////
     // 每页条数变化时触发事件
     changeSize(pageSize) {
       console.log(pageSize)
+      this.pageSize = pageSize
+      ///////// 获取预约日程列表 start /////////
+      this.getOwnerScheduleList()
     },
     // 页码变换时触发事件
     changePage(pageNum) {
       console.log(pageNum)
+      this.pageNum = pageNum
+      ///////// 获取预约日程列表 start /////////
+      this.getOwnerScheduleList()
     }
     ///////// 分页 end /////////
-
-    
   }
 }
 </script>
@@ -183,7 +162,6 @@ $icoColor: rgb(106, 145, 232);
   height: 100%;
   .top {
     height: 88px;
-    // margin-bottom: 9px;
     background: #fff;
     display: flex;
     flex-wrap: wrap;

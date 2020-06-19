@@ -110,6 +110,7 @@ export default {
     ///////// 导航页面跳转 start /////////
     navTo(index) {
       this.$store.commit('taskStatus', 0)
+      this.$store.commit('ownersType', 1)
       let url = ''
       if (index == 1) {
         url = '/home/task'

@@ -13,16 +13,12 @@
           </el-col>
           <el-col :span="12">车主信息</el-col>
           <el-col :span="6" class="change">
-            <i class="el-icon-edit" @click="toAddOwners"></i>
+            <i class="el-icon-edit" @click="toAddOwners()"></i>
           </el-col>
         </el-col>
         <!-- 上传照片 -->
         <el-col :span="24" class="upladImgBox">
-          <el-image class="upladImg" :src="'/ocarplay/'+ownerDetil.image" fit="cover">
-            <div slot="error" class="image-slot">
-              <i class="el-icon-picture-outline"></i>
-            </div>
-          </el-image>
+          <el-image class="upladImg" :src="ownerDetil.image" fit="cover"></el-image>
         </el-col>
         <!-- 车主信息 start -->
         <el-col :span="24" class="information information1">
@@ -218,17 +214,39 @@
           <!-- 左右分割线 -->
           <el-col :span="12" class="right">
             <el-col :span="24" class="list">
-              <div class="key">合作事项要求频次</div>
-              <div class="val"></div>
-              <div class="key">IP孵化打造</div>
-              <div class="val">
-                <el-col :span="24" v-for="(item, index) in ownerDetil.ipGrows" :key="index">
-                  <el-col :span="6">{{item.plat}}</el-col>
-                  <el-col :span="6">{{item.platRole}}</el-col>
-                  <el-col :span="6">{{item.nickname}}</el-col>
-                  <el-col :span="6">{{item.url}}</el-col>
-                </el-col>
-              </div>
+              <template v-if="ownerDetil.typeId==1">
+                <div class="key">合作事项要求频次</div>
+                <div class="val">
+                  <el-col :span="24" v-for="(item, index) in ownerDetil.ownerCoops" :key="index">
+                    <el-col :span="6">{{item.itemName}}</el-col>
+                    <el-col :span="6">合作总量{{item.coopNum}}</el-col>
+                    <el-col :span="6">合作总价{{item.coopMoney}}</el-col>
+                    <el-col :span="6">
+                      <template v-if="item.period==0">
+                        按月结算
+                      </template>
+                      <template v-if="item.period==1">
+                        按年结算
+                      </template>
+                      <template v-if="item.period==2">
+                        按季度结算
+                      </template>
+                    </el-col>
+                  </el-col>
+                </div>
+              </template>
+
+              <template v-else>
+                <div class="key">IP孵化打造</div>
+                <div class="val">
+                  <el-col :span="24" v-for="(item, index) in ownerDetil.ipGrows" :key="index">
+                    <el-col :span="6">{{item.plat}}</el-col>
+                    <el-col :span="6">{{item.platRole}}</el-col>
+                    <el-col :span="6">{{item.nickname}}</el-col>
+                    <el-col :span="6">{{item.url}}</el-col>
+                  </el-col>
+                </div>
+              </template>
             </el-col>
           </el-col>
         </el-col>
@@ -333,6 +351,8 @@ export default {
       value: '',
       // 车主信息
       ownerDetil: {
+        image:
+          'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
         cooperates: [{}],
         invites: [],
         ipGrows: [{}]
@@ -361,17 +381,21 @@ export default {
     ///////// 跳转编辑 start /////////
     toAddOwners() {
       this.$router.push({
-        path: '/home/addowners'
+        // path: '/home/addowners'
+        name: 'addowners',
+        // query: { id: id }
+        params: {
+          type: 1
+        }
       })
     },
     ///////// 跳转编辑 end /////////
 
     ///////// 获取车主详细信息 start /////////
     getVehicleOwnerPreEdit(id) {
-      let eventList = []
       let data = {
-        typeId: this.$route.params.typeId,
-        vehicleOwnerId: this.$route.params.vehicleOwnerId
+        typeId: this.$store.state.vehicleOwnerDetailNum[0],
+        vehicleOwnerId: this.$store.state.vehicleOwnerDetailNum[1]
       }
       console.log(data)
       this.$axios.post('/ocarplay/api/vehicleOwner/preEdit', data).then(res => {
@@ -380,6 +404,7 @@ export default {
         if (res.status == 200) {
           // console.log(res)
           let data = res.data
+          data.image = '/ocarplay/' + data.image
           this.ownerDetil = data
         }
       })

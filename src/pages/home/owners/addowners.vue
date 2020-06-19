@@ -23,6 +23,7 @@
             :on-remove="handleRemove"
             :on-success="headImgSuccess"
             :limit="1"
+            :file-list="fileList"
           >
             <i class="el-icon-plus"></i>
           </el-upload>
@@ -58,6 +59,7 @@
                     :value="item.value"
                   ></el-option>
                 </el-select>
+                <!-- {{eventData}} -->
               </div>
             </el-col>
             <el-col :span="24" class="list">
@@ -160,7 +162,7 @@
                 <el-input placeholder="请输入内容" v-model="mail"></el-input>
               </div>
             </el-col>
-            <el-col :span="24" class="list">
+            <!-- <el-col :span="24" class="list">
               <div class="key">项目组</div>
               <div class="val">
                 <el-select v-model="team" clearable placeholder="请选择">
@@ -172,7 +174,7 @@
                   ></el-option>
                 </el-select>
               </div>
-            </el-col>
+            </el-col>-->
           </el-col>
         </el-col>
         <!-- 车主信息 end -->
@@ -315,8 +317,10 @@
                   class="upload-demo"
                   action="/ocarplay/file/upload"
                   :on-success="pactSuccess"
+                  :on-remove="pactRemove"
                   :on-exceed="pactExceed"
                   :limit="1"
+                  :file-list="pactFileList"
                 >
                   <el-button size="small" type="primary">点击上传</el-button>
                 </el-upload>
@@ -345,11 +349,11 @@
           <!-- 左右分割线 -->
           <el-col :span="12" class="right">
             <el-col :span="24" class="list" v-if="tabact == 1">
-              <div class="key">合作概况</div>
+              <div class="key imp">合作概况</div>
               <div class="val situation">
                 <el-col :span="21" class="list" v-for="(item, index) in eventList" :key="index">
                   <el-col :span="6">
-                    <el-input placeholder="请输入" v-model="item.name" clearable :disabled="true"></el-input>
+                    <el-input placeholder="请输入" v-model="item.itemName" clearable :disabled="true"></el-input>
                     <!-- <el-select
                       v-model="item.name"
                       multiple
@@ -437,28 +441,7 @@ export default {
       dialogVisible: false,
       tabact: '1',
       dialogVisible: false,
-      options: [
-        {
-          value: '黄金糕',
-          label: '黄金糕'
-        },
-        {
-          value: '双皮奶',
-          label: '双皮奶'
-        },
-        {
-          value: '蚵仔煎',
-          label: '蚵仔煎'
-        },
-        {
-          value: '龙须面',
-          label: '龙须面'
-        },
-        {
-          value: '北京烤鸭',
-          label: '北京烤鸭'
-        }
-      ],
+      options: [],
       value: '',
 
       periodList: [
@@ -477,6 +460,10 @@ export default {
       ],
 
       // 车主基础信息
+      vehicleOwnerId: '', // 接口请求数据
+      addType: 0,
+      ownerDetil: '', // 修改回填数据
+      fileList: [], // 头像回填
       handerImg: '', // 头像
       eventDataList: [], // 合作事项列表
       eventData: [], // 合作事项
@@ -496,6 +483,7 @@ export default {
       source: '', // 车主来源
       carSeriesList: [], // 认证车型列表
       carSeries: '', // 认证车型
+      carSeriesId: '', // 认证车型回填
       mail: '', // 车主邮箱
       team: '', // 项目组
 
@@ -516,6 +504,7 @@ export default {
       // 家属信息
       relationList: [
         {
+          relationId: '',
           name: '',
           relation: '',
           birthday: '',
@@ -524,6 +513,7 @@ export default {
       ],
 
       // 签约合作信息
+      pactFileList: [],
       pactName: '', // 合同文件名称
       pactPath: '', // 合同文件地址
       pactsuffix: '', // 合同文件后缀
@@ -557,12 +547,16 @@ export default {
   // 侦听器
   watch: {
     tabact: function(newData, oldData) {
-      this.eventData = []
+      // console.log(this.eventData)
+      if (this.addType == 0) {
+        this.eventData = []
+      }
       this.geteventDataList(newData)
       let eventList = this.eventList
       eventList.forEach((element, i) => {
         this.eventList[i].typeId = newData
       })
+      this.addType = 0
     },
     duration: function(newData, oldData) {
       // this.geteventDataList(newData)
@@ -571,6 +565,18 @@ export default {
         this.eventList[i].timeLimit = newData
       })
       // console.log(this.eventList)
+    },
+    carSeriesId: function(newData, oldData) {
+      if (newData && this.carSeriesList.length != 0) {
+        ///////// 获取认证车型 start /////////
+        this.getCarSeries()
+      }
+    },
+    carSeriesList: function(newData, oldData) {
+      if (newData.length != 0 && this.carSeriesId) {
+        ///////// 获取认证车型 start /////////
+        this.getCarSeries()
+      }
     }
   },
   // 钩子函数
@@ -578,6 +584,14 @@ export default {
   beforeMount() {},
   mounted() {
     // this.test()
+    // console.log(cities)
+    ///////// 城市数据处理 start /////////
+    this.disCities()
+    ///////// 获取车主信息 start /////////
+    if (this.$route.params.type == 1) {
+      this.addType = 1
+      this.getVehicleOwnerDetail()
+    }
     ///////// 合作事项列表获取 start /////////
     this.geteventDataList(1)
     ///////// 车主来源列表获取 start /////////
@@ -595,10 +609,183 @@ export default {
     },
     ///////// 返回上一页 end /////////
 
+    ///////// 获取认证车型 start /////////
+    getCarSeries() {
+      let carSeries = []
+
+      this.carSeriesList.forEach(element0 => {
+        element0.children.forEach(element1 => {
+          element1.children.forEach(element2 => {
+            if (element2.value == this.carSeriesId) {
+              carSeries.push(element0.value)
+              carSeries.push(element1.value)
+              carSeries.push(element2.value)
+            }
+          })
+        })
+      })
+      this.carSeries = carSeries
+    },
+    ///////// 获取认证车型 start /////////
+
+    ///////// 城市数据处理 start /////////
+    disCities() {
+      // console.log(cities)
+      let optionsCity = []
+      cities.forEach(element => {
+        let data = {
+          value: element.value,
+          label: element.label,
+          children: []
+        }
+        element.children.forEach(element0 => {
+          data.children.push({
+            value: element0.value,
+            label: element0.label
+          })
+        })
+        optionsCity.push(data)
+      })
+      this.optionsCity = optionsCity
+    },
+    ///////// 城市数据处理 end /////////
+
+    ///////// 获取车主信息 start /////////
+    getVehicleOwnerDetail() {
+      let data = {
+        typeId: this.$store.state.vehicleOwnerDetailNum[0],
+        vehicleOwnerId: this.$store.state.vehicleOwnerDetailNum[1]
+      }
+      // console.log(data)
+      this.$axios.post('/ocarplay/api/vehicleOwner/preEdit', data).then(res => {
+        // console.log(res)
+        // this.loading = false
+        if (res.status == 200) {
+          // console.log(res)
+          let data = res.data
+          this.vehicleOwnerId = data.vehicleOwnerId
+          this.handerImg = data.image
+          data.image = '/ocarplay/' + data.image
+          this.ownerDetil = data
+          this.fileList = [{ name: '', url: data.image }]
+          this.tabact = data.typeId
+          if (data.typeId == 1) {
+            let eventData = []
+            data.ownerCoops.forEach(element => {
+              eventData.push(element.itemId)
+            })
+            eventData = Array.from(new Set(eventData))
+            // console.log(eventData)
+            this.eventData = eventData
+            console.log(this.eventData)
+
+            let eventList = []
+            data.ownerCoops.forEach(element => {
+              eventList.push({
+                itemId: element.itemId, // 车主选择的合作事项ID
+                itemName: element.itemName, // 车主选择的合作事项Name
+                coopNum: element.coopNum, // 固定合作总量
+                coopMoney: element.coopMoney, // 固定合作总价
+                period: element.period, // 结算周期
+                timeLimit: element.timeLimit, // 合作时长
+                typeId: element.typeId
+              })
+            })
+            this.eventList = eventList
+            console.log(eventList)
+          } else if (data.typeId == 2 || data.typeId == 3) {
+            let eventData = []
+            data.ipGrows.forEach(element => {
+              eventData.push(element.itemId)
+            })
+            eventData = Array.from(new Set(eventData))
+            // console.log(eventData)
+            this.eventData = eventData
+            console.log(this.eventData)
+
+            let itemId = data.ipGrows[0].itemId
+            let ipGrows = []
+            data.ipGrows.forEach(element => {
+              if (element.itemId == itemId) {
+                ipGrows.push({
+                  plat: element.plat,
+                  platRole: element.platRole,
+                  nickname: element.nickname,
+                  url: element.url
+                })
+              }
+            })
+            // console.log(ipGrows)
+            this.hatchList = ipGrows
+          }
+          if (data.sex) {
+            this.sex = '1'
+          } else {
+            this.sex = '0'
+          }
+          // console.log(this.sex)
+          this.work = data.work
+          this.birthDate = new Date(data.birthday.replace(/-/g, '/'))
+          this.district = [data.province, data.city]
+          let district = [data.province, data.city]
+          let optionsCity = this.optionsCity
+          // console.log(district)
+          this.district_code = this.getValue(district, optionsCity)
+          this.speciality = data.skillId
+          this.ownersName = data.name
+          this.livelihood = data.carUse.split(',')
+          // console.log(this.livelihood)
+          this.source = data.sourceId
+          this.carSeriesId = data.seriesId
+          this.mail = data.email
+
+          this.tel = data.phone
+          this.wx = data.wx
+          this.qq = data.qq
+          this.carId = data.bbsId
+          this.carHome = data.homeUrl
+          this.microblog = data.weiboId
+          this.tikTokId = data.dyId
+          this.socialId = data.otherId
+          this.carNum = data.plateNum
+          this.vin = data.vinno
+          this.branch = data.buycarplace
+          this.address = data.homeAddress
+          this.deliAddress = data.homeAddress
+          let relationList = []
+          data.relations.forEach(element => {
+            relationList.push({
+              relationId: element.relationId,
+              name: element.name,
+              relation: element.relation,
+              birthday: element.birthday,
+              work: element.work
+            })
+          })
+          this.relationList = relationList
+          this.pactFileList = [
+            {
+              name: data.cooperates[0].fileName,
+              url: data.cooperates[0].localPath
+            }
+          ]
+          this.pactName = data.cooperates[0].fileName
+          this.pactPath = data.cooperates[0].localPath
+          this.pactsuffix = data.cooperates[0].suffix
+          this.timeLimit = [
+            data.cooperates[0].startTime.replace(/-/g, '/'),
+            data.cooperates[0].endTime.replace(/-/g, '/')
+          ]
+          this.duration = data.cooperates[0].timeLimit
+          // console.log(this.district_code)
+        }
+      })
+    },
+
     ///////// 合作事项 start /////////
     changeEvent(data) {
-      console.log(data)
-      // console.log(1)
+      // console.log(data)
+      console.log('changeEvent')
       let eventDataList = this.eventDataList
       // console.log(eventDataList)
       let itemName = []
@@ -610,7 +797,7 @@ export default {
         })
       })
 
-      // console.log(itemName)
+      console.log(itemName)
       let eventList = []
       data.forEach((element, i) => {
         eventList.push({
@@ -620,13 +807,12 @@ export default {
           coopNum: '', // 固定合作总量
           coopMoney: '', // 固定合作总价
           period: '', // 结算周期
-
           timeLimit: this.duration,
           typeId: this.tabact
         })
       })
       this.eventList = eventList
-      // console.log(eventList)
+      console.log(eventList)
     },
     ///////// 合作事项 end /////////
 
@@ -784,7 +970,8 @@ export default {
 
     ///////// 头像上传 start //////////
     handleRemove(file, fileList) {
-      console.log(file, fileList)
+      // console.log(file, fileList)
+      this.handerImg = ''
     },
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url
@@ -809,17 +996,17 @@ export default {
       })
     },
     // 通过城市名获取代码
-    // getValue(add, opt) {
-    //   return add.map(function(value, index, array) {
-    //     for (var itm of opt) {
-    //       if (itm.label == value) {
-    //         opt = itm.children
-    //         return itm
-    //       }
-    //     }
-    //     return null
-    //   })
-    // },
+    getValue(add, opt) {
+      return add.map(function(value, index, array) {
+        for (var itm of opt) {
+          if (itm.label == value) {
+            opt = itm.children
+            return itm.value
+          }
+        }
+        return null
+      })
+    },
     handleChangeCity(e, form) {
       // 选择区域
       let add = this.getCascaderObj(e, this.optionsCity)
@@ -839,6 +1026,7 @@ export default {
     ///////// 添加家属信息 start /////////
     addRelationList() {
       this.relationList.push({
+        relationId: '',
         name: '',
         relation: '',
         birthday: '',
@@ -859,10 +1047,10 @@ export default {
     ///////// 添加IP孵化信息 start /////////
     addHatchList() {
       this.hatchList.push({
-        name: '',
-        character: '',
+        plat: '',
+        platRole: '',
         nickname: '',
-        link: ''
+        url: ''
       })
     },
     ///////// 添加IP孵化信息 start /////////
@@ -887,6 +1075,11 @@ export default {
     },
     pactExceed() {
       this.messageWarning('合同文档允许上传一个！')
+    },
+    pactRemove(file, fileList) {
+      this.pactName = ''
+      this.pactPath = ''
+      this.pactsuffix = ''
     },
     ///////// 签约合同上传 end /////////
 
@@ -916,6 +1109,7 @@ export default {
       let birthday = this.$date0(this.birthDate)
       let data = {
         deptId: '',
+        vehicleOwnerId: this.vehicleOwnerId,
         image: this.handerImg,
         typeId: this.tabact,
 
@@ -967,6 +1161,9 @@ export default {
       let tabact = this.tabact
       if (tabact == 1) {
         data.ownerCoops = this.eventList
+        data.ownerCoops.forEach(element => {
+          element.timeLimit = this.timeLimit
+        });
         // [
         //   {
         //     coopMoney: '固定合作总价',
@@ -1005,18 +1202,27 @@ export default {
         })
         data.ipGrows = ipGrows
       }
-      console.log(data)
-      let judgeList = [data.image,itemId,data.sex,data.sourceId,data.seriesId,data.email,data.cooperates[0].localPath,data.cooperates[0].timeLimit]
+      // console.log(data)
+      let judgeList = [
+        data.image,
+        itemId,
+        data.sex,
+        data.sourceId,
+        data.seriesId,
+        data.email,
+        data.cooperates[0].localPath,
+        data.cooperates[0].timeLimit
+      ]
       let judge = true
       judgeList.forEach(element => {
         if (!element) {
           judge = false
           // console.log(element)
         }
-        console.log(element)
-      });
+        // console.log(element)
+      })
 
-      if (this.submitFlag&&judge) {
+      if (this.submitFlag && judge) {
         this.submitFlag = false
         this.$axios
           .post('/ocarplay/api/vehicleOwner/saveOrUpdate', data)
@@ -1035,12 +1241,12 @@ export default {
             this.loading = false
             if (res.status != 200) {
               this.submitFlag = true
-              this.$message('网络错误'+res.status);
+              this.$message('网络错误' + res.status)
             }
-          });
-      }else if(!judge){
+          })
+      } else if (!judge) {
         this.loading = false
-        this.messageError("请检查信息是否完整！")
+        this.messageError('请检查信息是否完整！')
       }
     },
     ///////// 提交按钮 end /////////
