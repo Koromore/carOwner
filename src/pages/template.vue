@@ -1,12 +1,12 @@
 <template>
-  <div id="template">
+  <div id="">
   </div>
 </template>
 <script>
 // import { matchType } from '@/utils/matchType' // 引入文件格式判断方法
 
 export default {
-  name: 'template',
+  name: '',
   components: {},
   data() {
     return {}

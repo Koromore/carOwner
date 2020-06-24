@@ -34,9 +34,14 @@
         :total="100"
         background
       ></el-pagination>
-    </el-col> -->
+    </el-col>-->
     <!-- 抽屉弹窗新增/编辑数据 start -->
-    <el-drawer :title="drawerTietle" :visible.sync="drawerData" size="720px">
+    <el-drawer
+      :title="drawerTietle"
+      :visible.sync="drawerData"
+      size="720px"
+      @close="drawerDataClose"
+    >
       <el-scrollbar style="height:100%">
         <el-row class="drawerData">
           <el-col :span="4">车主类型:</el-col>
@@ -124,7 +129,7 @@ export default {
           typeId: this.typeId,
           itemName: '',
           money: '',
-          isCard: true,
+          isCard: false,
           deleteFlag: false
         }
       ]
@@ -135,6 +140,16 @@ export default {
     openDrawer: function(newData, oldData) {
       this.drawerData = true
       this.drawerTietle = '新增数据'
+      this.typeId = ''
+      this.cooperList = [
+        {
+          typeId: this.typeId,
+          itemName: '',
+          money: '',
+          isCard: false,
+          deleteFlag: false
+        }
+      ]
     }
   },
   // 钩子函数
@@ -243,7 +258,6 @@ export default {
     },
     ///////// 编辑数据 start /////////
 
-    //
     ///////// 获取车主类型 start /////////
     getOwnerType() {
       // this.loading = true
@@ -294,15 +308,26 @@ export default {
     saveSubmit() {
       let data = this.cooperList
       console.log(data)
+      let falg = true
       data.forEach((element, i) => {
-        if (element.isCard) {
-          data[i].isCard = 1
-        } else {
-          data[i].isCard = 0
+        if (!element.itemName || !element.money) {
+          falg = false
         }
       })
       // console.log(data)
-      this.saveOwnerType(data)
+      if (falg) {
+        data.forEach((element, i) => {
+          if (element.isCard) {
+            data[i].isCard = 1
+          } else {
+            data[i].isCard = 0
+          }
+        })
+        this.saveOwnerType(data)
+        // this.$message.success('信息完整！')
+      } else {
+        this.$message.error('请检查信息不能为空！')
+      }
     },
     saveOwnerType(data) {
       this.drawerData = false
@@ -318,6 +343,10 @@ export default {
         })
     },
     ///////// 新增/修改车型数据 end /////////
+
+    ///////// 抽屉关闭回调 start /////////
+    drawerDataClose() {},
+    ///////// 抽屉关闭回调 end /////////
 
     ///////// 消息提示 start /////////
     messageWin(message) {

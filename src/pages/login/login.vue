@@ -36,8 +36,8 @@ export default {
 
       this.$axios
         .post('/ocarplay/api/login', {
-          aesStr: 'MTUyLHRhbnl1bm1lbmcsMjAyMC0wMy0wOQ==='
-          // aesStr: aesStr
+          // aesStr: 'MTUyLHRhbnl1bm1lbmcsMjAyMC0wMy0wOQ==='
+          aesStr: aesStr
         })
         .then(res => {
           // console.log(res)

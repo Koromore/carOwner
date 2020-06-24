@@ -9,6 +9,7 @@ import router from './router'
 // import echarts from 'echarts/lib/echarts'
 import { date, date_, time } from '@/utils/date'
 import { date0, time0 } from '@/utils/time'
+import { isEmail, isMobile } from '@/utils/ifformat'
 // import {Decrypt,Encrypt} from '@/utils/cryptoJS'
 
 // router.beforeEach((to, from, next) => {
@@ -34,6 +35,9 @@ Vue.prototype.$time = time
 
 Vue.prototype.$date0 = date0
 Vue.prototype.$time0 = time0
+
+Vue.prototype.$isEmail = isEmail
+Vue.prototype.$isMobile = isMobile
 
 // Vue.prototype.$Decrypt = Decrypt
 // Vue.prototype.$Encrypt = Encrypt

@@ -344,9 +344,12 @@ export default {
         pageSize: this.pageSize,
         // 筛选条件
         place: {
-          city: this.filtrateCity,
+          // city: this.filtrateCity,
           placeTypeId: this.filtrateType
         }
+      }
+      if (this.filtrateCity) {
+        data.place.city = this.filtrateCity
       }
       this.$axios.post('/ocarplay/api/place/listAjax', data).then(res => {
         // console.log(res)
@@ -534,7 +537,7 @@ export default {
         data.province = ''
         data.city = district[0]
         data.area = district[1]
-      }else if(district.length == 2){
+      }else if(district.length == 3){
         data.province = district[0]
         data.city = district[1]
         data.area = district[2]

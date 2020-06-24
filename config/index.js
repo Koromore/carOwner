@@ -13,7 +13,7 @@ module.exports = {
     proxyTable: {
       // http://176.10.10.233:8082/ocarplay/swagger-ui.html
       '/ocarplay': {
-        // target: 'http://176.10.10.233:8082/', // 测试接口的域名
+        // target: 'http://176.10.10.233:8082/', // 线上接口的域名
         target: 'http://176.10.10.235:8080/', // 本地接口的域名
         
         'secure': false, // 如果是https接口，需要配置这个参数

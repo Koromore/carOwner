@@ -159,7 +159,7 @@ export default {
       deptIdList: [
         {
           value: 110,
-          label: '吉利舆情'
+          label: '吉利'
         },
         {
           value: 105,

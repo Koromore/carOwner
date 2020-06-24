@@ -35,7 +35,7 @@ export default {
     // 路由获取
     this.getRoute()
     // 清空缓存
-    this.$store.commit('clearToken')
+    // this.$store.commit('clearToken')
   },
   // 方法
   methods: {

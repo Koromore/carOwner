@@ -151,15 +151,15 @@
               </div>
             </el-col>
             <el-col :span="24" class="list">
-              <div class="key imp">认证车型</div>
+              <div :class="[tabact==1 ? 'key imp' : 'key']">认证车型</div>
               <div class="val">
-                <el-cascader v-model="carSeries" :options="carSeriesList" filterable></el-cascader>
+                <el-cascader v-model="carSeries" clearable :options="carSeriesList" filterable></el-cascader>
               </div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key imp">车主邮箱</div>
               <div class="val">
-                <el-input placeholder="请输入内容" v-model="mail"></el-input>
+                <el-input placeholder="请输入内容" clearable v-model="mail"></el-input>
               </div>
             </el-col>
             <!-- <el-col :span="24" class="list">
@@ -311,7 +311,7 @@
         <el-col :span="24" class="information information3">
           <el-col :span="12" class="left">
             <el-col :span="24" class="list">
-              <div class="key imp">签约合同</div>
+              <div :class="[tabact!=1 ? 'key imp' : 'key']">签约合同</div>
               <div class="val">
                 <el-upload
                   class="upload-demo"
@@ -439,7 +439,7 @@ export default {
       value1: '',
       dialogImageUrl: '',
       dialogVisible: false,
-      tabact: '1',
+      tabact: 1,
       dialogVisible: false,
       options: [],
       value: '',
@@ -584,7 +584,7 @@ export default {
   beforeMount() {},
   mounted() {
     // this.test()
-    // console.log(cities)
+    // console.log(this.$isEmail(''))
     ///////// 城市数据处理 start /////////
     this.disCities()
     ///////// 获取车主信息 start /////////
@@ -677,7 +677,7 @@ export default {
             eventData = Array.from(new Set(eventData))
             // console.log(eventData)
             this.eventData = eventData
-            console.log(this.eventData)
+            // console.log(this.eventData)
 
             let eventList = []
             data.ownerCoops.forEach(element => {
@@ -692,7 +692,7 @@ export default {
               })
             })
             this.eventList = eventList
-            console.log(eventList)
+            // console.log(eventList)
           } else if (data.typeId == 2 || data.typeId == 3) {
             let eventData = []
             data.ipGrows.forEach(element => {
@@ -701,7 +701,7 @@ export default {
             eventData = Array.from(new Set(eventData))
             // console.log(eventData)
             this.eventData = eventData
-            console.log(this.eventData)
+            // console.log(this.eventData)
 
             let itemId = data.ipGrows[0].itemId
             let ipGrows = []
@@ -785,7 +785,7 @@ export default {
     ///////// 合作事项 start /////////
     changeEvent(data) {
       // console.log(data)
-      console.log('changeEvent')
+      // console.log('changeEvent')
       let eventDataList = this.eventDataList
       // console.log(eventDataList)
       let itemName = []
@@ -797,7 +797,7 @@ export default {
         })
       })
 
-      console.log(itemName)
+      // console.log(itemName)
       let eventList = []
       data.forEach((element, i) => {
         eventList.push({
@@ -812,7 +812,7 @@ export default {
         })
       })
       this.eventList = eventList
-      console.log(eventList)
+      // console.log(eventList)
     },
     ///////// 合作事项 end /////////
 
@@ -1015,7 +1015,7 @@ export default {
         Addtest.push(add[i].label)
       }
       this.district = Addtest
-      console.log(Addtest)
+      // console.log(Addtest)
       // console.log(e)
       // console.log(form)
     },
@@ -1094,8 +1094,13 @@ export default {
     submit() {
       this.loading = true
       // 合同日期转换
-      let startTime = this.$date0(this.timeLimit[0])
-      let endTime = this.$date0(this.timeLimit[1])
+
+      let startTime = ''
+      let endTime = ''
+      if (this.timeLimit.length) {
+        startTime = this.$date0(this.timeLimit[0])
+        endTime = this.$date0(this.timeLimit[1])
+      }
       // 用车生活
       let livelihood = this.livelihood.toString()
       let livelihood0 = this.livelihood0
@@ -1159,11 +1164,12 @@ export default {
         data.city = district[1]
       }
       let tabact = this.tabact
+      let judgeList = []
       if (tabact == 1) {
         data.ownerCoops = this.eventList
         data.ownerCoops.forEach(element => {
           element.timeLimit = this.timeLimit
-        });
+        })
         // [
         //   {
         //     coopMoney: '固定合作总价',
@@ -1174,7 +1180,24 @@ export default {
         //     typeId: this.tabact
         //   }
         // ]
+        judgeList = [
+          data.image,
+          itemId,
+          data.sex,
+          data.sourceId,
+          data.seriesId,
+          data.email
+        ]
       } else {
+        judgeList = [
+          data.image,
+          itemId,
+          data.sex,
+          data.sourceId,
+          data.email,
+          data.cooperates[0].localPath,
+          data.cooperates[0].timeLimit
+        ]
         // data.ipGrows = [
         //   {
         //     itemId: '车主选择的合作事项ID',
@@ -1203,17 +1226,9 @@ export default {
         data.ipGrows = ipGrows
       }
       // console.log(data)
-      let judgeList = [
-        data.image,
-        itemId,
-        data.sex,
-        data.sourceId,
-        data.seriesId,
-        data.email,
-        data.cooperates[0].localPath,
-        data.cooperates[0].timeLimit
-      ]
+
       let judge = true
+
       judgeList.forEach(element => {
         if (!element) {
           judge = false
@@ -1221,32 +1236,38 @@ export default {
         }
         // console.log(element)
       })
+      let isEmail = this.$isEmail(data.email)
+      if (data.email!=''&&!isEmail) {
+        this.$message.error('正确填写邮箱！')
+        judge = false
+      }else{}
 
       if (this.submitFlag && judge) {
         this.submitFlag = false
-        this.$axios
-          .post('/ocarplay/api/vehicleOwner/saveOrUpdate', data)
-          .then(res => {
-            // console.log(res)
-            if (res.status == 200 && res.data.errcode == 0) {
-              this.messageWin(res.data.msg)
-              setTimeout(() => {
-                this.$router.push({ path: '/home/owners' })
-              }, 1000)
-            } else {
-              this.messageError(res.data.msg)
-            }
-          })
-          .catch(res => {
-            this.loading = false
-            if (res.status != 200) {
-              this.submitFlag = true
-              this.$message('网络错误' + res.status)
-            }
-          })
+        this.loading = false
+        // this.$axios
+        //   .post('/ocarplay/api/vehicleOwner/saveOrUpdate', data)
+        //   .then(res => {
+        //     // console.log(res)
+        //     if (res.status == 200 && res.data.errcode == 0) {
+        //       this.messageWin(res.data.msg)
+        //       setTimeout(() => {
+        //         this.$router.push({ path: '/home/owners' })
+        //       }, 1000)
+        //     } else {
+        //       this.messageError(res.data.msg)
+        //     }
+        //   })
+        //   .catch(res => {
+        //     this.loading = false
+        //     if (res.status != 200) {
+        //       this.submitFlag = true
+        //       this.$message('网络错误' + res.status)
+        //     }
+        //   })
       } else if (!judge) {
         this.loading = false
-        this.messageError('请检查信息是否完整！')
+        this.$message.error('请检查信息是否完整！')
       }
     },
     ///////// 提交按钮 end /////////
