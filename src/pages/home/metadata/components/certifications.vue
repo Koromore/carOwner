@@ -21,12 +21,11 @@
             </el-table>
           </template>
         </el-table-column>
-        <el-table-column prop="address" label="操作" width="100">
+        <!-- <el-table-column prop="address" label="操作" width="100">
           <template>
             <i class="el-icon-edit" @click="redact"></i>
-            <!-- <i class="el-icon-delete" @click="delContent"></i> -->
           </template>
-        </el-table-column>
+        </el-table-column> -->
       </el-table>
     </div>
     <!-- <el-col :span="24" class="paging">
@@ -43,7 +42,7 @@
     </el-col> -->
 
     <!-- 抽屉弹窗新增/编辑数据 start -->
-    <el-drawer
+    <!-- <el-drawer
       :title="drawerTietle"
       :visible.sync="drawerData"
       size="566px"
@@ -81,9 +80,6 @@
               v-for="(item, index) in subCarType"
               :key="index"
             >
-              <!-- <el-col :span="6">
-              <el-input placeholder="请输入内容" v-model="input" clearable></el-input>
-              </el-col>-->
               <el-col :span="19">
                 <el-input placeholder="请输入内容" v-model="item.name" clearable></el-input>
               </el-col>
@@ -103,7 +99,7 @@
           <el-button type="primary" @click="saveSubmit">提交</el-button>
         </el-col>
       </el-col>
-    </el-drawer>
+    </el-drawer> -->
     <!-- 抽屉弹窗新增/编辑数据 end -->
   </div>
 </template>
@@ -188,8 +184,9 @@ export default {
   // 侦听器
   watch: {
     openDrawer: function(newData, oldData) {
-      this.drawerData = true
-      this.drawerTietle = '新增数据'
+      // this.drawerData = true
+      // this.drawerTietle = '新增数据'
+      // this.$message.warning('')
     }
   },
   // 钩子函数
@@ -342,9 +339,9 @@ export default {
     getCarSeriesLists() {
       this.listLoading = true
       let data = {
-        ids: 0,
-        pageNum: this.pageNum,
-        pageSize: this.pageSize
+        // ids: 0,
+        // pageNum: this.pageNum,
+        // pageSize: this.pageSize
       }
       this.$axios
         .post('/ocarplay/api/carSeries/getCarSeriesLists', data)
@@ -352,7 +349,7 @@ export default {
           console.log(res)
           this.listLoading = false
           if (res.status == 200) {
-            let data = res.data.items
+            let data = res.data
 
             let carSeriesListData = [
               {

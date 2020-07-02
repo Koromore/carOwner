@@ -65,12 +65,8 @@
             <el-col :span="24" class="list">
               <div class="key imp">车主性别</div>
               <div class="val">
-                <el-radio v-model="sex" label="0">
-                  <i class="el-icon-male"></i>
-                </el-radio>
-                <el-radio v-model="sex" label="1">
-                  <i class="el-icon-female"></i>
-                </el-radio>
+                <el-radio v-model="sex" label="0">男</el-radio>
+                <el-radio v-model="sex" label="1">女</el-radio>
               </div>
             </el-col>
             <el-col :span="24" class="list">
@@ -153,7 +149,14 @@
             <el-col :span="24" class="list">
               <div :class="[tabact==1 ? 'key imp' : 'key']">认证车型</div>
               <div class="val">
-                <el-cascader v-model="carSeries" clearable :options="carSeriesList" filterable></el-cascader>
+                <el-cascader
+                  v-model="carSeries"
+                  clearable
+                  :options="carSeriesList"
+                  :props="{multiple: true}"
+                  filterable
+                ></el-cascader>
+                <!-- {{carSeries}} -->
               </div>
             </el-col>
             <el-col :span="24" class="list">
@@ -265,6 +268,12 @@
               <div class="key">收货地址</div>
               <div class="val">
                 <el-input placeholder="请输入内容" v-model="deliAddress"></el-input>
+              </div>
+            </el-col>
+            <el-col :span="24" class="list">
+              <div class="key">银行卡号</div>
+              <div class="val">
+                <el-input placeholder="请输入内容" v-model="bankCard"></el-input>
               </div>
             </el-col>
             <el-col :span="24" class="list">
@@ -482,7 +491,7 @@ export default {
       sourceList: [], // 车主来源列表
       source: '', // 车主来源
       carSeriesList: [], // 认证车型列表
-      carSeries: '', // 认证车型
+      carSeries: [], // 认证车型
       carSeriesId: '', // 认证车型回填
       mail: '', // 车主邮箱
       team: '', // 项目组
@@ -501,6 +510,7 @@ export default {
       branch: '', // 购车网点
       address: '', // 家庭住址
       deliAddress: '', // 收货地址
+      bankCard: '',
       // 家属信息
       relationList: [
         {
@@ -915,7 +925,7 @@ export default {
           // console.log(res)
           // this.listLoading = false
           if (res.status == 200) {
-            let data = res.data.items
+            let data = res.data
 
             let carSeriesList = [
               {
@@ -1112,6 +1122,14 @@ export default {
       let itemId = this.eventData.toString()
       // 出生日期
       let birthday = this.$date0(this.birthDate)
+      // 认证车型
+      let carSeries = this.carSeries
+      let ownerCarSeries = []
+      carSeries.forEach(element => {
+        ownerCarSeries.push({
+          seriesId:element[2]
+        })
+      });
       let data = {
         deptId: '',
         vehicleOwnerId: this.vehicleOwnerId,
@@ -1125,9 +1143,10 @@ export default {
         work: this.work,
         sourceId: this.source,
         birthday: birthday,
-        seriesId: this.carSeries[2],
+        // seriesId: this.carSeries[2],
         email: this.mail,
         skillId: this.speciality,
+        ownerCarSeries: ownerCarSeries,
 
         phone: this.tel,
         homeAddress: this.address,
@@ -1142,6 +1161,19 @@ export default {
         plateNum: this.carNum,
         vinno: this.vin,
         buycarplace: this.branch,
+        bankCard: this.bankCard,
+        deliveryAddresses: [
+          {
+            deleteFlag: 0,
+            isCheck: 0,
+            // ownerId: '',
+            province: 'string', // 省
+            city: 'string', // 市
+            area: 'string', // 区
+            address: 'string', // 详细地址
+            addressId: ''
+          }
+        ],
 
         cooperates: [
           {
@@ -1181,16 +1213,16 @@ export default {
         //   }
         // ]
         judgeList = [
-          data.image,
+          // data.image,
           itemId,
           data.sex,
           data.sourceId,
-          data.seriesId,
+          data.ownerCarSeries.length,
           data.email
         ]
       } else {
         judgeList = [
-          data.image,
+          // data.image,
           itemId,
           data.sex,
           data.sourceId,
@@ -1225,46 +1257,47 @@ export default {
         })
         data.ipGrows = ipGrows
       }
-      // console.log(data)
+      console.log(data)
 
       let judge = true
 
-      judgeList.forEach(element => {
+      judgeList.forEach((element, i) => {
         if (!element) {
           judge = false
-          // console.log(element)
+          // console.log(element,i)
         }
         // console.log(element)
       })
       let isEmail = this.$isEmail(data.email)
-      if (data.email!=''&&!isEmail) {
+      if (data.email != '' && !isEmail) {
         this.$message.error('正确填写邮箱！')
         judge = false
-      }else{}
+      } else {
+      }
 
       if (this.submitFlag && judge) {
         this.submitFlag = false
         this.loading = false
-        // this.$axios
-        //   .post('/ocarplay/api/vehicleOwner/saveOrUpdate', data)
-        //   .then(res => {
-        //     // console.log(res)
-        //     if (res.status == 200 && res.data.errcode == 0) {
-        //       this.messageWin(res.data.msg)
-        //       setTimeout(() => {
-        //         this.$router.push({ path: '/home/owners' })
-        //       }, 1000)
-        //     } else {
-        //       this.messageError(res.data.msg)
-        //     }
-        //   })
-        //   .catch(res => {
-        //     this.loading = false
-        //     if (res.status != 200) {
-        //       this.submitFlag = true
-        //       this.$message('网络错误' + res.status)
-        //     }
-        //   })
+        this.$axios
+          .post('/ocarplay/api/vehicleOwner/saveOrUpdate', data)
+          .then(res => {
+            // console.log(res)
+            if (res.status == 200 && res.data.errcode == 0) {
+              this.messageWin(res.data.msg)
+              setTimeout(() => {
+                this.$router.push({ path: '/home/owners' })
+              }, 1000)
+            } else {
+              this.messageError(res.data.msg)
+            }
+          })
+          .catch(res => {
+            this.loading = false
+            if (res.status != 200) {
+              this.submitFlag = true
+              this.$message('网络错误' + res.status)
+            }
+          })
       } else if (!judge) {
         this.loading = false
         this.$message.error('请检查信息是否完整！')

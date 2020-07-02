@@ -359,10 +359,10 @@ export default {
       this.$axios
         .post('/ocarplay/api/carSeries/getCarSeriesLists', data)
         .then(res => {
-          // console.log(res)
+          console.log(res)
           // this.listLoading = false
           if (res.status == 200) {
-            let data = res.data.items
+            let data = res.data
 
             let carSeriesList = [
               {

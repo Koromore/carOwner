@@ -34,17 +34,13 @@
             <el-col :span="24" class="list">
               <div class="key">车主性别</div>
               <div class="val">
-                <!-- <el-radio v-model="ownerDetil.sex" label="false">
-                  <i class="el-icon-male"></i>
-                </el-radio>
-                <el-radio v-model="ownerDetil.sex" label="true">
-                  <i class="el-icon-female"></i>
-                </el-radio>-->
                 <template v-if="ownerDetil.sex">
-                  <i class="el-icon-female sex1"></i>
+                  <!-- <i class="el-icon-female sex1"></i> -->
+                  女
                 </template>
                 <template v-else>
-                  <i class="el-icon-male sex0"></i>
+                  <!-- <i class="el-icon-male sex0"></i> -->
+                  男
                 </template>
               </div>
             </el-col>

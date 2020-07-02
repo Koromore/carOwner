@@ -401,7 +401,7 @@
           <el-col :span="20">
             <!-- <el-col :span="20">
               <el-input placeholder="搜索车主" suffix-icon="el-icon-search" v-model="input"></el-input>
-            </el-col> -->
+            </el-col>-->
             <el-col
               :span="24"
               class="detailList"
@@ -451,10 +451,10 @@
       <!-- 底部按钮 -->
       <el-col :span="24" class="btn">
         <el-col :span="6" :offset="5">
-          <el-button type="info" @click="cancel">取消</el-button>
+          <el-button type="info" @click="submitBtn(0)">保存</el-button>
         </el-col>
         <el-col :span="6" :offset="2">
-          <el-button type="primary" @click="submitBtn">提交</el-button>
+          <el-button type="primary" @click="submitBtn(1)">提交</el-button>
         </el-col>
       </el-col>
     </el-drawer>
@@ -597,7 +597,7 @@ export default {
         .then(res => {
           // console.log(res)
           if (res.status == 200) {
-            let data = res.data.items
+            let data = res.data
             let carSeriesList = []
             data.forEach(element => {
               let listId = element.carSeriesIds.split('/')
@@ -819,13 +819,13 @@ export default {
           typeId: element.typeId,
           itemId: element.itemId,
           ownerId: element.ownerId,
-          url: '',
-          money: '',
+          url: element.url,
+          money: element.money,
           isCard: true
         })
       })
       this.listInviteList = listInviteList
-      console.log(this.listInviteList)
+      // console.log(this.listInviteList)
     },
     // 添加明细
     addDetailList() {
@@ -847,7 +847,7 @@ export default {
       }
     },
     // 提交按钮
-    submitBtn() {
+    submitBtn(e) {
       this.drawerLoading = true
       let listInviteList = this.listInviteList
       listInviteList.forEach(element => {
@@ -858,7 +858,7 @@ export default {
       })
       let data = {
         taskId: this.taskId,
-        status: 1,
+        status: e,
         updateTime: this.$time0(new Date()),
         listInvite: listInviteList
       }
@@ -875,7 +875,12 @@ export default {
         .then(res => {
           console.log(res)
           if (res.status == 200 && res.data == 1) {
-            this.$message.success('任务提交成功！')
+            if (e) {
+              this.$message.success('任务提交成功！')
+            } else {
+              this.$message.success('任务保存成功！')
+            }
+
             this.drawerLoading = false
             this.drawerPuttask = false
             this.getTaskListAjax()

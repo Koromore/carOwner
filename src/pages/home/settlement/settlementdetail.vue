@@ -8,7 +8,7 @@
           返回
         </div>
       </el-col>
-      <el-col :span="8" class="center cont">《哈弗4月日常邀约》</el-col>
+      <el-col :span="8" class="center cont">《{{taskName}}》</el-col>
       <el-col :span="8" class="right cont">
         <div @click="submitList">
           <i class="el-icon-circle-check"></i>
@@ -33,16 +33,17 @@
           <el-table-column prop="createTime" label="时间" width="81">
             <template slot-scope="scope">{{$date(scope.row.createTime)}}</template>
           </el-table-column>
-          <el-table-column prop="name" label="收件人" min-width="100"></el-table-column>
+          <el-table-column prop="name" label="收件人" min-width="90"></el-table-column>
           <el-table-column prop="itemName" label="合作事项" min-width="100"></el-table-column>
-          <el-table-column prop="title" label="内容标题" min-width="200" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="link" label="链接" width="80">
+          <el-table-column prop="title" label="内容标题" min-width="130" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="link" label="链接" width="60">
             <template slot-scope="scope">
               <el-link :href="'http://'+scope.row.url" target="_blank">【原】</el-link>
             </template>
           </el-table-column>
           <el-table-column prop="phone" label="电话" min-width="110"></el-table-column>
-          <el-table-column prop="homeAddress" label="地址" min-width="240" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="homeAddress" label="地址" min-width="210" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="bankCard" label="银行卡号" min-width="130" show-overflow-tooltip></el-table-column>
           <el-table-column prop="isCard" label="油卡或现金" width="100" align="center">
             <template slot-scope="scope">
               <template v-if="scope.row.isCard">现金</template>
@@ -113,6 +114,7 @@ export default {
       deptId: this.$store.state.user.deptId,
       // 任务ID
       taskId: this.$route.params.id,
+      taskName: this.$route.params.name,
       // 表格数据
       listLoading: false,
       uploadIndex: '',
@@ -154,7 +156,7 @@ export default {
       this.$axios
         .post('/ocarplay/api/invite/getInvitePageListByTaskId', data)
         .then(res => {
-          // console.log(res)
+          console.log(res)
           if (res.status == 200) {
             let data = res.data
             res.data.items.forEach(element => {

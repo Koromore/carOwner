@@ -55,7 +55,7 @@
           <el-table-column prop="account" label="结算清单" width="130" align="center">
             <template slot-scope="scope">
               <el-tooltip class="item" effect="dark" content="清单" placement="top">
-                <i class="el-icon-edit" @click="toDetail(scope.row.taskId)"></i>
+                <i class="el-icon-edit" @click="toDetail(scope.row)"></i>
               </el-tooltip>
             </template>
           </el-table-column>
@@ -108,7 +108,7 @@
           <el-table-column label="结算清单" width="130" align="center">
             <template slot-scope="scope">
               <el-tooltip effect="dark" content="查看清单" placement="top">
-                <i class="el-icon-view" @click="toDetail(scope.row.taskId)"></i>
+                <i class="el-icon-view" @click="toDetail(scope.row)"></i>
               </el-tooltip>
             </template>
           </el-table-column>
@@ -213,7 +213,7 @@ export default {
       if (tabact == 1) {
         data.task.status = 1
         this.$axios.post('/ocarplay/api/invite/getTaskOfInviteList', data).then(res => {
-          console.log(res)
+          // console.log(res)
           if (res.status == 200) {
             let data = res.data
             this.inviteListData = data.items
@@ -296,11 +296,12 @@ export default {
     ///////// 驳回操作 end /////////
 
     ///////// 结算清单 start /////////
-    toDetail(id) {
+    toDetail(prm) {
       this.$router.push({
         name: 'settlementDetail',
         params: {
-          id: id
+          id: prm.taskId,
+          name: prm.taskName
         }
       })
     }

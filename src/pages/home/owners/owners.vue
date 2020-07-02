@@ -96,7 +96,12 @@
             </template>
           </el-table-column>
           <el-table-column prop="ownerName" label="车主姓名" min-width="81" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="carSeriesName" label="认证车型" min-width="180" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="carSeriesName" label="认证车型" min-width="180" show-overflow-tooltip>
+            <template slot-scope="scope">
+              <!-- {{scope.row.ownerCarSeries}} -->
+              <span v-for="(item, index) in scope.row.ownerCarSeries" :key="index">{{item.carSeriesName}}<template v-if="scope.row.ownerCarSeries.length>1&&index!=scope.row.ownerCarSeries.length-1">，</template></span>
+            </template>
+          </el-table-column>
           <el-table-column prop="itemName" label="合作事项" min-width="81" show-overflow-tooltip></el-table-column>
           <el-table-column prop="timeLimit" label="合作时长" min-width="81"></el-table-column>
           <el-table-column prop="coopMoney" label="合作费用" min-width="81"></el-table-column>
@@ -409,7 +414,7 @@ export default {
           // this.loading = false
           if (res.status == 200) {
             // console.log(res)
-            let data = res.data.items
+            let data = res.data
             let carSeriesList = []
             data.forEach(element => {
               // console.log(element)

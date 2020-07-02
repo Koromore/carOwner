@@ -11,7 +11,7 @@
             :key="index"
           >{{item.title}}</div>
         </div>
-        <div class="addContent" @click="addContent">
+        <div class="addContent" @click="addContent" v-show="tabact!='certifications'">
           <i class="el-icon-circle-plus-outline"></i>
           <br />添加内容
         </div>
@@ -98,7 +98,7 @@ export default {
 
     ///////// 路由获取 start /////////
     getRoute() {
-      console.log(this.$route)
+      // console.log(this.$route)
       this.tabact = this.$route.name
     },
     ///////// 路由获取 end /////////
