@@ -160,7 +160,7 @@
               </div>
             </el-col>
             <el-col :span="24" class="list">
-              <div class="key imp">车主邮箱</div>
+              <div class="key">车主邮箱</div>
               <div class="val">
                 <el-input placeholder="请输入内容" clearable v-model="mail"></el-input>
               </div>
@@ -952,6 +952,11 @@ export default {
               }
               let carSeriesIds = element.carSeriesIds.split('/')
               let carSeriesName = element.carSeriesName.split('/')
+              if (element.carTypeId == 28) {
+                // console.logcarSeriesIds
+                // console.log(carSeriesIds)
+                // console.log(carSeriesName)
+              }
               carSeriesIds.forEach((element, i) => {
                 data.children.push({
                   value: element,
@@ -968,7 +973,7 @@ export default {
               }
             })
             this.carSeriesList = carSeriesList
-            // console.log(carSeriesListData)
+            // console.log(carSeriesList)
           }
         })
     },
@@ -1147,6 +1152,8 @@ export default {
         email: this.mail,
         skillId: this.speciality,
         ownerCarSeries: ownerCarSeries,
+        province: this.district[0],
+        city: this.district[1],
 
         phone: this.tel,
         homeAddress: this.address,
@@ -1188,13 +1195,13 @@ export default {
       }
       // province: this.district[0],
       // city: this.district[1],
-      let district = this.district
-      if (district.length == 2) {
-        data.city = district[0]
-      } else if (district.length == 3) {
-        data.province = district[0]
-        data.city = district[1]
-      }
+      // let district = this.district
+      // if (district.length == 2) {
+      //   data.city = district[0]
+      // } else if (district.length == 3) {
+      //   data.province = district[0]
+      //   data.city = district[1]
+      // }
       let tabact = this.tabact
       let judgeList = []
       if (tabact == 1) {
@@ -1218,7 +1225,7 @@ export default {
           data.sex,
           data.sourceId,
           data.ownerCarSeries.length,
-          data.email
+          // data.email
         ]
       } else {
         judgeList = [
@@ -1226,7 +1233,7 @@ export default {
           itemId,
           data.sex,
           data.sourceId,
-          data.email,
+          // data.email,
           data.cooperates[0].localPath,
           data.cooperates[0].timeLimit
         ]
