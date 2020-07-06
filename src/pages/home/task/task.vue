@@ -597,15 +597,13 @@ export default {
         .then(res => {
           // console.log(res)
           if (res.status == 200) {
-            let data = res.data
+            let data = res.data.carTypes
             let carSeriesList = []
-            data.forEach(element => {
-              let listId = element.carSeriesIds.split('/')
-              let listName = element.carSeriesName.split('/')
-              listId.forEach((element0, i) => {
+            data.forEach((element, i) => {
+              element.carSeries.forEach((element_, j) => {
                 carSeriesList.push({
-                  value: element0,
-                  label: listName[i]
+                  value: element_.carSeriesId,
+                  label: `${element.deptName}-${element.carTypeName}-${element_.carSeriesName}`
                 })
               })
             })

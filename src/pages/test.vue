@@ -207,7 +207,7 @@ export default {
           }
         }
       ],
-      createTime: '2020-06-30T06:54:39.506Z',
+      createTime: '2020-07-06T02:23:26.757Z',
       deleteFlag: true,
       deliveryAddresses: [
         {
@@ -262,6 +262,7 @@ export default {
       image: 'string',
       invites: [
         {
+          authorName: 'string',
           card: true,
           createTime: {
             chronology: {
@@ -281,6 +282,7 @@ export default {
           },
           deleteFlag: true,
           deptName: 'string',
+          effectName: 'string',
           homeAddress: 'string',
           image: 'string',
           inviteId: 0,
@@ -704,7 +706,7 @@ export default {
       qq: 'string',
       relations: [
         {
-          birthday: '2020-06-30T06:54:39.506Z',
+          birthday: '2020-07-06T02:23:26.757Z',
           createTime: {
             chronology: {
               calendarType: 'string',
@@ -752,7 +754,7 @@ export default {
       sourceId: 0,
       sourceName: 'string',
       typeId: 0,
-      updateTime: '2020-06-30T06:54:39.506Z',
+      updateTime: '2020-07-06T02:23:26.757Z',
       vehicleOwnerId: 0,
       vinno: 'string',
       weiboId: 'string',

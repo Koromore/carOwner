@@ -25,7 +25,7 @@
           <template>
             <i class="el-icon-edit" @click="redact"></i>
           </template>
-        </el-table-column> -->
+        </el-table-column>-->
       </el-table>
     </div>
     <!-- <el-col :span="24" class="paging">
@@ -39,7 +39,7 @@
         :total="100"
         background
       ></el-pagination>
-    </el-col> -->
+    </el-col>-->
 
     <!-- 抽屉弹窗新增/编辑数据 start -->
     <!-- <el-drawer
@@ -99,7 +99,7 @@
           <el-button type="primary" @click="saveSubmit">提交</el-button>
         </el-col>
       </el-col>
-    </el-drawer> -->
+    </el-drawer>-->
     <!-- 抽屉弹窗新增/编辑数据 end -->
   </div>
 </template>
@@ -349,7 +349,7 @@ export default {
           console.log(res)
           this.listLoading = false
           if (res.status == 200) {
-            let data = res.data
+            let data = res.data.carTypes
 
             let carSeriesListData = [
               {
@@ -368,27 +368,34 @@ export default {
                 carType: []
               }
             ]
+            console.log(data)
             data.forEach(element => {
+              let carSeriesIds = []
+              let carSeriesName = []
+              element.carSeries.forEach(element_ => {
+                carSeriesIds.push(element_.carSeriesId+'/')
+                carSeriesName.push(element_.carSeriesName+'/')
+              })
               if (element.deptId == 105) {
                 carSeriesListData[0].carType.push({
                   carTypeId: element.carTypeId,
                   carTypeName: element.carTypeName,
-                  carSeriesIds: element.carSeriesIds,
-                  carSeriesName: element.carSeriesName
+                  carSeriesIds: carSeriesIds,
+                  carSeriesName: carSeriesName
                 })
               } else if (element.deptId == 110) {
                 carSeriesListData[1].carType.push({
                   carTypeId: element.carTypeId,
                   carTypeName: element.carTypeName,
-                  carSeriesIds: element.carSeriesIds,
-                  carSeriesName: element.carSeriesName
+                  carSeriesIds: carSeriesIds,
+                  carSeriesName: carSeriesName
                 })
               } else if (element.deptId == 153) {
                 carSeriesListData[2].carType.push({
                   carTypeId: element.carTypeId,
                   carTypeName: element.carTypeName,
-                  carSeriesIds: element.carSeriesIds,
-                  carSeriesName: element.carSeriesName
+                  carSeriesIds: carSeriesIds,
+                  carSeriesName: carSeriesName
                 })
               }
             })

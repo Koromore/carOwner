@@ -267,7 +267,20 @@
             <el-col :span="24" class="list">
               <div class="key">收货地址</div>
               <div class="val">
-                <el-input placeholder="请输入内容" v-model="deliAddress"></el-input>
+                <el-col :span="12">
+                  <el-cascader
+                    :options="optionsCity0"
+                    v-model="district_code0"
+                    ref="cascaderAddr"
+                    filterable
+                    clearable
+                    @change="handleChangeCity0"
+                    placeholder="请选择所在区域"
+                  ></el-cascader>
+                </el-col>
+                <el-col :span="12">
+                  <el-input placeholder="请输入详细地址" v-model="deliAddress"></el-input>
+                </el-col>
               </div>
             </el-col>
             <el-col :span="24" class="list">
@@ -481,8 +494,11 @@ export default {
       birthDate: '', // 出生日期
       // 城市选择器数据  所在区域
       optionsCity: cities,
-      district_code: '', // 区域代码
-      district: '', // 区域名称
+      optionsCity0: cities,
+      district_code: [], // 区域代码
+      district: [], // 区域名称
+      district_code0: [], // 区域代码
+      district0: [], // 区域名称
       ownerSkilList: [], // 特长列表
       speciality: '', // 特长
       ownersName: '', // 车主姓名
@@ -761,7 +777,7 @@ export default {
           this.vin = data.vinno
           this.branch = data.buycarplace
           this.address = data.homeAddress
-          this.deliAddress = data.homeAddress
+          // this.deliAddress = data.homeAddress
           let relationList = []
           data.relations.forEach(element => {
             relationList.push({
@@ -925,7 +941,7 @@ export default {
           // console.log(res)
           // this.listLoading = false
           if (res.status == 200) {
-            let data = res.data
+            let data = res.data.carTypes
 
             let carSeriesList = [
               {
@@ -945,31 +961,24 @@ export default {
               }
             ]
             data.forEach(element => {
-              let data = {
+              let children = {
                 value: element.carTypeId,
                 label: element.carTypeName,
                 children: []
               }
-              let carSeriesIds = element.carSeriesIds.split('/')
-              let carSeriesName = element.carSeriesName.split('/')
-              if (element.carTypeId == 28) {
-                // console.logcarSeriesIds
-                // console.log(carSeriesIds)
-                // console.log(carSeriesName)
-              }
-              carSeriesIds.forEach((element, i) => {
-                data.children.push({
-                  value: element,
-                  label: carSeriesName[i]
+              element.carSeries.forEach(element_ => {
+                children.children.push({
+                  value: element_.carSeriesId,
+                  label: element_.carSeriesName
                 })
               })
               // console.log(carSeriesIds)
               if (element.deptId == 105) {
-                carSeriesList[0].children.push(data)
+                carSeriesList[0].children.push(children)
               } else if (element.deptId == 110) {
-                carSeriesList[1].children.push(data)
+                carSeriesList[1].children.push(children)
               } else if (element.deptId == 153) {
-                carSeriesList[2].children.push(data)
+                carSeriesList[2].children.push(children)
               }
             })
             this.carSeriesList = carSeriesList
@@ -1030,6 +1039,18 @@ export default {
         Addtest.push(add[i].label)
       }
       this.district = Addtest
+      // console.log(Addtest)
+      // console.log(e)
+      // console.log(form)
+    },
+    handleChangeCity0(e, form) {
+      // 选择区域
+      let add = this.getCascaderObj(e, this.optionsCity)
+      let Addtest = []
+      for (let i = 0; i < add.length; i++) {
+        Addtest.push(add[i].label)
+      }
+      this.district0 = Addtest
       // console.log(Addtest)
       // console.log(e)
       // console.log(form)
@@ -1132,9 +1153,9 @@ export default {
       let ownerCarSeries = []
       carSeries.forEach(element => {
         ownerCarSeries.push({
-          seriesId:element[2]
+          seriesId: element[2]
         })
-      });
+      })
       let data = {
         deptId: '',
         vehicleOwnerId: this.vehicleOwnerId,
@@ -1171,14 +1192,12 @@ export default {
         bankCard: this.bankCard,
         deliveryAddresses: [
           {
-            deleteFlag: 0,
-            isCheck: 0,
-            // ownerId: '',
-            province: 'string', // 省
-            city: 'string', // 市
-            area: 'string', // 区
-            address: 'string', // 详细地址
-            addressId: ''
+            deleteFlag: false,
+            // isCheck: 0,
+            province: '', // 省
+            city: '', // 市
+            area: '', // 区
+            address: this.deliAddress // 详细地址
           }
         ],
 
@@ -1193,15 +1212,15 @@ export default {
           }
         ]
       }
-      // province: this.district[0],
-      // city: this.district[1],
-      // let district = this.district
-      // if (district.length == 2) {
-      //   data.city = district[0]
-      // } else if (district.length == 3) {
-      //   data.province = district[0]
-      //   data.city = district[1]
-      // }
+      let district0 = this.district0
+      if (district0.length==2) {
+        data.deliveryAddresses[0].city = district0[0]
+        data.deliveryAddresses[0].area = district0[1]
+      }else if (district0.length==3){
+        data.deliveryAddresses[0].province = district0[0]
+        data.deliveryAddresses[0].city = district0[1]
+        data.deliveryAddresses[0].area = district0[2]
+      }
       let tabact = this.tabact
       let judgeList = []
       if (tabact == 1) {
@@ -1224,7 +1243,7 @@ export default {
           itemId,
           data.sex,
           data.sourceId,
-          data.ownerCarSeries.length,
+          data.ownerCarSeries.length
           // data.email
         ]
       } else {
@@ -1284,7 +1303,7 @@ export default {
 
       if (this.submitFlag && judge) {
         this.submitFlag = false
-        this.loading = false
+        this.loading = true
         this.$axios
           .post('/ocarplay/api/vehicleOwner/saveOrUpdate', data)
           .then(res => {
@@ -1293,6 +1312,7 @@ export default {
               this.messageWin(res.data.msg)
               setTimeout(() => {
                 this.$router.push({ path: '/home/owners' })
+                this.loading = false
               }, 1000)
             } else {
               this.messageError(res.data.msg)

@@ -103,7 +103,11 @@
             </template>
           </el-table-column>
           <el-table-column prop="itemName" label="合作事项" min-width="81" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="timeLimit" label="合作时长" min-width="81"></el-table-column>
+          <el-table-column prop="timeLimit" label="合作时长" min-width="81">
+            <template slot-scope="scope">
+              {{scope.row.timeLimit}}天
+            </template>
+          </el-table-column>
           <el-table-column prop="coopMoney" label="合作费用" min-width="81"></el-table-column>
           <el-table-column prop="coopNum" label="固定合作总量" min-width="100"></el-table-column>
           <el-table-column prop="alreadyCooperateNum" label="历史合作次数" min-width="100">
@@ -359,7 +363,7 @@ export default {
       cityList: cityList, // 城市筛列表
       cityName: '',
       // 分页数据
-      pageName: 1,
+      pageNum: 1,
       pageSize: 10,
       total: 0
     }
@@ -413,17 +417,14 @@ export default {
           // console.log(res)
           // this.loading = false
           if (res.status == 200) {
-            // console.log(res)
-            let data = res.data
+            console.log(res)
+            let data = res.data.carTypes
             let carSeriesList = []
-            data.forEach(element => {
-              // console.log(element)
-              let listId = element.carSeriesIds.split('/')
-              let listName = element.carSeriesName.split('/')
-              listId.forEach((element0, i) => {
+            data.forEach((element, i) => {
+              element.carSeries.forEach((element_, j) => {
                 carSeriesList.push({
-                  value: element0,
-                  label: listName[i]
+                  value: element_.carSeriesId,
+                  label: `${element.deptName}-${element.carTypeName}-${element_.carSeriesName}`
                 })
               })
             })
@@ -504,7 +505,7 @@ export default {
           typeId: this.tab1act,
           itemId: this.tab2act
         },
-        pageName: this.pageName,
+        pageNum: this.pageNum,
         pageSize: this.pageSize
       }
       if (this.cityName) {
