@@ -19,6 +19,13 @@
           </div>
         </el-col>
         <el-col :span="24" class="list">
+          <div class="key">品牌车型</div>
+          <div class="val">
+            <el-cascader v-model="carSeriesId" :options="carSeriesList" clearable filterable></el-cascader>
+            <!-- {{carSeriesId}} -->
+          </div>
+        </el-col>
+        <el-col :span="24" class="list">
           <div class="key">任务对象</div>
           <div class="val">
             <el-cascader
@@ -28,13 +35,6 @@
               clearable
               filterable
             ></el-cascader>
-          </div>
-        </el-col>
-        <el-col :span="24" class="list">
-          <div class="key">品牌车型</div>
-          <div class="val">
-            <el-cascader v-model="carSeriesId" :options="carSeriesList" clearable filterable></el-cascader>
-            <!-- {{carSeriesId}} -->
           </div>
         </el-col>
         <el-col :span="24" class="list">
@@ -362,7 +362,7 @@ export default {
           console.log(res)
           // this.listLoading = false
           if (res.status == 200) {
-            let data = res.data
+            let data = res.data.carTypes
 
             let carSeriesList = [
               {
@@ -382,27 +382,24 @@ export default {
               }
             ]
             data.forEach(element => {
-              let data = {
+              let children = {
                 value: element.carTypeId,
                 label: element.carTypeName,
                 children: []
               }
-              let carSeriesIds = element.carSeriesIds.split('/')
-              let carSeriesName = element.carSeriesName.split('/')
-              carSeriesIds.forEach((element, i) => {
-                data.children.push({
-                  value: element * 1,
-                  label: carSeriesName[i]
+              element.carSeries.forEach(element_ => {
+                children.children.push({
+                  value: element_.carSeriesId,
+                  label: element_.carSeriesName
                 })
-                // console.log(element)
               })
               // console.log(carSeriesIds)
               if (element.deptId == 105) {
-                carSeriesList[0].children.push(data)
+                carSeriesList[0].children.push(children)
               } else if (element.deptId == 110) {
-                carSeriesList[1].children.push(data)
+                carSeriesList[1].children.push(children)
               } else if (element.deptId == 153) {
-                carSeriesList[2].children.push(data)
+                carSeriesList[2].children.push(children)
               }
             })
             this.carSeriesList = carSeriesList
