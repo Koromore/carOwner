@@ -495,10 +495,7 @@ export default {
         data.startTime,
         data.num,
         data.carSeriesId,
-        data.taskDesc,
-        data.remark,
-        data.listInvite.length,
-        data.listTaskFile.length
+        data.listInvite.length
       ]
 
       list.forEach(element => {

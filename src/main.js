@@ -10,6 +10,8 @@ import router from './router'
 import { date, date_, time } from '@/utils/date'
 import { date0, time0 } from '@/utils/time'
 import { isEmail, isMobile } from '@/utils/ifformat'
+import { duration } from '@/utils/duration'
+
 // import {Decrypt,Encrypt} from '@/utils/cryptoJS'
 
 // router.beforeEach((to, from, next) => {
@@ -38,6 +40,9 @@ Vue.prototype.$time0 = time0
 
 Vue.prototype.$isEmail = isEmail
 Vue.prototype.$isMobile = isMobile
+
+Vue.prototype.$duration = duration
+
 
 // Vue.prototype.$Decrypt = Decrypt
 // Vue.prototype.$Encrypt = Encrypt

@@ -105,7 +105,7 @@
           <el-table-column prop="itemName" label="合作事项" min-width="81" show-overflow-tooltip></el-table-column>
           <el-table-column prop="timeLimit" label="合作时长" min-width="81">
             <template slot-scope="scope">
-              {{scope.row.timeLimit}}天
+              {{$duration(scope.row.timeLimit)}}
             </template>
           </el-table-column>
           <el-table-column prop="coopMoney" label="合作费用" min-width="81"></el-table-column>
@@ -178,7 +178,11 @@
           <el-table-column prop="ownerArea" label="所在区域" min-width="81" show-overflow-tooltip></el-table-column>
           <el-table-column prop="skillName" label="特长" min-width="81"></el-table-column>
           <el-table-column prop="nickname" label="IP账号" min-width="81"></el-table-column>
-          <el-table-column prop="timeLimit" label="合作时长" min-width="100"></el-table-column>
+          <el-table-column prop="timeLimit" label="合作时长" min-width="100">
+            <template slot-scope="scope">
+              {{$duration(scope.row.timeLimit)}}
+            </template>
+          </el-table-column>
           <el-table-column prop="alreadyCooperateNum" label="历史合作次数" min-width="100">
             <template slot-scope="scope">
               <template v-if="scope.row.alreadyCooperateNum">
@@ -243,7 +247,11 @@
           <el-table-column prop="ownerArea" label="所在区域" min-width="81" show-overflow-tooltip></el-table-column>
           <el-table-column prop="skillName" label="特长" min-width="81"></el-table-column>
           <el-table-column prop="nickname" label="IP账号" min-width="81"></el-table-column>
-          <el-table-column prop="timeLimit" label="合作时长" min-width="100"></el-table-column>
+          <el-table-column prop="timeLimit" label="合作时长" min-width="100">
+            <template slot-scope="scope">
+              {{$duration(scope.row.timeLimit)}}
+            </template>
+          </el-table-column>
           <el-table-column prop="alreadyCooperateNum" label="历史合作次数" min-width="100">
             <template slot-scope="scope">
               <template v-if="scope.row.alreadyCooperateNum">
@@ -417,7 +425,7 @@ export default {
           // console.log(res)
           // this.loading = false
           if (res.status == 200) {
-            console.log(res)
+            // console.log(res)
             let data = res.data.carTypes
             let carSeriesList = []
             data.forEach((element, i) => {
@@ -465,8 +473,8 @@ export default {
             })
             this.tab2Items = eventDataList
             this.tab2act = eventDataList[0].id
-            console.log(this.tab2Items)
-            console.log(this.tab2act)
+            // console.log(this.tab2Items)
+            // console.log(this.tab2act)
             // 获取车主列表
             this.getVehicleOwnerList()
           }
@@ -543,14 +551,14 @@ export default {
     ///////// 分页 start /////////
     // 每页条数变化时触发事件
     changeSize(pageSize) {
-      console.log(pageSize)
+      // console.log(pageSize)
       this.pageSize = pageSize
       ///////// 车主列表获取 start /////////
       this.getVehicleOwnerList()
     },
     // 页码变换时触发事件
     changePage(pageNum) {
-      console.log(pageNum)
+      // console.log(pageNum)
       this.pageNum = pageNum
       ///////// 车主列表获取 start /////////
       this.getVehicleOwnerList()
@@ -569,7 +577,7 @@ export default {
           ownerId: prm.ownerId
         }
       })
-      console.log(prm)
+      // console.log(prm)
     },
     ///////// 跳转场地信息 end /////////
 

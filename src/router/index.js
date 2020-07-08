@@ -104,7 +104,16 @@ axios.interceptors.response.use(
 
 const router = new Router({
   mode: 'hash',
-  routes: [{
+  routes: [
+    {
+      path: '*',
+      name: '',
+      redirect: '/home',
+      // component: Login,
+      meta: {
+        requireAuth: true,
+      }
+    },{
     path: '/',
     name: '',
     redirect: '/login',
@@ -346,10 +355,10 @@ try {
   // if (window.sessionStorage.getItem('isLogin') == 'success') {
   // }
 
-  // var user = JSON.parse(localStorage.getItem('user'));
-  // let token = localStorage.getItem('token');
-  // let userSign = localStorage.getItem('userSign');
-  // store.commit('login', { token, user, userSign });
+  var user = JSON.parse(localStorage.getItem('user'));
+  let token = localStorage.getItem('token');
+  let userSign = localStorage.getItem('userSign');
+  store.commit('login', { token, user, userSign });
 
   // var user = JSON.parse(localStorage.getItem('user'));
   // let token = localStorage.getItem('token');

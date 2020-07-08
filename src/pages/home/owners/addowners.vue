@@ -277,6 +277,7 @@
                     @change="handleChangeCity0"
                     placeholder="请选择所在区域"
                   ></el-cascader>
+                  <!-- {{district0}} -->
                 </el-col>
                 <el-col :span="12">
                   <el-input placeholder="请输入详细地址" v-model="deliAddress"></el-input>
@@ -497,8 +498,8 @@ export default {
       optionsCity0: cities,
       district_code: [], // 区域代码
       district: [], // 区域名称
-      district_code0: [], // 区域代码
-      district0: [], // 区域名称
+      district_code0: [], // 收货区域代码
+      district0: [], // 收货区域名称
       ownerSkilList: [], // 特长列表
       speciality: '', // 特长
       ownersName: '', // 车主姓名
@@ -642,15 +643,18 @@ export default {
       this.carSeriesList.forEach(element0 => {
         element0.children.forEach(element1 => {
           element1.children.forEach(element2 => {
-            if (element2.value == this.carSeriesId) {
-              carSeries.push(element0.value)
-              carSeries.push(element1.value)
-              carSeries.push(element2.value)
-            }
+            this.carSeriesId.forEach(element3 => {
+              if (element2.value == element3.seriesId) {
+                let list = [element0.value,element1.value,element2.value]
+                carSeries.push(list)
+              }
+            })
           })
         })
       })
+
       this.carSeries = carSeries
+      // console.log(carSeries)
     },
     ///////// 获取认证车型 start /////////
 
@@ -762,7 +766,7 @@ export default {
           this.livelihood = data.carUse.split(',')
           // console.log(this.livelihood)
           this.source = data.sourceId
-          this.carSeriesId = data.seriesId
+          this.carSeriesId = data.ownerCarSeries
           this.mail = data.email
 
           this.tel = data.phone
@@ -803,6 +807,11 @@ export default {
             data.cooperates[0].endTime.replace(/-/g, '/')
           ]
           this.duration = data.cooperates[0].timeLimit
+
+          this.district0 = [data.deliveryAddresses[0].province,data.deliveryAddresses[0].city,data.deliveryAddresses[0].area]
+          this.deliAddress = data.deliveryAddresses[0].address
+          this.district_code0 = this.getValue(this.district0, this.optionsCity0)
+          this.bankCard 
           // console.log(this.district_code)
         }
       })
@@ -1045,7 +1054,7 @@ export default {
     },
     handleChangeCity0(e, form) {
       // 选择区域
-      let add = this.getCascaderObj(e, this.optionsCity)
+      let add = this.getCascaderObj(e, this.optionsCity0)
       let Addtest = []
       for (let i = 0; i < add.length; i++) {
         Addtest.push(add[i].label)
@@ -1170,6 +1179,7 @@ export default {
         sourceId: this.source,
         birthday: birthday,
         // seriesId: this.carSeries[2],
+        // ownerCarSeries: [], // 车主认证车型
         email: this.mail,
         skillId: this.speciality,
         ownerCarSeries: ownerCarSeries,
@@ -1213,10 +1223,11 @@ export default {
         ]
       }
       let district0 = this.district0
-      if (district0.length==2) {
+      // console.log(district0)
+      if (district0.length == 2) {
         data.deliveryAddresses[0].city = district0[0]
         data.deliveryAddresses[0].area = district0[1]
-      }else if (district0.length==3){
+      } else if (district0.length == 3) {
         data.deliveryAddresses[0].province = district0[0]
         data.deliveryAddresses[0].city = district0[1]
         data.deliveryAddresses[0].area = district0[2]
@@ -1283,7 +1294,7 @@ export default {
         })
         data.ipGrows = ipGrows
       }
-      console.log(data)
+      // console.log(data)
 
       let judge = true
 

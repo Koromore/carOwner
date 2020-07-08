@@ -14,26 +14,8 @@
         </el-table-column>
         <el-table-column prop="deptName" label="品牌名称" width="240"></el-table-column>
         <el-table-column prop="carTypeName" label="车型列表" min-width="240"></el-table-column>
-        <el-table-column prop="address" label="操作" width="100">
-          <template slot-scope="scope">
-            <i class="el-icon-edit" @click="redact(scope.row)"></i>
-            <!-- <i class="el-icon-delete" @click="delContent(scope.row.carTypeId)"></i> -->
-          </template>
-        </el-table-column>
       </el-table>
     </div>
-    <!-- <el-col :span="24" class="paging">
-      <el-pagination
-        @size-change="changeSize"
-        @current-change="changePage"
-        :current-page="1"
-        :page-sizes="[10, 20, 30, 40]"
-        :page-size="pageSize"
-        layout="total, prev, pager, next ,sizes"
-        :total="total"
-        background
-      ></el-pagination>
-    </el-col> -->
 
     <!-- 抽屉弹窗新增/编辑数据 start -->
     <el-drawer
@@ -183,17 +165,6 @@ export default {
     // },
     ///////// 循环 end /////////
 
-    // ///////// 分页 start /////////
-    // // 每页条数变化时触发事件
-    // changeSize(pageSize) {
-    //   console.log(pageSize)
-    // },
-    // // 页码变换时触发事件
-    // changePage(pageNum) {
-    //   console.log(pageNum)
-    // },
-    // ///////// 分页 end /////////
-
     ///////// 编辑数据 start /////////
     redact(data) {
       this.drawerData = true
@@ -238,8 +209,6 @@ export default {
       this.loading = true
       let data = {
         ids: 0
-        // pageNum: 1,
-        // pageSize: 30
       }
       this.$axios
         .post('/ocarplay/api/carType/getCarTypeLists', data)
@@ -324,47 +293,6 @@ export default {
         })
     },
     ///////// 新增/修改车型数据 end /////////
-
-    ///////// 删除车型数据 start /////////
-    // deleteCarType(id) {
-    //   let data = {
-    //     carTypeId: id
-    //   }
-    //   this.$axios
-    //     .post('/ocarplay/api/carType/deleteCarType', data)
-    //     .then(res => {
-    //       if (res.status == 200 && res.data.errcode == 0) {
-    //         this.messageWin(res.data.msg)
-    //         this.getCarTypeLists()
-    //       } else {
-    //         this.messageError(res.data.msg)
-    //       }
-    //     })
-    // },
-    ///////// 删除车型数据 end /////////
-
-    ///////// 删除数据 start /////////
-    // delContent(id) {
-    //   this.$confirm('确认要删除该数据吗?', '提示', {
-    //     confirmButtonText: '确定',
-    //     cancelButtonText: '取消',
-    //     type: 'warning'
-    //   })
-    //     .then(() => {
-    //       this.deleteCarType(id)
-    //       // this.$message({
-    //       //   type: 'success',
-    //       //   message: '删除成功!'
-    //       // })
-    //     })
-    //     .catch(() => {
-    //       this.$message({
-    //         type: 'info',
-    //         message: '已取消删除'
-    //       })
-    //     })
-    // },
-    ///////// 删除数据 end /////////
 
     ///////// 消息提示 start /////////
     messageWin(message) {

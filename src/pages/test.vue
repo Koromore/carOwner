@@ -207,7 +207,7 @@ export default {
           }
         }
       ],
-      createTime: '2020-07-06T02:23:26.757Z',
+      createTime: '2020-07-08T10:49:38.223Z',
       deleteFlag: true,
       deliveryAddresses: [
         {
@@ -706,7 +706,7 @@ export default {
       qq: 'string',
       relations: [
         {
-          birthday: '2020-07-06T02:23:26.757Z',
+          birthday: '2020-07-08T10:49:38.224Z',
           createTime: {
             chronology: {
               calendarType: 'string',
@@ -754,7 +754,7 @@ export default {
       sourceId: 0,
       sourceName: 'string',
       typeId: 0,
-      updateTime: '2020-07-06T02:23:26.757Z',
+      updateTime: '2020-07-08T10:49:38.224Z',
       vehicleOwnerId: 0,
       vinno: 'string',
       weiboId: 'string',
