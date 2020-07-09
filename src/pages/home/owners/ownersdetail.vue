@@ -54,7 +54,9 @@
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">所在区域</div>
-              <div class="val">{{ownerDetil.province}}{{ownerDetil.city}}</div>
+              <div class="val">
+                <!-- {{ownerDetil.province}}{{ownerDetil.city}} -->
+              </div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">特长</div>
@@ -81,7 +83,12 @@
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">认证车型</div>
-              <div class="val">{{ownerDetil.carSeriesName}}</div>
+              <div class="val">
+                <span v-for="(item, index) in ownerDetil.ownerCarSeries" :key="index">
+                  {{item.carSeriesName}}
+                  <br />
+                </span>
+              </div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">车主邮箱</div>
@@ -155,7 +162,15 @@
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">收货地址</div>
-              <div class="val">收货地址</div>
+              <div class="val">
+                <template v-if="ownerDetil.deliveryAddresses.length!=0">
+                  {{ownerDetil.deliveryAddresses[0].province}}
+                {{ownerDetil.deliveryAddresses[0].city}}
+                {{ownerDetil.deliveryAddresses[0].area}}
+                {{ownerDetil.deliveryAddresses[0].address}}
+                </template>
+                
+              </div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">家属信息</div>
@@ -184,27 +199,46 @@
             <el-col :span="24" class="list">
               <div class="key">签约合同</div>
               <div class="val">
-                <img src="static/images/document/ppt.png" width="24" alt srcset />
-                &nbsp;
-                <el-link
-                  @click="download(ownerDetil.cooperates[0])"
-                >{{ownerDetil.cooperates[0].fileName}}</el-link>
+                <template v-if="ownerDetil.cooperates[0].fileName">
+                  <img
+                  v-if="ownerDetil.cooperates[0].suffix == 'doc' || ownerDetil.cooperates[0].suffix == 'docx'"
+                  src="static/images/document/word.png"
+                  width="16"
+                  alt
+                  srcset
+                />
+                <img
+                  v-else-if="ownerDetil.cooperates[0].suffix == 'xls' || ownerDetil.cooperates[0].suffix == 'xlsx'"
+                  src="static/images/document/excle.png"
+                  width="16"
+                  alt
+                  srcset
+                />
+                <img
+                  v-else-if="ownerDetil.cooperates[0].suffix == 'ppt' || ownerDetil.cooperates[0].suffix == 'pptx'"
+                  src="static/images/document/ppt.png"
+                  width="16"
+                  alt
+                  srcset
+                />
+                <img v-else src="static/images/document/other.png" width="16" alt srcset />
+                  &nbsp;
+                  <!-- {{ownerDetil.cooperates[0].suffix}} -->
+                  <el-link
+                    @click="$download(ownerDetil.cooperates[0])"
+                  >{{ownerDetil.cooperates[0].fileName}}</el-link>
+                </template>
               </div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">合作期限</div>
               <div
                 class="val"
-                v-for="(item, index) in ownerDetil.cooperates"
-                :key="index"
-              >{{$date(item.startTime)}}---{{$date(item.endTime)}}</div>
+              >{{$date(ownerDetil.cooperates[0].startTime)}}---{{$date(ownerDetil.cooperates[0].endTime)}}</div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">合作时长</div>
-              <div class="val" v-for="(item, index) in ownerDetil.cooperates" :key="index">
-                <template v-if="item.timeLimit>=30">{{parseInt(item.timeLimit/30)}}个月</template>
-                <template v-else>{{item.timeLimit}}天</template>
-              </div>
+              <div class="val">{{$duration(ownerDetil.cooperates[0].timeLimit)}}</div>
             </el-col>
           </el-col>
           <!-- 左右分割线 -->
@@ -212,21 +246,15 @@
             <el-col :span="24" class="list">
               <template v-if="ownerDetil.typeId==1">
                 <div class="key">合作事项要求频次</div>
-                <div class="val">
+                <div class="val" style="height: auto;">
                   <el-col :span="24" v-for="(item, index) in ownerDetil.ownerCoops" :key="index">
                     <el-col :span="6">{{item.itemName}}</el-col>
-                    <el-col :span="6">合作总量{{item.coopNum}}</el-col>
-                    <el-col :span="6">合作总价{{item.coopMoney}}</el-col>
+                    <el-col :span="6">合作总量:{{item.coopNum}}</el-col>
+                    <el-col :span="6">合作总价:{{item.coopMoney}}</el-col>
                     <el-col :span="6">
-                      <template v-if="item.period==0">
-                        按月结算
-                      </template>
-                      <template v-if="item.period==1">
-                        按年结算
-                      </template>
-                      <template v-if="item.period==2">
-                        按季度结算
-                      </template>
+                      <template v-if="item.period==0">按月结算</template>
+                      <template v-if="item.period==1">按年结算</template>
+                      <template v-if="item.period==2">按季度结算</template>
                     </el-col>
                   </el-col>
                 </div>
@@ -351,7 +379,8 @@ export default {
           'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
         cooperates: [{}],
         invites: [],
-        ipGrows: [{}]
+        ipGrows: [{}],
+        deliveryAddresses: []
       }
     }
   },
@@ -463,7 +492,7 @@ export default {
       let localPath = row.localPath
       let a = document.createElement('a')
       a.download = `${row.fileName}.${row.suffix}`
-      a.setAttribute('href', 'http://176.10.10.235:8080/ocarplay/' + localPath)
+      a.setAttribute('href', 'http://176.10.10.233:8082/ocarplay/' + localPath)
       a.click()
     }
     ///////// 下载 end /////////

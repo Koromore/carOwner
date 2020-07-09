@@ -19,8 +19,30 @@
           <el-table-column prop="startTime" label="签约时间" min-width="130"></el-table-column>
           <el-table-column label="合同文件" min-width="360">
             <template slot-scope="scope">
-              <img src="static/images/document/ppt.png" width="16" alt srcset />
-              <el-link @click="download(scope.row)">{{scope.row.fileName}}</el-link>
+              <!-- <img src="static/images/document/ppt.png" width="16" alt srcset /> -->
+              <img
+                  v-if="scope.row.suffix == 'doc' || scope.row.suffix == 'docx'"
+                  src="static/images/document/word.png"
+                  width="16"
+                  alt
+                  srcset
+                />
+                <img
+                  v-else-if="scope.row.suffix == 'xls' || scope.row.suffix == 'xlsx'"
+                  src="static/images/document/excle.png"
+                  width="16"
+                  alt
+                  srcset
+                />
+                <img
+                  v-else-if="scope.row.suffix == 'ppt' || scope.row.suffix == 'pptx'"
+                  src="static/images/document/ppt.png"
+                  width="16"
+                  alt
+                  srcset
+                />
+                <img v-else src="static/images/document/other.png" width="16" alt srcset />
+              <el-link @click="$download(scope.row)">{{scope.row.fileName}}</el-link>
             </template>
           </el-table-column>
         </el-table>
@@ -109,10 +131,7 @@ export default {
       let localPath = row.localPath
       let a = document.createElement('a')
       a.download = `${row.fileName}.${row.suffix}`
-      a.setAttribute(
-        'href',
-        'http://176.10.10.235:8080/ocarplay/' + localPath
-      )
+      a.setAttribute('href', '/ocarplay/' + localPath)
       a.click()
     }
     ///////// 下载 end /////////

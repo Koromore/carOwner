@@ -11,6 +11,7 @@ import { date, date_, time } from '@/utils/date'
 import { date0, time0 } from '@/utils/time'
 import { isEmail, isMobile } from '@/utils/ifformat'
 import { duration } from '@/utils/duration'
+import { download } from '@/utils/download'
 
 // import {Decrypt,Encrypt} from '@/utils/cryptoJS'
 
@@ -43,6 +44,7 @@ Vue.prototype.$isMobile = isMobile
 
 Vue.prototype.$duration = duration
 
+Vue.prototype.$download = download
 
 // Vue.prototype.$Decrypt = Decrypt
 // Vue.prototype.$Encrypt = Encrypt

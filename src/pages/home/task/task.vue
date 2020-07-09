@@ -78,6 +78,7 @@
           :header-row-style="{'height': '70px','background': 'rgb(242, 242, 242)'}"
           :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
           height="100%"
+          v-loading="loading"
         >
           <el-table-column prop label width="24" show-overflow-tooltip></el-table-column>
           <el-table-column prop="taskName" label="任务名称" min-width="320" show-overflow-tooltip>
@@ -158,6 +159,7 @@
           :header-row-style="{'height': '70px','background': 'rgb(242, 242, 242)'}"
           :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
           height="100%"
+          v-loading="loading"
         >
           <el-table-column prop label width="24" show-overflow-tooltip></el-table-column>
           <el-table-column prop="taskName" label="任务名称" min-width="320" show-overflow-tooltip>
@@ -239,6 +241,7 @@
           :header-row-style="{'height': '70px','background': 'rgb(242, 242, 242)'}"
           :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
           height="100%"
+          v-loading="loading"
         >
           <el-table-column prop label width="24" show-overflow-tooltip></el-table-column>
           <el-table-column prop="taskName" label="任务名称" min-width="320" show-overflow-tooltip>
@@ -302,6 +305,7 @@
           :header-row-style="{'height': '70px','background': 'rgb(242, 242, 242)'}"
           :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
           height="100%"
+          v-loading="loading"
         >
           <el-table-column prop label width="24" show-overflow-tooltip></el-table-column>
           <el-table-column prop="taskName" label="任务名称" min-width="320" show-overflow-tooltip>
@@ -648,6 +652,7 @@ export default {
       //   // pageNum: 1,
       //   // pageSize: 30
       // }
+      this.loading = true
       let data = {
         pageNum: this.pageNum,
         pageSize: this.pageSize,
@@ -687,6 +692,7 @@ export default {
           })
           this.taskListData = data.items
           this.total = data.totalRows
+          this.loading = false
           // console.log(data.items)
         }
       })
@@ -853,6 +859,9 @@ export default {
         element.typeId = element.inviteData[0]
         element.itemId = element.inviteData[1]
         element.ownerId = element.inviteData[2]
+        if (element.url&&element.money) {
+          element.isWrite = 1
+        }
       })
       let data = {
         taskId: this.taskId,
@@ -1164,6 +1173,8 @@ $statusColor4: #ea8a85;
     > .el-col {
       margin-bottom: 36px;
       font-size: 18px;
+      min-height: 40px;
+      line-height: 40px;
     }
     i {
       color: $icoColor;

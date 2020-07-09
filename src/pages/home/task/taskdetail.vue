@@ -1,7 +1,7 @@
 <template>
   <div id="taskdetail">
     <!-- 内容列表 start -->
-    <el-row class="content">
+    <el-row class="content" v-loading="loading">
       <!-- <el-col :span="2" class="title">返回</el-col> -->
       <el-col :span="24" class="title">
         <el-col :span="6" class="previousBox">
@@ -91,7 +91,7 @@
           <div class="val">
             <div v-for="(item, index) in (taskDetail.listTaskFile)" :key="index">
               <img src="static/images/document/ppt.png" width="20" alt />&nbsp;
-              <el-link @click="download(item)">{{item.fileName}}</el-link>
+              <el-link @click="$download(item)">{{item.fileName}}</el-link>
             </div>
             <!-- <div>
               <img src="static/images/document/ppt.png" width="20" alt />&nbsp;2020年6月-长城-#校服女神#创意标准文件
@@ -100,7 +100,58 @@
         </el-col>
         <el-col :span="24" class="list">
           <div class="key">结算清单</div>
-          <div class="val">暂无</div>
+          <div class="val">
+            <span v-if="taskDetail.status==1||taskDetail.status==2">
+              <img
+                  v-if="ownerDetil.cooperates[0].suffix == 'doc' || ownerDetil.cooperates[0].suffix == 'docx'"
+                  src="static/images/document/word.png"
+                  width="16"
+                  alt
+                  srcset
+                />
+                <img
+                  v-else-if="ownerDetil.cooperates[0].suffix == 'xls' || ownerDetil.cooperates[0].suffix == 'xlsx'"
+                  src="static/images/document/excle.png"
+                  width="16"
+                  alt
+                  srcset
+                />
+                <img
+                  v-else-if="ownerDetil.cooperates[0].suffix == 'ppt' || ownerDetil.cooperates[0].suffix == 'pptx'"
+                  src="static/images/document/ppt.png"
+                  width="16"
+                  alt
+                  srcset
+                />
+                <img v-else src="static/images/document/other.png" width="16" alt srcset />
+              <el-link @click="exportInvite(taskDetail)">{{taskDetail.taskName}}</el-link>
+            </span>
+            <span v-else>暂无</span>
+          </div>
+          <div class="key">完成进度</div>
+          <div class="val">
+            {{taskDetail.inviteNum}}/{{taskDetail.inviteNumOver}}
+            <!-- <span v-if="taskDetail.status==1||taskDetail.status==2">
+              <img src="static/images/document/excle.png" width="16" alt srcset />
+              <el-link @click="exportInvite(taskDetail)">{{taskDetail.taskName}}</el-link>
+            </span>
+            <span v-else>暂无</span>-->
+          </div>
+          <div class="key">完成详情</div>
+          <div class="val">
+            <!-- {{taskDetail.inviteNum}}/{{taskDetail.inviteNumOver}} -->
+            <div v-for="(item, index) in taskDetail.listInvite" :key="index">
+              <span>{{item.realName}}</span>&nbsp;&nbsp;
+              <span>{{item.url}}</span>&nbsp;&nbsp;
+              <span>{{item.money}}</span>&nbsp;&nbsp;
+              <span v-if="item.isCard">现金</span>
+              <span v-else>油卡</span>&nbsp;&nbsp;
+              <span v-if="item.isWrite==1">已完成</span>
+              <span v-else>未完成</span>
+              
+            </div>
+            
+          </div>
         </el-col>
       </el-col>
       <el-col :span="24" class="btn">
@@ -121,7 +172,8 @@ export default {
     return {
       // 任务ID
       taskId: 1,
-      taskDetail: {}
+      taskDetail: {},
+      loading: false
     }
   },
   // 侦听器
@@ -163,6 +215,7 @@ export default {
 
     ///////// 获取任务详情 start /////////
     getTaskDetails() {
+      this.loading = true
       let data = {
         taskId: this.$route.params.id
       }
@@ -183,7 +236,15 @@ export default {
           //   data.ownerItemList = element.ownerItemList.join(',')
           //   data.ownerName = element.ownerName.join(',')
           // console.log(data)
+          data.inviteNum = data.listInvite.length
+          data.inviteNumOver = 0
+          data.listInvite.forEach(element => {
+            if (element.isWrite == 1) {
+              data.inviteNumOver += 1
+            }
+          })
           this.taskDetail = data
+          this.loading = false
         }
       })
     },
@@ -209,7 +270,7 @@ export default {
         if (res.status == 200) {
           if (res.data.errcode == 0) {
             this.$message.success(res.data.msg)
-          }else{
+          } else {
             this.$message.error(res.data.msg)
           }
         }
@@ -217,14 +278,42 @@ export default {
     },
     ///////// 发送邀请函 end /////////
 
+    ///////// 文档下载 start /////////
     download(row) {
       let localPath = row.localPath
       let a = document.createElement('a')
       a.download = `${row.fileName}.${row.suffix}`
       // a.setAttribute('href', 'http://218.106.254.122:8084/pmbs/' + localPath)
-      a.setAttribute('href', 'http://176.10.10.235:8080/ocarplay/' + localPath)
+      a.setAttribute('href', 'http://176.10.10.233:8082/ocarplay/' + localPath)
       a.click()
+    },
+    ///////// 文档下载 end /////////
+
+    ///////// 导出结算清单 end /////////
+    exportInvite(prm) {
+      let data = {
+        taskId: prm.taskId
+      }
+      this.$axios
+        .post('/ocarplay/api/invite/exportInvite', data, {
+          responseType: 'blob' //--设置请求数据格式
+        })
+        .then(res => {
+          console.log(res)
+          if (res.status == 200) {
+            // this.$message.success('删除任务成功！')
+            // ///////// 获取任务列表 start /////////
+            // this.getTaskListAjax()
+            var blob = new Blob([res.data], {
+              type: 'text/plain;charset=utf-8'
+            })
+            saveAs(blob, prm.taskName + '.xls')
+          } else {
+            this.$message.error('删除任务失败！')
+          }
+        })
     }
+    ///////// 导出结算清单 end /////////
   }
 }
 </script>

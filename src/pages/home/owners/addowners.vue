@@ -549,6 +549,7 @@ export default {
       // 合作概况列表
       eventList: [
         {
+          id: '', // 合作概况ID
           itemId: '', // 车主选择的合作事项ID
           itemName: '', // 车主选择的合作事项Name
           coopNum: '', // 固定合作总量
@@ -645,7 +646,7 @@ export default {
           element1.children.forEach(element2 => {
             this.carSeriesId.forEach(element3 => {
               if (element2.value == element3.seriesId) {
-                let list = [element0.value,element1.value,element2.value]
+                let list = [element0.value, element1.value, element2.value]
                 carSeries.push(list)
               }
             })
@@ -682,6 +683,7 @@ export default {
 
     ///////// 获取车主信息 start /////////
     getVehicleOwnerDetail() {
+      this.loading = true
       let data = {
         typeId: this.$store.state.vehicleOwnerDetailNum[0],
         vehicleOwnerId: this.$store.state.vehicleOwnerDetailNum[1]
@@ -694,10 +696,13 @@ export default {
           // console.log(res)
           let data = res.data
           this.vehicleOwnerId = data.vehicleOwnerId
-          this.handerImg = data.image
-          data.image = '/ocarplay/' + data.image
           this.ownerDetil = data
-          this.fileList = [{ name: '', url: data.image }]
+          if (data.image) {
+            this.handerImg = data.image
+            data.image = '/ocarplay/' + data.image
+            this.fileList = [{ name: '', url: data.image }]
+          }
+
           this.tabact = data.typeId
           if (data.typeId == 1) {
             let eventData = []
@@ -712,17 +717,18 @@ export default {
             let eventList = []
             data.ownerCoops.forEach(element => {
               eventList.push({
-                itemId: element.itemId, // 车主选择的合作事项ID
-                itemName: element.itemName, // 车主选择的合作事项Name
+                coopId: element.coopId, // 合作概况ID
                 coopNum: element.coopNum, // 固定合作总量
                 coopMoney: element.coopMoney, // 固定合作总价
+                itemId: element.itemId, // 车主选择的合作事项ID
+                itemName: element.itemName, // 车主选择的合作事项Name
                 period: element.period, // 结算周期
                 timeLimit: element.timeLimit, // 合作时长
                 typeId: element.typeId
               })
             })
             this.eventList = eventList
-            // console.log(eventList)
+            console.log(eventList)
           } else if (data.typeId == 2 || data.typeId == 3) {
             let eventData = []
             data.ipGrows.forEach(element => {
@@ -755,7 +761,10 @@ export default {
           }
           // console.log(this.sex)
           this.work = data.work
-          this.birthDate = new Date(data.birthday.replace(/-/g, '/'))
+          if (data.birthday) {
+            this.birthDate = new Date(data.birthday.replace(/-/g, '/'))
+          }
+
           this.district = [data.province, data.city]
           let district = [data.province, data.city]
           let optionsCity = this.optionsCity
@@ -808,12 +817,18 @@ export default {
           ]
           this.duration = data.cooperates[0].timeLimit
 
-          this.district0 = [data.deliveryAddresses[0].province,data.deliveryAddresses[0].city,data.deliveryAddresses[0].area]
+          this.district0 = [
+            data.deliveryAddresses[0].province,
+            data.deliveryAddresses[0].city,
+            data.deliveryAddresses[0].area
+          ]
           this.deliAddress = data.deliveryAddresses[0].address
           this.district_code0 = this.getValue(this.district0, this.optionsCity0)
-          this.bankCard 
+          this.bankCard
           // console.log(this.district_code)
         }
+      this.loading = false
+
       })
     },
 
@@ -972,15 +987,15 @@ export default {
             data.forEach(element => {
               let children = {
                 value: element.carTypeId,
-                label: element.carTypeName,
-                children: []
+                label: element.carTypeName
+                // children: []
               }
-              element.carSeries.forEach(element_ => {
-                children.children.push({
-                  value: element_.carSeriesId,
-                  label: element_.carSeriesName
-                })
-              })
+              // element.carSeries.forEach(element_ => {
+              //   children.children.push({
+              //     value: element_.carSeriesId,
+              //     label: element_.carSeriesName
+              //   })
+              // })
               // console.log(carSeriesIds)
               if (element.deptId == 105) {
                 carSeriesList[0].children.push(children)
@@ -999,6 +1014,7 @@ export default {
 
     tab(e) {
       this.tabact = e
+      this.eventData = []
     },
 
     ///////// 头像上传 start //////////
@@ -1162,7 +1178,7 @@ export default {
       let ownerCarSeries = []
       carSeries.forEach(element => {
         ownerCarSeries.push({
-          seriesId: element[2]
+          seriesId: element[1]
         })
       })
       let data = {
@@ -1209,18 +1225,17 @@ export default {
             area: '', // 区
             address: this.deliAddress // 详细地址
           }
-        ],
-
-        cooperates: [
-          {
-            fileName: this.pactName,
-            localPath: this.pactPath,
-            startTime: startTime,
-            endTime: endTime,
-            suffix: this.pactsuffix,
-            timeLimit: this.duration
-          }
         ]
+      }
+      if (this.pactPath) {
+        data.cooperates[0] = {
+          fileName: this.pactName,
+          localPath: this.pactPath,
+          startTime: startTime,
+          endTime: endTime,
+          suffix: this.pactsuffix,
+          timeLimit: this.duration
+        }
       }
       let district0 = this.district0
       // console.log(district0)
@@ -1236,8 +1251,11 @@ export default {
       let judgeList = []
       if (tabact == 1) {
         data.ownerCoops = this.eventList
-        data.ownerCoops.forEach(element => {
-          element.timeLimit = this.timeLimit
+        data.ownerCoops.forEach((element, i) => {
+          element.timeLimit = this.duration
+          if (i>1) {
+            element.deleteFlag = true
+          }
         })
         // [
         //   {
@@ -1311,10 +1329,10 @@ export default {
         judge = false
       } else {
       }
-
+      console.log(data)
       if (this.submitFlag && judge) {
         this.submitFlag = false
-        this.loading = true
+        this.loading = false
         this.$axios
           .post('/ocarplay/api/vehicleOwner/saveOrUpdate', data)
           .then(res => {
