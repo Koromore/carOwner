@@ -10,13 +10,13 @@
 
         <!-- 导航 start -->
         <div class="navList">
-          <div @click="navTo(1)" :class="[routeName=='task'?'act':'']">任务管理</div>
-          <div @click="navTo(2)" :class="[routeName=='settlement'?'act':'']">结算管理</div>
-          <div @click="navTo(3)" :class="[routeName=='owners'?'act':'']">车主管理</div>
-          <div @click="navTo(4)" :class="[routeName=='site'?'act':'']">场地管理</div>
-          <div @click="navTo(5)" :class="[routeName=='analysis'?'act':'']">数据分析</div>
-          <div @click="navTo(6)" :class="[routeName=='metadata'?'act':'']">元数据管理</div>
-          <div @click="navTo(7)" :class="[routeName=='document'?'act':'']">合作文档</div>
+          <div @click="navTo(1)" :class="[navNum==0?'act':'']">任务管理</div>
+          <div @click="navTo(2)" :class="[navNum==1?'act':'']">结算管理</div>
+          <div @click="navTo(3)" :class="[navNum==2?'act':'']">车主管理</div>
+          <div @click="navTo(4)" :class="[navNum==3?'act':'']">场地管理</div>
+          <div @click="navTo(5)" :class="[navNum==4?'act':'']">数据分析</div>
+          <div @click="navTo(6)" :class="[navNum==5?'act':'']">元数据管理</div>
+          <div @click="navTo(7)" :class="[navNum==6?'act':'']">合作文档</div>
         </div>
         <!-- 导航 end -->
       </el-col>
@@ -70,7 +70,8 @@ export default {
       // 搜索内容
       searchWord: '',
       // 搜索维度
-      select: '1'
+      select: '1',
+      navNum: 0
     }
   },
   // 侦听器
@@ -78,10 +79,25 @@ export default {
     // 如果 `question` 发生改变，这个函数就会运行
     // unread: function(newQuestion, oldQuestion) {
     // }
+    routeName: function (newData, oldData) {
+      let list = [['task','addTask','taskDetail','tasksettlement'],['settlement','settlementDetail'],['owners','ownerssite','ownersrecord','ownersschedule','addowners','ownersdetail'],['site','sitecarownerlist'],['analysis'],['metadata'],['document']]
+      let navNum = 0
+      list.forEach((element, i) => {
+        for (let j = 0; j < element.length; j++) {
+          const element_ = element[j];
+          if (newData == element_) {
+            // console.log(i)
+            this.navNum = i
+            break
+          }
+        }
+      });
+    }
   },
   // 钩子函数
   mounted() {
     // this.countIsRead()
+    // console.log(this.$parent.routeName)
   },
   methods: {
     logout() {

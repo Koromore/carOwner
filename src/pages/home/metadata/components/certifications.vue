@@ -368,7 +368,7 @@ export default {
                 carType: []
               }
             ]
-            console.log(data)
+            // console.log(data)
             data.forEach(element => {
               let carSeriesIds = []
               let carSeriesName = []

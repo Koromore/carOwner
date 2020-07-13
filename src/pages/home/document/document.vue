@@ -10,9 +10,7 @@
           :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
           height="100%"
         >
-          <el-table-column label="序号" width="81" align="center">
-            <template slot-scope="scope">0{{scope.$index+1}}</template>
-          </el-table-column>
+          <el-table-column label="序号" width="81" align="center" type="index"></el-table-column>
           <el-table-column prop="carTypeName" label="车主类型" min-width="130"></el-table-column>
           <el-table-column prop="coopItemsStr" label="合作事项" min-width="240"></el-table-column>
           <el-table-column prop="name" label="车主姓名" min-width="240"></el-table-column>

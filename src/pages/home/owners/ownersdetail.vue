@@ -54,9 +54,7 @@
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">所在区域</div>
-              <div class="val">
-                <!-- {{ownerDetil.province}}{{ownerDetil.city}} -->
-              </div>
+              <div class="val">{{ownerDetil.province}}{{ownerDetil.city}}</div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">特长</div>
@@ -67,7 +65,12 @@
           <el-col :span="12" class="right">
             <el-col :span="24" class="list">
               <div class="key">合作事项</div>
-              <div class="val">{{this.$route.params.itemName}}</div>
+              <div class="val">
+                <span v-for="(item, index) in ownerDetil.ownerCoops" :key="index">
+                  {{item.itemName}}
+                  <template v-if="index!=ownerDetil.ownerCoops.length-1">,</template>
+                </span>
+              </div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">车主姓名</div>
@@ -86,7 +89,8 @@
               <div class="val">
                 <span v-for="(item, index) in ownerDetil.ownerCarSeries" :key="index">
                   {{item.carSeriesName}}
-                  <br />
+                  <template v-if="index!=ownerDetil.ownerCarSeries.length-1">,</template>
+                  <!-- <br /> -->
                 </span>
               </div>
             </el-col>
@@ -165,11 +169,10 @@
               <div class="val">
                 <template v-if="ownerDetil.deliveryAddresses.length!=0">
                   {{ownerDetil.deliveryAddresses[0].province}}
-                {{ownerDetil.deliveryAddresses[0].city}}
-                {{ownerDetil.deliveryAddresses[0].area}}
-                {{ownerDetil.deliveryAddresses[0].address}}
+                  {{ownerDetil.deliveryAddresses[0].city}}
+                  {{ownerDetil.deliveryAddresses[0].area}}
+                  {{ownerDetil.deliveryAddresses[0].address}}
                 </template>
-                
               </div>
             </el-col>
             <el-col :span="24" class="list">
@@ -199,29 +202,29 @@
             <el-col :span="24" class="list">
               <div class="key">签约合同</div>
               <div class="val">
-                <template v-if="ownerDetil.cooperates[0].fileName">
+                <template v-if="ownerDetil.cooperates.length!=0&&ownerDetil.cooperates[0].localPath">
                   <img
-                  v-if="ownerDetil.cooperates[0].suffix == 'doc' || ownerDetil.cooperates[0].suffix == 'docx'"
-                  src="static/images/document/word.png"
-                  width="16"
-                  alt
-                  srcset
-                />
-                <img
-                  v-else-if="ownerDetil.cooperates[0].suffix == 'xls' || ownerDetil.cooperates[0].suffix == 'xlsx'"
-                  src="static/images/document/excle.png"
-                  width="16"
-                  alt
-                  srcset
-                />
-                <img
-                  v-else-if="ownerDetil.cooperates[0].suffix == 'ppt' || ownerDetil.cooperates[0].suffix == 'pptx'"
-                  src="static/images/document/ppt.png"
-                  width="16"
-                  alt
-                  srcset
-                />
-                <img v-else src="static/images/document/other.png" width="16" alt srcset />
+                    v-if="ownerDetil.cooperates[0].suffix == 'doc' || ownerDetil.cooperates[0].suffix == 'docx'"
+                    src="static/images/document/word.png"
+                    width="16"
+                    alt
+                    srcset
+                  />
+                  <img
+                    v-else-if="ownerDetil.cooperates[0].suffix == 'xls' || ownerDetil.cooperates[0].suffix == 'xlsx'"
+                    src="static/images/document/excle.png"
+                    width="16"
+                    alt
+                    srcset
+                  />
+                  <img
+                    v-else-if="ownerDetil.cooperates[0].suffix == 'ppt' || ownerDetil.cooperates[0].suffix == 'pptx'"
+                    src="static/images/document/ppt.png"
+                    width="16"
+                    alt
+                    srcset
+                  />
+                  <img v-else src="static/images/document/other.png" width="16" alt srcset />
                   &nbsp;
                   <!-- {{ownerDetil.cooperates[0].suffix}} -->
                   <el-link
@@ -232,26 +235,33 @@
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">合作期限</div>
-              <div
-                class="val"
-              >{{$date(ownerDetil.cooperates[0].startTime)}}---{{$date(ownerDetil.cooperates[0].endTime)}}</div>
+              <div class="val">
+                <template
+                  v-if="ownerDetil.cooperates.length!=0"
+                >{{$date(ownerDetil.cooperates[0].startTime)}}---{{$date(ownerDetil.cooperates[0].endTime)}}</template>
+              </div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">合作时长</div>
-              <div class="val">{{$duration(ownerDetil.cooperates[0].timeLimit)}}</div>
+              <div class="val">
+                <template
+                  v-if="ownerDetil.cooperates.length!=0"
+                >{{$duration(ownerDetil.cooperates[0].timeLimit)}}</template>
+              </div>
             </el-col>
           </el-col>
           <!-- 左右分割线 -->
           <el-col :span="12" class="right">
             <el-col :span="24" class="list">
               <template v-if="ownerDetil.typeId==1">
-                <div class="key">合作事项要求频次</div>
-                <div class="val" style="height: auto;">
+                <div class="key" style="margin-right: 240px;">合作事项要求频次</div>
+                <div class="val" style="height: auto;width:100%">
                   <el-col :span="24" v-for="(item, index) in ownerDetil.ownerCoops" :key="index">
                     <el-col :span="6">{{item.itemName}}</el-col>
                     <el-col :span="6">合作总量:{{item.coopNum}}</el-col>
                     <el-col :span="6">合作总价:{{item.coopMoney}}</el-col>
                     <el-col :span="6">
+                      结算方式:
                       <template v-if="item.period==0">按月结算</template>
                       <template v-if="item.period==1">按年结算</template>
                       <template v-if="item.period==2">按季度结算</template>
@@ -405,31 +415,41 @@ export default {
 
     ///////// 跳转编辑 start /////////
     toAddOwners() {
+      let query = this.$route.query
       this.$router.push({
-        // path: '/home/addowners'
-        name: 'addowners',
-        // query: { id: id }
-        params: {
-          type: 1
+        path: '/home/addowners',
+        // name: 'addowners',
+        query: {
+          type: 1,
+          typeId: query.typeId,
+          vehicleOwnerId: query.vehicleOwnerId
         }
+        // params: {
+        //   type: 1
+        // }
       })
     },
     ///////// 跳转编辑 end /////////
 
     ///////// 获取车主详细信息 start /////////
     getVehicleOwnerPreEdit(id) {
+      let query = this.$route.query
       let data = {
-        typeId: this.$store.state.vehicleOwnerDetailNum[0],
-        vehicleOwnerId: this.$store.state.vehicleOwnerDetailNum[1]
+        typeId: query.typeId,
+        vehicleOwnerId: query.vehicleOwnerId
       }
-      console.log(data)
+      // console.log(data)
       this.$axios.post('/ocarplay/api/vehicleOwner/preEdit', data).then(res => {
         // console.log(res)
         // this.loading = false
         if (res.status == 200) {
           // console.log(res)
           let data = res.data
-          data.image = '/ocarplay/' + data.image
+          if (data.img) {
+            data.image = '/ocarplay/' + data.image
+          } else {
+            data.image = '/static/images/carow/handerimg.png'
+          }
           this.ownerDetil = data
         }
       })
@@ -543,6 +563,7 @@ $icoColor: rgb(106, 145, 232);
           cursor: pointer;
           color: $icoColor;
           font-size: 28px;
+          margin-right: 18px;
         }
       }
     }

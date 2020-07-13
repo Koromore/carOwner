@@ -11,7 +11,7 @@
             :key="index"
           >{{item.title}}</div>
         </div>
-        <div class="addContent" @click="addContent" v-show="tabact!='certifications'">
+        <div class="addContent" @click="addContent" v-show="tabact!='certifications'&&tabact!='brand'">
           <i class="el-icon-circle-plus-outline"></i>
           <br />添加内容
         </div>

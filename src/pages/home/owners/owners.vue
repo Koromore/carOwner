@@ -36,7 +36,7 @@
             :value="item.value"
           ></el-option>
         </el-select>
-        <!-- 邀约事项 -->
+        <!-- 车型 -->
         <el-select
           v-model="carSeriesId"
           filterable
@@ -52,7 +52,7 @@
             :value="item.value"
           ></el-option>
         </el-select>
-        <!-- 邀约车型 -->
+        <!-- 城市 -->
         <el-select
           v-model="cityName"
           filterable
@@ -89,35 +89,29 @@
           :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
           height="100%"
         >
-          <el-table-column prop label="序号" width="81" align="center">
-            <template slot-scope="scope">
-              <template v-if="scope.$index<9">0{{scope.$index+1}}</template>
-              <template v-else>{{scope.$index+1}}</template>
-            </template>
-          </el-table-column>
+          <el-table-column prop label="序号" width="81" align="center" type="index"></el-table-column>
           <el-table-column prop="ownerName" label="车主姓名" min-width="81" show-overflow-tooltip></el-table-column>
           <el-table-column prop="carSeriesName" label="认证车型" min-width="180" show-overflow-tooltip>
             <template slot-scope="scope">
               <!-- {{scope.row.ownerCarSeries}} -->
-              <span v-for="(item, index) in scope.row.ownerCarSeries" :key="index">{{item.carSeriesName}}<template v-if="scope.row.ownerCarSeries.length>1&&index!=scope.row.ownerCarSeries.length-1">，</template></span>
+              <span v-for="(item, index) in scope.row.ownerCarSeries" :key="index">
+                {{item.carSeriesName}}
+                <template
+                  v-if="scope.row.ownerCarSeries.length>1&&index!=scope.row.ownerCarSeries.length-1"
+                >,</template>
+              </span>
             </template>
           </el-table-column>
           <el-table-column prop="itemName" label="合作事项" min-width="81" show-overflow-tooltip></el-table-column>
           <el-table-column prop="timeLimit" label="合作时长" min-width="81">
-            <template slot-scope="scope">
-              {{$duration(scope.row.timeLimit)}}
-            </template>
+            <template slot-scope="scope">{{$duration(scope.row.timeLimit)}}</template>
           </el-table-column>
           <el-table-column prop="coopMoney" label="合作费用" min-width="81"></el-table-column>
           <el-table-column prop="coopNum" label="固定合作总量" min-width="100"></el-table-column>
           <el-table-column prop="alreadyCooperateNum" label="历史合作次数" min-width="100">
             <template slot-scope="scope">
-              <template v-if="scope.row.alreadyCooperateNum">
-                {{scope.row.alreadyCooperateNum}}
-              </template>
-              <template v-else>
-                0
-              </template>
+              <template v-if="scope.row.alreadyCooperateNum">{{scope.row.alreadyCooperateNum}}</template>
+              <template v-else>0</template>
             </template>
           </el-table-column>
           <el-table-column prop="surplusnum" label="剩余合作次数" min-width="100">
@@ -150,7 +144,7 @@
           @size-change="changeSize"
           @current-change="changePage"
           :current-page="1"
-          :page-sizes="[10, 20, 30, 40]"
+          :page-sizes="[10, 20, 30, 40, 50, 100]"
           :page-size="pageSize"
           layout="total, prev, pager, next ,sizes"
           :total="total"
@@ -170,27 +164,19 @@
           :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
           height="100%"
         >
-          <el-table-column prop label="序号" width="81" align="center">
-            <template slot-scope="scope">0{{scope.$index+1}}</template>
-          </el-table-column>
+          <el-table-column prop label="序号" width="81" align="center" type="index"></el-table-column>
           <el-table-column prop="ownerName" label="车主姓名" min-width="81" show-overflow-tooltip></el-table-column>
           <el-table-column prop="carSeriesName" label="认证车型" min-width="180" show-overflow-tooltip></el-table-column>
           <el-table-column prop="ownerArea" label="所在区域" min-width="81" show-overflow-tooltip></el-table-column>
           <el-table-column prop="skillName" label="特长" min-width="81"></el-table-column>
           <el-table-column prop="nickname" label="IP账号" min-width="81"></el-table-column>
           <el-table-column prop="timeLimit" label="合作时长" min-width="100">
-            <template slot-scope="scope">
-              {{$duration(scope.row.timeLimit)}}
-            </template>
+            <template slot-scope="scope">{{$duration(scope.row.timeLimit)}}</template>
           </el-table-column>
           <el-table-column prop="alreadyCooperateNum" label="历史合作次数" min-width="100">
             <template slot-scope="scope">
-              <template v-if="scope.row.alreadyCooperateNum">
-                {{scope.row.alreadyCooperateNum}}
-              </template>
-              <template v-else>
-                0
-              </template>
+              <template v-if="scope.row.alreadyCooperateNum">{{scope.row.alreadyCooperateNum}}</template>
+              <template v-else>0</template>
             </template>
           </el-table-column>
           <el-table-column prop="currMonthCooperateNum" label="本月合作次数" min-width="100"></el-table-column>
@@ -220,7 +206,7 @@
           @size-change="changeSize"
           @current-change="changePage"
           :current-page="1"
-          :page-sizes="[10, 20, 30, 40]"
+          :page-sizes="[10, 20, 30, 40, 50, 100]"
           :page-size="pageSize"
           layout="total, prev, pager, next ,sizes"
           :total="total"
@@ -239,27 +225,19 @@
           :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
           height="100%"
         >
-          <el-table-column prop label="序号" width="81" align="center">
-            <template slot-scope="scope">0{{scope.$index+1}}</template>
-          </el-table-column>
+          <el-table-column prop label="序号" width="81" align="center" type="index"></el-table-column>
           <el-table-column prop="ownerName" label="车主姓名" min-width="81" show-overflow-tooltip></el-table-column>
           <el-table-column prop="carSeriesName" label="认证车型" min-width="180" show-overflow-tooltip></el-table-column>
           <el-table-column prop="ownerArea" label="所在区域" min-width="81" show-overflow-tooltip></el-table-column>
           <el-table-column prop="skillName" label="特长" min-width="81"></el-table-column>
           <el-table-column prop="nickname" label="IP账号" min-width="81"></el-table-column>
           <el-table-column prop="timeLimit" label="合作时长" min-width="100">
-            <template slot-scope="scope">
-              {{$duration(scope.row.timeLimit)}}
-            </template>
+            <template slot-scope="scope">{{$duration(scope.row.timeLimit)}}</template>
           </el-table-column>
           <el-table-column prop="alreadyCooperateNum" label="历史合作次数" min-width="100">
             <template slot-scope="scope">
-              <template v-if="scope.row.alreadyCooperateNum">
-                {{scope.row.alreadyCooperateNum}}
-              </template>
-              <template v-else>
-                0
-              </template>
+              <template v-if="scope.row.alreadyCooperateNum">{{scope.row.alreadyCooperateNum}}</template>
+              <template v-else>0</template>
             </template>
           </el-table-column>
           <el-table-column prop="currMonthCooperateNum" label="本月合作次数" min-width="100"></el-table-column>
@@ -289,7 +267,7 @@
           @size-change="changeSize"
           @current-change="changePage"
           :current-page="1"
-          :page-sizes="[10, 20, 30, 40]"
+          :page-sizes="[10, 20, 30, 40, 50, 100]"
           :page-size="pageSize"
           layout="total, prev, pager, next ,sizes"
           :total="total"
@@ -429,11 +407,9 @@ export default {
             let data = res.data.carTypes
             let carSeriesList = []
             data.forEach((element, i) => {
-              element.carSeries.forEach((element_, j) => {
-                carSeriesList.push({
-                  value: element_.carSeriesId,
-                  label: `${element.deptName}-${element.carTypeName}-${element_.carSeriesName}`
-                })
+              carSeriesList.push({
+                value: element.carTypeId,
+                label: `${element.deptName}-${element.carTypeName}`
               })
             })
             this.carSeriesList = carSeriesList
@@ -677,11 +653,16 @@ export default {
       // 记录车主ID
       this.$store.commit('ownerDetailId', [prm.typeId, prm.ownerId])
       this.$router.push({
-        name: 'ownersdetail',
-        params: {
+        // name: 'ownersdetail',
+        // params: {
+        //   typeId: prm.typeId,
+        //   vehicleOwnerId: prm.ownerId,
+        //   itemName: prm.itemName
+        // }
+        path: '/home/ownersdetail',
+        query: {
           typeId: prm.typeId,
-          vehicleOwnerId: prm.ownerId,
-          itemName: prm.itemName
+          vehicleOwnerId: prm.ownerId
         }
       })
     },

@@ -21,9 +21,16 @@
         <el-col :span="24" class="list">
           <div class="key">品牌车型</div>
           <div class="val">
-            <el-cascader v-model="carSeriesId" 
-            :props="props" :options="carSeriesList" clearable filterable></el-cascader>
+            <el-cascader
+              v-model="carSeriesId"
+              :props="props"
+              :options="carSeriesList"
+              clearable
+              filterable
+              @change="carSeriesChange"
+            ></el-cascader>
             <!-- {{carSeriesId}} -->
+            
           </div>
         </el-col>
         <el-col :span="24" class="list">
@@ -197,8 +204,6 @@ export default {
     this.getQuery()
     ///////// 获取车型列表 start /////////
     this.getCarSeriesLists()
-    ///////// 获取车主列表 start /////////
-    this.getOwnerList()
   },
   // 方法事件
   methods: {
@@ -225,6 +230,18 @@ export default {
     },
     ///////// 接受页面传参 end /////////
 
+    ///////// 车型选择改变 end /////////
+    carSeriesChange(res) {
+      console.log(res)
+      let data = []
+      res.forEach(element => {
+        data.push(element[1])
+      })
+      ///////// 获取车主列表 start /////////
+      this.getOwnerList(data)
+    },
+    ///////// 接受页面传参 end /////////
+
     ///////// 循环查找品牌车型 start /////////
     getCarSeriesId() {
       // console.log(this.seriesId)
@@ -233,11 +250,11 @@ export default {
       this.carSeriesList.forEach(element0 => {
         element0.children.forEach(element1 => {
           // element1.children.forEach(element2 => {
-            // if (element2.value == this.seriesId) {
-            //   carSeriesId.push(element0.value)
-            //   carSeriesId.push(element1.value)
-            //   carSeriesId.push(element2.value)
-            // }
+          // if (element2.value == this.seriesId) {
+          //   carSeriesId.push(element0.value)
+          //   carSeriesId.push(element1.value)
+          //   carSeriesId.push(element2.value)
+          // }
           // })
         })
       })
@@ -254,7 +271,7 @@ export default {
       this.$axios.post('/ocarplay/task/edit', data).then(res => {
         // console.log(res)
         if (res.status == 200) {
-          let data = res.data
+          let data = res.data.data
           this.taskName = data.taskName
           let listInviteList = []
           data.listInvite.forEach(element => {
@@ -298,9 +315,9 @@ export default {
     ///////// 获取任务详情 end /////////
 
     ///////// 获取车主列表 start /////////
-    getOwnerList() {
+    getOwnerList(data) {
       // this.listLoading = true
-      let data = {}
+      // let data = []
       this.$axios
         .post('/ocarplay/api/vehicleOwner/ownerTypeCoopItemOwners', data)
         .then(res => {
@@ -466,8 +483,8 @@ export default {
       let carSeriesId = this.carSeriesId
       let listTaskOfCartype = []
       carSeriesId.forEach(element => {
-        listTaskOfCartype.push({cartypeId:element[1]})
-      });
+        listTaskOfCartype.push({ cartypeId: element[1] })
+      })
       let data = {
         initUserId: this.userId,
         deptId: this.deptId,
@@ -513,31 +530,31 @@ export default {
 
       console.log(data)
       if (flag) {
-        this.putLoading = false
-        // this.$axios
-        //   .post('/ocarplay/task/save', data)
-        //   .then(res => {
-        //     // console.log(res)
-        //     if (res.status == 200 && res.data == 1) {
-        //       if (this.taskId) {
-        //         this.$message.success('任务更新成功！')
-        //       } else {
-        //         this.$message.success('任务新建成功！')
-        //       }
-        //       setTimeout(() => {
-        //         this.$router.push({
-        //           name: 'task'
-        //         })
-        //       }, 1000)
-        //     } else {
-        //       this.$message.error('任务新建失败！')
-        //       this.putLoading = false
-        //     }
-        //   })
-        //   .catch(res => {
-        //     console.log(res)
-        //     this.putLoading = false
-        //   })
+        this.putLoading = true
+        this.$axios
+          .post('/ocarplay/task/save', data)
+          .then(res => {
+            // console.log(res)
+            if (res.status == 200 && res.data == 1) {
+              if (this.taskId) {
+                this.$message.success('任务更新成功！')
+              } else {
+                this.$message.success('任务新建成功！')
+              }
+              setTimeout(() => {
+                this.$router.push({
+                  name: 'task'
+                })
+              }, 1000)
+            } else {
+              this.$message.error('任务新建失败！')
+              this.putLoading = false
+            }
+          })
+          .catch(res => {
+            console.log(res)
+            this.putLoading = false
+          })
       } else {
         this.$message.error('请检查信息是否填写完整！')
       }

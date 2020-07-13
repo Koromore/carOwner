@@ -237,7 +237,7 @@ export default {
       this.$axios
         .post('/ocarplay/api/analysis/taskAnalysis', data)
         .then(res => {
-          console.log(res)
+          // console.log(res)
           if (res.status == 200) {
             let data = res.data
             let tab1act = this.tab1act

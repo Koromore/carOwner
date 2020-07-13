@@ -102,1320 +102,1318 @@ export default {
   mounted() {
     // test(){
     let data = {
-  "buyCode": "string",
-  "carSeriesId": 0,
-  "carSeriesName": "string",
-  "carTypeId": 0,
-  "carTypeName": "string",
-  "createTime": {
-    "chronology": {
-      "calendarType": "string",
-      "id": "string"
-    },
-    "dayOfMonth": 0,
-    "dayOfWeek": "MONDAY",
-    "dayOfYear": 0,
-    "hour": 0,
-    "minute": 0,
-    "month": "JANUARY",
-    "monthValue": 0,
-    "nano": 0,
-    "second": 0,
-    "year": 0
-  },
-  "delayReason": "string",
-  "deleteFlag": true,
-  "deptId": 0,
-  "deptName": "string",
-  "endTime": {
-    "chronology": {
-      "calendarType": "string",
-      "id": "string"
-    },
-    "dayOfMonth": 0,
-    "dayOfWeek": "MONDAY",
-    "dayOfYear": 0,
-    "era": {
-      "value": 0
-    },
-    "leapYear": true,
-    "month": 0,
-    "monthValue": 0,
-    "year": 0
-  },
-  "initUserId": 0,
-  "invMoney": 0,
-  "itemId": 0,
-  "listInvite": [
-    {
-      "authorName": "string",
-      "card": true,
-      "createTime": {
-        "chronology": {
-          "calendarType": "string",
-          "id": "string"
+      buyCode: 'string',
+      carSeriesId: 0,
+      carSeriesName: 'string',
+      carTypeId: 0,
+      carTypeName: 'string',
+      createTime: {
+        chronology: {
+          calendarType: 'string',
+          id: 'string'
         },
-        "dayOfMonth": 0,
-        "dayOfWeek": "MONDAY",
-        "dayOfYear": 0,
-        "hour": 0,
-        "minute": 0,
-        "month": "JANUARY",
-        "monthValue": 0,
-        "nano": 0,
-        "second": 0,
-        "year": 0
+        dayOfMonth: 0,
+        dayOfWeek: 'MONDAY',
+        dayOfYear: 0,
+        hour: 0,
+        minute: 0,
+        month: 'JANUARY',
+        monthValue: 0,
+        nano: 0,
+        second: 0,
+        year: 0
       },
-      "deleteFlag": true,
-      "deptName": "string",
-      "effectName": "string",
-      "homeAddress": "string",
-      "image": "string",
-      "inviteId": 0,
-      "isCard": true,
-      "isOver": true,
-      "isWrite": 0,
-      "itemId": 0,
-      "itemName": "string",
-      "listOwnerItem": [
+      delayReason: 'string',
+      deleteFlag: true,
+      deptId: 0,
+      deptName: 'string',
+      endTime: {
+        chronology: {
+          calendarType: 'string',
+          id: 'string'
+        },
+        dayOfMonth: 0,
+        dayOfWeek: 'MONDAY',
+        dayOfYear: 0,
+        era: {
+          value: 0
+        },
+        leapYear: true,
+        month: 0,
+        monthValue: 0,
+        year: 0
+      },
+      initUserId: 0,
+      invMoney: 0,
+      itemId: 0,
+      listInvite: [
         {
-          "card": true,
-          "createTime": {
-            "chronology": {
-              "calendarType": "string",
-              "id": "string"
+          authorName: 'string',
+          card: true,
+          createTime: {
+            chronology: {
+              calendarType: 'string',
+              id: 'string'
             },
-            "dayOfMonth": 0,
-            "dayOfWeek": "MONDAY",
-            "dayOfYear": 0,
-            "hour": 0,
-            "minute": 0,
-            "month": "JANUARY",
-            "monthValue": 0,
-            "nano": 0,
-            "second": 0,
-            "year": 0
+            dayOfMonth: 0,
+            dayOfWeek: 'MONDAY',
+            dayOfYear: 0,
+            hour: 0,
+            minute: 0,
+            month: 'JANUARY',
+            monthValue: 0,
+            nano: 0,
+            second: 0,
+            year: 0
           },
-          "deleteFlag": true,
-          "isCard": true,
-          "isCards": "string",
-          "itemId": 0,
-          "itemIds": "string",
-          "itemName": "string",
-          "money": 0,
-          "moneys": "string",
-          "typeId": 0,
-          "typeName": "string",
-          "updateTime": {
-            "chronology": {
-              "calendarType": "string",
-              "id": "string"
-            },
-            "dayOfMonth": 0,
-            "dayOfWeek": "MONDAY",
-            "dayOfYear": 0,
-            "hour": 0,
-            "minute": 0,
-            "month": "JANUARY",
-            "monthValue": 0,
-            "nano": 0,
-            "second": 0,
-            "year": 0
-          },
-          "vehicleOwners": [
+          deleteFlag: true,
+          deptName: 'string',
+          effectName: 'string',
+          homeAddress: 'string',
+          image: 'string',
+          inviteId: 0,
+          isCard: true,
+          isOver: true,
+          isWrite: 0,
+          itemId: 0,
+          itemName: 'string',
+          listOwnerItem: [
             {
-              "alreadyCooperateNum": 0,
-              "bankCard": "string",
-              "bbsId": "string",
-              "birthday": {
-                "chronology": {
-                  "calendarType": "string",
-                  "id": "string"
+              carTypeIds: [0],
+              card: true,
+              createTime: {
+                chronology: {
+                  calendarType: 'string',
+                  id: 'string'
                 },
-                "dayOfMonth": 0,
-                "dayOfWeek": "MONDAY",
-                "dayOfYear": 0,
-                "era": {
-                  "value": 0
-                },
-                "leapYear": true,
-                "month": 0,
-                "monthValue": 0,
-                "year": 0
+                dayOfMonth: 0,
+                dayOfWeek: 'MONDAY',
+                dayOfYear: 0,
+                hour: 0,
+                minute: 0,
+                month: 'JANUARY',
+                monthValue: 0,
+                nano: 0,
+                second: 0,
+                year: 0
               },
-              "buycarplace": "string",
-              "carSeriesName": "string",
-              "carUse": "string",
-              "city": "string",
-              "coopId": 0,
-              "coopNum": 0,
-              "cooperates": [
-                {
-                  "carTypeName": "string",
-                  "coopItemsStr": "string",
-                  "createTime": {
-                    "chronology": {
-                      "calendarType": "string",
-                      "id": "string"
-                    },
-                    "dayOfMonth": 0,
-                    "dayOfWeek": "MONDAY",
-                    "dayOfYear": 0,
-                    "hour": 0,
-                    "minute": 0,
-                    "month": "JANUARY",
-                    "monthValue": 0,
-                    "nano": 0,
-                    "second": 0,
-                    "year": 0
-                  },
-                  "deleteFlag": true,
-                  "doUserId": 0,
-                  "endTime": {
-                    "chronology": {
-                      "calendarType": "string",
-                      "id": "string"
-                    },
-                    "dayOfMonth": 0,
-                    "dayOfWeek": "MONDAY",
-                    "dayOfYear": 0,
-                    "era": {
-                      "value": 0
-                    },
-                    "leapYear": true,
-                    "month": 0,
-                    "monthValue": 0,
-                    "year": 0
-                  },
-                  "fileName": "string",
-                  "id": 0,
-                  "localPath": "string",
-                  "name": "string",
-                  "ownerId": 0,
-                  "ownerTypeId": 0,
-                  "startTime": {
-                    "chronology": {
-                      "calendarType": "string",
-                      "id": "string"
-                    },
-                    "dayOfMonth": 0,
-                    "dayOfWeek": "MONDAY",
-                    "dayOfYear": 0,
-                    "era": {
-                      "value": 0
-                    },
-                    "leapYear": true,
-                    "month": 0,
-                    "monthValue": 0,
-                    "year": 0
-                  },
-                  "suffix": "string",
-                  "timeLimit": "string",
-                  "updateTime": {
-                    "chronology": {
-                      "calendarType": "string",
-                      "id": "string"
-                    },
-                    "dayOfMonth": 0,
-                    "dayOfWeek": "MONDAY",
-                    "dayOfYear": 0,
-                    "hour": 0,
-                    "minute": 0,
-                    "month": "JANUARY",
-                    "monthValue": 0,
-                    "nano": 0,
-                    "second": 0,
-                    "year": 0
-                  }
-                }
-              ],
-              "createTime": "2020-07-09T11:00:59.958Z",
-              "deleteFlag": true,
-              "deliveryAddresses": [
-                {
-                  "address": "string",
-                  "addressId": 0,
-                  "area": "string",
-                  "city": "string",
-                  "createTime": {
-                    "chronology": {
-                      "calendarType": "string",
-                      "id": "string"
-                    },
-                    "dayOfMonth": 0,
-                    "dayOfWeek": "MONDAY",
-                    "dayOfYear": 0,
-                    "hour": 0,
-                    "minute": 0,
-                    "month": "JANUARY",
-                    "monthValue": 0,
-                    "nano": 0,
-                    "second": 0,
-                    "year": 0
-                  },
-                  "deleteFlag": 0,
-                  "isCheck": 0,
-                  "ownerId": 0,
-                  "province": "string",
-                  "updateTime": {
-                    "chronology": {
-                      "calendarType": "string",
-                      "id": "string"
-                    },
-                    "dayOfMonth": 0,
-                    "dayOfWeek": "MONDAY",
-                    "dayOfYear": 0,
-                    "hour": 0,
-                    "minute": 0,
-                    "month": "JANUARY",
-                    "monthValue": 0,
-                    "nano": 0,
-                    "second": 0,
-                    "year": 0
-                  }
-                }
-              ],
-              "deptId": 0,
-              "doUserId": 0,
-              "dyId": "string",
-              "email": "string",
-              "homeAddress": "string",
-              "homeUrl": "string",
-              "image": "string",
-              "invites": [
-                {}
-              ],
-              "ipGrows": [
-                {
-                  "alreadyCooperateNum": 0,
-                  "carSeriesName": "string",
-                  "coopId": 0,
-                  "createTime": {
-                    "chronology": {
-                      "calendarType": "string",
-                      "id": "string"
-                    },
-                    "dayOfMonth": 0,
-                    "dayOfWeek": "MONDAY",
-                    "dayOfYear": 0,
-                    "hour": 0,
-                    "minute": 0,
-                    "month": "JANUARY",
-                    "monthValue": 0,
-                    "nano": 0,
-                    "second": 0,
-                    "year": 0
-                  },
-                  "currMonthCooperateNum": 0,
-                  "deleteFlag": true,
-                  "doUserId": 0,
-                  "itemId": 0,
-                  "nickname": "string",
-                  "ownerArea": "string",
-                  "ownerCarSeries": [
-                    {
-                      "carSeriesName": "string",
-                      "createTime": {
-                        "chronology": {
-                          "calendarType": "string",
-                          "id": "string"
-                        },
-                        "dayOfMonth": 0,
-                        "dayOfWeek": "MONDAY",
-                        "dayOfYear": 0,
-                        "hour": 0,
-                        "minute": 0,
-                        "month": "JANUARY",
-                        "monthValue": 0,
-                        "nano": 0,
-                        "second": 0,
-                        "year": 0
-                      },
-                      "id": 0,
-                      "seriesId": 0,
-                      "updateTime": {
-                        "chronology": {
-                          "calendarType": "string",
-                          "id": "string"
-                        },
-                        "dayOfMonth": 0,
-                        "dayOfWeek": "MONDAY",
-                        "dayOfYear": 0,
-                        "hour": 0,
-                        "minute": 0,
-                        "month": "JANUARY",
-                        "monthValue": 0,
-                        "nano": 0,
-                        "second": 0,
-                        "year": 0
-                      },
-                      "vehicleOwnerId": 0
-                    }
-                  ],
-                  "ownerId": 0,
-                  "ownerName": "string",
-                  "plat": "string",
-                  "platRole": "string",
-                  "skillName": "string",
-                  "timeLimit": "string",
-                  "typeId": 0,
-                  "updateTime": {
-                    "chronology": {
-                      "calendarType": "string",
-                      "id": "string"
-                    },
-                    "dayOfMonth": 0,
-                    "dayOfWeek": "MONDAY",
-                    "dayOfYear": 0,
-                    "hour": 0,
-                    "minute": 0,
-                    "month": "JANUARY",
-                    "monthValue": 0,
-                    "nano": 0,
-                    "second": 0,
-                    "year": 0
-                  },
-                  "url": "string"
-                }
-              ],
-              "itemId": 0,
-              "name": "string",
-              "otherId": "string",
-              "ownerCarSeries": [
-                {
-                  "carSeriesName": "string",
-                  "createTime": {
-                    "chronology": {
-                      "calendarType": "string",
-                      "id": "string"
-                    },
-                    "dayOfMonth": 0,
-                    "dayOfWeek": "MONDAY",
-                    "dayOfYear": 0,
-                    "hour": 0,
-                    "minute": 0,
-                    "month": "JANUARY",
-                    "monthValue": 0,
-                    "nano": 0,
-                    "second": 0,
-                    "year": 0
-                  },
-                  "id": 0,
-                  "seriesId": 0,
-                  "updateTime": {
-                    "chronology": {
-                      "calendarType": "string",
-                      "id": "string"
-                    },
-                    "dayOfMonth": 0,
-                    "dayOfWeek": "MONDAY",
-                    "dayOfYear": 0,
-                    "hour": 0,
-                    "minute": 0,
-                    "month": "JANUARY",
-                    "monthValue": 0,
-                    "nano": 0,
-                    "second": 0,
-                    "year": 0
-                  },
-                  "vehicleOwnerId": 0
-                }
-              ],
-              "ownerCoops": [
-                {
-                  "alreadyCooperateNum": 0,
-                  "carSeriesName": "string",
-                  "coopId": 0,
-                  "coopMoney": 0,
-                  "coopNum": 0,
-                  "createTime": {
-                    "chronology": {
-                      "calendarType": "string",
-                      "id": "string"
-                    },
-                    "dayOfMonth": 0,
-                    "dayOfWeek": "MONDAY",
-                    "dayOfYear": 0,
-                    "hour": 0,
-                    "minute": 0,
-                    "month": "JANUARY",
-                    "monthValue": 0,
-                    "nano": 0,
-                    "second": 0,
-                    "year": 0
-                  },
-                  "deleteFlag": true,
-                  "doUserId": 0,
-                  "itemId": 0,
-                  "itemName": "string",
-                  "ownerCarSeries": [
-                    {
-                      "carSeriesName": "string",
-                      "createTime": {
-                        "chronology": {
-                          "calendarType": "string",
-                          "id": "string"
-                        },
-                        "dayOfMonth": 0,
-                        "dayOfWeek": "MONDAY",
-                        "dayOfYear": 0,
-                        "hour": 0,
-                        "minute": 0,
-                        "month": "JANUARY",
-                        "monthValue": 0,
-                        "nano": 0,
-                        "second": 0,
-                        "year": 0
-                      },
-                      "id": 0,
-                      "seriesId": 0,
-                      "updateTime": {
-                        "chronology": {
-                          "calendarType": "string",
-                          "id": "string"
-                        },
-                        "dayOfMonth": 0,
-                        "dayOfWeek": "MONDAY",
-                        "dayOfYear": 0,
-                        "hour": 0,
-                        "minute": 0,
-                        "month": "JANUARY",
-                        "monthValue": 0,
-                        "nano": 0,
-                        "second": 0,
-                        "year": 0
-                      },
-                      "vehicleOwnerId": 0
-                    }
-                  ],
-                  "ownerId": 0,
-                  "ownerName": "string",
-                  "period": 0,
-                  "timeLimit": "string",
-                  "typeId": 0,
-                  "updateTime": {
-                    "chronology": {
-                      "calendarType": "string",
-                      "id": "string"
-                    },
-                    "dayOfMonth": 0,
-                    "dayOfWeek": "MONDAY",
-                    "dayOfYear": 0,
-                    "hour": 0,
-                    "minute": 0,
-                    "month": "JANUARY",
-                    "monthValue": 0,
-                    "nano": 0,
-                    "second": 0,
-                    "year": 0
-                  }
-                }
-              ],
-              "phone": "string",
-              "plateNum": "string",
-              "province": "string",
-              "qq": "string",
-              "relations": [
-                {
-                  "birthday": "2020-07-09T11:00:59.959Z",
-                  "createTime": {
-                    "chronology": {
-                      "calendarType": "string",
-                      "id": "string"
-                    },
-                    "dayOfMonth": 0,
-                    "dayOfWeek": "MONDAY",
-                    "dayOfYear": 0,
-                    "hour": 0,
-                    "minute": 0,
-                    "month": "JANUARY",
-                    "monthValue": 0,
-                    "nano": 0,
-                    "second": 0,
-                    "year": 0
-                  },
-                  "deleteFlag": true,
-                  "name": "string",
-                  "relation": "string",
-                  "relationId": 0,
-                  "updateTime": {
-                    "chronology": {
-                      "calendarType": "string",
-                      "id": "string"
-                    },
-                    "dayOfMonth": 0,
-                    "dayOfWeek": "MONDAY",
-                    "dayOfYear": 0,
-                    "hour": 0,
-                    "minute": 0,
-                    "month": "JANUARY",
-                    "monthValue": 0,
-                    "nano": 0,
-                    "second": 0,
-                    "year": 0
-                  },
-                  "vehicleOwnerId": 0,
-                  "work": "string"
-                }
-              ],
-              "seriesId": 0,
-              "sex": true,
-              "skillId": 0,
-              "skillName": "string",
-              "sourceId": 0,
-              "sourceName": "string",
-              "typeId": 0,
-              "updateTime": "2020-07-09T11:00:59.959Z",
-              "vehicleOwnerId": 0,
-              "vinno": "string",
-              "weiboId": "string",
-              "work": "string",
-              "wx": "string"
-            }
-          ]
-        }
-      ],
-      "listOwnerType": [
-        {
-          "createTime": {
-            "chronology": {
-              "calendarType": "string",
-              "id": "string"
-            },
-            "dayOfMonth": 0,
-            "dayOfWeek": "MONDAY",
-            "dayOfYear": 0,
-            "hour": 0,
-            "minute": 0,
-            "month": "JANUARY",
-            "monthValue": 0,
-            "nano": 0,
-            "second": 0,
-            "year": 0
-          },
-          "deleteFlag": true,
-          "ownerItems": [
-            {
-              "card": true,
-              "createTime": {
-                "chronology": {
-                  "calendarType": "string",
-                  "id": "string"
+              deleteFlag: true,
+              isCard: true,
+              isCards: 'string',
+              itemId: 0,
+              itemIds: 'string',
+              itemName: 'string',
+              money: 0,
+              moneys: 'string',
+              typeId: 0,
+              typeName: 'string',
+              updateTime: {
+                chronology: {
+                  calendarType: 'string',
+                  id: 'string'
                 },
-                "dayOfMonth": 0,
-                "dayOfWeek": "MONDAY",
-                "dayOfYear": 0,
-                "hour": 0,
-                "minute": 0,
-                "month": "JANUARY",
-                "monthValue": 0,
-                "nano": 0,
-                "second": 0,
-                "year": 0
+                dayOfMonth: 0,
+                dayOfWeek: 'MONDAY',
+                dayOfYear: 0,
+                hour: 0,
+                minute: 0,
+                month: 'JANUARY',
+                monthValue: 0,
+                nano: 0,
+                second: 0,
+                year: 0
               },
-              "deleteFlag": true,
-              "isCard": true,
-              "isCards": "string",
-              "itemId": 0,
-              "itemIds": "string",
-              "itemName": "string",
-              "money": 0,
-              "moneys": "string",
-              "typeId": 0,
-              "typeName": "string",
-              "updateTime": {
-                "chronology": {
-                  "calendarType": "string",
-                  "id": "string"
-                },
-                "dayOfMonth": 0,
-                "dayOfWeek": "MONDAY",
-                "dayOfYear": 0,
-                "hour": 0,
-                "minute": 0,
-                "month": "JANUARY",
-                "monthValue": 0,
-                "nano": 0,
-                "second": 0,
-                "year": 0
-              },
-              "vehicleOwners": [
+              vehicleOwners: [
                 {
-                  "alreadyCooperateNum": 0,
-                  "bankCard": "string",
-                  "bbsId": "string",
-                  "birthday": {
-                    "chronology": {
-                      "calendarType": "string",
-                      "id": "string"
+                  alreadyCooperateNum: 0,
+                  bankCard: 'string',
+                  bbsId: 'string',
+                  birthday: {
+                    chronology: {
+                      calendarType: 'string',
+                      id: 'string'
                     },
-                    "dayOfMonth": 0,
-                    "dayOfWeek": "MONDAY",
-                    "dayOfYear": 0,
-                    "era": {
-                      "value": 0
+                    dayOfMonth: 0,
+                    dayOfWeek: 'MONDAY',
+                    dayOfYear: 0,
+                    era: {
+                      value: 0
                     },
-                    "leapYear": true,
-                    "month": 0,
-                    "monthValue": 0,
-                    "year": 0
+                    leapYear: true,
+                    month: 0,
+                    monthValue: 0,
+                    year: 0
                   },
-                  "buycarplace": "string",
-                  "carSeriesName": "string",
-                  "carUse": "string",
-                  "city": "string",
-                  "coopId": 0,
-                  "coopNum": 0,
-                  "cooperates": [
+                  buycarplace: 'string',
+                  carSeriesName: 'string',
+                  carUse: 'string',
+                  city: 'string',
+                  coopId: 0,
+                  coopNum: 0,
+                  cooperates: [
                     {
-                      "carTypeName": "string",
-                      "coopItemsStr": "string",
-                      "createTime": {
-                        "chronology": {
-                          "calendarType": "string",
-                          "id": "string"
+                      carTypeName: 'string',
+                      coopItemsStr: 'string',
+                      createTime: {
+                        chronology: {
+                          calendarType: 'string',
+                          id: 'string'
                         },
-                        "dayOfMonth": 0,
-                        "dayOfWeek": "MONDAY",
-                        "dayOfYear": 0,
-                        "hour": 0,
-                        "minute": 0,
-                        "month": "JANUARY",
-                        "monthValue": 0,
-                        "nano": 0,
-                        "second": 0,
-                        "year": 0
+                        dayOfMonth: 0,
+                        dayOfWeek: 'MONDAY',
+                        dayOfYear: 0,
+                        hour: 0,
+                        minute: 0,
+                        month: 'JANUARY',
+                        monthValue: 0,
+                        nano: 0,
+                        second: 0,
+                        year: 0
                       },
-                      "deleteFlag": true,
-                      "doUserId": 0,
-                      "endTime": {
-                        "chronology": {
-                          "calendarType": "string",
-                          "id": "string"
+                      deleteFlag: true,
+                      doUserId: 0,
+                      endTime: {
+                        chronology: {
+                          calendarType: 'string',
+                          id: 'string'
                         },
-                        "dayOfMonth": 0,
-                        "dayOfWeek": "MONDAY",
-                        "dayOfYear": 0,
-                        "era": {
-                          "value": 0
+                        dayOfMonth: 0,
+                        dayOfWeek: 'MONDAY',
+                        dayOfYear: 0,
+                        era: {
+                          value: 0
                         },
-                        "leapYear": true,
-                        "month": 0,
-                        "monthValue": 0,
-                        "year": 0
+                        leapYear: true,
+                        month: 0,
+                        monthValue: 0,
+                        year: 0
                       },
-                      "fileName": "string",
-                      "id": 0,
-                      "localPath": "string",
-                      "name": "string",
-                      "ownerId": 0,
-                      "ownerTypeId": 0,
-                      "startTime": {
-                        "chronology": {
-                          "calendarType": "string",
-                          "id": "string"
+                      fileName: 'string',
+                      id: 0,
+                      localPath: 'string',
+                      name: 'string',
+                      ownerId: 0,
+                      ownerTypeId: 0,
+                      startTime: {
+                        chronology: {
+                          calendarType: 'string',
+                          id: 'string'
                         },
-                        "dayOfMonth": 0,
-                        "dayOfWeek": "MONDAY",
-                        "dayOfYear": 0,
-                        "era": {
-                          "value": 0
+                        dayOfMonth: 0,
+                        dayOfWeek: 'MONDAY',
+                        dayOfYear: 0,
+                        era: {
+                          value: 0
                         },
-                        "leapYear": true,
-                        "month": 0,
-                        "monthValue": 0,
-                        "year": 0
+                        leapYear: true,
+                        month: 0,
+                        monthValue: 0,
+                        year: 0
                       },
-                      "suffix": "string",
-                      "timeLimit": "string",
-                      "updateTime": {
-                        "chronology": {
-                          "calendarType": "string",
-                          "id": "string"
+                      suffix: 'string',
+                      timeLimit: 'string',
+                      updateTime: {
+                        chronology: {
+                          calendarType: 'string',
+                          id: 'string'
                         },
-                        "dayOfMonth": 0,
-                        "dayOfWeek": "MONDAY",
-                        "dayOfYear": 0,
-                        "hour": 0,
-                        "minute": 0,
-                        "month": "JANUARY",
-                        "monthValue": 0,
-                        "nano": 0,
-                        "second": 0,
-                        "year": 0
+                        dayOfMonth: 0,
+                        dayOfWeek: 'MONDAY',
+                        dayOfYear: 0,
+                        hour: 0,
+                        minute: 0,
+                        month: 'JANUARY',
+                        monthValue: 0,
+                        nano: 0,
+                        second: 0,
+                        year: 0
                       }
                     }
                   ],
-                  "createTime": "2020-07-09T11:00:59.959Z",
-                  "deleteFlag": true,
-                  "deliveryAddresses": [
+                  createTime: '2020-07-10T06:13:30.397Z',
+                  deleteFlag: true,
+                  deliveryAddresses: [
                     {
-                      "address": "string",
-                      "addressId": 0,
-                      "area": "string",
-                      "city": "string",
-                      "createTime": {
-                        "chronology": {
-                          "calendarType": "string",
-                          "id": "string"
+                      address: 'string',
+                      addressId: 0,
+                      area: 'string',
+                      city: 'string',
+                      createTime: {
+                        chronology: {
+                          calendarType: 'string',
+                          id: 'string'
                         },
-                        "dayOfMonth": 0,
-                        "dayOfWeek": "MONDAY",
-                        "dayOfYear": 0,
-                        "hour": 0,
-                        "minute": 0,
-                        "month": "JANUARY",
-                        "monthValue": 0,
-                        "nano": 0,
-                        "second": 0,
-                        "year": 0
+                        dayOfMonth: 0,
+                        dayOfWeek: 'MONDAY',
+                        dayOfYear: 0,
+                        hour: 0,
+                        minute: 0,
+                        month: 'JANUARY',
+                        monthValue: 0,
+                        nano: 0,
+                        second: 0,
+                        year: 0
                       },
-                      "deleteFlag": 0,
-                      "isCheck": 0,
-                      "ownerId": 0,
-                      "province": "string",
-                      "updateTime": {
-                        "chronology": {
-                          "calendarType": "string",
-                          "id": "string"
+                      deleteFlag: 0,
+                      isCheck: 0,
+                      ownerId: 0,
+                      province: 'string',
+                      updateTime: {
+                        chronology: {
+                          calendarType: 'string',
+                          id: 'string'
                         },
-                        "dayOfMonth": 0,
-                        "dayOfWeek": "MONDAY",
-                        "dayOfYear": 0,
-                        "hour": 0,
-                        "minute": 0,
-                        "month": "JANUARY",
-                        "monthValue": 0,
-                        "nano": 0,
-                        "second": 0,
-                        "year": 0
+                        dayOfMonth: 0,
+                        dayOfWeek: 'MONDAY',
+                        dayOfYear: 0,
+                        hour: 0,
+                        minute: 0,
+                        month: 'JANUARY',
+                        monthValue: 0,
+                        nano: 0,
+                        second: 0,
+                        year: 0
                       }
                     }
                   ],
-                  "deptId": 0,
-                  "doUserId": 0,
-                  "dyId": "string",
-                  "email": "string",
-                  "homeAddress": "string",
-                  "homeUrl": "string",
-                  "image": "string",
-                  "invites": [
-                    {}
-                  ],
-                  "ipGrows": [
+                  deptId: 0,
+                  doUserId: 0,
+                  dyId: 'string',
+                  email: 'string',
+                  homeAddress: 'string',
+                  homeUrl: 'string',
+                  image: 'string',
+                  invites: [{}],
+                  ipGrows: [
                     {
-                      "alreadyCooperateNum": 0,
-                      "carSeriesName": "string",
-                      "coopId": 0,
-                      "createTime": {
-                        "chronology": {
-                          "calendarType": "string",
-                          "id": "string"
+                      alreadyCooperateNum: 0,
+                      carSeriesName: 'string',
+                      coopId: 0,
+                      createTime: {
+                        chronology: {
+                          calendarType: 'string',
+                          id: 'string'
                         },
-                        "dayOfMonth": 0,
-                        "dayOfWeek": "MONDAY",
-                        "dayOfYear": 0,
-                        "hour": 0,
-                        "minute": 0,
-                        "month": "JANUARY",
-                        "monthValue": 0,
-                        "nano": 0,
-                        "second": 0,
-                        "year": 0
+                        dayOfMonth: 0,
+                        dayOfWeek: 'MONDAY',
+                        dayOfYear: 0,
+                        hour: 0,
+                        minute: 0,
+                        month: 'JANUARY',
+                        monthValue: 0,
+                        nano: 0,
+                        second: 0,
+                        year: 0
                       },
-                      "currMonthCooperateNum": 0,
-                      "deleteFlag": true,
-                      "doUserId": 0,
-                      "itemId": 0,
-                      "nickname": "string",
-                      "ownerArea": "string",
-                      "ownerCarSeries": [
+                      currMonthCooperateNum: 0,
+                      deleteFlag: true,
+                      doUserId: 0,
+                      itemId: 0,
+                      nickname: 'string',
+                      ownerArea: 'string',
+                      ownerCarSeries: [
                         {
-                          "carSeriesName": "string",
-                          "createTime": {
-                            "chronology": {
-                              "calendarType": "string",
-                              "id": "string"
+                          carSeriesName: 'string',
+                          createTime: {
+                            chronology: {
+                              calendarType: 'string',
+                              id: 'string'
                             },
-                            "dayOfMonth": 0,
-                            "dayOfWeek": "MONDAY",
-                            "dayOfYear": 0,
-                            "hour": 0,
-                            "minute": 0,
-                            "month": "JANUARY",
-                            "monthValue": 0,
-                            "nano": 0,
-                            "second": 0,
-                            "year": 0
+                            dayOfMonth: 0,
+                            dayOfWeek: 'MONDAY',
+                            dayOfYear: 0,
+                            hour: 0,
+                            minute: 0,
+                            month: 'JANUARY',
+                            monthValue: 0,
+                            nano: 0,
+                            second: 0,
+                            year: 0
                           },
-                          "id": 0,
-                          "seriesId": 0,
-                          "updateTime": {
-                            "chronology": {
-                              "calendarType": "string",
-                              "id": "string"
+                          id: 0,
+                          seriesId: 0,
+                          updateTime: {
+                            chronology: {
+                              calendarType: 'string',
+                              id: 'string'
                             },
-                            "dayOfMonth": 0,
-                            "dayOfWeek": "MONDAY",
-                            "dayOfYear": 0,
-                            "hour": 0,
-                            "minute": 0,
-                            "month": "JANUARY",
-                            "monthValue": 0,
-                            "nano": 0,
-                            "second": 0,
-                            "year": 0
+                            dayOfMonth: 0,
+                            dayOfWeek: 'MONDAY',
+                            dayOfYear: 0,
+                            hour: 0,
+                            minute: 0,
+                            month: 'JANUARY',
+                            monthValue: 0,
+                            nano: 0,
+                            second: 0,
+                            year: 0
                           },
-                          "vehicleOwnerId": 0
+                          vehicleOwnerId: 0
                         }
                       ],
-                      "ownerId": 0,
-                      "ownerName": "string",
-                      "plat": "string",
-                      "platRole": "string",
-                      "skillName": "string",
-                      "timeLimit": "string",
-                      "typeId": 0,
-                      "updateTime": {
-                        "chronology": {
-                          "calendarType": "string",
-                          "id": "string"
+                      ownerId: 0,
+                      ownerName: 'string',
+                      plat: 'string',
+                      platRole: 'string',
+                      skillName: 'string',
+                      timeLimit: 'string',
+                      typeId: 0,
+                      updateTime: {
+                        chronology: {
+                          calendarType: 'string',
+                          id: 'string'
                         },
-                        "dayOfMonth": 0,
-                        "dayOfWeek": "MONDAY",
-                        "dayOfYear": 0,
-                        "hour": 0,
-                        "minute": 0,
-                        "month": "JANUARY",
-                        "monthValue": 0,
-                        "nano": 0,
-                        "second": 0,
-                        "year": 0
+                        dayOfMonth: 0,
+                        dayOfWeek: 'MONDAY',
+                        dayOfYear: 0,
+                        hour: 0,
+                        minute: 0,
+                        month: 'JANUARY',
+                        monthValue: 0,
+                        nano: 0,
+                        second: 0,
+                        year: 0
                       },
-                      "url": "string"
+                      url: 'string'
                     }
                   ],
-                  "itemId": 0,
-                  "name": "string",
-                  "otherId": "string",
-                  "ownerCarSeries": [
+                  itemId: 0,
+                  name: 'string',
+                  otherId: 'string',
+                  ownerCarSeries: [
                     {
-                      "carSeriesName": "string",
-                      "createTime": {
-                        "chronology": {
-                          "calendarType": "string",
-                          "id": "string"
+                      carSeriesName: 'string',
+                      createTime: {
+                        chronology: {
+                          calendarType: 'string',
+                          id: 'string'
                         },
-                        "dayOfMonth": 0,
-                        "dayOfWeek": "MONDAY",
-                        "dayOfYear": 0,
-                        "hour": 0,
-                        "minute": 0,
-                        "month": "JANUARY",
-                        "monthValue": 0,
-                        "nano": 0,
-                        "second": 0,
-                        "year": 0
+                        dayOfMonth: 0,
+                        dayOfWeek: 'MONDAY',
+                        dayOfYear: 0,
+                        hour: 0,
+                        minute: 0,
+                        month: 'JANUARY',
+                        monthValue: 0,
+                        nano: 0,
+                        second: 0,
+                        year: 0
                       },
-                      "id": 0,
-                      "seriesId": 0,
-                      "updateTime": {
-                        "chronology": {
-                          "calendarType": "string",
-                          "id": "string"
+                      id: 0,
+                      seriesId: 0,
+                      updateTime: {
+                        chronology: {
+                          calendarType: 'string',
+                          id: 'string'
                         },
-                        "dayOfMonth": 0,
-                        "dayOfWeek": "MONDAY",
-                        "dayOfYear": 0,
-                        "hour": 0,
-                        "minute": 0,
-                        "month": "JANUARY",
-                        "monthValue": 0,
-                        "nano": 0,
-                        "second": 0,
-                        "year": 0
+                        dayOfMonth: 0,
+                        dayOfWeek: 'MONDAY',
+                        dayOfYear: 0,
+                        hour: 0,
+                        minute: 0,
+                        month: 'JANUARY',
+                        monthValue: 0,
+                        nano: 0,
+                        second: 0,
+                        year: 0
                       },
-                      "vehicleOwnerId": 0
+                      vehicleOwnerId: 0
                     }
                   ],
-                  "ownerCoops": [
+                  ownerCoops: [
                     {
-                      "alreadyCooperateNum": 0,
-                      "carSeriesName": "string",
-                      "coopId": 0,
-                      "coopMoney": 0,
-                      "coopNum": 0,
-                      "createTime": {
-                        "chronology": {
-                          "calendarType": "string",
-                          "id": "string"
+                      alreadyCooperateNum: 0,
+                      carSeriesName: 'string',
+                      coopId: 0,
+                      coopMoney: 0,
+                      coopNum: 0,
+                      createTime: {
+                        chronology: {
+                          calendarType: 'string',
+                          id: 'string'
                         },
-                        "dayOfMonth": 0,
-                        "dayOfWeek": "MONDAY",
-                        "dayOfYear": 0,
-                        "hour": 0,
-                        "minute": 0,
-                        "month": "JANUARY",
-                        "monthValue": 0,
-                        "nano": 0,
-                        "second": 0,
-                        "year": 0
+                        dayOfMonth: 0,
+                        dayOfWeek: 'MONDAY',
+                        dayOfYear: 0,
+                        hour: 0,
+                        minute: 0,
+                        month: 'JANUARY',
+                        monthValue: 0,
+                        nano: 0,
+                        second: 0,
+                        year: 0
                       },
-                      "deleteFlag": true,
-                      "doUserId": 0,
-                      "itemId": 0,
-                      "itemName": "string",
-                      "ownerCarSeries": [
+                      deleteFlag: true,
+                      doUserId: 0,
+                      itemId: 0,
+                      itemName: 'string',
+                      ownerCarSeries: [
                         {
-                          "carSeriesName": "string",
-                          "createTime": {
-                            "chronology": {
-                              "calendarType": "string",
-                              "id": "string"
+                          carSeriesName: 'string',
+                          createTime: {
+                            chronology: {
+                              calendarType: 'string',
+                              id: 'string'
                             },
-                            "dayOfMonth": 0,
-                            "dayOfWeek": "MONDAY",
-                            "dayOfYear": 0,
-                            "hour": 0,
-                            "minute": 0,
-                            "month": "JANUARY",
-                            "monthValue": 0,
-                            "nano": 0,
-                            "second": 0,
-                            "year": 0
+                            dayOfMonth: 0,
+                            dayOfWeek: 'MONDAY',
+                            dayOfYear: 0,
+                            hour: 0,
+                            minute: 0,
+                            month: 'JANUARY',
+                            monthValue: 0,
+                            nano: 0,
+                            second: 0,
+                            year: 0
                           },
-                          "id": 0,
-                          "seriesId": 0,
-                          "updateTime": {
-                            "chronology": {
-                              "calendarType": "string",
-                              "id": "string"
+                          id: 0,
+                          seriesId: 0,
+                          updateTime: {
+                            chronology: {
+                              calendarType: 'string',
+                              id: 'string'
                             },
-                            "dayOfMonth": 0,
-                            "dayOfWeek": "MONDAY",
-                            "dayOfYear": 0,
-                            "hour": 0,
-                            "minute": 0,
-                            "month": "JANUARY",
-                            "monthValue": 0,
-                            "nano": 0,
-                            "second": 0,
-                            "year": 0
+                            dayOfMonth: 0,
+                            dayOfWeek: 'MONDAY',
+                            dayOfYear: 0,
+                            hour: 0,
+                            minute: 0,
+                            month: 'JANUARY',
+                            monthValue: 0,
+                            nano: 0,
+                            second: 0,
+                            year: 0
                           },
-                          "vehicleOwnerId": 0
+                          vehicleOwnerId: 0
                         }
                       ],
-                      "ownerId": 0,
-                      "ownerName": "string",
-                      "period": 0,
-                      "timeLimit": "string",
-                      "typeId": 0,
-                      "updateTime": {
-                        "chronology": {
-                          "calendarType": "string",
-                          "id": "string"
+                      ownerId: 0,
+                      ownerName: 'string',
+                      period: 0,
+                      timeLimit: 'string',
+                      typeId: 0,
+                      updateTime: {
+                        chronology: {
+                          calendarType: 'string',
+                          id: 'string'
                         },
-                        "dayOfMonth": 0,
-                        "dayOfWeek": "MONDAY",
-                        "dayOfYear": 0,
-                        "hour": 0,
-                        "minute": 0,
-                        "month": "JANUARY",
-                        "monthValue": 0,
-                        "nano": 0,
-                        "second": 0,
-                        "year": 0
+                        dayOfMonth: 0,
+                        dayOfWeek: 'MONDAY',
+                        dayOfYear: 0,
+                        hour: 0,
+                        minute: 0,
+                        month: 'JANUARY',
+                        monthValue: 0,
+                        nano: 0,
+                        second: 0,
+                        year: 0
                       }
                     }
                   ],
-                  "phone": "string",
-                  "plateNum": "string",
-                  "province": "string",
-                  "qq": "string",
-                  "relations": [
+                  phone: 'string',
+                  plateNum: 'string',
+                  province: 'string',
+                  qq: 'string',
+                  relations: [
                     {
-                      "birthday": "2020-07-09T11:00:59.959Z",
-                      "createTime": {
-                        "chronology": {
-                          "calendarType": "string",
-                          "id": "string"
+                      birthday: '2020-07-10T06:13:30.398Z',
+                      createTime: {
+                        chronology: {
+                          calendarType: 'string',
+                          id: 'string'
                         },
-                        "dayOfMonth": 0,
-                        "dayOfWeek": "MONDAY",
-                        "dayOfYear": 0,
-                        "hour": 0,
-                        "minute": 0,
-                        "month": "JANUARY",
-                        "monthValue": 0,
-                        "nano": 0,
-                        "second": 0,
-                        "year": 0
+                        dayOfMonth: 0,
+                        dayOfWeek: 'MONDAY',
+                        dayOfYear: 0,
+                        hour: 0,
+                        minute: 0,
+                        month: 'JANUARY',
+                        monthValue: 0,
+                        nano: 0,
+                        second: 0,
+                        year: 0
                       },
-                      "deleteFlag": true,
-                      "name": "string",
-                      "relation": "string",
-                      "relationId": 0,
-                      "updateTime": {
-                        "chronology": {
-                          "calendarType": "string",
-                          "id": "string"
+                      deleteFlag: true,
+                      name: 'string',
+                      relation: 'string',
+                      relationId: 0,
+                      updateTime: {
+                        chronology: {
+                          calendarType: 'string',
+                          id: 'string'
                         },
-                        "dayOfMonth": 0,
-                        "dayOfWeek": "MONDAY",
-                        "dayOfYear": 0,
-                        "hour": 0,
-                        "minute": 0,
-                        "month": "JANUARY",
-                        "monthValue": 0,
-                        "nano": 0,
-                        "second": 0,
-                        "year": 0
+                        dayOfMonth: 0,
+                        dayOfWeek: 'MONDAY',
+                        dayOfYear: 0,
+                        hour: 0,
+                        minute: 0,
+                        month: 'JANUARY',
+                        monthValue: 0,
+                        nano: 0,
+                        second: 0,
+                        year: 0
                       },
-                      "vehicleOwnerId": 0,
-                      "work": "string"
+                      vehicleOwnerId: 0,
+                      work: 'string'
                     }
                   ],
-                  "seriesId": 0,
-                  "sex": true,
-                  "skillId": 0,
-                  "skillName": "string",
-                  "sourceId": 0,
-                  "sourceName": "string",
-                  "typeId": 0,
-                  "updateTime": "2020-07-09T11:00:59.959Z",
-                  "vehicleOwnerId": 0,
-                  "vinno": "string",
-                  "weiboId": "string",
-                  "work": "string",
-                  "wx": "string"
+                  seriesId: 0,
+                  sex: true,
+                  skillId: 0,
+                  skillName: 'string',
+                  sourceId: 0,
+                  sourceName: 'string',
+                  typeId: 0,
+                  updateTime: '2020-07-10T06:13:30.398Z',
+                  vehicleOwnerId: 0,
+                  vinno: 'string',
+                  weiboId: 'string',
+                  work: 'string',
+                  wx: 'string'
                 }
               ]
             }
           ],
-          "typeId": 0,
-          "typeName": "string",
-          "updateTime": {
-            "chronology": {
-              "calendarType": "string",
-              "id": "string"
+          listOwnerType: [
+            {
+              createTime: {
+                chronology: {
+                  calendarType: 'string',
+                  id: 'string'
+                },
+                dayOfMonth: 0,
+                dayOfWeek: 'MONDAY',
+                dayOfYear: 0,
+                hour: 0,
+                minute: 0,
+                month: 'JANUARY',
+                monthValue: 0,
+                nano: 0,
+                second: 0,
+                year: 0
+              },
+              deleteFlag: true,
+              ownerItems: [
+                {
+                  carTypeIds: [0],
+                  card: true,
+                  createTime: {
+                    chronology: {
+                      calendarType: 'string',
+                      id: 'string'
+                    },
+                    dayOfMonth: 0,
+                    dayOfWeek: 'MONDAY',
+                    dayOfYear: 0,
+                    hour: 0,
+                    minute: 0,
+                    month: 'JANUARY',
+                    monthValue: 0,
+                    nano: 0,
+                    second: 0,
+                    year: 0
+                  },
+                  deleteFlag: true,
+                  isCard: true,
+                  isCards: 'string',
+                  itemId: 0,
+                  itemIds: 'string',
+                  itemName: 'string',
+                  money: 0,
+                  moneys: 'string',
+                  typeId: 0,
+                  typeName: 'string',
+                  updateTime: {
+                    chronology: {
+                      calendarType: 'string',
+                      id: 'string'
+                    },
+                    dayOfMonth: 0,
+                    dayOfWeek: 'MONDAY',
+                    dayOfYear: 0,
+                    hour: 0,
+                    minute: 0,
+                    month: 'JANUARY',
+                    monthValue: 0,
+                    nano: 0,
+                    second: 0,
+                    year: 0
+                  },
+                  vehicleOwners: [
+                    {
+                      alreadyCooperateNum: 0,
+                      bankCard: 'string',
+                      bbsId: 'string',
+                      birthday: {
+                        chronology: {
+                          calendarType: 'string',
+                          id: 'string'
+                        },
+                        dayOfMonth: 0,
+                        dayOfWeek: 'MONDAY',
+                        dayOfYear: 0,
+                        era: {
+                          value: 0
+                        },
+                        leapYear: true,
+                        month: 0,
+                        monthValue: 0,
+                        year: 0
+                      },
+                      buycarplace: 'string',
+                      carSeriesName: 'string',
+                      carUse: 'string',
+                      city: 'string',
+                      coopId: 0,
+                      coopNum: 0,
+                      cooperates: [
+                        {
+                          carTypeName: 'string',
+                          coopItemsStr: 'string',
+                          createTime: {
+                            chronology: {
+                              calendarType: 'string',
+                              id: 'string'
+                            },
+                            dayOfMonth: 0,
+                            dayOfWeek: 'MONDAY',
+                            dayOfYear: 0,
+                            hour: 0,
+                            minute: 0,
+                            month: 'JANUARY',
+                            monthValue: 0,
+                            nano: 0,
+                            second: 0,
+                            year: 0
+                          },
+                          deleteFlag: true,
+                          doUserId: 0,
+                          endTime: {
+                            chronology: {
+                              calendarType: 'string',
+                              id: 'string'
+                            },
+                            dayOfMonth: 0,
+                            dayOfWeek: 'MONDAY',
+                            dayOfYear: 0,
+                            era: {
+                              value: 0
+                            },
+                            leapYear: true,
+                            month: 0,
+                            monthValue: 0,
+                            year: 0
+                          },
+                          fileName: 'string',
+                          id: 0,
+                          localPath: 'string',
+                          name: 'string',
+                          ownerId: 0,
+                          ownerTypeId: 0,
+                          startTime: {
+                            chronology: {
+                              calendarType: 'string',
+                              id: 'string'
+                            },
+                            dayOfMonth: 0,
+                            dayOfWeek: 'MONDAY',
+                            dayOfYear: 0,
+                            era: {
+                              value: 0
+                            },
+                            leapYear: true,
+                            month: 0,
+                            monthValue: 0,
+                            year: 0
+                          },
+                          suffix: 'string',
+                          timeLimit: 'string',
+                          updateTime: {
+                            chronology: {
+                              calendarType: 'string',
+                              id: 'string'
+                            },
+                            dayOfMonth: 0,
+                            dayOfWeek: 'MONDAY',
+                            dayOfYear: 0,
+                            hour: 0,
+                            minute: 0,
+                            month: 'JANUARY',
+                            monthValue: 0,
+                            nano: 0,
+                            second: 0,
+                            year: 0
+                          }
+                        }
+                      ],
+                      createTime: '2020-07-10T06:13:30.398Z',
+                      deleteFlag: true,
+                      deliveryAddresses: [
+                        {
+                          address: 'string',
+                          addressId: 0,
+                          area: 'string',
+                          city: 'string',
+                          createTime: {
+                            chronology: {
+                              calendarType: 'string',
+                              id: 'string'
+                            },
+                            dayOfMonth: 0,
+                            dayOfWeek: 'MONDAY',
+                            dayOfYear: 0,
+                            hour: 0,
+                            minute: 0,
+                            month: 'JANUARY',
+                            monthValue: 0,
+                            nano: 0,
+                            second: 0,
+                            year: 0
+                          },
+                          deleteFlag: 0,
+                          isCheck: 0,
+                          ownerId: 0,
+                          province: 'string',
+                          updateTime: {
+                            chronology: {
+                              calendarType: 'string',
+                              id: 'string'
+                            },
+                            dayOfMonth: 0,
+                            dayOfWeek: 'MONDAY',
+                            dayOfYear: 0,
+                            hour: 0,
+                            minute: 0,
+                            month: 'JANUARY',
+                            monthValue: 0,
+                            nano: 0,
+                            second: 0,
+                            year: 0
+                          }
+                        }
+                      ],
+                      deptId: 0,
+                      doUserId: 0,
+                      dyId: 'string',
+                      email: 'string',
+                      homeAddress: 'string',
+                      homeUrl: 'string',
+                      image: 'string',
+                      invites: [{}],
+                      ipGrows: [
+                        {
+                          alreadyCooperateNum: 0,
+                          carSeriesName: 'string',
+                          coopId: 0,
+                          createTime: {
+                            chronology: {
+                              calendarType: 'string',
+                              id: 'string'
+                            },
+                            dayOfMonth: 0,
+                            dayOfWeek: 'MONDAY',
+                            dayOfYear: 0,
+                            hour: 0,
+                            minute: 0,
+                            month: 'JANUARY',
+                            monthValue: 0,
+                            nano: 0,
+                            second: 0,
+                            year: 0
+                          },
+                          currMonthCooperateNum: 0,
+                          deleteFlag: true,
+                          doUserId: 0,
+                          itemId: 0,
+                          nickname: 'string',
+                          ownerArea: 'string',
+                          ownerCarSeries: [
+                            {
+                              carSeriesName: 'string',
+                              createTime: {
+                                chronology: {
+                                  calendarType: 'string',
+                                  id: 'string'
+                                },
+                                dayOfMonth: 0,
+                                dayOfWeek: 'MONDAY',
+                                dayOfYear: 0,
+                                hour: 0,
+                                minute: 0,
+                                month: 'JANUARY',
+                                monthValue: 0,
+                                nano: 0,
+                                second: 0,
+                                year: 0
+                              },
+                              id: 0,
+                              seriesId: 0,
+                              updateTime: {
+                                chronology: {
+                                  calendarType: 'string',
+                                  id: 'string'
+                                },
+                                dayOfMonth: 0,
+                                dayOfWeek: 'MONDAY',
+                                dayOfYear: 0,
+                                hour: 0,
+                                minute: 0,
+                                month: 'JANUARY',
+                                monthValue: 0,
+                                nano: 0,
+                                second: 0,
+                                year: 0
+                              },
+                              vehicleOwnerId: 0
+                            }
+                          ],
+                          ownerId: 0,
+                          ownerName: 'string',
+                          plat: 'string',
+                          platRole: 'string',
+                          skillName: 'string',
+                          timeLimit: 'string',
+                          typeId: 0,
+                          updateTime: {
+                            chronology: {
+                              calendarType: 'string',
+                              id: 'string'
+                            },
+                            dayOfMonth: 0,
+                            dayOfWeek: 'MONDAY',
+                            dayOfYear: 0,
+                            hour: 0,
+                            minute: 0,
+                            month: 'JANUARY',
+                            monthValue: 0,
+                            nano: 0,
+                            second: 0,
+                            year: 0
+                          },
+                          url: 'string'
+                        }
+                      ],
+                      itemId: 0,
+                      name: 'string',
+                      otherId: 'string',
+                      ownerCarSeries: [
+                        {
+                          carSeriesName: 'string',
+                          createTime: {
+                            chronology: {
+                              calendarType: 'string',
+                              id: 'string'
+                            },
+                            dayOfMonth: 0,
+                            dayOfWeek: 'MONDAY',
+                            dayOfYear: 0,
+                            hour: 0,
+                            minute: 0,
+                            month: 'JANUARY',
+                            monthValue: 0,
+                            nano: 0,
+                            second: 0,
+                            year: 0
+                          },
+                          id: 0,
+                          seriesId: 0,
+                          updateTime: {
+                            chronology: {
+                              calendarType: 'string',
+                              id: 'string'
+                            },
+                            dayOfMonth: 0,
+                            dayOfWeek: 'MONDAY',
+                            dayOfYear: 0,
+                            hour: 0,
+                            minute: 0,
+                            month: 'JANUARY',
+                            monthValue: 0,
+                            nano: 0,
+                            second: 0,
+                            year: 0
+                          },
+                          vehicleOwnerId: 0
+                        }
+                      ],
+                      ownerCoops: [
+                        {
+                          alreadyCooperateNum: 0,
+                          carSeriesName: 'string',
+                          coopId: 0,
+                          coopMoney: 0,
+                          coopNum: 0,
+                          createTime: {
+                            chronology: {
+                              calendarType: 'string',
+                              id: 'string'
+                            },
+                            dayOfMonth: 0,
+                            dayOfWeek: 'MONDAY',
+                            dayOfYear: 0,
+                            hour: 0,
+                            minute: 0,
+                            month: 'JANUARY',
+                            monthValue: 0,
+                            nano: 0,
+                            second: 0,
+                            year: 0
+                          },
+                          deleteFlag: true,
+                          doUserId: 0,
+                          itemId: 0,
+                          itemName: 'string',
+                          ownerCarSeries: [
+                            {
+                              carSeriesName: 'string',
+                              createTime: {
+                                chronology: {
+                                  calendarType: 'string',
+                                  id: 'string'
+                                },
+                                dayOfMonth: 0,
+                                dayOfWeek: 'MONDAY',
+                                dayOfYear: 0,
+                                hour: 0,
+                                minute: 0,
+                                month: 'JANUARY',
+                                monthValue: 0,
+                                nano: 0,
+                                second: 0,
+                                year: 0
+                              },
+                              id: 0,
+                              seriesId: 0,
+                              updateTime: {
+                                chronology: {
+                                  calendarType: 'string',
+                                  id: 'string'
+                                },
+                                dayOfMonth: 0,
+                                dayOfWeek: 'MONDAY',
+                                dayOfYear: 0,
+                                hour: 0,
+                                minute: 0,
+                                month: 'JANUARY',
+                                monthValue: 0,
+                                nano: 0,
+                                second: 0,
+                                year: 0
+                              },
+                              vehicleOwnerId: 0
+                            }
+                          ],
+                          ownerId: 0,
+                          ownerName: 'string',
+                          period: 0,
+                          timeLimit: 'string',
+                          typeId: 0,
+                          updateTime: {
+                            chronology: {
+                              calendarType: 'string',
+                              id: 'string'
+                            },
+                            dayOfMonth: 0,
+                            dayOfWeek: 'MONDAY',
+                            dayOfYear: 0,
+                            hour: 0,
+                            minute: 0,
+                            month: 'JANUARY',
+                            monthValue: 0,
+                            nano: 0,
+                            second: 0,
+                            year: 0
+                          }
+                        }
+                      ],
+                      phone: 'string',
+                      plateNum: 'string',
+                      province: 'string',
+                      qq: 'string',
+                      relations: [
+                        {
+                          birthday: '2020-07-10T06:13:30.399Z',
+                          createTime: {
+                            chronology: {
+                              calendarType: 'string',
+                              id: 'string'
+                            },
+                            dayOfMonth: 0,
+                            dayOfWeek: 'MONDAY',
+                            dayOfYear: 0,
+                            hour: 0,
+                            minute: 0,
+                            month: 'JANUARY',
+                            monthValue: 0,
+                            nano: 0,
+                            second: 0,
+                            year: 0
+                          },
+                          deleteFlag: true,
+                          name: 'string',
+                          relation: 'string',
+                          relationId: 0,
+                          updateTime: {
+                            chronology: {
+                              calendarType: 'string',
+                              id: 'string'
+                            },
+                            dayOfMonth: 0,
+                            dayOfWeek: 'MONDAY',
+                            dayOfYear: 0,
+                            hour: 0,
+                            minute: 0,
+                            month: 'JANUARY',
+                            monthValue: 0,
+                            nano: 0,
+                            second: 0,
+                            year: 0
+                          },
+                          vehicleOwnerId: 0,
+                          work: 'string'
+                        }
+                      ],
+                      seriesId: 0,
+                      sex: true,
+                      skillId: 0,
+                      skillName: 'string',
+                      sourceId: 0,
+                      sourceName: 'string',
+                      typeId: 0,
+                      updateTime: '2020-07-10T06:13:30.399Z',
+                      vehicleOwnerId: 0,
+                      vinno: 'string',
+                      weiboId: 'string',
+                      work: 'string',
+                      wx: 'string'
+                    }
+                  ]
+                }
+              ],
+              typeId: 0,
+              typeName: 'string',
+              updateTime: {
+                chronology: {
+                  calendarType: 'string',
+                  id: 'string'
+                },
+                dayOfMonth: 0,
+                dayOfWeek: 'MONDAY',
+                dayOfYear: 0,
+                hour: 0,
+                minute: 0,
+                month: 'JANUARY',
+                monthValue: 0,
+                nano: 0,
+                second: 0,
+                year: 0
+              }
+            }
+          ],
+          money: 0,
+          name: 'string',
+          over: true,
+          overTime: {
+            chronology: {
+              calendarType: 'string',
+              id: 'string'
             },
-            "dayOfMonth": 0,
-            "dayOfWeek": "MONDAY",
-            "dayOfYear": 0,
-            "hour": 0,
-            "minute": 0,
-            "month": "JANUARY",
-            "monthValue": 0,
-            "nano": 0,
-            "second": 0,
-            "year": 0
+            dayOfMonth: 0,
+            dayOfWeek: 'MONDAY',
+            dayOfYear: 0,
+            hour: 0,
+            minute: 0,
+            month: 'JANUARY',
+            monthValue: 0,
+            nano: 0,
+            second: 0,
+            year: 0
+          },
+          ownerId: 0,
+          phone: 'string',
+          prove: 'string',
+          publishedTime: {
+            chronology: {
+              calendarType: 'string',
+              id: 'string'
+            },
+            dayOfMonth: 0,
+            dayOfWeek: 'MONDAY',
+            dayOfYear: 0,
+            hour: 0,
+            minute: 0,
+            month: 'JANUARY',
+            monthValue: 0,
+            nano: 0,
+            second: 0,
+            year: 0
+          },
+          realName: 'string',
+          sourceName: 'string',
+          taskId: 0,
+          taskName: 'string',
+          title: 'string',
+          typeId: 0,
+          typeName: 'string',
+          updateTime: {
+            chronology: {
+              calendarType: 'string',
+              id: 'string'
+            },
+            dayOfMonth: 0,
+            dayOfWeek: 'MONDAY',
+            dayOfYear: 0,
+            hour: 0,
+            minute: 0,
+            month: 'JANUARY',
+            monthValue: 0,
+            nano: 0,
+            second: 0,
+            year: 0
+          },
+          url: 'string',
+          userId: 0
+        }
+      ],
+      listTaskFile: [
+        {
+          createTime: {
+            chronology: {
+              calendarType: 'string',
+              id: 'string'
+            },
+            dayOfMonth: 0,
+            dayOfWeek: 'MONDAY',
+            dayOfYear: 0,
+            hour: 0,
+            minute: 0,
+            month: 'JANUARY',
+            monthValue: 0,
+            nano: 0,
+            second: 0,
+            year: 0
+          },
+          deleteFlag: true,
+          fileId: 0,
+          fileName: 'string',
+          localPath: 'string',
+          suffix: 'string',
+          taskId: 0,
+          updateTime: {
+            chronology: {
+              calendarType: 'string',
+              id: 'string'
+            },
+            dayOfMonth: 0,
+            dayOfWeek: 'MONDAY',
+            dayOfYear: 0,
+            hour: 0,
+            minute: 0,
+            month: 'JANUARY',
+            monthValue: 0,
+            nano: 0,
+            second: 0,
+            year: 0
+          },
+          updateUserId: 0
+        }
+      ],
+      listTaskOfCartype: [
+        {
+          cartypeId: 0,
+          creatDate: {
+            chronology: {
+              calendarType: 'string',
+              id: 'string'
+            },
+            dayOfMonth: 0,
+            dayOfWeek: 'MONDAY',
+            dayOfYear: 0,
+            hour: 0,
+            minute: 0,
+            month: 'JANUARY',
+            monthValue: 0,
+            nano: 0,
+            second: 0,
+            year: 0
+          },
+          taskId: 0,
+          tcId: 0,
+          updtaeDate: {
+            chronology: {
+              calendarType: 'string',
+              id: 'string'
+            },
+            dayOfMonth: 0,
+            dayOfWeek: 'MONDAY',
+            dayOfYear: 0,
+            hour: 0,
+            minute: 0,
+            month: 'JANUARY',
+            monthValue: 0,
+            nano: 0,
+            second: 0,
+            year: 0
           }
         }
       ],
-      "money": 0,
-      "name": "string",
-      "over": true,
-      "overTime": {
-        "chronology": {
-          "calendarType": "string",
-          "id": "string"
+      num: 0,
+      overTime: {
+        chronology: {
+          calendarType: 'string',
+          id: 'string'
         },
-        "dayOfMonth": 0,
-        "dayOfWeek": "MONDAY",
-        "dayOfYear": 0,
-        "hour": 0,
-        "minute": 0,
-        "month": "JANUARY",
-        "monthValue": 0,
-        "nano": 0,
-        "second": 0,
-        "year": 0
+        dayOfMonth: 0,
+        dayOfWeek: 'MONDAY',
+        dayOfYear: 0,
+        hour: 0,
+        minute: 0,
+        month: 'JANUARY',
+        monthValue: 0,
+        nano: 0,
+        second: 0,
+        year: 0
       },
-      "ownerId": 0,
-      "phone": "string",
-      "prove": "string",
-      "publishedTime": {
-        "chronology": {
-          "calendarType": "string",
-          "id": "string"
+      remark: 'string',
+      startTime: {
+        chronology: {
+          calendarType: 'string',
+          id: 'string'
         },
-        "dayOfMonth": 0,
-        "dayOfWeek": "MONDAY",
-        "dayOfYear": 0,
-        "hour": 0,
-        "minute": 0,
-        "month": "JANUARY",
-        "monthValue": 0,
-        "nano": 0,
-        "second": 0,
-        "year": 0
-      },
-      "realName": "string",
-      "sourceName": "string",
-      "taskId": 0,
-      "taskName": "string",
-      "title": "string",
-      "typeId": 0,
-      "typeName": "string",
-      "updateTime": {
-        "chronology": {
-          "calendarType": "string",
-          "id": "string"
+        dayOfMonth: 0,
+        dayOfWeek: 'MONDAY',
+        dayOfYear: 0,
+        era: {
+          value: 0
         },
-        "dayOfMonth": 0,
-        "dayOfWeek": "MONDAY",
-        "dayOfYear": 0,
-        "hour": 0,
-        "minute": 0,
-        "month": "JANUARY",
-        "monthValue": 0,
-        "nano": 0,
-        "second": 0,
-        "year": 0
+        leapYear: true,
+        month: 0,
+        monthValue: 0,
+        year: 0
       },
-      "url": "string",
-      "userId": 0
+      status: 0,
+      taskDesc: 'string',
+      taskId: 0,
+      taskName: 'string',
+      typeId: 0,
+      updateTime: {
+        chronology: {
+          calendarType: 'string',
+          id: 'string'
+        },
+        dayOfMonth: 0,
+        dayOfWeek: 'MONDAY',
+        dayOfYear: 0,
+        hour: 0,
+        minute: 0,
+        month: 'JANUARY',
+        monthValue: 0,
+        nano: 0,
+        second: 0,
+        year: 0
+      },
+      years: 'string'
     }
-  ],
-  "listTaskFile": [
-    {
-      "createTime": {
-        "chronology": {
-          "calendarType": "string",
-          "id": "string"
-        },
-        "dayOfMonth": 0,
-        "dayOfWeek": "MONDAY",
-        "dayOfYear": 0,
-        "hour": 0,
-        "minute": 0,
-        "month": "JANUARY",
-        "monthValue": 0,
-        "nano": 0,
-        "second": 0,
-        "year": 0
-      },
-      "deleteFlag": true,
-      "fileId": 0,
-      "fileName": "string",
-      "localPath": "string",
-      "suffix": "string",
-      "taskId": 0,
-      "updateTime": {
-        "chronology": {
-          "calendarType": "string",
-          "id": "string"
-        },
-        "dayOfMonth": 0,
-        "dayOfWeek": "MONDAY",
-        "dayOfYear": 0,
-        "hour": 0,
-        "minute": 0,
-        "month": "JANUARY",
-        "monthValue": 0,
-        "nano": 0,
-        "second": 0,
-        "year": 0
-      },
-      "updateUserId": 0
-    }
-  ],
-  "listTaskOfCartype": [
-    {
-      "cartypeId": 0,
-      "creatDate": {
-        "chronology": {
-          "calendarType": "string",
-          "id": "string"
-        },
-        "dayOfMonth": 0,
-        "dayOfWeek": "MONDAY",
-        "dayOfYear": 0,
-        "hour": 0,
-        "minute": 0,
-        "month": "JANUARY",
-        "monthValue": 0,
-        "nano": 0,
-        "second": 0,
-        "year": 0
-      },
-      "taskId": 0,
-      "tcId": 0,
-      "updtaeDate": {
-        "chronology": {
-          "calendarType": "string",
-          "id": "string"
-        },
-        "dayOfMonth": 0,
-        "dayOfWeek": "MONDAY",
-        "dayOfYear": 0,
-        "hour": 0,
-        "minute": 0,
-        "month": "JANUARY",
-        "monthValue": 0,
-        "nano": 0,
-        "second": 0,
-        "year": 0
-      }
-    }
-  ],
-  "num": 0,
-  "overTime": {
-    "chronology": {
-      "calendarType": "string",
-      "id": "string"
-    },
-    "dayOfMonth": 0,
-    "dayOfWeek": "MONDAY",
-    "dayOfYear": 0,
-    "hour": 0,
-    "minute": 0,
-    "month": "JANUARY",
-    "monthValue": 0,
-    "nano": 0,
-    "second": 0,
-    "year": 0
-  },
-  "remark": "string",
-  "startTime": {
-    "chronology": {
-      "calendarType": "string",
-      "id": "string"
-    },
-    "dayOfMonth": 0,
-    "dayOfWeek": "MONDAY",
-    "dayOfYear": 0,
-    "era": {
-      "value": 0
-    },
-    "leapYear": true,
-    "month": 0,
-    "monthValue": 0,
-    "year": 0
-  },
-  "status": 0,
-  "taskDesc": "string",
-  "taskId": 0,
-  "taskName": "string",
-  "typeId": 0,
-  "updateTime": {
-    "chronology": {
-      "calendarType": "string",
-      "id": "string"
-    },
-    "dayOfMonth": 0,
-    "dayOfWeek": "MONDAY",
-    "dayOfYear": 0,
-    "hour": 0,
-    "minute": 0,
-    "month": "JANUARY",
-    "monthValue": 0,
-    "nano": 0,
-    "second": 0,
-    "year": 0
-  },
-  "years": "string"
-}
     this.G2()
   },
   // 方法

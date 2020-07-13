@@ -91,9 +91,20 @@
               >{{scope.row.taskName}}</el-link>
             </template>
           </el-table-column>
-          <el-table-column prop="typeList" label="邀约对象" min-width="100" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="ownerName" label="邀约对象" min-width="100" show-overflow-tooltip></el-table-column>
           <el-table-column prop="ownerItemList" label="邀约事项" min-width="100" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="carSeriesName" label="邀约车型" min-width="130" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="carSeriesName" label="邀约车型" min-width="130" show-overflow-tooltip>
+            <template slot-scope="scope">
+              <template v-if="scope.row.carSeriesName">
+              {{scope.row.carSeriesName}}
+              </template>
+              <template v-else>
+                <span v-for="(item, index) in scope.row.listTaskOfCartype" :key="index">
+                {{item.carTypeName}},
+              </span>
+              </template>
+            </template>
+          </el-table-column>
           <el-table-column prop="status" label="状态" min-width="80">
             <template slot-scope="scope">
               <!-- {{scope.row.status}} -->
@@ -104,7 +115,11 @@
               <div v-if="scope.row.status==4" class="statusColor4">人工延期</div>
             </template>
           </el-table-column>
-          <el-table-column prop="num" label="任务量" min-width="80"></el-table-column>
+          <el-table-column prop="num" label="任务进度" min-width="80">
+            <template slot-scope="scope">
+              {{scope.row.inviteNumOver}}/{{scope.row.num}}
+            </template>
+          </el-table-column>
           <el-table-column prop="listInvite" label="车主数量" min-width="80">
             <template slot-scope="scope">
               <!-- <div> -->
@@ -172,9 +187,20 @@
               >{{scope.row.taskName}}</el-link>
             </template>
           </el-table-column>
-          <el-table-column prop="typeList" label="邀约对象" min-width="100" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="ownerName" label="邀约对象" min-width="100" show-overflow-tooltip></el-table-column>
           <el-table-column prop="ownerItemList" label="邀约事项" min-width="100" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="carSeriesName" label="邀约车型" min-width="130" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="carSeriesName" label="邀约车型" min-width="130" show-overflow-tooltip>
+            <template slot-scope="scope">
+              <template v-if="scope.row.carSeriesName">
+              {{scope.row.carSeriesName}}
+              </template>
+              <template v-else>
+                <span v-for="(item, index) in scope.row.listTaskOfCartype" :key="index">
+                {{item.carTypeName}},
+              </span>
+              </template>
+            </template>
+          </el-table-column>
           <el-table-column prop="status" label="状态" min-width="80">
             <template slot-scope="scope">
               <!-- {{scope.row.status}} -->
@@ -185,7 +211,11 @@
               <div v-if="scope.row.status==4" class="statusColor4">人工延期</div>
             </template>
           </el-table-column>
-          <el-table-column prop="num" label="任务量" min-width="80"></el-table-column>
+          <el-table-column prop="num" label="任务进度" min-width="80">
+            <template slot-scope="scope">
+              {{scope.row.inviteNumOver}}/{{scope.row.num}}
+            </template>
+          </el-table-column>
           <el-table-column prop="listInvite" label="车主数量" min-width="80">
             <template slot-scope="scope">
               <!-- <div> -->
@@ -256,7 +286,18 @@
           </el-table-column>
           <el-table-column prop="typeList" label="邀约对象" min-width="100" show-overflow-tooltip></el-table-column>
           <el-table-column prop="ownerItemList" label="邀约事项" min-width="100" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="carSeriesName" label="邀约车型" min-width="130" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="carSeriesName" label="邀约车型" min-width="130" show-overflow-tooltip>
+            <template slot-scope="scope">
+              <template v-if="scope.row.carSeriesName">
+              {{scope.row.carSeriesName}}
+              </template>
+              <template v-else>
+                <span v-for="(item, index) in scope.row.listTaskOfCartype" :key="index">
+                {{item.carTypeName}},
+              </span>
+              </template>
+            </template>
+          </el-table-column>
           <el-table-column prop="status" label="状态" min-width="80">
             <template slot-scope="scope">
               <!-- {{scope.row.status}} -->
@@ -267,7 +308,7 @@
               <div v-if="scope.row.status==4" class="statusColor4">人工延期</div>
             </template>
           </el-table-column>
-          <el-table-column prop="num" label="任务量" min-width="80"></el-table-column>
+          <!-- <el-table-column prop="num" label="任务量" min-width="80"></el-table-column> -->
 
           <el-table-column prop="listInvite" label="结算进度" min-width="80">
             <template slot-scope="scope">
@@ -318,9 +359,20 @@
               >{{scope.row.taskName}}</el-link>
             </template>
           </el-table-column>
-          <el-table-column prop="typeList" label="邀约对象" min-width="100" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="ownerName" label="邀约对象" min-width="100" show-overflow-tooltip></el-table-column>
           <el-table-column prop="ownerItemList" label="邀约事项" min-width="100" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="carSeriesName" label="邀约车型" min-width="130" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="carSeriesName" label="邀约车型" min-width="130" show-overflow-tooltip>
+            <template slot-scope="scope">
+              <template v-if="scope.row.carSeriesName">
+              {{scope.row.carSeriesName}}
+              </template>
+              <template v-else>
+                <span v-for="(item, index) in scope.row.listTaskOfCartype" :key="index">
+                {{item.carTypeName}},
+              </span>
+              </template>
+            </template>
+          </el-table-column>
           <el-table-column prop="status" label="状态" min-width="80">
             <template slot-scope="scope">
               <!-- {{scope.row.status}} -->
@@ -331,7 +383,7 @@
               <div v-if="scope.row.status==4" class="statusColor4">人工延期</div>
             </template>
           </el-table-column>
-          <el-table-column prop="num" label="任务量" min-width="80"></el-table-column>
+          <!-- <el-table-column prop="num" label="任务量" min-width="80"></el-table-column> -->
           <!-- <el-table-column prop="listInvite" label="车主数量" min-width="80">
             <template slot-scope="scope">
               {{scope.row.listInvite.length}}
@@ -604,11 +656,9 @@ export default {
             let data = res.data.carTypes
             let carSeriesList = []
             data.forEach((element, i) => {
-              element.carSeries.forEach((element_, j) => {
-                carSeriesList.push({
-                  value: element_.carSeriesId,
-                  label: `${element.deptName}-${element.carTypeName}-${element_.carSeriesName}`
-                })
+              carSeriesList.push({
+                value: element.carTypeId,
+                label: `${element.deptName}—${element.carTypeName}`
               })
             })
             this.carSeriesIdList = carSeriesList
@@ -677,6 +727,7 @@ export default {
             element.ownerItemList = []
             element.ownerName = []
             element.invMoney = 0
+            element.inviteNumOver = 0
             element.listInvite.forEach(element1 => {
               // console.log(element1)
               if (element1.listOwnerType) {
@@ -685,6 +736,9 @@ export default {
                 element.ownerName.push(element1.realName)
               }
               element.invMoney += element1.money
+              if (element1.isWrite == 1) {
+              element.inviteNumOver += 1
+            }
             })
             element.typeList = element.typeList.join(',')
             element.ownerItemList = element.ownerItemList.join(',')
@@ -693,7 +747,7 @@ export default {
           this.taskListData = data.items
           this.total = data.totalRows
           this.loading = false
-          // console.log(data.items)
+          console.log(data.items)
         }
       })
     },
@@ -771,7 +825,7 @@ export default {
     ///////// 获取车主列表 start /////////
     getOwnerList() {
       // this.listLoading = true
-      let data = {}
+      let data = []
       this.$axios
         .post('/ocarplay/api/vehicleOwner/ownerTypeCoopItemOwners', data)
         .then(res => {
@@ -859,7 +913,7 @@ export default {
         element.typeId = element.inviteData[0]
         element.itemId = element.inviteData[1]
         element.ownerId = element.inviteData[2]
-        if (element.url&&element.money) {
+        if (element.url && element.money) {
           element.isWrite = 1
         }
       })

@@ -2,6 +2,7 @@
   <div id="taskdetail">
     <!-- 内容列表 start -->
     <el-row class="content" v-loading="loading">
+      <el-scrollbar style="height:100%">
       <!-- <el-col :span="2" class="title">返回</el-col> -->
       <el-col :span="24" class="title">
         <el-col :span="6" class="previousBox">
@@ -30,6 +31,20 @@
         <el-col :span="24" class="list">
           <div class="key">品牌车型</div>
           <div class="val">
+            <template v-if="taskDetail.carSeriesName">
+              {{taskDetail.carSeriesName}}
+              </template>
+            <template v-else>
+              <span
+                v-for="(item, index) in taskDetail.listTaskOfCartype"
+                :key="index"
+              >{{item.carTypeName}},</span>
+            </template>
+          </div>
+        </el-col>
+        <el-col :span="24" class="list">
+          <div class="key">邀约对象</div>
+          <div class="val">
             <div
               v-for="(item, index) in taskDetail.listInvite"
               :key="index"
@@ -52,10 +67,7 @@
           <div class="key">备注</div>
           <div class="val">{{taskDetail.remark}}</div>
         </el-col>
-        <el-col :span="24" class="list">
-          <div class="key">品牌车型</div>
-          <div class="val">{{taskDetail.carSeriesName}}</div>
-        </el-col>
+
         <el-col :span="24" class="list">
           <div class="key">完成时间</div>
           <div class="val">{{taskDetail.overTime}}</div>
@@ -103,27 +115,27 @@
           <div class="val">
             <span v-if="taskDetail.status==1||taskDetail.status==2">
               <img
-                  v-if="ownerDetil.cooperates[0].suffix == 'doc' || ownerDetil.cooperates[0].suffix == 'docx'"
-                  src="static/images/document/word.png"
-                  width="16"
-                  alt
-                  srcset
-                />
-                <img
-                  v-else-if="ownerDetil.cooperates[0].suffix == 'xls' || ownerDetil.cooperates[0].suffix == 'xlsx'"
-                  src="static/images/document/excle.png"
-                  width="16"
-                  alt
-                  srcset
-                />
-                <img
-                  v-else-if="ownerDetil.cooperates[0].suffix == 'ppt' || ownerDetil.cooperates[0].suffix == 'pptx'"
-                  src="static/images/document/ppt.png"
-                  width="16"
-                  alt
-                  srcset
-                />
-                <img v-else src="static/images/document/other.png" width="16" alt srcset />
+                v-if="ownerDetil.cooperates[0].suffix == 'doc' || ownerDetil.cooperates[0].suffix == 'docx'"
+                src="static/images/document/word.png"
+                width="16"
+                alt
+                srcset
+              />
+              <img
+                v-else-if="ownerDetil.cooperates[0].suffix == 'xls' || ownerDetil.cooperates[0].suffix == 'xlsx'"
+                src="static/images/document/excle.png"
+                width="16"
+                alt
+                srcset
+              />
+              <img
+                v-else-if="ownerDetil.cooperates[0].suffix == 'ppt' || ownerDetil.cooperates[0].suffix == 'pptx'"
+                src="static/images/document/ppt.png"
+                width="16"
+                alt
+                srcset
+              />
+              <img v-else src="static/images/document/other.png" width="16" alt srcset />
               <el-link @click="exportInvite(taskDetail)">{{taskDetail.taskName}}</el-link>
             </span>
             <span v-else>暂无</span>
@@ -137,27 +149,39 @@
             </span>
             <span v-else>暂无</span>-->
           </div>
-          <div class="key">完成详情</div>
-          <div class="val">
-            <!-- {{taskDetail.inviteNum}}/{{taskDetail.inviteNumOver}} -->
-            <div v-for="(item, index) in taskDetail.listInvite" :key="index">
-              <span>{{item.realName}}</span>&nbsp;&nbsp;
-              <span>{{item.url}}</span>&nbsp;&nbsp;
-              <span>{{item.money}}</span>&nbsp;&nbsp;
-              <span v-if="item.isCard">现金</span>
-              <span v-else>油卡</span>&nbsp;&nbsp;
-              <span v-if="item.isWrite==1">已完成</span>
-              <span v-else>未完成</span>
-              
-            </div>
-            
-          </div>
         </el-col>
+      </el-col>
+      <el-col :span="22" :offset="1">
+        <el-table
+          :data="taskDetail.listInvite"
+          style="width: 100%;margin-bottom: 72px"
+          :header-row-style="{'height': '70px','background': 'rgb(242, 242, 242)'}"
+          :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
+          v-loading="loading"
+        >
+          <el-table-column prop label width="24" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="realName" label="邀约对象" min-width="100" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="url" label="链接" min-width="100" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="money" label="金额" min-width="130" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="isCard" label="结算方式" min-width="80">
+            <template slot-scope="scope">
+              <span v-if="scope.row.isCard">现金</span>
+              <span v-else>油卡</span>&nbsp;&nbsp;
+            </template>
+          </el-table-column>
+          <el-table-column prop="listInvite" label="完成情况" min-width="80">
+            <template slot-scope="scope">
+              <span v-if="scope.row.isWrite">已完成</span>
+              <span v-else>未完成</span>
+            </template>
+          </el-table-column>
+        </el-table>
       </el-col>
       <el-col :span="24" class="btn">
         <el-button type="primary" @click="sendInvitation">发送邀请函</el-button>
         <el-button type="primary" @click="toAddtask">复制任务</el-button>
       </el-col>
+      </el-scrollbar>
     </el-row>
     <!-- 内容列表 end -->
   </div>
@@ -222,7 +246,7 @@ export default {
       this.$axios.post('/ocarplay/task/edit', data).then(res => {
         // console.log(res)
         if (res.status == 200) {
-          let data = res.data
+          let data = res.data.data
 
           // data.typeList = []
           // data.ownerItemList = []
@@ -394,9 +418,11 @@ export default {
     }
     .btn {
       position: absolute;
-      bottom: 24px;
+      bottom: 0;
       left: 0;
       text-align: center;
+      background: white;
+      z-index: 9;
       button {
         width: 136px;
         margin-left: 49px;
