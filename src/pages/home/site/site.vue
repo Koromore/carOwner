@@ -59,7 +59,7 @@
           <el-table-column prop="city" label="所在城市" width="160">
             <template slot-scope="scope">{{scope.row.province+scope.row.city+scope.row.area}}</template>
           </el-table-column>
-          <el-table-column prop="address" label="详细地址" min-width="130"></el-table-column>
+          <el-table-column prop="address" label="详细地址" min-width="130" show-overflow-tooltip></el-table-column>
           <el-table-column prop="img" label="环境图片" width="100">
             <template slot-scope="scope">
               <el-image
@@ -399,8 +399,12 @@ export default {
     toSitecarownerlist(res) {
       // this.$router.push({ path: '/home/sitecarownerlist' })
       this.$router.push({
-        name: 'sitecarownerlist',
-        params: {
+        // name: 'sitecarownerlist',
+        // params: {
+        //   city: res
+        // }
+        path: '/home/sitecarownerlist',
+        query: {
           city: res
         }
       })

@@ -298,11 +298,18 @@ export default {
     ///////// 结算清单 start /////////
     toDetail(prm) {
       this.$router.push({
-        name: 'settlementDetail',
-        params: {
+        // name: 'settlementDetail',
+        
+        // params: {
+        //   id: prm.taskId,
+        //   name: prm.taskName
+        // },
+        path: '/home/settlementDetail',
+        query: {
           id: prm.taskId,
           name: prm.taskName
         }
+        
       })
     }
     ///////// 结算清单 end /////////

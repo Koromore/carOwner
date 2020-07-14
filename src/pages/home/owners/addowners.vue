@@ -458,6 +458,7 @@ export default {
     return {
       loading: false, // 上传loading
       checked: false,
+      itemDisabled: false,
       radio: '',
       input1: '',
       value1: '',
@@ -749,6 +750,7 @@ export default {
             data.ipGrows.forEach(element => {
               if (element.itemId == itemId) {
                 ipGrows.push({
+                  coopId: element.coopId,
                   plat: element.plat,
                   platRole: element.platRole,
                   nickname: element.nickname,
@@ -836,7 +838,7 @@ export default {
           }
 
           this.district_code0 = this.getValue(this.district0, this.optionsCity0)
-          this.bankCard
+          this.bankCard = data.bankCard
           // console.log(this.district_code)
         }
         this.loading = false
@@ -1208,7 +1210,7 @@ export default {
         sex: this.sex,
         carUse: carUse,
         work: this.work,
-        sourceId: this.source,
+        sourceId: this.source,// 车主来源
         birthday: birthday,
         // seriesId: this.carSeries[2],
         // ownerCarSeries: [], // 车主认证车型
@@ -1276,6 +1278,7 @@ export default {
       }
       let tabact = this.tabact
       let judgeList = []
+      let judge = true
       if (tabact == 1) {
         data.ownerCoops = this.eventList
         data.ownerCoops.forEach((element, i) => {
@@ -1294,32 +1297,26 @@ export default {
         //     typeId: this.tabact
         //   }
         // ]
-        judgeList = [
-          data.province,
-          data.city,
-          itemId,
-          data.sex,
-          data.sourceId,
-          data.ownerCarSeries,
-          this.timeLimit
-          // data.email
-        ]
+        // judgeList = []
+        if (!data.province||!data.city||itemId===''||data.sex===''||data.sourceId.length===0||data.ownerCarSeries.length===0||this.timeLimit.length===0||data.carUse==='') {
+          judge = false
+        }
         data.ownerCoops.forEach(element => {
           judgeList.push(element.coopNum)
           judgeList.push(element.coopMoney)
           judgeList.push(element.period)
         })
+        for (let i = 0; i < judgeList.length; i++) {
+          const element = judgeList[i];
+          if (element===''||element===null) {
+            judge = false
+          }
+          break
+        }
       } else {
-        judgeList = [
-          data.province,
-          data.city,
-          itemId,
-          data.sex,
-          data.sourceId,
-          // data.email,
-          data.cooperates[0].localPath,
-          data.cooperates[0].timeLimit
-        ]
+        if (!data.province||!data.city||itemId===''||data.sex===''||data.sourceId.length===0||data.cooperates[0].localPath===''||this.timeLimit.length===0||data.carUse==='') {
+          judge = false
+        }
         // data.ipGrows = [
         //   {
         //     itemId: '车主选择的合作事项ID',
@@ -1336,6 +1333,7 @@ export default {
         eventData.forEach(element => {
           hatchList.forEach(element_ => {
             ipGrows.push({
+              coopId: element_.coopId,
               itemId: element,
               nickname: element_.nickname,
               plat: element_.plat,
@@ -1350,33 +1348,6 @@ export default {
       // console.log(data)
       // console.log(judgeList)
 
-      let judge = true
-
-      // judgeList.forEach((element, i) => {
-      //   if (
-      //     (element != 0 && element == '') ||
-      //     element == [] ||
-      //     element == null
-      //   ) {
-      //     judge = false
-      //     console.log(element, i)
-      //   }
-      //   // if (element === 0) {
-      //   //   judge = true
-      //   // }
-      //   // console.log(element)
-      // })
-      for (let i = 0; i < judgeList.length; i++) {
-        const element = judgeList[i]
-        if (element == '' || element == [] || element == null) {
-          if (element === 0) {
-            judge = true
-          }
-          judge = false
-          // console.log(element, i)
-        }
-        break
-      }
       let isEmail = this.$isEmail(data.email)
       if (data.email != '' && !isEmail) {
         this.$message.error('正确填写邮箱！')
@@ -1385,7 +1356,7 @@ export default {
       }
       // console.log(judgeList)
       // console.log(data)
-      if (this.submitFlag && judge) {
+      if (judge) {
         this.submitFlag = false
         this.$axios
           .post('/ocarplay/api/vehicleOwner/saveOrUpdate', data)
@@ -1404,11 +1375,10 @@ export default {
           .catch(res => {
             this.loading = false
             if (res.status != 200) {
-              this.submitFlag = true
               this.$message('网络错误' + res.status)
             }
           })
-      } else if (!judge) {
+      } else {
         this.loading = false
         this.$message.error('请检查信息是否完整！')
       }

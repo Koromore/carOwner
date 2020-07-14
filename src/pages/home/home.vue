@@ -2,7 +2,7 @@
   <div id="home">
     <Home-Header :routeName="routeName"></Home-Header>
     <el-main id="content">
-      <router-view></router-view>
+      <router-view :carSeriesList="carSeriesList"></router-view>
     </el-main>
   </div>
 </template>
@@ -18,7 +18,8 @@ export default {
   data() {
     return {
       // 0-进行中，1-结算中，2-完成，3-延期，4-人工延期
-      routeName: 'task'
+      routeName: 'task',
+      carSeriesList: []
     }
   },
   // 侦听器
@@ -36,6 +37,7 @@ export default {
     this.getRoute()
     // 清空缓存
     // this.$store.commit('clearToken')
+    this.getCarSeriesLists()
   },
   // 方法
   methods: {
@@ -43,7 +45,67 @@ export default {
     getRoute() {
       // console.log(this.$route)
       this.routeName = this.$route.matched[1].name
+    },
+    ///////// 获取车型列表 start /////////
+    getCarSeriesLists() {
+      // this.listLoading = true
+      let data = {
+        ids: 0,
+        pageNum: 1,
+        pageSize: 30
+      }
+      this.$axios
+        .post('/ocarplay/api/carSeries/getCarSeriesLists', data)
+        .then(res => {
+          // console.log(res)
+          // this.listLoading = false
+          if (res.status == 200) {
+            let data = res.data.carTypes
+
+            let carSeriesList = [
+              {
+                value: 105,
+                label: '沃尔沃',
+                children: []
+              },
+              {
+                value: 110,
+                label: '吉利',
+                children: []
+              },
+              {
+                value: 153,
+                label: '长城',
+                children: []
+              }
+            ]
+            data.forEach(element => {
+              let children = {
+                value: element.carTypeId,
+                label: element.carTypeName
+                // children: []
+              }
+              // element.carSeries.forEach(element_ => {
+              //   children.children.push({
+              //     value: element_.carSeriesId,
+              //     label: element_.carSeriesName
+              //   })
+              // })
+              // console.log(carSeriesIds)
+              if (element.deptId == 105) {
+                carSeriesList[0].children.push(children)
+              } else if (element.deptId == 110) {
+                carSeriesList[1].children.push(children)
+              } else if (element.deptId == 153) {
+                carSeriesList[2].children.push(children)
+              }
+            })
+            this.carSeriesList = carSeriesList
+            console.log(carSeriesList)
+          }
+        })
     }
+    ///////// 获取车型列表 end /////////
   }
 }
 </script>

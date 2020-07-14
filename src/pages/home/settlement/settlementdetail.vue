@@ -113,8 +113,8 @@ export default {
       userId: this.$store.state.user.userId,
       deptId: this.$store.state.user.deptId,
       // 任务ID
-      taskId: this.$route.params.id,
-      taskName: this.$route.params.name,
+      taskId: this.$route.query.id,
+      taskName: this.$route.query.name,
       // 表格数据
       listLoading: false,
       uploadIndex: '',
@@ -156,7 +156,7 @@ export default {
       this.$axios
         .post('/ocarplay/api/invite/getInvitePageListByTaskId', data)
         .then(res => {
-          console.log(res)
+          // console.log(res)
           if (res.status == 200) {
             let data = res.data
             res.data.items.forEach(element => {
@@ -174,11 +174,11 @@ export default {
     ///////// 获取结算清单 end /////////
     uploadClick(index) {
       this.uploadIndex = index
-      console.log(this.uploadIndex)
+      // console.log(this.uploadIndex)
     },
     handlePreview() {},
     filesuccess(res, file, fileList) {
-      console.log(res)
+      // console.log(res)
       // console.log(res2)
       // console.log(res3)
       // console.log(res4)
@@ -209,7 +209,7 @@ export default {
     },
     // 单条凭证上传
     inviteSave(prm) {
-      console.log(prm)
+      // console.log(prm)
       this.listLoading = true
       let data = {
         inviteId: prm.inviteId,
@@ -222,17 +222,21 @@ export default {
       } else {
         data.prove = prm.prove0
       }
-      this.$axios.post('/ocarplay/api/invite/save', data).then(res => {
-        console.log(res)
-        this.listLoading = false
-        if (res.status == 200 && res.data.errcode == 0) {
-          this.$message.success(res.data.msg)
-          ///////// 获取结算清单 start /////////
-          this.getInvite()
-        } else {
-          this.$message.error(res.data.msg)
-        }
-      })
+      if (data.prove) {
+        this.$axios.post('/ocarplay/api/invite/save', data).then(res => {
+          // console.log(res)
+          this.listLoading = false
+          if (res.status == 200 && res.data.errcode == 0) {
+            this.$message.success(res.data.msg)
+            ///////// 获取结算清单 start /////////
+            this.getInvite()
+          } else {
+            this.$message.error(res.data.msg)
+          }
+        })
+      } else {
+        this.$message.error('请先上传或填写结算凭证')
+      }
     },
 
     submitList() {
@@ -262,7 +266,7 @@ export default {
         taskId: this.taskId
       }
       this.$axios.post('/ocarplay/api/invite/updateBatch', data).then(res => {
-        console.log(res)
+        // console.log(res)
         this.listLoading = true
         if (res.status == 200 && res.data.errcode == 0) {
           this.$message.success(res.data.msg)
@@ -279,12 +283,12 @@ export default {
     ///////// 分页 start /////////
     // 每页条数变化时触发事件
     changeSize(pageSize) {
-      console.log(pageSize)
+      // console.log(pageSize)
       this.pageSize = pageSize
     },
     // 页码变换时触发事件
     changePage(pageNum) {
-      console.log(pageNum)
+      // console.log(pageNum)
       ///////// 获取结算清单 start /////////
       this.getInvite()
     }

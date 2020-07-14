@@ -93,7 +93,6 @@
           <el-table-column prop="ownerName" label="车主姓名" min-width="81" show-overflow-tooltip></el-table-column>
           <el-table-column prop="carSeriesName" label="认证车型" min-width="180" show-overflow-tooltip>
             <template slot-scope="scope">
-              <!-- {{scope.row.ownerCarSeries}} -->
               <span v-for="(item, index) in scope.row.ownerCarSeries" :key="index">
                 {{item.carSeriesName}}
                 <template
@@ -166,7 +165,16 @@
         >
           <el-table-column prop label="序号" width="81" align="center" type="index"></el-table-column>
           <el-table-column prop="ownerName" label="车主姓名" min-width="81" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="carSeriesName" label="认证车型" min-width="180" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="carSeriesName" label="认证车型" min-width="180" show-overflow-tooltip>
+            <template slot-scope="scope">
+              <span v-for="(item, index) in scope.row.ownerCarSeries" :key="index">
+                {{item.carSeriesName}}
+                <template
+                  v-if="scope.row.ownerCarSeries.length>1&&index!=scope.row.ownerCarSeries.length-1"
+                >,</template>
+              </span>
+            </template>
+          </el-table-column>
           <el-table-column prop="ownerArea" label="所在区域" min-width="81" show-overflow-tooltip></el-table-column>
           <el-table-column prop="skillName" label="特长" min-width="81"></el-table-column>
           <el-table-column prop="nickname" label="IP账号" min-width="81"></el-table-column>
@@ -227,7 +235,16 @@
         >
           <el-table-column prop label="序号" width="81" align="center" type="index"></el-table-column>
           <el-table-column prop="ownerName" label="车主姓名" min-width="81" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="carSeriesName" label="认证车型" min-width="180" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="carSeriesName" label="认证车型" min-width="180" show-overflow-tooltip>
+            <template slot-scope="scope">
+              <span v-for="(item, index) in scope.row.ownerCarSeries" :key="index">
+                {{item.carSeriesName}}
+                <template
+                  v-if="scope.row.ownerCarSeries.length>1&&index!=scope.row.ownerCarSeries.length-1"
+                >,</template>
+              </span>
+            </template>
+          </el-table-column>
           <el-table-column prop="ownerArea" label="所在区域" min-width="81" show-overflow-tooltip></el-table-column>
           <el-table-column prop="skillName" label="特长" min-width="81"></el-table-column>
           <el-table-column prop="nickname" label="IP账号" min-width="81"></el-table-column>
@@ -591,7 +608,7 @@ export default {
 
     ///////// 删除车主信息 start /////////
     delContent(par) {
-      this.$confirm('确认要删除该场地吗?', '提示', {
+      this.$confirm('确认要删除该车主吗?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -622,10 +639,11 @@ export default {
           if (res.status == 200 && res.data.errcode == 0) {
             let data = res.data
             this.ownerListData = data.items
-            this.messageWin(res.data.msg)
+            // this.messageWin(res.data.msg)
+            this.$message.success(res.data.msg)
             this.getVehicleOwnerList()
           } else {
-            this.messageError(res.data.msg)
+            this.$message.error(res.data.msg)
           }
         })
     },
@@ -667,27 +685,6 @@ export default {
       })
     },
     ///////// 跳转车主信息页面 end /////////
-
-    ///////// 消息提示 start /////////
-    messageWin(message) {
-      // 成功提示
-      this.$message({
-        message: message,
-        type: 'success'
-      })
-    },
-    messageWarning(message) {
-      // 警告提示
-      this.$message({
-        message: message,
-        type: 'warning'
-      })
-    },
-    messageError(message) {
-      // 错误提示
-      this.$message.error(message)
-    }
-    ///////// 消息提示 end /////////
   }
 }
 </script>

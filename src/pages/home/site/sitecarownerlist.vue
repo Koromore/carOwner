@@ -11,7 +11,13 @@
       </el-col>
       <el-col :span="8" class="center cont">车主信息</el-col>
       <el-col :span="8" class="right cont">
-        <el-select v-model="memuValue" clearable placeholder="项目组" size="small" @change="memuValueChange">
+        <el-select
+          v-model="memuValue"
+          clearable
+          placeholder="项目组"
+          size="small"
+          @change="memuValueChange"
+        >
           <el-option
             v-for="item in options"
             :key="item.value"
@@ -27,10 +33,15 @@
     <!-- 内容列表 start -->
     <el-row class="content" v-loading="listLoading">
       <el-col :span="24" class="table_list">
-        <div class="items" v-for="(item,index) in ownerList" :key="index" @click="toDetail(item)">
+        <el-col
+          class="items"
+          :span="7"
+          v-for="(item,index) in ownerList"
+          :key="index"
+          @click.native="toDetail(item)"
+        >
           <div class="left">
-            <el-image :src="'/ocarplay/'+item.image" fit="cover"></el-image>
-            <!-- <el-image src="/ocarplay/uploadtemp//doc/1591854750967.jpg" fit="cover"></el-image> -->
+            <el-image :src="item.image" fit="cover"></el-image>
           </div>
           <div class="right">
             <p>车主姓名：{{item.name}}</p>
@@ -43,7 +54,7 @@
             <p>车主来源：{{item.sourceName}}</p>
           </div>
           <div class="bottom">{{item.carSeriesName}}</div>
-        </div>
+        </el-col>
       </el-col>
       <el-col :span="24" class="paging">
         <el-pagination
@@ -70,7 +81,7 @@ export default {
     return {
       options: [
         {
-          value: "",
+          value: '',
           label: '全部车主'
         },
         {
@@ -86,14 +97,14 @@ export default {
           label: '资源型车主'
         }
       ],
-      memuValue: "",
+      memuValue: '',
       // 表格数据
       ownerList: [],
       listLoading: false,
       // 分页
       total: 0,
-      pageNum: '',
-      pageSize: 12
+      pageNum: 1,
+      pageSize: 9
     }
   },
   // 侦听器
@@ -107,17 +118,20 @@ export default {
   },
   // 方法
   methods: {
-    memuValueChange(res){
+    ///////// 车主类型筛选 start /////////
+    memuValueChange(res) {
       this.getlistOwnerByCity()
     },
+    ///////// 车主类型筛选 end /////////
+
     ///////// 获取车主列表 start /////////
     getlistOwnerByCity() {
       this.listLoading = true
       let data = {
-        pageNum: 1,
-        pageSize: 12,
+        pageNum: this.pageNum,
+        pageSize: this.pageSize,
         place: {
-          city: this.$route.params.city
+          city: this.$route.query.city
         },
         typeId: this.memuValue
       }
@@ -129,8 +143,15 @@ export default {
           // this.drawerAdd = false
           if (res.status == 200) {
             let data = res.data
+            data.items.forEach(element => {
+              if (element.image) {
+                element.image = '/ocarplay/' + element.image
+              } else {
+                element.image = 'static/images/carow/handerimg.png'
+              }
+            })
             this.ownerList = data.items
-            console.log(this.ownerList)
+            // console.log(this.ownerList)
             this.total = data.totalRows
           }
         })
@@ -138,13 +159,18 @@ export default {
     ///////// 获取车主列表 end /////////
 
     ///////// 跳转车主详情页 end /////////
-    toDetail(res){
-      // console.log(res)
+    toDetail(prm) {
+      console.log(prm)
       this.$router.push({
-        name: 'ownersdetail',
-        params: {
-          typeId: res.typeId,
-          vehicleOwnerId: res.vehicleOwnerId
+        // name: 'ownersdetail',
+        // params: {
+        //   typeId: res.typeId,
+        //   vehicleOwnerId: res.vehicleOwnerId
+        // }
+        path: '/home/ownersdetail',
+        query: {
+          typeId: prm.typeId,
+          vehicleOwnerId: prm.vehicleOwnerId
         }
       })
     },
@@ -164,6 +190,7 @@ export default {
     // 页码变换时触发事件
     changePage(pageNum) {
       this.pageNum = pageNum
+      this.getlistOwnerByCity()
     }
     ///////// 分页 end /////////
   }
@@ -226,10 +253,11 @@ $icoColor: rgb(106, 145, 232);
       justify-content: space-between;
       align-items: flex-start;
       .items {
-        width: 420px;
-        height: 200px;
+        // width: 400px;
+        height: 30%;
+        min-height: 160px;
         box-sizing: border-box;
-        padding: 18px;
+        padding: 9px;
         border: 1px solid rgb(187, 187, 187);
         border-radius: 9px;
         display: flex;
@@ -238,7 +266,7 @@ $icoColor: rgb(106, 145, 232);
         align-content: space-between;
         align-items: flex-start;
         .left {
-          width: 174px;
+          width: 48%;
           height: 123px;
           .el-image {
             width: 100%;
@@ -246,12 +274,15 @@ $icoColor: rgb(106, 145, 232);
           }
         }
         .right {
-          width: 190px;
+          width: 48%;
           height: 123px;
           display: flex;
           flex-wrap: wrap;
           justify-content: flex-start;
           align-items: center;
+          p {
+            width: 100%;
+          }
           .el-image {
             width: 100%;
             height: 100%;

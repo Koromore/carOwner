@@ -359,7 +359,7 @@ export default {
               },
               {
                 deptId: 110,
-                deptName: '吉利舆情',
+                deptName: '吉利',
                 carType: []
               },
               {

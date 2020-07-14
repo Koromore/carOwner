@@ -1,7 +1,7 @@
 <template>
   <div id="ownersdetail">
     <!-- 内容列表 start -->
-    <el-row class="content">
+    <el-row class="content" v-loading="loading">
       <el-scrollbar style="height:100%">
         <!-- 标题 -->
         <el-col :span="24" class="title">
@@ -176,6 +176,10 @@
               </div>
             </el-col>
             <el-col :span="24" class="list">
+              <div class="key">银行卡号</div>
+              <div class="val">{{ownerDetil.bankCard}}</div>
+            </el-col>
+            <el-col :span="24" class="list">
               <div class="key">家属信息</div>
               <div class="val">
                 <!-- <el-input placeholder="请输入内容" v-model="input1"></el-input> -->
@@ -202,7 +206,9 @@
             <el-col :span="24" class="list">
               <div class="key">签约合同</div>
               <div class="val">
-                <template v-if="ownerDetil.cooperates.length!=0&&ownerDetil.cooperates[0].localPath">
+                <template
+                  v-if="ownerDetil.cooperates.length!=0&&ownerDetil.cooperates[0].localPath"
+                >
                   <img
                     v-if="ownerDetil.cooperates[0].suffix == 'doc' || ownerDetil.cooperates[0].suffix == 'docx'"
                     src="static/images/document/word.png"
@@ -257,9 +263,9 @@
                 <div class="key" style="margin-right: 240px;">合作事项要求频次</div>
                 <div class="val" style="height: auto;width:100%">
                   <el-col :span="24" v-for="(item, index) in ownerDetil.ownerCoops" :key="index">
-                    <el-col :span="6">{{item.itemName}}</el-col>
-                    <el-col :span="6">合作总量:{{item.coopNum}}</el-col>
-                    <el-col :span="6">合作总价:{{item.coopMoney}}</el-col>
+                    <el-col :span="4">{{item.itemName}}</el-col>
+                    <el-col :span="5">合作总量:{{item.coopNum}}</el-col>
+                    <el-col :span="5">合作总价:{{item.coopMoney}}</el-col>
                     <el-col :span="6">
                       结算方式:
                       <template v-if="item.period==0">按月结算</template>
@@ -306,7 +312,7 @@
             ></el-table-column>
             <el-table-column prop="itemName" label="受邀事项" min-width="81" show-overflow-tooltip></el-table-column>
             <el-table-column prop="title" label="内容标题" min-width="81"></el-table-column>
-            <el-table-column prop="url" label="内容链接" min-width="81">
+            <el-table-column prop="url" label="内容链接" min-width="81" show-overflow-tooltip>
               <template slot-scope="scope">
                 <el-link
                   type="primary"
@@ -332,6 +338,7 @@ export default {
   components: {},
   data() {
     return {
+      loading: false,
       // 表格数据
       tableData: [
         {
@@ -385,8 +392,7 @@ export default {
       value: '',
       // 车主信息
       ownerDetil: {
-        image:
-          'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
+        image: 'static/images/carow/handerimg.png',
         cooperates: [{}],
         invites: [],
         ipGrows: [{}],
@@ -433,6 +439,7 @@ export default {
 
     ///////// 获取车主详细信息 start /////////
     getVehicleOwnerPreEdit(id) {
+      this.loading = true
       let query = this.$route.query
       let data = {
         typeId: query.typeId,
@@ -441,16 +448,17 @@ export default {
       // console.log(data)
       this.$axios.post('/ocarplay/api/vehicleOwner/preEdit', data).then(res => {
         // console.log(res)
-        // this.loading = false
+
         if (res.status == 200) {
           // console.log(res)
           let data = res.data
-          if (data.img) {
+          if (data.image) {
             data.image = '/ocarplay/' + data.image
           } else {
-            data.image = '/static/images/carow/handerimg.png'
+            data.image = 'static/images/carow/handerimg.png'
           }
           this.ownerDetil = data
+          this.loading = false
         }
       })
     },

@@ -3,184 +3,171 @@
     <!-- 内容列表 start -->
     <el-row class="content" v-loading="loading">
       <el-scrollbar style="height:100%">
-      <!-- <el-col :span="2" class="title">返回</el-col> -->
-      <el-col :span="24" class="title">
-        <el-col :span="6" class="previousBox">
-          <div @click="previous">
-            <i class="el-icon-arrow-left"></i>
-            返回
-          </div>
+        <!-- <el-col :span="2" class="title">返回</el-col> -->
+        <el-col :span="24" class="title">
+          <el-col :span="6" class="previousBox">
+            <div @click="previous">
+              <i class="el-icon-arrow-left"></i>
+              返回
+            </div>
+          </el-col>
+          <el-col :span="12">任务详情</el-col>
         </el-col>
-        <el-col :span="12">任务详情</el-col>
-      </el-col>
-      <el-col :span="12" class="left">
-        <el-col :span="24" class="list">
-          <div class="key">任务名称</div>
-          <div class="val">{{taskDetail.taskName}}</div>
-        </el-col>
-        <el-col :span="24" class="list">
-          <div class="key">任务状态</div>
-          <div class="val">
-            <template v-if="taskDetail.status==0">执行中</template>
-            <template v-else-if="taskDetail.status==1">审核中</template>
-            <template v-else-if="taskDetail.status==2">已完成</template>
-            <template v-else-if="taskDetail.status==3">延期</template>
-            <template v-else-if="taskDetail.status==4">人工延期</template>
-          </div>
-        </el-col>
-        <el-col :span="24" class="list">
-          <div class="key">品牌车型</div>
-          <div class="val">
-            <template v-if="taskDetail.carSeriesName">
-              {{taskDetail.carSeriesName}}
+        <el-col :span="12" class="left">
+          <el-col :span="24" class="list">
+            <div class="key">任务名称</div>
+            <div class="val">{{taskDetail.taskName}}</div>
+          </el-col>
+          <el-col :span="24" class="list">
+            <div class="key">任务状态</div>
+            <div class="val">
+              <template v-if="taskDetail.status==0">执行中</template>
+              <template v-else-if="taskDetail.status==1">审核中</template>
+              <template v-else-if="taskDetail.status==2">已完成</template>
+              <template v-else-if="taskDetail.status==3">延期</template>
+              <template v-else-if="taskDetail.status==4">人工延期</template>
+            </div>
+          </el-col>
+          <el-col :span="24" class="list">
+            <div class="key">品牌车型</div>
+            <div class="val">
+              <template v-if="taskDetail.carSeriesName">{{taskDetail.carSeriesName}}</template>
+              <template v-else>
+                <span
+                  v-for="(item, index) in taskDetail.listTaskOfCartype"
+                  :key="index"
+                >{{item.carTypeName}},</span>
               </template>
-            <template v-else>
-              <span
-                v-for="(item, index) in taskDetail.listTaskOfCartype"
+            </div>
+          </el-col>
+          <el-col :span="24" class="list">
+            <div class="key">邀约对象</div>
+            <div class="val">
+              <div
+                v-for="(item, index) in taskDetail.listInvite"
                 :key="index"
-              >{{item.carTypeName}},</span>
-            </template>
-          </div>
-        </el-col>
-        <el-col :span="24" class="list">
-          <div class="key">邀约对象</div>
-          <div class="val">
-            <div
-              v-for="(item, index) in taskDetail.listInvite"
-              :key="index"
-            >{{item.listOwnerType[0].typeName}}—{{item.listOwnerItem[0].itemName}}—{{item.realName}}</div>
-          </div>
-        </el-col>
-        <el-col :span="24" class="list">
-          <div class="key">计划周期</div>
-          <div class="val">{{taskDetail.startTime}}---{{taskDetail.endTime}}</div>
-        </el-col>
-        <el-col :span="24" class="list">
-          <div class="key">计划邀约量</div>
-          <div class="val">{{taskDetail.num}}</div>
-        </el-col>
-        <el-col :span="24" class="list">
-          <div class="key">创建人</div>
-          <div class="val">解雨臣</div>
-        </el-col>
-        <el-col :span="24" class="list">
-          <div class="key">备注</div>
-          <div class="val">{{taskDetail.remark}}</div>
-        </el-col>
+              >{{item.listOwnerType[0].typeName}}—{{item.listOwnerItem[0].itemName}}—{{item.realName}}</div>
+            </div>
+          </el-col>
+          <el-col :span="24" class="list">
+            <div class="key">计划周期</div>
+            <div class="val">{{taskDetail.startTime}}---{{taskDetail.endTime}}</div>
+          </el-col>
+          <el-col :span="24" class="list">
+            <div class="key">计划邀约量</div>
+            <div class="val">{{taskDetail.num}}</div>
+          </el-col>
+          <el-col :span="24" class="list">
+            <div class="key">创建人</div>
+            <div class="val">解雨臣</div>
+          </el-col>
+          <el-col :span="24" class="list">
+            <div class="key">备注</div>
+            <div class="val">{{taskDetail.remark}}</div>
+          </el-col>
 
-        <el-col :span="24" class="list">
-          <div class="key">完成时间</div>
-          <div class="val">{{taskDetail.overTime}}</div>
+          <el-col :span="24" class="list">
+            <div class="key">完成时间</div>
+            <div class="val">{{taskDetail.endTime}}</div>
+          </el-col>
         </el-col>
-      </el-col>
-      <el-col :span="12" class="right">
-        <el-col :span="24" class="list">
-          <div class="key">任务描述</div>
-          <div class="val">
-            {{taskDetail.taskDesc}}
-            <!-- <div class="text">
-              <span>邀约目的:活跃论坛</span>
+        <el-col :span="12" class="right">
+          <el-col :span="24" class="list">
+            <div class="key">任务描述</div>
+            <div class="val">
+              <pre>{{taskDetail.taskDesc}}</pre>
             </div>
-            <div class="text">
-              <span>参与资格:xxxx</span>
-            </div>
-            <div class="text">
-              <span>字数要求:xxxx</span>
-            </div>
-            <div class="text">
-              <span>帖子类型:xxxxxxx</span>
-            </div>
-            <div class="text">
-              <span>费用情况:xxxxx</span>
-            </div>
-            <div class="text">
-              <span>其他说明:xxxxxxxxxxxxxxxxxx</span>
-            </div>-->
-          </div>
-        </el-col>
-        <el-col :span="24" class="list">
-          <div class="key">任务文件</div>
-          <div class="val">
-            <div v-for="(item, index) in (taskDetail.listTaskFile)" :key="index">
+          </el-col>
+          <el-col :span="24" class="list">
+            <div class="key">任务文件</div>
+            <div class="val">
+              <!-- <div v-for="(item, index) in (taskDetail.listTaskFile)" :key="index">
               <img src="static/images/document/ppt.png" width="20" alt />&nbsp;
-              <el-link @click="$download(item)">{{item.fileName}}</el-link>
-            </div>
-            <!-- <div>
+              <el-link @click="$download(item)">{{item.fileName}}</el-link>-->
+              <template v-if="taskDetail.listTaskFile.length!=0">
+                <img
+                  v-if="taskDetail.listTaskFile[0].suffix == 'doc' || taskDetail.listTaskFile[0].suffix == 'docx'"
+                  src="static/images/document/word.png"
+                  width="16"
+                  alt
+                  srcset
+                />
+                <img
+                  v-else-if="taskDetail.listTaskFile[0].suffix == 'xls' || taskDetail.listTaskFile[0].suffix == 'xlsx'"
+                  src="static/images/document/excle.png"
+                  width="16"
+                  alt
+                  srcset
+                />
+                <img
+                  v-else-if="taskDetail.listTaskFile[0].suffix == 'ppt' || taskDetail.listTaskFile[0].suffix == 'pptx'"
+                  src="static/images/document/ppt.png"
+                  width="16"
+                  alt
+                  srcset
+                />
+                <img v-else src="static/images/document/other.png" width="16" alt srcset />
+                <el-link
+                  @click="$download(taskDetail.listTaskFile[0])"
+                >{{taskDetail.listTaskFile[0].fileName}}</el-link>
+              </template>
+              <template v-else>暂无</template>
+              <!-- </div> -->
+              <!-- <div>
               <img src="static/images/document/ppt.png" width="20" alt />&nbsp;2020年6月-长城-#校服女神#创意标准文件
-            </div>-->
-          </div>
-        </el-col>
-        <el-col :span="24" class="list">
-          <div class="key">结算清单</div>
-          <div class="val">
-            <span v-if="taskDetail.status==1||taskDetail.status==2">
-              <img
-                v-if="ownerDetil.cooperates[0].suffix == 'doc' || ownerDetil.cooperates[0].suffix == 'docx'"
-                src="static/images/document/word.png"
-                width="16"
-                alt
-                srcset
-              />
-              <img
-                v-else-if="ownerDetil.cooperates[0].suffix == 'xls' || ownerDetil.cooperates[0].suffix == 'xlsx'"
-                src="static/images/document/excle.png"
-                width="16"
-                alt
-                srcset
-              />
-              <img
-                v-else-if="ownerDetil.cooperates[0].suffix == 'ppt' || ownerDetil.cooperates[0].suffix == 'pptx'"
-                src="static/images/document/ppt.png"
-                width="16"
-                alt
-                srcset
-              />
-              <img v-else src="static/images/document/other.png" width="16" alt srcset />
-              <el-link @click="exportInvite(taskDetail)">{{taskDetail.taskName}}</el-link>
-            </span>
-            <span v-else>暂无</span>
-          </div>
-          <div class="key">完成进度</div>
-          <div class="val">
-            {{taskDetail.inviteNum}}/{{taskDetail.inviteNumOver}}
-            <!-- <span v-if="taskDetail.status==1||taskDetail.status==2">
+              </div>-->
+            </div>
+          </el-col>
+          <el-col :span="24" class="list">
+            <div class="key">结算清单</div>
+            <div class="val">
+              <span v-if="taskDetail.status==1||taskDetail.status==2">
+                <img src="static/images/document/excle.png" width="16" alt srcset />
+
+                <el-link @click="exportInvite(taskDetail)">{{taskDetail.taskName}}</el-link>
+              </span>
+              <span v-else>暂无</span>
+            </div>
+          </el-col>
+          <el-col :span="24" class="list">
+            <div class="key">完成进度</div>
+            <div class="val">
+              {{taskDetail.inviteNum}}/{{taskDetail.inviteNumOver}}
+              <!-- <span v-if="taskDetail.status==1||taskDetail.status==2">
               <img src="static/images/document/excle.png" width="16" alt srcset />
               <el-link @click="exportInvite(taskDetail)">{{taskDetail.taskName}}</el-link>
             </span>
-            <span v-else>暂无</span>-->
-          </div>
+              <span v-else>暂无</span>-->
+            </div>
+          </el-col>
         </el-col>
-      </el-col>
-      <el-col :span="22" :offset="1">
-        <el-table
-          :data="taskDetail.listInvite"
-          style="width: 100%;margin-bottom: 72px"
-          :header-row-style="{'height': '70px','background': 'rgb(242, 242, 242)'}"
-          :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
-          v-loading="loading"
-        >
-          <el-table-column prop label width="24" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="realName" label="邀约对象" min-width="100" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="url" label="链接" min-width="100" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="money" label="金额" min-width="130" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="isCard" label="结算方式" min-width="80">
-            <template slot-scope="scope">
-              <span v-if="scope.row.isCard">现金</span>
-              <span v-else>油卡</span>&nbsp;&nbsp;
-            </template>
-          </el-table-column>
-          <el-table-column prop="listInvite" label="完成情况" min-width="80">
-            <template slot-scope="scope">
-              <span v-if="scope.row.isWrite">已完成</span>
-              <span v-else>未完成</span>
-            </template>
-          </el-table-column>
-        </el-table>
-      </el-col>
-      <el-col :span="24" class="btn">
-        <el-button type="primary" @click="sendInvitation">发送邀请函</el-button>
-        <el-button type="primary" @click="toAddtask">复制任务</el-button>
-      </el-col>
+        <el-col :span="22" :offset="1">
+          <el-table
+            :data="taskDetail.listInvite"
+            style="width: 100%;margin-bottom: 72px"
+            :header-row-style="{'height': '70px','background': 'rgb(242, 242, 242)'}"
+            :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
+            v-loading="loading"
+          >
+            <el-table-column prop label width="24" show-overflow-tooltip></el-table-column>
+            <el-table-column prop="authorName" label="ID" min-width="100" show-overflow-tooltip></el-table-column>
+            <el-table-column prop="realName" label="车主" min-width="100" show-overflow-tooltip></el-table-column>
+            <el-table-column prop="url" label="链接" min-width="100" show-overflow-tooltip>
+              <template slot-scope="scope" v-if="scope.row.url">
+                <el-link :href="scope.row.url" target="_blank">【原】</el-link>
+              </template>
+            </el-table-column>
+            <el-table-column prop="title" label="标题" min-width="130" show-overflow-tooltip></el-table-column>
+            <el-table-column prop="isCard" label="成果" min-width="80">精华</el-table-column>
+            <el-table-column prop="listInvite" label="发布时间" min-width="80">
+              <template slot-scope="scope">{{$date(scope.row.updateTime)}}</template>
+            </el-table-column>
+          </el-table>
+        </el-col>
+        <el-col :span="24" class="btn">
+          <el-button type="primary" @click="sendInvitation">发送邀请函</el-button>
+          <el-button type="primary" @click="toAddtask">复制任务</el-button>
+        </el-col>
       </el-scrollbar>
     </el-row>
     <!-- 内容列表 end -->
@@ -196,7 +183,7 @@ export default {
     return {
       // 任务ID
       taskId: 1,
-      taskDetail: {},
+      taskDetail: { listTaskFile: [] },
       loading: false
     }
   },
@@ -207,7 +194,7 @@ export default {
   beforeMount() {},
   mounted() {
     // 任务ID
-    this.taskId = this.$route.params.id
+    this.taskId = this.$route.query.id
     ///////// 获取任务详情 start /////////
     this.getTaskDetails()
   },
@@ -241,7 +228,7 @@ export default {
     getTaskDetails() {
       this.loading = true
       let data = {
-        taskId: this.$route.params.id
+        taskId: this.$route.query.id
       }
       this.$axios.post('/ocarplay/task/edit', data).then(res => {
         // console.log(res)
@@ -268,6 +255,7 @@ export default {
             }
           })
           this.taskDetail = data
+          // console.log(data)
           this.loading = false
         }
       })
@@ -371,6 +359,14 @@ export default {
       .val {
         width: 420px;
         line-height: 40px;
+        pre {
+          font-family: '微软雅黑';
+          // line-height: 24px;
+          font-size: 16px;
+          margin: 0;
+          white-space: pre-wrap;
+          word-wrap: break-word;
+        }
         .text {
           height: 32px;
           line-height: 32px;

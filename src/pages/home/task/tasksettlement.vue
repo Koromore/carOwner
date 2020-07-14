@@ -27,14 +27,12 @@
       <el-col :span="24" class="table_list">
         <div class="items" v-for="(item,index) in tasksettlementList" :key="index">
           <div class="left">
-            <el-image :src="'/ocarplay/'+item.image" fit="cover"></el-image>
+            <el-image :src="item.image" fit="cover"></el-image>
             <!-- <el-image src="/ocarplay/uploadtemp//doc/1591854750967.jpg" fit="cover"></el-image> -->
           </div>
           <div class="right">
             <p>车主姓名：{{item.name}}</p>
-            <p>
-              车主类型：{{item.typeName}}
-            </p>
+            <p>车主类型：{{item.typeName}}</p>
             <p>车主来源：{{item.sourceName}}</p>
           </div>
           <div class="bottom">
@@ -105,7 +103,7 @@ export default {
   mounted() {
     ///////// 获取车主列表 start /////////
     this.getTasksettlementList(true)
-    console.log(this.$route.params.id)
+    // console.log(this.$route.params.id)
   },
   // 方法
   methods: {
@@ -115,7 +113,7 @@ export default {
       let isOver = ''
       if (e == 1) {
         isOver = true
-      }else{
+      } else {
         isOver = null
       }
       ///////// 获取结算进度 start /////////
@@ -127,7 +125,7 @@ export default {
     getTasksettlementList(isOver) {
       let data = {
         invite: {
-          taskId: this.$route.params.id,
+          taskId: this.$route.query.id,
           isOver: isOver
         },
         pageNum: this.pageNum,
@@ -139,10 +137,15 @@ export default {
           console.log(res)
           if (res.status == 200) {
             let data = res.data
-            res.data.items.forEach(element => {
+            data.items.forEach(element => {
               element.prove0 = ''
+              if (element.image) {
+                element.image = '/ocarplay/' + element.image
+              } else {
+                element.image = 'static/images/carow/handerimg.png'
+              }
             })
-            this.tasksettlementList = res.data.items
+            this.tasksettlementList = data.items
             console.log(this.tasksettlementList)
             this.total = data.totalRows
             if (isOver) {

@@ -272,7 +272,7 @@ export default {
                 this.echartsBar()
               } else if (tab2act == 1) {
                 data.data.forEach(element => {
-                  chartKeyData.push(element.TYPE)
+                  chartKeyData.push(element.TYPE||element.type)
                   chartvalData.push(element.num)
                 })
                 this.chartKeyData = chartKeyData
@@ -319,7 +319,7 @@ export default {
                 this.echartsBar()
               } else if (tab2act == 1) {
                 data.data.forEach(element => {
-                  chartKeyData.push(element.TYPE)
+                  chartKeyData.push(element.TYPE||element.type)
                   chartvalData.push(element.num)
                 })
                 this.chartKeyData = chartKeyData
@@ -364,10 +364,10 @@ export default {
                 this.echartsBar()
               } else if (tab2act == 1) {
                 data.data.forEach(element => {
-                  chartKeyData.push(element.TYPE || '默认')
+                  chartKeyData.push(element.TYPE || element.type)
                   chartvalData.push({
                     value: element.num,
-                    name: element.TYPE || '默认'
+                    name: element.TYPE || element.type
                   })
                 })
                 this.chartKeyData = chartKeyData
@@ -389,10 +389,10 @@ export default {
                 this.echartsBar()
               } else if (tab2act == 1) {
                 data.data.forEach(element => {
-                  chartKeyData.push(element.TYPE || '默认')
+                  chartKeyData.push(element.TYPE || element.type)
                   chartvalData.push({
                     value: element.num,
-                    name: element.TYPE || '默认'
+                    name: element.TYPE || element.type
                   })
                 })
                 this.chartKeyData = chartKeyData

@@ -747,7 +747,7 @@ export default {
           this.taskListData = data.items
           this.total = data.totalRows
           this.loading = false
-          console.log(data.items)
+          // console.log(data.items)
         }
       })
     },
@@ -961,11 +961,11 @@ export default {
     toDetail(id) {
       this.$store.commit('taskStatus', this.status)
       this.$router.push({
-        name: 'taskDetail',
-        // query: { id: id }
-        params: {
-          id: id
-        }
+        path: '/home/taskDetail',
+        query: { id: id }
+        // params: {
+        //   id: id
+        // }
       })
     },
     ///////// 跳转任务详情页 end /////////
@@ -974,8 +974,8 @@ export default {
     toSettlement(prm) {
       this.$store.commit('taskStatus', this.status)
       this.$router.push({
-        name: 'tasksettlement',
-        params: {
+        path: '/home/tasksettlement',
+        query: {
           id: prm.taskId
         }
       })

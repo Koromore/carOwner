@@ -31,12 +31,12 @@
           <el-table-column prop label="序号" width="81" align="center">
             <template slot-scope="scope">0{{scope.$index+1}}</template>
           </el-table-column>
-          <el-table-column prop="placeName" label="场地名称" width="100"></el-table-column>
+          <el-table-column prop="placeName" label="场地名称" min-width="100" show-overflow-tooltip></el-table-column>
           <el-table-column prop="placeTypeName" label="场地类型" width="180"></el-table-column>
-          <el-table-column prop="title" label="详细地址" min-width="320">
-            <template
-              slot-scope="scope"
-            >{{scope.row.province}}{{scope.row.city}}{{scope.row.area}}{{scope.row.address}}</template>
+          <el-table-column prop="title" label="详细地址" min-width="320" show-overflow-tooltip>
+            <template slot-scope="scope">
+              {{scope.row.province}}{{scope.row.city}}{{scope.row.area}}{{scope.row.address}}
+            </template>
           </el-table-column>
           <el-table-column prop="address" label="环境图片" width="130" align="center">
             <template slot-scope="scope">

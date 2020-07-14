@@ -27,10 +27,9 @@
               :options="carSeriesList"
               clearable
               filterable
+              collapse-tags
               @change="carSeriesChange"
             ></el-cascader>
-            <!-- {{carSeriesId}} -->
-            
           </div>
         </el-col>
         <el-col :span="24" class="list">
@@ -42,6 +41,7 @@
               v-model="listInviteList"
               clearable
               filterable
+              collapse-tags
             ></el-cascader>
           </div>
         </el-col>
@@ -170,7 +170,7 @@ export default {
       listInviteList: [],
       carSeriesList: [],
       carSeriesId: [],
-      seriesId: '',
+      seriesId: [],
       periodTime: [],
       taskNum: '',
       listTaskFile: [],
@@ -193,6 +193,17 @@ export default {
     seriesId: function(newData, oldData) {
       if (newData != '') {
         this.getCarSeriesId()
+      }
+    },
+    carSeriesId: function(newData, oldData) {
+      if (newData != '') {
+        // console.log(res)
+        let data = []
+        newData.forEach(element => {
+          data.push(element[1])
+        })
+        ///////// 获取车主列表 start /////////
+        this.getOwnerList(data)
       }
     }
   },
@@ -232,7 +243,7 @@ export default {
 
     ///////// 车型选择改变 end /////////
     carSeriesChange(res) {
-      console.log(res)
+      // console.log(res)
       let data = []
       res.forEach(element => {
         data.push(element[1])
@@ -249,13 +260,13 @@ export default {
 
       this.carSeriesList.forEach(element0 => {
         element0.children.forEach(element1 => {
-          // element1.children.forEach(element2 => {
-          // if (element2.value == this.seriesId) {
-          //   carSeriesId.push(element0.value)
-          //   carSeriesId.push(element1.value)
-          //   carSeriesId.push(element2.value)
-          // }
-          // })
+          this.seriesId.forEach(element2 => {
+          if (element1.value == element2) {
+            carSeriesId.push([element0.value,element1.value])
+            // carSeriesId.push(element1.value)
+            // carSeriesId.push(element2.value)
+          }
+          })
         })
       })
       this.carSeriesId = carSeriesId
@@ -284,8 +295,10 @@ export default {
 
           this.listInviteList = listInviteList
           // this.carSeriesId = [null,null,data.carSeriesId]
-
-          this.seriesId = data.carSeriesId
+          data.listTaskOfCartype.forEach(element => {
+            this.seriesId.push(element.cartypeId)
+          });
+          
           this.periodTime = [
             new Date(data.startTime.replace(/-/g, '/')),
             new Date(data.endTime.replace(/-/g, '/'))
@@ -377,7 +390,7 @@ export default {
       this.$axios
         .post('/ocarplay/api/carSeries/getCarSeriesLists', data)
         .then(res => {
-          console.log(res)
+          // console.log(res)
           // this.listLoading = false
           if (res.status == 200) {
             let data = res.data.carTypes
@@ -390,7 +403,7 @@ export default {
               },
               {
                 value: 110,
-                label: '吉利舆情',
+                label: '吉利',
                 children: []
               },
               {
@@ -528,7 +541,7 @@ export default {
         }
       })
 
-      console.log(data)
+      // console.log(data)
       if (flag) {
         this.putLoading = true
         this.$axios
@@ -552,7 +565,7 @@ export default {
             }
           })
           .catch(res => {
-            console.log(res)
+            // console.log(res)
             this.putLoading = false
           })
       } else {

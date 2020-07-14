@@ -93,25 +93,32 @@
         <el-col :span="4" class="key">预约车主</el-col>
         <el-col :span="1">:</el-col>
         <el-col :span="19" class="appoin">
-          <el-col :span="7">
-            <el-select v-model="deptId" clearable placeholder="预约组别">
+          <el-col :span="14">
+            <!-- <el-select v-model="deptId" clearable placeholder="预约组别">
               <el-option
                 v-for="item in deptIdList"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
               ></el-option>
-            </el-select>
-          </el-col>
-          <el-col :span="7">
-            <el-select v-model="carTypeId" clearable placeholder="预约车型">
+            </el-select> -->
+            <el-cascader
+              v-model="carSeriesId"
+              :options="carSeriesList"
+              clearable
+              filterable
+              collapse-tags
+            ></el-cascader>
+          <!-- </el-col>
+          <el-col :span="7"> -->
+            <!-- <el-select v-model="carTypeId" clearable placeholder="预约车型">
               <el-option
                 v-for="item in carTypeIdList"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
               ></el-option>
-            </el-select>
+            </el-select> -->
             <!-- <el-cascader v-model="carTypeId" :options="carTypeIdList" filterable></el-cascader> -->
           </el-col>
           <el-col :span="8">
@@ -155,7 +162,7 @@
         <el-col :span="1">:</el-col>
         <el-col :span="18">
           <el-input placeholder="请输入内容" v-model="during" class="input-with-select">
-            <el-select v-model="duringType" slot="append" placeholder="选择">
+            <el-select v-model="duringType" slot="append" placeholder="选择" disabled>
               <el-option label="时" :value="0"></el-option>
               <el-option label="天" :value="1"></el-option>
               <el-option label="月" :value="2"></el-option>
@@ -218,6 +225,7 @@ import cities from '@/common/cities.js' // 引入城市数据
 
 export default {
   name: 'ownersschedule',
+  props:['carSeriesList'],
   components: {},
   data() {
     return {
@@ -249,7 +257,7 @@ export default {
       startTime: '',
       endTime: '',
       during: '',
-      duringType: '',
+      duringType: 1,
       dayTypeId: '',
       schLine: '',
       carTypeId: '',
@@ -276,7 +284,9 @@ export default {
           label: '长城'
         }
       ],
-      carTypeIdList: []
+      carTypeIdList: [],
+      // carSeriesList: [],
+      carSeriesId: []
     }
   },
   // 侦听器
@@ -285,13 +295,15 @@ export default {
   beforeCreate() {},
   beforeMount() {},
   mounted() {
-    console.log(this.$route.params.id)
+    // console.log(this.$route.params.id)
     ///////// 获取预约日程列表 start /////////
     this.getOwnerScheduleList()
     ///////// 获取日程类型列表 start /////////
     this.getDayTypeList()
     ///////// 获取车型列表 start /////////
     this.getCarSeriesLists()
+    // this.carSeriesList = this.$parent.carSeriesList
+    // console.log(this.carSeriesList)
   },
   // 方法
   methods: {
@@ -324,8 +336,8 @@ export default {
         Addtest.push(add[i].label)
       }
       this.district = Addtest
-      console.log(Addtest)
-      console.log(e)
+      // console.log(Addtest)
+      // console.log(e)
       // console.log(form)
     },
     ///////// 获取城市名称 end /////////
@@ -338,7 +350,7 @@ export default {
       this.$axios
         .post('/ocarplay/api/vehicleOwner/ownerScheduleListAjax', data)
         .then(res => {
-          console.log(res)
+          // console.log(res)
           if (res.status == 200) {
             let data = res.data
             data.items.forEach(element => {
@@ -351,7 +363,7 @@ export default {
             })
 
             this.ownerScheduleListData = data.items
-            console.log(this.ownerScheduleListData)
+            // console.log(this.ownerScheduleListData)
           }
         })
     },
@@ -479,13 +491,13 @@ export default {
       let data = {
         // ownerId: this.ownerId,
         schId: this.preEditSchedule.schId,
-        deptId: this.deptId,
-        carTypeId: this.carTypeId,
+        deptId: this.carSeriesId[0],
+        carTypeId: this.carSeriesId[1],
         schNum: this.schNum
       }
 
       this.$axios.post('/ocarplay/api/schedule/placeOrder', data).then(res => {
-        console.log(res)
+        // console.log(res)
         if (res.status == 200) {
           this.$message.success(res.data.msg)
           this.drawerLoading = false
