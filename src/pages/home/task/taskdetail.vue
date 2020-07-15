@@ -43,10 +43,16 @@
           <el-col :span="24" class="list">
             <div class="key">邀约对象</div>
             <div class="val">
-              <div
-                v-for="(item, index) in taskDetail.listInvite"
-                :key="index"
-              >{{item.listOwnerType[0].typeName}}—{{item.listOwnerItem[0].itemName}}—{{item.realName}}</div>
+              <template v-if="taskDetail.listInvite.length!=0">
+                <div
+                  v-for="(item, index) in taskDetail.listInvite"
+                  :key="index"
+                >
+                <span v-if="item.listOwnerType">
+                {{item.listOwnerType[0].typeName}}—{{item.listOwnerItem[0].itemName}}—{{item.realName}}
+                </span>
+                </div>
+              </template>
             </div>
           </el-col>
           <el-col :span="24" class="list">
@@ -59,7 +65,7 @@
           </el-col>
           <el-col :span="24" class="list">
             <div class="key">创建人</div>
-            <div class="val">解雨臣</div>
+            <div class="val">{{taskDetail.initUserRealName}}</div>
           </el-col>
           <el-col :span="24" class="list">
             <div class="key">备注</div>
@@ -81,9 +87,6 @@
           <el-col :span="24" class="list">
             <div class="key">任务文件</div>
             <div class="val">
-              <!-- <div v-for="(item, index) in (taskDetail.listTaskFile)" :key="index">
-              <img src="static/images/document/ppt.png" width="20" alt />&nbsp;
-              <el-link @click="$download(item)">{{item.fileName}}</el-link>-->
               <template v-if="taskDetail.listTaskFile.length!=0">
                 <img
                   v-if="taskDetail.listTaskFile[0].suffix == 'doc' || taskDetail.listTaskFile[0].suffix == 'docx'"
@@ -112,10 +115,6 @@
                 >{{taskDetail.listTaskFile[0].fileName}}</el-link>
               </template>
               <template v-else>暂无</template>
-              <!-- </div> -->
-              <!-- <div>
-              <img src="static/images/document/ppt.png" width="20" alt />&nbsp;2020年6月-长城-#校服女神#创意标准文件
-              </div>-->
             </div>
           </el-col>
           <el-col :span="24" class="list">
@@ -131,14 +130,7 @@
           </el-col>
           <el-col :span="24" class="list">
             <div class="key">完成进度</div>
-            <div class="val">
-              {{taskDetail.inviteNum}}/{{taskDetail.inviteNumOver}}
-              <!-- <span v-if="taskDetail.status==1||taskDetail.status==2">
-              <img src="static/images/document/excle.png" width="16" alt srcset />
-              <el-link @click="exportInvite(taskDetail)">{{taskDetail.taskName}}</el-link>
-            </span>
-              <span v-else>暂无</span>-->
-            </div>
+            <div class="val">{{taskDetail.inviteNumOver}}/{{taskDetail.num}}</div>
           </el-col>
         </el-col>
         <el-col :span="22" :offset="1">
@@ -158,10 +150,8 @@
               </template>
             </el-table-column>
             <el-table-column prop="title" label="标题" min-width="130" show-overflow-tooltip></el-table-column>
-            <el-table-column prop="isCard" label="成果" min-width="80">精华</el-table-column>
-            <el-table-column prop="listInvite" label="发布时间" min-width="80">
-              <template slot-scope="scope">{{$date(scope.row.updateTime)}}</template>
-            </el-table-column>
+            <el-table-column prop="effectName" label="成果" min-width="80"></el-table-column>
+            <el-table-column prop="" label="发布时间" min-width="80"></el-table-column>
           </el-table>
         </el-col>
         <el-col :span="24" class="btn">
@@ -183,7 +173,7 @@ export default {
     return {
       // 任务ID
       taskId: 1,
-      taskDetail: { listTaskFile: [] },
+      taskDetail: { listTaskFile: [], listInvite: [] },
       loading: false
     }
   },

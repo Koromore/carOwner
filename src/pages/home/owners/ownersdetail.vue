@@ -25,6 +25,7 @@
           <el-col :span="12" class="left">
             <el-col :span="24" class="list">
               <div class="key">车主类型</div>
+              <span>:</span>
               <div class="val">
                 <template v-if="ownerDetil.typeId==1">支持型</template>
                 <template v-if="ownerDetil.typeId==2">拍摄型</template>
@@ -33,6 +34,7 @@
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">车主性别</div>
+              <span>:</span>
               <div class="val">
                 <template v-if="ownerDetil.sex">
                   <!-- <i class="el-icon-female sex1"></i> -->
@@ -46,18 +48,22 @@
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">车主职业</div>
+              <span>:</span>
               <div class="val">{{ownerDetil.work}}</div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">出生日期</div>
+              <span>:</span>
               <div class="val">{{ownerDetil.birthday}}</div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">所在区域</div>
+              <span>:</span>
               <div class="val">{{ownerDetil.province}}{{ownerDetil.city}}</div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">特长</div>
+              <span>:</span>
               <div class="val">{{ownerDetil.skillName}}</div>
             </el-col>
           </el-col>
@@ -65,6 +71,7 @@
           <el-col :span="12" class="right">
             <el-col :span="24" class="list">
               <div class="key">合作事项</div>
+              <span>:</span>
               <div class="val">
                 <span v-for="(item, index) in ownerDetil.ownerCoops" :key="index">
                   {{item.itemName}}
@@ -74,18 +81,22 @@
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">车主姓名</div>
+              <span>:</span>
               <div class="val">{{ownerDetil.name}}</div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">用车生活</div>
+              <span>:</span>
               <div class="val">{{ownerDetil.carUse}}</div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">车主来源</div>
+              <span>:</span>
               <div class="val">{{ownerDetil.sourceName}}</div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">认证车型</div>
+              <span>:</span>
               <div class="val">
                 <span v-for="(item, index) in ownerDetil.ownerCarSeries" :key="index">
                   {{item.carSeriesName}}
@@ -96,6 +107,7 @@
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">车主邮箱</div>
+              <span>:</span>
               <div class="val">{{ownerDetil.email}}</div>
             </el-col>
             <!-- <el-col :span="24" class="list">
@@ -115,46 +127,57 @@
           <el-col :span="12" class="left">
             <el-col :span="24" class="list">
               <div class="key">手机号</div>
+              <span>:</span>
               <div class="val">{{ownerDetil.phone}}</div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">微信号</div>
+              <span>:</span>
               <div class="val">{{ownerDetil.wx}}</div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">QQ号</div>
+              <span>:</span>
               <div class="val">{{ownerDetil.qq}}</div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">汽车之家ID</div>
+              <span>:</span>
               <div class="val">{{ownerDetil.bbsId}}</div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">汽车之家主页</div>
+              <span>:</span>
               <div class="val">{{ownerDetil.homeUrl}}</div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">微博ID</div>
+              <span>:</span>
               <div class="val">{{ownerDetil.weiboId}}</div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">抖音ID</div>
+              <span>:</span>
               <div class="val">{{ownerDetil.dyId}}</div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">其他社交ID</div>
+              <span>:</span>
               <div class="val">{{ownerDetil.otherId}}</div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">车牌号</div>
+              <span>:</span>
               <div class="val">{{ownerDetil.plateNum}}</div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">车架号</div>
+              <span>:</span>
               <div class="val">{{ownerDetil.vinno}}</div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">购车网点</div>
+              <span>:</span>
               <div class="val">{{ownerDetil.buycarplace}}</div>
             </el-col>
           </el-col>
@@ -162,10 +185,12 @@
           <el-col :span="12" class="right">
             <el-col :span="24" class="list">
               <div class="key">家庭住址</div>
+              <span>:</span>
               <div class="val">{{ownerDetil.homeAddress}}</div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">收货地址</div>
+              <span>:</span>
               <div class="val">
                 <template v-if="ownerDetil.deliveryAddresses.length!=0">
                   {{ownerDetil.deliveryAddresses[0].province}}
@@ -177,10 +202,12 @@
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">银行卡号</div>
+              <span>:</span>
               <div class="val">{{ownerDetil.bankCard}}</div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">家属信息</div>
+              <span>:</span>
               <div class="val">
                 <!-- <el-input placeholder="请输入内容" v-model="input1"></el-input> -->
                 <el-col :span="24" v-for="(item, index) in ownerDetil.relations" :key="index">
@@ -205,6 +232,7 @@
           <el-col :span="12" class="left">
             <el-col :span="24" class="list">
               <div class="key">签约合同</div>
+              <span>:</span>
               <div class="val">
                 <template
                   v-if="ownerDetil.cooperates.length!=0&&ownerDetil.cooperates[0].localPath"
@@ -241,6 +269,7 @@
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">合作期限</div>
+              <span>:</span>
               <div class="val">
                 <template
                   v-if="ownerDetil.cooperates.length!=0"
@@ -249,6 +278,7 @@
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">合作时长</div>
+              <span>:</span>
               <div class="val">
                 <template
                   v-if="ownerDetil.cooperates.length!=0"
@@ -260,7 +290,8 @@
           <el-col :span="12" class="right">
             <el-col :span="24" class="list">
               <template v-if="ownerDetil.typeId==1">
-                <div class="key" style="margin-right: 240px;">合作事项要求频次</div>
+                <div class="key">合作事项要求频次</div>
+                <span>:</span>
                 <div class="val" style="height: auto;width:100%">
                   <el-col :span="24" v-for="(item, index) in ownerDetil.ownerCoops" :key="index">
                     <el-col :span="4">{{item.itemName}}</el-col>
@@ -278,6 +309,7 @@
 
               <template v-else>
                 <div class="key">IP孵化打造</div>
+                <span>:</span>
                 <div class="val">
                   <el-col :span="24" v-for="(item, index) in ownerDetil.ipGrows" :key="index">
                     <el-col :span="6">{{item.plat}}</el-col>
@@ -450,7 +482,7 @@ export default {
         // console.log(res)
 
         if (res.status == 200) {
-          // console.log(res)
+          console.log(res)
           let data = res.data
           if (data.image) {
             data.image = '/ocarplay/' + data.image
@@ -632,7 +664,7 @@ $icoColor: rgb(106, 145, 232);
           width: 96px;
           height: 40px;
           line-height: 40px;
-          margin-right: 13px;
+          // padding-right: 13px;
           text-align: justify;
           box-sizing: border-box;
         }
@@ -640,6 +672,12 @@ $icoColor: rgb(106, 145, 232);
           display: inline-block;
           content: '';
           padding-left: 100%;
+        }
+        >span {
+          font-weight: bold;
+          line-height: 40px;
+          font-size: 18px;
+          padding: 0 9px;
         }
         .val {
           width: 420px;

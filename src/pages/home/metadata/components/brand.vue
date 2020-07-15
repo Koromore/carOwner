@@ -5,14 +5,14 @@
         v-loading="loading"
         :data="carTypeListData"
         style="width: 100%"
-        :header-row-style="{'height': '70px','background': 'rgb(242, 242, 242)'}"
+        :header-row-style="{'height': '54px','background': 'rgb(242, 242, 242)'}"
         :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
         height="100%"
       >
         <el-table-column prop="name" label="序号" width="81" align="center">
           <template slot-scope="scope">0{{scope.$index+1}}</template>
         </el-table-column>
-        <el-table-column prop="deptName" label="品牌名称" width="240"></el-table-column>
+        <el-table-column prop="deptName" label="品牌名称" width="130"></el-table-column>
         <el-table-column prop="carTypeName" label="车型列表" min-width="240"></el-table-column>
       </el-table>
     </div>

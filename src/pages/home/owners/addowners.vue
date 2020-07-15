@@ -300,14 +300,16 @@
                   v-for="(item,index) in relationList"
                   :key="index"
                 >
-                  <el-col :span="5">
+                  <el-col :span="4">
                     <el-input placeholder="姓名" v-model="item.name"></el-input>
                   </el-col>
                   <el-col :span="4">
                     <el-input placeholder="关系" v-model="item.relation"></el-input>
                   </el-col>
-                  <el-col :span="6">
-                    <el-input placeholder="出生日期" v-model="item.birthday"></el-input>
+                  <el-col :span="8">
+                    <!-- <el-input placeholder="出生日期" v-model="item.birthday"></el-input> -->
+                    <el-date-picker v-model="item.birthday" type="date" placeholder="出生日期" value-format="yyyy-MM-dd"></el-date-picker>
+                    <!-- {{item.birthday}} -->
                   </el-col>
                   <el-col :span="5">
                     <el-input placeholder="职业" v-model="item.work"></el-input>

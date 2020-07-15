@@ -41,7 +41,7 @@
         <el-table
           :data="inviteListData"
           style="width: 100%"
-          :header-row-style="{'height': '70px','background': 'rgb(242, 242, 242)'}"
+          :header-row-style="{'height': '59px','background': 'rgb(242, 242, 242)'}"
           :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
           height="100%"
         >
@@ -309,7 +309,6 @@ export default {
           id: prm.taskId,
           name: prm.taskName
         }
-        
       })
     }
     ///////// 结算清单 end /////////
@@ -322,7 +321,7 @@ $icoColor: rgb(106, 145, 232);
 #settlement {
   height: 100%;
   .top {
-    height: 88px;
+    height: 72px;
     margin-bottom: 9px;
     background: #fff;
     display: flex;

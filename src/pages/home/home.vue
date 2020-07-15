@@ -83,15 +83,7 @@ export default {
               let children = {
                 value: element.carTypeId,
                 label: element.carTypeName
-                // children: []
               }
-              // element.carSeries.forEach(element_ => {
-              //   children.children.push({
-              //     value: element_.carSeriesId,
-              //     label: element_.carSeriesName
-              //   })
-              // })
-              // console.log(carSeriesIds)
               if (element.deptId == 105) {
                 carSeriesList[0].children.push(children)
               } else if (element.deptId == 110) {
@@ -101,7 +93,7 @@ export default {
               }
             })
             this.carSeriesList = carSeriesList
-            console.log(carSeriesList)
+            // console.log(carSeriesList)
           }
         })
     }
@@ -116,7 +108,7 @@ export default {
     min-width: 1300px;
     box-sizing: border-box;
     height: calc(100vh - 70px);
-    padding-top: 13px;
+    padding-top: 9px;
     padding-bottom: 0;
   }
 }

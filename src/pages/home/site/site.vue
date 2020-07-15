@@ -47,20 +47,20 @@
         <el-table
           :data="placeListData"
           style="width: 100%"
-          :header-row-style="{'height': '70px','background': 'rgb(242, 242, 242)'}"
+          :header-row-style="{'height': '54px','background': 'rgb(242, 242, 242)'}"
           :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
           height="100%"
         >
           <el-table-column prop="name" label="序号" width="81" align="center">
             <template slot-scope="scope">{{scope.$index+1}}</template>
           </el-table-column>
-          <el-table-column prop="placeName" label="场地名称" min-width="240"></el-table-column>
-          <el-table-column prop="placeTypeName" label="场地类型" width="240"></el-table-column>
-          <el-table-column prop="city" label="所在城市" width="160">
+          <el-table-column prop="placeName" label="场地名称" min-width="160"></el-table-column>
+          <el-table-column prop="placeTypeName" label="场地类型" min-width="160"></el-table-column>
+          <el-table-column prop="city" label="所在城市" min-width="160">
             <template slot-scope="scope">{{scope.row.province+scope.row.city+scope.row.area}}</template>
           </el-table-column>
-          <el-table-column prop="address" label="详细地址" min-width="130" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="img" label="环境图片" width="100">
+          <el-table-column prop="address" label="详细地址" min-width="240" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="img" label="环境图片" min-width="100">
             <template slot-scope="scope">
               <el-image
                 style="width: 24px; height: 24px"
@@ -69,7 +69,7 @@
               ></el-image>
             </template>
           </el-table-column>
-          <el-table-column prop="car" label="对应车主" width="180">
+          <el-table-column prop="car" label="对应车主" min-width="100">
             <template slot-scope="scope">
               <i class="el-icon-user" @click="toSitecarownerlist(scope.row.city)"></i>
             </template>
@@ -694,7 +694,7 @@ $icoColor: rgb(106, 145, 232);
 #site {
   height: 100%;
   .top {
-    height: 88px;
+    height: 72px;
     margin-bottom: 9px;
     background: #fff;
     display: flex;

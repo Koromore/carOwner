@@ -4,7 +4,7 @@
       <el-table
         :data="dayTypeListData"
         style="width: 100%"
-        :header-row-style="{'height': '70px','background': 'rgb(242, 242, 242)'}"
+        :header-row-style="{'height': '54px','background': 'rgb(242, 242, 242)'}"
         :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
         height="100%"
       >

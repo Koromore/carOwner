@@ -503,7 +503,7 @@ $icoColor: rgb(106, 145, 232);
 #analysis {
   height: 100%;
   .top {
-    height: 88px;
+    height: 72px;
     margin-bottom: 9px;
     background: #fff;
     display: flex;

@@ -2,7 +2,7 @@
   <div id="owners">
     <!-- 头部选项框 start -->
     <el-row class="top">
-      <el-col :span="16" class="left">
+      <el-col :span="15" class="left">
         <div class="butBox1">
           <div :class="[tab1act==1?'but act':'but']" @click="tab1(1)">支持型</div>
           <div :class="[tab1act==2?'but act':'but']" @click="tab1(2)">拍摄型</div>
@@ -19,7 +19,7 @@
           <!-- <div :class="[tab2act==2?'but act':'but']" @click="tab2(2)">项目组分布</div> -->
         </div>
       </el-col>
-      <el-col :span="8" class="right">
+      <el-col :span="9" class="right">
         <!-- 邀约对象 -->
         <el-select
           v-model="leisureOwners"
@@ -85,13 +85,17 @@
           v-loading="listLoading"
           :data="ownerListData"
           style="width: 100%"
-          :header-row-style="{'height': '70px','background': 'rgb(242, 242, 242)'}"
+          :header-row-style="{'height': '54px','background': 'rgb(242, 242, 242)'}"
           :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
           height="100%"
         >
           <el-table-column prop label="序号" width="81" align="center" type="index"></el-table-column>
-          <el-table-column prop="ownerName" label="车主姓名" min-width="81" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="carSeriesName" label="认证车型" min-width="180" show-overflow-tooltip>
+          <el-table-column prop="ownerName" label="姓名" min-width="81" show-overflow-tooltip>
+            <template slot-scope="scope">
+              <el-link @click="toDetail(scope.row)">{{scope.row.ownerName}}</el-link>
+            </template>
+          </el-table-column>
+          <el-table-column prop="carSeriesName" label="车型" min-width="100" show-overflow-tooltip>
             <template slot-scope="scope">
               <span v-for="(item, index) in scope.row.ownerCarSeries" :key="index">
                 {{item.carSeriesName}}
@@ -107,13 +111,13 @@
           </el-table-column>
           <el-table-column prop="coopMoney" label="合作费用" min-width="81"></el-table-column>
           <el-table-column prop="coopNum" label="固定合作总量" min-width="100"></el-table-column>
-          <el-table-column prop="alreadyCooperateNum" label="历史合作次数" min-width="100">
+          <el-table-column prop="alreadyCooperateNum" label="已合作" min-width="100">
             <template slot-scope="scope">
               <template v-if="scope.row.alreadyCooperateNum">{{scope.row.alreadyCooperateNum}}</template>
               <template v-else>0</template>
             </template>
           </el-table-column>
-          <el-table-column prop="surplusnum" label="剩余合作次数" min-width="100">
+          <el-table-column prop="surplusnum" label="剩余合作" min-width="100">
             <template slot-scope="scope">{{scope.row.coopNum-scope.row.alreadyCooperateNum}}</template>
           </el-table-column>
           <el-table-column prop="period" label="结算周期" min-width="100">
@@ -159,13 +163,17 @@
           v-loading="listLoading"
           :data="ownerListData"
           style="width: 100%"
-          :header-row-style="{'height': '70px','background': 'rgb(242, 242, 242)'}"
+          :header-row-style="{'height': '54px','background': 'rgb(242, 242, 242)'}"
           :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
           height="100%"
         >
           <el-table-column prop label="序号" width="81" align="center" type="index"></el-table-column>
-          <el-table-column prop="ownerName" label="车主姓名" min-width="81" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="carSeriesName" label="认证车型" min-width="180" show-overflow-tooltip>
+          <el-table-column prop="ownerName" label="姓名" min-width="81" show-overflow-tooltip>
+            <template slot-scope="scope">
+              <el-link @click="toDetail(scope.row)">{{scope.row.ownerName}}</el-link>
+            </template>
+          </el-table-column>
+          <el-table-column prop="carSeriesName" label="车型" min-width="100" show-overflow-tooltip>
             <template slot-scope="scope">
               <span v-for="(item, index) in scope.row.ownerCarSeries" :key="index">
                 {{item.carSeriesName}}
@@ -177,11 +185,21 @@
           </el-table-column>
           <el-table-column prop="ownerArea" label="所在区域" min-width="81" show-overflow-tooltip></el-table-column>
           <el-table-column prop="skillName" label="特长" min-width="81"></el-table-column>
-          <el-table-column prop="nickname" label="IP账号" min-width="81"></el-table-column>
+          <el-table-column prop="nickname" label="IP账号" min-width="81">
+            <template slot-scope="scope">
+              <!-- {{scope.row.ipGrows}} -->
+              <span v-for="(item, index) in scope.row.ipGrows" :key="index">{{item.nickname}}
+              <template
+                  v-if="scope.row.ipGrows.length>1&&index!=scope.row.ipGrows.length-1&&item.nickname!=''"
+                >,</template>
+              </span>
+              <!-- <template></template> -->
+            </template>
+          </el-table-column>
           <el-table-column prop="timeLimit" label="合作时长" min-width="100">
             <template slot-scope="scope">{{$duration(scope.row.timeLimit)}}</template>
           </el-table-column>
-          <el-table-column prop="alreadyCooperateNum" label="历史合作次数" min-width="100">
+          <el-table-column prop="alreadyCooperateNum" label="已合作" min-width="100">
             <template slot-scope="scope">
               <template v-if="scope.row.alreadyCooperateNum">{{scope.row.alreadyCooperateNum}}</template>
               <template v-else>0</template>
@@ -229,13 +247,17 @@
           v-loading="listLoading"
           :data="ownerListData"
           style="width: 100%"
-          :header-row-style="{'height': '70px','background': 'rgb(242, 242, 242)'}"
+          :header-row-style="{'height': '54px','background': 'rgb(242, 242, 242)'}"
           :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
           height="100%"
         >
           <el-table-column prop label="序号" width="81" align="center" type="index"></el-table-column>
-          <el-table-column prop="ownerName" label="车主姓名" min-width="81" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="carSeriesName" label="认证车型" min-width="180" show-overflow-tooltip>
+          <el-table-column prop="ownerName" label="姓名" min-width="81" show-overflow-tooltip>
+            <template slot-scope="scope">
+              <el-link @click="toDetail(scope.row)">{{scope.row.ownerName}}</el-link>
+            </template>
+          </el-table-column>
+          <el-table-column prop="carSeriesName" label="车型" min-width="100" show-overflow-tooltip>
             <template slot-scope="scope">
               <span v-for="(item, index) in scope.row.ownerCarSeries" :key="index">
                 {{item.carSeriesName}}
@@ -251,7 +273,7 @@
           <el-table-column prop="timeLimit" label="合作时长" min-width="100">
             <template slot-scope="scope">{{$duration(scope.row.timeLimit)}}</template>
           </el-table-column>
-          <el-table-column prop="alreadyCooperateNum" label="历史合作次数" min-width="100">
+          <el-table-column prop="alreadyCooperateNum" label="已合作" min-width="100">
             <template slot-scope="scope">
               <template v-if="scope.row.alreadyCooperateNum">{{scope.row.alreadyCooperateNum}}</template>
               <template v-else>0</template>
@@ -664,10 +686,17 @@ export default {
 
     ///////// 跳转车主信息页面 start /////////
     toDetail(prm) {
+      console.log(prm)
       // 记录类型
       let tab1act = this.tab1act
       let tab2act = this.tab2act
       this.$store.commit('ownersType', tab1act)
+      let vehicleOwnerId = ''
+      if (prm.ownerId) {
+        vehicleOwnerId = prm.ownerId
+      }else {
+        vehicleOwnerId = prm.vehicleOwnerId
+      }
       // 记录车主ID
       this.$store.commit('ownerDetailId', [prm.typeId, prm.ownerId])
       this.$router.push({
@@ -680,10 +709,10 @@ export default {
         path: '/home/ownersdetail',
         query: {
           typeId: prm.typeId,
-          vehicleOwnerId: prm.ownerId
+          vehicleOwnerId: vehicleOwnerId
         }
       })
-    },
+    }
     ///////// 跳转车主信息页面 end /////////
   }
 }
@@ -694,7 +723,7 @@ $icoColor: rgb(106, 145, 232);
 #owners {
   height: 100%;
   .top {
-    height: 88px;
+    height: 72px;
     margin-bottom: 9px;
     background: #fff;
     display: flex;

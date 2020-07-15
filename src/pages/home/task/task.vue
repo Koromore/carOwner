@@ -75,7 +75,7 @@
         <el-table
           :data="taskListData"
           style="width: 100%"
-          :header-row-style="{'height': '70px','background': 'rgb(242, 242, 242)'}"
+          :header-row-style="{'height': '59px','background': 'rgb(242, 242, 242)'}"
           :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
           height="100%"
           v-loading="loading"
@@ -95,13 +95,12 @@
           <el-table-column prop="ownerItemList" label="邀约事项" min-width="100" show-overflow-tooltip></el-table-column>
           <el-table-column prop="carSeriesName" label="邀约车型" min-width="130" show-overflow-tooltip>
             <template slot-scope="scope">
-              <template v-if="scope.row.carSeriesName">
-              {{scope.row.carSeriesName}}
-              </template>
+              <template v-if="scope.row.carSeriesName">{{scope.row.carSeriesName}}</template>
               <template v-else>
-                <span v-for="(item, index) in scope.row.listTaskOfCartype" :key="index">
-                {{item.carTypeName}},
-              </span>
+                <span
+                  v-for="(item, index) in scope.row.listTaskOfCartype"
+                  :key="index"
+                >{{item.carTypeName}},</span>
               </template>
             </template>
           </el-table-column>
@@ -116,9 +115,7 @@
             </template>
           </el-table-column>
           <el-table-column prop="num" label="任务进度" min-width="80">
-            <template slot-scope="scope">
-              {{scope.row.inviteNumOver}}/{{scope.row.num}}
-            </template>
+            <template slot-scope="scope">{{scope.row.inviteNumOver}}/{{scope.row.num}}</template>
           </el-table-column>
           <el-table-column prop="listInvite" label="车主数量" min-width="80">
             <template slot-scope="scope">
@@ -191,13 +188,12 @@
           <el-table-column prop="ownerItemList" label="邀约事项" min-width="100" show-overflow-tooltip></el-table-column>
           <el-table-column prop="carSeriesName" label="邀约车型" min-width="130" show-overflow-tooltip>
             <template slot-scope="scope">
-              <template v-if="scope.row.carSeriesName">
-              {{scope.row.carSeriesName}}
-              </template>
+              <template v-if="scope.row.carSeriesName">{{scope.row.carSeriesName}}</template>
               <template v-else>
-                <span v-for="(item, index) in scope.row.listTaskOfCartype" :key="index">
-                {{item.carTypeName}},
-              </span>
+                <span
+                  v-for="(item, index) in scope.row.listTaskOfCartype"
+                  :key="index"
+                >{{item.carTypeName}},</span>
               </template>
             </template>
           </el-table-column>
@@ -212,9 +208,7 @@
             </template>
           </el-table-column>
           <el-table-column prop="num" label="任务进度" min-width="80">
-            <template slot-scope="scope">
-              {{scope.row.inviteNumOver}}/{{scope.row.num}}
-            </template>
+            <template slot-scope="scope">{{scope.row.inviteNumOver}}/{{scope.row.num}}</template>
           </el-table-column>
           <el-table-column prop="listInvite" label="车主数量" min-width="80">
             <template slot-scope="scope">
@@ -288,13 +282,12 @@
           <el-table-column prop="ownerItemList" label="邀约事项" min-width="100" show-overflow-tooltip></el-table-column>
           <el-table-column prop="carSeriesName" label="邀约车型" min-width="130" show-overflow-tooltip>
             <template slot-scope="scope">
-              <template v-if="scope.row.carSeriesName">
-              {{scope.row.carSeriesName}}
-              </template>
+              <template v-if="scope.row.carSeriesName">{{scope.row.carSeriesName}}</template>
               <template v-else>
-                <span v-for="(item, index) in scope.row.listTaskOfCartype" :key="index">
-                {{item.carTypeName}},
-              </span>
+                <span
+                  v-for="(item, index) in scope.row.listTaskOfCartype"
+                  :key="index"
+                >{{item.carTypeName}},</span>
               </template>
             </template>
           </el-table-column>
@@ -363,13 +356,12 @@
           <el-table-column prop="ownerItemList" label="邀约事项" min-width="100" show-overflow-tooltip></el-table-column>
           <el-table-column prop="carSeriesName" label="邀约车型" min-width="130" show-overflow-tooltip>
             <template slot-scope="scope">
-              <template v-if="scope.row.carSeriesName">
-              {{scope.row.carSeriesName}}
-              </template>
+              <template v-if="scope.row.carSeriesName">{{scope.row.carSeriesName}}</template>
               <template v-else>
-                <span v-for="(item, index) in scope.row.listTaskOfCartype" :key="index">
-                {{item.carTypeName}},
-              </span>
+                <span
+                  v-for="(item, index) in scope.row.listTaskOfCartype"
+                  :key="index"
+                >{{item.carTypeName}},</span>
               </template>
             </template>
           </el-table-column>
@@ -507,10 +499,10 @@
       <!-- 底部按钮 -->
       <el-col :span="24" class="btn">
         <el-col :span="6" :offset="5">
-          <el-button type="info" @click="submitBtn(0)">保存</el-button>
+          <el-button type="info" @click="submitBtn(1)">提交</el-button>
         </el-col>
         <el-col :span="6" :offset="2">
-          <el-button type="primary" @click="submitBtn(1)">提交</el-button>
+          <el-button type="primary" @click="submitBtn(0)">保存</el-button>
         </el-col>
       </el-col>
     </el-drawer>
@@ -737,8 +729,8 @@ export default {
               }
               element.invMoney += element1.money
               if (element1.isWrite == 1) {
-              element.inviteNumOver += 1
-            }
+                element.inviteNumOver += 1
+              }
             })
             element.typeList = element.typeList.join(',')
             element.ownerItemList = element.ownerItemList.join(',')
@@ -865,7 +857,7 @@ export default {
 
     ///////// 提交任务 start /////////
     putTask(prm) {
-      console.log(prm)
+      // console.log(prm)
       this.drawerPuttask = true
       this.taskId = prm.taskId
       this.taskName = prm.taskName
@@ -915,6 +907,8 @@ export default {
         element.ownerId = element.inviteData[2]
         if (element.url && element.money) {
           element.isWrite = 1
+        } else {
+          element.isWrite = 0
         }
       })
       let data = {
@@ -923,37 +917,48 @@ export default {
         updateTime: this.$time0(new Date()),
         listInvite: listInviteList
       }
+      let flag = true
       data.listInvite.forEach(element => {
-        if (element.isCard) {
-          element.isCard = 1
-        } else {
-          element.isCard = 0
+        if (!element.ownerId) {
+          flag = false
         }
       })
-      console.log(data)
-      this.$axios
-        .post('/ocarplay/task/save', data)
-        .then(res => {
-          console.log(res)
-          if (res.status == 200 && res.data == 1) {
-            if (e) {
-              this.$message.success('任务提交成功！')
-            } else {
-              this.$message.success('任务保存成功！')
-            }
-
-            this.drawerLoading = false
-            this.drawerPuttask = false
-            this.getTaskListAjax()
+      if (flag) {
+        data.listInvite.forEach(element => {
+          if (element.isCard) {
+            element.isCard = 1
           } else {
-            this.$message.error('任务提交失败！')
-            this.drawerLoading = false
+            element.isCard = 0
           }
         })
-        .catch(res => {
-          console.log(res)
-          // this.putLoading = false
-        })
+        // console.log(data)
+        this.$axios
+          .post('/ocarplay/task/save', data)
+          .then(res => {
+            // console.log(res)
+            if (res.status == 200 && res.data == 1) {
+              if (e) {
+                this.$message.success('任务提交成功！')
+              } else {
+                this.$message.success('任务保存成功！')
+              }
+
+              this.drawerLoading = false
+              this.drawerPuttask = false
+              this.getTaskListAjax()
+            } else {
+              this.$message.error('任务提交失败！')
+              this.drawerLoading = false
+            }
+          })
+          .catch(res => {
+            console.log(res)
+            // this.putLoading = false
+          })
+      }else{
+        this.drawerLoading = false
+        this.$message.error('请选择车主！')
+      }
     },
     ///////// 提交任务 end /////////
 
@@ -1039,7 +1044,7 @@ export default {
             })
             saveAs(blob, prm.taskName + '.xls')
           } else {
-            this.$message.error('删除任务失败！')
+            this.$message.error('下载失败！')
           }
         })
     },
@@ -1110,7 +1115,7 @@ $statusColor4: #ea8a85;
 #task {
   height: 100%;
   .top {
-    height: 88px;
+    height: 72px;
     margin-bottom: 9px;
     background: #fff;
     display: flex;

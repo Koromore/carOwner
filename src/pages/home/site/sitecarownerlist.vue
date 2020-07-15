@@ -46,10 +46,9 @@
           <div class="right">
             <p>车主姓名：{{item.name}}</p>
             <p>
-              车主类型：
-              <template v-if="item.typeId == 1">支持型</template>
-              <template v-else-if="item.typeId == 2">拍摄型</template>
-              <template v-else-if="item.typeId == 3">资源型</template>
+              <template v-if="item.typeId == 1">车主类型：支持型</template>
+              <template v-else-if="item.typeId == 2">车主类型：拍摄型</template>
+              <template v-else-if="item.typeId == 3">车主类型：资源型</template>
             </p>
             <p>车主来源：{{item.sourceName}}</p>
           </div>
@@ -251,11 +250,13 @@ $icoColor: rgb(106, 145, 232);
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
+      align-content: flex-start;
       align-items: flex-start;
       .items {
         // width: 400px;
         height: 30%;
         min-height: 160px;
+        margin-bottom: 1%;
         box-sizing: border-box;
         padding: 9px;
         border: 1px solid rgb(187, 187, 187);

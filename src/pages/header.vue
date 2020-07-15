@@ -3,7 +3,7 @@
 
   <el-header style="height: 70px" id="homeHeader">
     <el-row>
-      <el-col :span="14" class="header_left">
+      <el-col :span="18" class="header_left">
         <!-- logo start -->
         <img src="static/images/hander/logo.png" class="logo" alt srcset />
         <!-- logo start -->
@@ -21,7 +21,7 @@
         <!-- 导航 end -->
       </el-col>
 
-      <el-col :span="10" class="header_right">
+      <el-col :span="6" class="header_right">
         <!-- 搜索框 start -->
         <!-- <el-input
           placeholder="请输入内容"
@@ -169,7 +169,8 @@ export default {
       width: 128px;
     }
     .navList {
-      width: calc(100% - 128px);
+      width: calc(100% - 200px);
+      // margin-left: 24px;
       display: flex;
       flex-wrap: wrap;
       align-items: center;
