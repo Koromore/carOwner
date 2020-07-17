@@ -64,7 +64,7 @@
               <el-tooltip class="item" effect="dark" content="驳回" placement="top">
                 <img
                   src="static/images/ico/reject.png"
-                  width="24"
+                  width="20"
                   alt
                   srcset
                   @click="reject(scope.row.taskId)"
@@ -380,7 +380,7 @@ $icoColor: rgb(106, 145, 232);
         }
       }
       i {
-        font-size: 24px;
+        font-size: 20px;
         color: $icoColor;
         cursor: pointer;
         margin-right: 13px;

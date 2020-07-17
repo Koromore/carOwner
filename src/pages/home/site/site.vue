@@ -63,7 +63,7 @@
           <el-table-column prop="img" label="环境图片" min-width="100">
             <template slot-scope="scope">
               <el-image
-                style="width: 24px; height: 24px"
+                style="width: 20px; height: 20px"
                 src="static/images/ico/img2.png"
                 :preview-src-list="scope.row.image"
               ></el-image>
@@ -739,7 +739,7 @@ $icoColor: rgb(106, 145, 232);
         }
       }
       i {
-        font-size: 24px;
+        font-size: 20px;
         color: $icoColor;
         cursor: pointer;
         margin-right: 13px;

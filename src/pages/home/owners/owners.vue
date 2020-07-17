@@ -146,7 +146,7 @@
         <el-pagination
           @size-change="changeSize"
           @current-change="changePage"
-          :current-page="1"
+          :current-page="pageNum"
           :page-sizes="[10, 20, 30, 40, 50, 100]"
           :page-size="pageSize"
           layout="total, prev, pager, next ,sizes"
@@ -231,7 +231,7 @@
         <el-pagination
           @size-change="changeSize"
           @current-change="changePage"
-          :current-page="1"
+          :current-page="pageNum"
           :page-sizes="[10, 20, 30, 40, 50, 100]"
           :page-size="pageSize"
           layout="total, prev, pager, next ,sizes"
@@ -305,7 +305,7 @@
         <el-pagination
           @size-change="changeSize"
           @current-change="changePage"
-          :current-page="1"
+          :current-page="pageNum"
           :page-sizes="[10, 20, 30, 40, 50, 100]"
           :page-size="pageSize"
           layout="total, prev, pager, next ,sizes"
@@ -555,6 +555,7 @@ export default {
 
     tab1(e) {
       this.tab1act = e
+      this.pageNum = 1
       this.getVehicleOwnerList()
     },
     tab2(id) {
@@ -831,7 +832,7 @@ $icoColor: rgb(106, 145, 232);
         }
       }
       i {
-        font-size: 24px;
+        font-size: 20px;
         color: $icoColor;
         cursor: pointer;
         margin-right: 13px;

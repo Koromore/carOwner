@@ -1183,7 +1183,7 @@ $statusColor4: #ea8a85;
         }
       }
       i {
-        font-size: 24px;
+        font-size: 20px;
         color: $icoColor;
         cursor: pointer;
         margin-right: 13px;
