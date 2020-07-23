@@ -44,13 +44,10 @@
             <div class="key">邀约对象</div>
             <div class="val">
               <template v-if="taskDetail.listInvite.length!=0">
-                <div
-                  v-for="(item, index) in taskDetail.listInvite"
-                  :key="index"
-                >
-                <span v-if="item.listOwnerType">
-                {{item.listOwnerType[0].typeName}}—{{item.listOwnerItem[0].itemName}}—{{item.realName}}
-                </span>
+                <div v-for="(item, index) in taskDetail.listInvite" :key="index">
+                  <span
+                    v-if="item.listOwnerType"
+                  >{{item.listOwnerType[0].typeName}}—{{item.listOwnerItem[0].itemName}}—{{item.realName}}</span>
                 </div>
               </template>
             </div>
@@ -140,6 +137,7 @@
             :header-row-style="{'height': '70px','background': 'rgb(242, 242, 242)'}"
             :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
             v-loading="loading"
+            @header-click="exportTaskDetail"
           >
             <el-table-column prop label width="24" show-overflow-tooltip></el-table-column>
             <el-table-column prop="authorName" label="ID" min-width="100" show-overflow-tooltip></el-table-column>
@@ -151,7 +149,12 @@
             </el-table-column>
             <el-table-column prop="title" label="标题" min-width="130" show-overflow-tooltip></el-table-column>
             <el-table-column prop="effectName" label="成果" min-width="80"></el-table-column>
-            <el-table-column prop="" label="发布时间" min-width="80"></el-table-column>
+            <el-table-column prop label="发布时间" min-width="80"></el-table-column>
+            <!-- <el-table-column prop label="dow" width="64">
+              <template slot="header">
+                <i class="el-icon-download dow"></i>
+              </template>
+            </el-table-column> -->
           </el-table>
         </el-col>
         <el-col :span="24" class="btn">
@@ -165,7 +168,7 @@
 </template>
 <script>
 // import { matchType } from '@/utils/matchType' // 引入文件格式判断方法
-
+import { saveAs } from 'file-saver'
 export default {
   name: 'taskdetail',
   components: {},
@@ -195,25 +198,6 @@ export default {
       this.$router.go(-1) //返回上一层
     },
     ///////// 返回上一页 end /////////
-
-    // 文件上传
-    handleRemove(file, fileList) {
-      console.log(file, fileList)
-    },
-    handlePreview(file) {
-      console.log(file)
-    },
-    handleExceed(files, fileList) {
-      this.$message.warning(
-        `当前限制选择 3 个文件，本次选择了 ${
-          files.length
-        } 个文件，共选择了 ${files.length + fileList.length} 个文件`
-      )
-    },
-    beforeRemove(file, fileList) {
-      return this.$confirm(`确定移除 ${file.name}？`)
-    },
-
     ///////// 获取任务详情 start /////////
     getTaskDetails() {
       this.loading = true
@@ -314,8 +298,31 @@ export default {
             this.$message.error('删除任务失败！')
           }
         })
-    }
+    },
     ///////// 导出结算清单 end /////////
+        ///////// 完成详情列表下载 start /////////
+    exportTaskDetail(column, event) {
+      // console.log(column.label)
+      // let data = {
+      //   taskId: this.taskId*1
+      // }
+      // this.$axios
+      //   .post('/ocarplay/task/exportTaskDetail', data, {
+      //     responseType: 'blob' //--设置请求数据格式
+      //   })
+      //   .then(res => {
+      //     if (res.status == 200) {
+      //       var blob = new Blob([res.data], {
+      //         type: 'text/plain;charset=utf-8'
+      //       })
+      //       saveAs(blob,  '123.xls')
+      //     } else {
+      //       this.$message.error('删除任务失败！')
+      //     }
+      //   })
+      // 
+    }
+    ///////// 完成详情列表下载 end /////////
   }
 }
 </script>
@@ -414,6 +421,13 @@ export default {
         margin-left: 49px;
       }
     }
+  }
+}
+.dow {
+  cursor: pointer;
+  font-size: 24px;
+  &:hover {
+    color: #6a91e8;
   }
 }
 </style>

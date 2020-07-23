@@ -60,7 +60,7 @@
           <el-button type="warning" size="medium" @click="statusChange(1)">结算中</el-button>
           <el-button type="info" size="medium" @click="statusChange(2)">已完成</el-button>
         </el-button-group>
-        <div class="add_task" @click="addTask(0)">
+        <div class="add_task" @click="addTask(0)" v-if="subordinate==150">
           <i class="el-icon-circle-plus-outline"></i>
           <br />新建任务
         </div>
@@ -81,7 +81,7 @@
           v-loading="loading"
         >
           <el-table-column prop label width="24" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="taskName" label="任务名称" min-width="320" show-overflow-tooltip>
+          <el-table-column prop="taskName" label="任务名称" min-width="130" show-overflow-tooltip>
             <template slot-scope="scope">
               <el-link
                 target="_blank"
@@ -91,8 +91,8 @@
               >{{scope.row.taskName}}</el-link>
             </template>
           </el-table-column>
-          <el-table-column prop="ownerName" label="邀约对象" min-width="100" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="ownerItemList" label="邀约事项" min-width="100" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="ownerName" label="邀约对象" min-width="130" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="ownerItemList" label="邀约事项" min-width="130" show-overflow-tooltip></el-table-column>
           <el-table-column prop="carSeriesName" label="邀约车型" min-width="130" show-overflow-tooltip>
             <template slot-scope="scope">
               <template v-if="scope.row.carSeriesName">{{scope.row.carSeriesName}}</template>
@@ -127,7 +127,7 @@
           <el-table-column prop="endTime" label="预计时间" min-width="100" sortable>
             <template slot-scope="scope">{{$date(scope.row.endTime)}}</template>
           </el-table-column>
-          <el-table-column prop="address" label="操作" width="200">
+          <el-table-column prop="address" label="操作" width="200" v-if="subordinate==150">
             <template slot-scope="scope">
               <el-tooltip class="item" effect="dark" content="编辑任务" placement="top">
                 <i class="el-icon-edit" @click="addTask(1, scope.row.taskId)"></i>
@@ -142,7 +142,7 @@
               </el-tooltip>
 
               <el-tooltip class="item" effect="dark" content="删除任务" placement="top">
-                <i class="el-icon-circle-close" @click="delContent(scope.row.taskId)"></i>
+                <i class="el-icon-circle-close" @click="delContent(scope.row.taskId)" v-if="postId==231"></i>
               </el-tooltip>
             </template>
           </el-table-column>
@@ -153,9 +153,9 @@
           @size-change="changeSize"
           @current-change="changePage"
           :current-page="1"
-          :page-sizes="[10, 20, 30, 40]"
+          :page-sizes="[20, 30, 50]"
           :page-size="pageSize"
-          layout="total, prev, pager, next ,sizes"
+          layout="total, prev, pager, next, sizes"
           :total="total"
           background
         ></el-pagination>
@@ -174,7 +174,7 @@
           v-loading="loading"
         >
           <el-table-column prop label width="24" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="taskName" label="任务名称" min-width="320" show-overflow-tooltip>
+          <el-table-column prop="taskName" label="任务名称" min-width="130" show-overflow-tooltip>
             <template slot-scope="scope">
               <el-link
                 target="_blank"
@@ -184,8 +184,8 @@
               >{{scope.row.taskName}}</el-link>
             </template>
           </el-table-column>
-          <el-table-column prop="ownerName" label="邀约对象" min-width="100" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="ownerItemList" label="邀约事项" min-width="100" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="ownerName" label="邀约对象" min-width="130" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="ownerItemList" label="邀约事项" min-width="130" show-overflow-tooltip></el-table-column>
           <el-table-column prop="carSeriesName" label="邀约车型" min-width="130" show-overflow-tooltip>
             <template slot-scope="scope">
               <template v-if="scope.row.carSeriesName">{{scope.row.carSeriesName}}</template>
@@ -211,17 +211,13 @@
             <template slot-scope="scope">{{scope.row.inviteNumOver}}/{{scope.row.num}}</template>
           </el-table-column>
           <el-table-column prop="listInvite" label="车主数量" min-width="80">
-            <template slot-scope="scope">
-              <!-- <div> -->
-              {{scope.row.listInvite.length}}
-              <!-- </div> -->
-            </template>
+            <template slot-scope="scope">{{scope.row.listInvite.length}}</template>
           </el-table-column>
           <el-table-column prop="endTime" label="预计时间" min-width="100" sortable>
             <template slot-scope="scope">{{$date(scope.row.endTime)}}</template>
           </el-table-column>
           <el-table-column prop="delayReason" label="延期原因" min-width="100"></el-table-column>
-          <el-table-column prop="address" label="操作" width="200">
+          <el-table-column prop="address" label="操作" width="200" v-if="subordinate==150">
             <template slot-scope="scope">
               <el-tooltip class="item" effect="dark" content="编辑任务" placement="top">
                 <i class="el-icon-edit" @click="addTask(1, scope.row.taskId)"></i>
@@ -236,7 +232,7 @@
               </el-tooltip>
 
               <el-tooltip class="item" effect="dark" content="删除任务" placement="top">
-                <i class="el-icon-circle-close" @click="delContent(scope.row.taskId)"></i>
+                <i class="el-icon-circle-close" @click="delContent(scope.row.taskId)" v-if="postId==231"></i>
               </el-tooltip>
             </template>
           </el-table-column>
@@ -247,7 +243,7 @@
           @size-change="changeSize"
           @current-change="changePage"
           :current-page="1"
-          :page-sizes="[10, 20, 30, 40]"
+          :page-sizes="[20, 30, 50]"
           :page-size="pageSize"
           layout="total, prev, pager, next ,sizes"
           :total="total"
@@ -268,7 +264,7 @@
           v-loading="loading"
         >
           <el-table-column prop label width="24" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="taskName" label="任务名称" min-width="320" show-overflow-tooltip>
+          <el-table-column prop="taskName" label="任务名称" min-width="130" show-overflow-tooltip>
             <template slot-scope="scope">
               <el-link
                 target="_blank"
@@ -278,8 +274,8 @@
               >{{scope.row.taskName}}</el-link>
             </template>
           </el-table-column>
-          <el-table-column prop="typeList" label="邀约对象" min-width="100" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="ownerItemList" label="邀约事项" min-width="100" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="typeList" label="邀约对象" min-width="130" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="ownerItemList" label="邀约事项" min-width="130" show-overflow-tooltip></el-table-column>
           <el-table-column prop="carSeriesName" label="邀约车型" min-width="130" show-overflow-tooltip>
             <template slot-scope="scope">
               <template v-if="scope.row.carSeriesName">{{scope.row.carSeriesName}}</template>
@@ -301,9 +297,7 @@
               <div v-if="scope.row.status==4" class="statusColor4">人工延期</div>
             </template>
           </el-table-column>
-          <!-- <el-table-column prop="num" label="任务量" min-width="80"></el-table-column> -->
-
-          <el-table-column prop="listInvite" label="结算进度" min-width="80">
+          <el-table-column prop="listInvite" label="结算进度" min-width="80" v-if="subordinate==150">
             <template slot-scope="scope">
               <i class="el-icon-view" @click="toSettlement(scope.row)"></i>
             </template>
@@ -321,7 +315,7 @@
           @size-change="changeSize"
           @current-change="changePage"
           :current-page="1"
-          :page-sizes="[10, 20, 30, 40]"
+          :page-sizes="[20, 30, 50]"
           :page-size="pageSize"
           layout="total, prev, pager, next ,sizes"
           :total="total"
@@ -342,7 +336,7 @@
           v-loading="loading"
         >
           <el-table-column prop label width="24" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="taskName" label="任务名称" min-width="320" show-overflow-tooltip>
+          <el-table-column prop="taskName" label="任务名称" min-width="130" show-overflow-tooltip>
             <template slot-scope="scope">
               <el-link
                 target="_blank"
@@ -352,8 +346,8 @@
               >{{scope.row.taskName}}</el-link>
             </template>
           </el-table-column>
-          <el-table-column prop="ownerName" label="邀约对象" min-width="100" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="ownerItemList" label="邀约事项" min-width="100" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="ownerName" label="邀约对象" min-width="130" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="ownerItemList" label="邀约事项" min-width="130" show-overflow-tooltip></el-table-column>
           <el-table-column prop="carSeriesName" label="邀约车型" min-width="130" show-overflow-tooltip>
             <template slot-scope="scope">
               <template v-if="scope.row.carSeriesName">{{scope.row.carSeriesName}}</template>
@@ -398,7 +392,7 @@
           @size-change="changeSize"
           @current-change="changePage"
           :current-page="1"
-          :page-sizes="[10, 20, 30, 40]"
+          :page-sizes="[20, 30, 50]"
           :page-size="pageSize"
           layout="total, prev, pager, next ,sizes"
           :total="total"
@@ -519,6 +513,11 @@ export default {
   components: {},
   data() {
     return {
+      userId: this.$store.state.user.userId, // 用户ID
+      deptId: this.$store.state.user.deptId, // 部门ID
+      postId: this.$store.state.user.postId, // 职位ID
+      subordinate: this.$store.state.user.subordinate, // 一级部门ID
+
       taskId: '', // 任务ID
       taskName: '', // 任务ID
       drawerLoading: false,
@@ -565,12 +564,12 @@ export default {
       taskListData: [],
       // 分页信息
       pageNum: 1,
-      pageSize: 10,
+      pageSize: 30,
       total: 0,
       // 抽屉弹窗延期因
       drawerDelay: false,
       delayReason: '', // 延期原因
-      delayTime: '', // 延期预计时间时间
+      delayTime: '', // 延期预计时间
 
       // 抽屉弹窗提交任务
       drawerPuttask: false,
@@ -598,7 +597,7 @@ export default {
   mounted() {
     // this.foreach()
     ///////// 获取合作事项列表 start /////////
-    this.getshowOwnerType()
+    // this.getshowOwnerType()
     ///////// 获取车系列表 start /////////
     this.getCarSeriesLists()
     ///////// 获取任务列表 /////////
@@ -610,26 +609,26 @@ export default {
   methods: {
     ///////// 获取合作事项列表 start /////////
     getshowOwnerType() {
-      let eventList = []
+      let data = {typeId: this.typeId}
       this.$axios
-        .post('/ocarplay/api/ownerType/showOwnerType', {})
+        .post('/ocarplay/api/vehicleOwner/getOwnerTypeItems', data)
         .then(res => {
           // console.log(res)
           // this.loading = false
           if (res.status == 200) {
             // console.log(res)
-            let data = res.data.data
+            let data = res.data
             let itemIdList = []
             data.forEach(element => {
               // console.log(element)
-              let listId = element.itemIds.split('/')
-              let listName = element.itemName.split('/')
-              listId.forEach((element0, i) => {
+              // let listId = element.itemIds.split('/')
+              // let listName = element.itemName.split('/')
+              // listId.forEach((element0, i) => {
                 itemIdList.push({
-                  value: element0,
-                  label: listName[i]
+                  value: element.itemId,
+                  label: element.itemName
                 })
-              })
+              // })
             })
             this.itemIdList = itemIdList
           }
@@ -648,6 +647,9 @@ export default {
             let data = res.data.carTypes
             let carSeriesList = []
             data.forEach((element, i) => {
+              if (element.deptId == 110) {
+                element.deptName = '吉利'
+              }
               carSeriesList.push({
                 value: element.carTypeId,
                 label: `${element.deptName}—${element.carTypeName}`
@@ -662,7 +664,9 @@ export default {
     ///////// 任务列表对象筛选 start /////////
     typeIdChange(id) {
       // this.status = id
+      this.itemId = ''
       this.getTaskListAjax()
+      this.getshowOwnerType()
     },
     ///////// 任务列表对象筛选 end /////////
 
@@ -732,6 +736,11 @@ export default {
                 element.inviteNumOver += 1
               }
             })
+            // Array.form(new Set(arr))
+            element.typeList = [...new Set(element.typeList)]
+            element.ownerItemList = [...new Set(element.ownerItemList)]
+            element.ownerName =[...new Set(element.ownerName)]
+            // console.log(element.typeList)
             element.typeList = element.typeList.join(',')
             element.ownerItemList = element.ownerItemList.join(',')
             element.ownerName = element.ownerName.join(',')
@@ -955,7 +964,7 @@ export default {
             console.log(res)
             // this.putLoading = false
           })
-      }else{
+      } else {
         this.drawerLoading = false
         this.$message.error('请选择车主！')
       }
@@ -1136,9 +1145,10 @@ $statusColor4: #ea8a85;
       box-sizing: border-box;
       padding-right: 24px;
       .el-button-group {
-        margin-right: 49px;
+        margin-right: 39px;
         button {
           width: 81px;
+          height: 32px;
           border: none;
         }
       }

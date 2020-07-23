@@ -54,7 +54,7 @@
           @size-change="changeSize"
           @current-change="changePage"
           :current-page="1"
-          :page-sizes="[10, 20, 30, 40]"
+          :page-sizes="[20, 30, 50]"
           :page-size="pageSize"
           layout="total, prev, pager, next ,sizes"
           :total="total"
@@ -96,7 +96,7 @@ export default {
       // 分页数据
       total: 0,
       pageNum: 1,
-      pageSize: 10
+      pageSize: 30
     }
   },
   // 侦听器

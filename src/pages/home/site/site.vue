@@ -32,7 +32,7 @@
         </el-select>-->
       </el-col>
 
-      <el-col :span="8" class="right">
+      <el-col :span="8" class="right" v-if="subordinate==150">
         <div class="add_task" @click="addSite(0)">
           <i class="el-icon-circle-plus-outline"></i>
           <br />添加场地
@@ -74,13 +74,13 @@
               <i class="el-icon-user" @click="toSitecarownerlist(scope.row.city)"></i>
             </template>
           </el-table-column>
-          <el-table-column label="操作" width="100">
+          <el-table-column label="操作" width="100" v-if="subordinate==150">
             <template slot-scope="scope">
               <el-tooltip class="item" effect="dark" content="修改场地" placement="top">
                 <i class="el-icon-edit" @click="addSite(1, scope.row.placeId)"></i>
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="删除场地" placement="top">
-                <i class="el-icon-delete" @click="delSite(scope.row.placeId)"></i>
+                <i class="el-icon-delete" @click="delSite(scope.row.placeId)" v-if="postId==231"></i>
               </el-tooltip>
             </template>
           </el-table-column>
@@ -91,7 +91,7 @@
           @size-change="changeSize"
           @current-change="changePage"
           :current-page="1"
-          :page-sizes="[10, 20, 30, 40, 50]"
+          :page-sizes="[20, 30, 50]"
           :page-size="pageSize"
           layout="total, prev, pager, next ,sizes"
           :total="total"
@@ -222,6 +222,11 @@ export default {
   components: {},
   data() {
     return {
+      userId: this.$store.state.user.userId, // 用户ID
+      deptId: this.$store.state.user.deptId, // 部门ID
+      postId: this.$store.state.user.postId, // 职位ID
+      subordinate: this.$store.state.user.subordinate, // 一级部门ID
+      
       // 筛选条件
       filtrateCity: '',
       filtrateType: '',
@@ -302,8 +307,8 @@ export default {
   // 侦听器
   watch: {
     filtrateCity: function(newData, oldData) {
-      console.log(oldData)
-      console.log(newData)
+      // console.log(oldData)
+      // console.log(newData)
       this.getPlaceList()
     },
     filtrateType: function(newData, oldData) {

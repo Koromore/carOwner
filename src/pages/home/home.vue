@@ -19,7 +19,8 @@ export default {
     return {
       // 0-进行中，1-结算中，2-完成，3-延期，4-人工延期
       routeName: 'task',
-      carSeriesList: []
+      carSeriesList: [],
+      userList: []
     }
   },
   // 侦听器
@@ -38,6 +39,8 @@ export default {
     // 清空缓存
     // this.$store.commit('clearToken')
     this.getCarSeriesLists()
+
+    this.getUserListAjax()
   },
   // 方法
   methods: {
@@ -52,7 +55,7 @@ export default {
       let data = {
         ids: 0,
         pageNum: 1,
-        pageSize: 30
+        pageSize: 100
       }
       this.$axios
         .post('/ocarplay/api/carSeries/getCarSeriesLists', data)
@@ -96,8 +99,21 @@ export default {
             // console.log(carSeriesList)
           }
         })
-    }
+    },
     ///////// 获取车型列表 end /////////
+
+    ///////// 用户列表获取 start /////////
+    getUserListAjax(res) {
+      let userList = this.userList
+      if (userList.length == 0) {
+        this.$axios.post('/ocarplay/api/user/list').then(res=>{
+          if (res.status==200&&res.data.errcode==0) {
+            this.userList = res.data.data
+          }
+        })
+      }
+    }
+    ///////// 用户列表获取 end /////////
   }
 }
 </script>

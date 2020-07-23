@@ -50,7 +50,7 @@
           @size-change="changeSize"
           @current-change="changePage"
           :current-page="1"
-          :page-sizes="[10, 20, 30, 40]"
+          :page-sizes="[20, 30, 50]"
           :page-size="pageSize"
           layout="total, prev, pager, next ,sizes"
           :total="total"
@@ -73,7 +73,7 @@ export default {
       // 分页数据
       total: 0,
       pageNum: 1,
-      pageSize: 10
+      pageSize: 30
     }
   },
   // 侦听器
@@ -140,7 +140,7 @@ export default {
 #document {
   height: 100%;
   .content {
-    height: 100%;
+    height: calc(100% - 16px);
     background: #fff;
     .table_list {
       height: calc(100% - 64px);

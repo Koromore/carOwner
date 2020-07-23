@@ -79,7 +79,7 @@
           @size-change="changeSize"
           @current-change="changePage"
           :current-page="1"
-          :page-sizes="[10, 20, 30, 40, 50]"
+          :page-sizes="[20, 30, 50]"
           :page-size="pageSize"
           layout="total, prev, pager, next ,sizes"
           :total="total"
@@ -119,7 +119,7 @@
           @size-change="changeSize"
           @current-change="changePage"
           :current-page="1"
-          :page-sizes="[10, 20, 30, 40]"
+          :page-sizes="[20, 30, 50]"
           :page-size="pageSize"
           layout="total, prev, pager, next ,sizes"
           :total="total"
@@ -166,7 +166,7 @@ export default {
       inviteListData1: [],
       // 分页数据
       pageNum: 1,
-      pageSize: 10,
+      pageSize: 30,
       total: 0
     }
   },
@@ -350,7 +350,7 @@ $icoColor: rgb(106, 145, 232);
         align-items: center;
         .but {
           width: 81px;
-          height: 34px;
+          height: 32px;
           line-height: 34px;
           font-size: 14px;
           text-align: center;

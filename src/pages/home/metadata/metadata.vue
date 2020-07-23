@@ -131,7 +131,8 @@ $icoColor: rgb(106, 145, 232);
       align-items: center;
       .butBox {
         width: auto;
-        margin-left: 36px;
+        margin-left: 32px;
+        overflow: hidden;
         display: flex;
         flex-wrap: wrap;
         align-items: center;
@@ -139,8 +140,8 @@ $icoColor: rgb(106, 145, 232);
         border: 1px solid rgb(205, 205, 205);
         .but {
           width: 81px;
-          height: 36px;
-          line-height: 36px;
+          height: 32px;
+          line-height: 32px;
           text-align: center;
           font-size: 14px;
           cursor: pointer;

@@ -70,15 +70,18 @@
         </el-select>
         <!-- {{cityName}} -->
         <div @click="submit" class="add">
-          <i class="el-icon-circle-plus-outline"></i>
-          <br />添加车主
+          <template v-if="subordinate==150">
+            <i class="el-icon-circle-plus-outline"></i>
+            <br />添加车主
+          </template>
         </div>
       </el-col>
     </el-row>
     <!-- 头部选项框 end -->
 
     <!-- 内容列表 start -->
-    <!-- content1 -->
+
+    <!-- content1 start -->
     <el-row class="content content1" v-show="tab1act==1">
       <div class="table_list">
         <el-table
@@ -127,7 +130,7 @@
               <template v-if="scope.row.period == 2">按季度结算</template>
             </template>
           </el-table-column>
-          <el-table-column prop label="操作" width="160">
+          <el-table-column prop label="操作" width="160" v-if="subordinate==150">
             <template slot-scope="scope">
               <el-tooltip class="item" effect="dark" content="车主信息" placement="top">
                 <i class="el-icon-view" @click="toDetail(scope.row)"></i>
@@ -136,7 +139,7 @@
                 <i class="el-icon-map-location" @click="toOwnerssite(scope.row)"></i>
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="删除" placement="top">
-                <i class="el-icon-delete" @click="delContent(scope.row)"></i>
+                <i class="el-icon-delete" @click="delContent(scope.row)" v-if="postId==231"></i>
               </el-tooltip>
             </template>
           </el-table-column>
@@ -147,7 +150,7 @@
           @size-change="changeSize"
           @current-change="changePage"
           :current-page="pageNum"
-          :page-sizes="[10, 20, 30, 40, 50, 100]"
+          :page-sizes="[20, 30, 50]"
           :page-size="pageSize"
           layout="total, prev, pager, next ,sizes"
           :total="total"
@@ -155,6 +158,7 @@
         ></el-pagination>
       </el-col>
     </el-row>
+    <!-- content1 end -->
 
     <!-- content2 -->
     <el-row class="content content2" v-show="tab1act==2">
@@ -188,8 +192,9 @@
           <el-table-column prop="nickname" label="IP账号" min-width="81">
             <template slot-scope="scope">
               <!-- {{scope.row.ipGrows}} -->
-              <span v-for="(item, index) in scope.row.ipGrows" :key="index">{{item.nickname}}
-              <template
+              <span v-for="(item, index) in scope.row.ipGrows" :key="index">
+                {{item.nickname}}
+                <template
                   v-if="scope.row.ipGrows.length>1&&index!=scope.row.ipGrows.length-1&&item.nickname!=''"
                 >,</template>
               </span>
@@ -206,7 +211,7 @@
             </template>
           </el-table-column>
           <el-table-column prop="currMonthCooperateNum" label="本月合作次数" min-width="100"></el-table-column>
-          <el-table-column prop label="操作" width="230">
+          <el-table-column prop label="操作" width="230" v-if="subordinate==150">
             <template slot-scope="scope">
               <el-tooltip class="item" effect="dark" content="预约记录" placement="top">
                 <i class="el-icon-time" @click="toRecord(scope.row.ownerId)"></i>
@@ -221,7 +226,7 @@
                 <i class="el-icon-map-location" @click="toOwnerssite(scope.row)"></i>
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="删除" placement="top">
-                <i class="el-icon-delete" @click="delContent(scope.row)"></i>
+                <i class="el-icon-delete" @click="delContent(scope.row)" v-if="postId==231"></i>
               </el-tooltip>
             </template>
           </el-table-column>
@@ -232,7 +237,7 @@
           @size-change="changeSize"
           @current-change="changePage"
           :current-page="pageNum"
-          :page-sizes="[10, 20, 30, 40, 50, 100]"
+          :page-sizes="[20, 30, 50]"
           :page-size="pageSize"
           layout="total, prev, pager, next ,sizes"
           :total="total"
@@ -240,6 +245,8 @@
         ></el-pagination>
       </el-col>
     </el-row>
+    <!-- content2 end -->
+
     <!-- content3 -->
     <el-row class="content content3" v-show="tab1act==3">
       <div class="table_list">
@@ -280,7 +287,7 @@
             </template>
           </el-table-column>
           <el-table-column prop="currMonthCooperateNum" label="本月合作次数" min-width="100"></el-table-column>
-          <el-table-column prop label="操作" width="230">
+          <el-table-column prop label="操作" width="230" v-if="subordinate==150">
             <template slot-scope="scope">
               <el-tooltip class="item" effect="dark" content="预约记录" placement="top">
                 <i class="el-icon-time" @click="toRecord(scope.row.ownerId)"></i>
@@ -295,7 +302,7 @@
                 <i class="el-icon-map-location" @click="toOwnerssite(scope.row)"></i>
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="删除" placement="top">
-                <i class="el-icon-delete" @click="delContent(scope.row)"></i>
+                <i class="el-icon-delete" @click="delContent(scope.row)" v-if="postId==231"></i>
               </el-tooltip>
             </template>
           </el-table-column>
@@ -306,7 +313,7 @@
           @size-change="changeSize"
           @current-change="changePage"
           :current-page="pageNum"
-          :page-sizes="[10, 20, 30, 40, 50, 100]"
+          :page-sizes="[20, 30, 50]"
           :page-size="pageSize"
           layout="total, prev, pager, next ,sizes"
           :total="total"
@@ -314,6 +321,8 @@
         ></el-pagination>
       </el-col>
     </el-row>
+    <!-- content3 end -->
+
     <!-- 内容列表 end -->
   </div>
 </template>
@@ -324,6 +333,11 @@ export default {
   components: {},
   data() {
     return {
+      userId: this.$store.state.user.userId, // 用户ID
+      deptId: this.$store.state.user.deptId, // 部门ID
+      postId: this.$store.state.user.postId, // 职位ID
+      subordinate: this.$store.state.user.subordinate, // 一级部门ID
+
       listLoading: false, // 列表Loading控制
       ownerListData: [],
       tab1act: this.$store.state.ownersTypeNum,
@@ -389,7 +403,7 @@ export default {
       cityName: '',
       // 分页数据
       pageNum: 1,
-      pageSize: 10,
+      pageSize: 30,
       total: 0
     }
   },
@@ -446,6 +460,9 @@ export default {
             let data = res.data.carTypes
             let carSeriesList = []
             data.forEach((element, i) => {
+              if (element.deptId == 110) {
+                element.deptName = '吉利'
+              }
               carSeriesList.push({
                 value: element.carTypeId,
                 label: `${element.deptName}-${element.carTypeName}`
@@ -465,6 +482,7 @@ export default {
 
     ///////// 合作事项列表获取 start /////////
     geteventDataList(id) {
+      this.listLoading = true
       // console.log(data)
       // console.log(1)
       let eventList = []
@@ -499,6 +517,7 @@ export default {
 
     ///////// 城市选择 start /////////
     cityNameChange() {
+      this.pageNum = 1
       ///////// 车主列表获取 start /////////
       this.getVehicleOwnerList()
     },
@@ -506,6 +525,7 @@ export default {
 
     ///////// 车型选择 start /////////
     carSeriesIdChange() {
+      this.pageNum = 1
       ///////// 车主列表获取 start /////////
       this.getVehicleOwnerList()
     },
@@ -513,6 +533,7 @@ export default {
 
     ///////// 档期选择 start /////////
     leisureOwnersChange() {
+      this.pageNum = 1
       ///////// 车主列表获取 start /////////
       this.getVehicleOwnerList()
     },
@@ -520,6 +541,7 @@ export default {
 
     ///////// 车主列表获取 start /////////
     getVehicleOwnerList() {
+      this.listLoading = true
       let data = {
         city: '',
         seriesId: this.carSeriesId,
@@ -548,6 +570,7 @@ export default {
             let data = res.data
             this.ownerListData = data.items
             this.total = data.totalRows
+            this.listLoading = false
           }
         })
     },
@@ -556,7 +579,7 @@ export default {
     tab1(e) {
       this.tab1act = e
       this.pageNum = 1
-      this.getVehicleOwnerList()
+      // this.getVehicleOwnerList()
     },
     tab2(id) {
       this.tab2act = id
@@ -695,7 +718,7 @@ export default {
       let vehicleOwnerId = ''
       if (prm.ownerId) {
         vehicleOwnerId = prm.ownerId
-      }else {
+      } else {
         vehicleOwnerId = prm.vehicleOwnerId
       }
       // 记录车主ID
@@ -738,7 +761,7 @@ $icoColor: rgb(106, 145, 232);
       align-items: center;
       .butBox1 {
         width: auto;
-        height: 36px;
+        height: 32px;
         margin-left: 36px;
         overflow: hidden;
         display: flex;
@@ -748,8 +771,8 @@ $icoColor: rgb(106, 145, 232);
         border: 1px solid rgb(205, 205, 205);
         .but {
           width: 81px;
-          height: 36px;
-          line-height: 36px;
+          height: 32px;
+          line-height: 32px;
           text-align: center;
           font-size: 14px;
           cursor: pointer;
@@ -768,7 +791,7 @@ $icoColor: rgb(106, 145, 232);
       }
       .butBox2 {
         width: auto;
-        height: 36px;
+        height: 32px;
         margin-left: 36px;
         overflow: hidden;
         display: flex;
@@ -778,8 +801,8 @@ $icoColor: rgb(106, 145, 232);
         border: 1px solid rgb(205, 205, 205);
         .but {
           width: 81px;
-          height: 36px;
-          line-height: 36px;
+          height: 32px;
+          line-height: 32px;
           text-align: center;
           font-size: 14px;
           cursor: pointer;
@@ -794,6 +817,7 @@ $icoColor: rgb(106, 145, 232);
           font-weight: bold;
           color: white;
           background: rgb(103, 169, 214);
+          border: 0;
         }
       }
     }
@@ -810,6 +834,7 @@ $icoColor: rgb(106, 145, 232);
         margin-left: 13px;
       }
       .add {
+        min-width: 26px;
         margin-left: 13px;
         text-align: center;
         cursor: pointer;
