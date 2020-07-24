@@ -55,12 +55,12 @@
 
       <el-col :span="12" class="right">
         <el-button-group>
-          <el-button type="success" size="medium" @click="statusChange(0)">执行中</el-button>
-          <el-button type="danger" size="medium" @click="statusChange(3)">延期</el-button>
-          <el-button type="warning" size="medium" @click="statusChange(1)">结算中</el-button>
-          <el-button type="info" size="medium" @click="statusChange(2)">已完成</el-button>
+          <el-button type="success" size="small" @click="statusChange(0)">执行中</el-button>
+          <el-button type="danger" size="small" @click="statusChange(3)">延期</el-button>
+          <el-button type="warning" size="small" @click="statusChange(1)">结算中</el-button>
+          <el-button type="info" size="small" @click="statusChange(2)">已完成</el-button>
         </el-button-group>
-        <div class="add_task" @click="addTask(0)" v-if="subordinate==150">
+        <div class="add_task" @click="addTask(0)" v-if="subordinate==150||userId==3910||userId==4023">
           <i class="el-icon-circle-plus-outline"></i>
           <br />新建任务
         </div>
@@ -75,8 +75,8 @@
         <el-table
           :data="taskListData"
           style="width: 100%"
-          :header-row-style="{'height': '59px','background': 'rgb(242, 242, 242)'}"
-          :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
+          :header-row-style="{'height': '54px'}"
+          :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)'}"
           height="100%"
           v-loading="loading"
         >
@@ -107,7 +107,7 @@
           <el-table-column prop="status" label="状态" min-width="80">
             <template slot-scope="scope">
               <!-- {{scope.row.status}} -->
-              <div v-if="scope.row.status==0" class="statusColor0">进行中</div>
+              <div v-if="scope.row.status==0" class="statusColor0">执行中</div>
               <div v-if="scope.row.status==1" class="statusColor1">结算中</div>
               <div v-if="scope.row.status==2" class="statusColor2">完成</div>
               <div v-if="scope.row.status==3" class="statusColor3">延期</div>
@@ -127,7 +127,7 @@
           <el-table-column prop="endTime" label="预计时间" min-width="100" sortable>
             <template slot-scope="scope">{{$date(scope.row.endTime)}}</template>
           </el-table-column>
-          <el-table-column prop="address" label="操作" width="200" v-if="subordinate==150">
+          <el-table-column prop="address" label="操作" width="200" v-if="subordinate==150||userId==3910||userId==4023">
             <template slot-scope="scope">
               <el-tooltip class="item" effect="dark" content="编辑任务" placement="top">
                 <i class="el-icon-edit" @click="addTask(1, scope.row.taskId)"></i>
@@ -142,7 +142,7 @@
               </el-tooltip>
 
               <el-tooltip class="item" effect="dark" content="删除任务" placement="top">
-                <i class="el-icon-circle-close" @click="delContent(scope.row.taskId)" v-if="postId==231"></i>
+                <i class="el-icon-circle-close" @click="delContent(scope.row.taskId)" v-if="postId==231||userId==3910||userId==4023"></i>
               </el-tooltip>
             </template>
           </el-table-column>
@@ -163,12 +163,12 @@
     </el-row>
 
     <!-- 内容列表2 -->
-    <el-row class="content 内容列表2" v-show="status==3">
+    <el-row class="content content2" v-show="status==3">
       <div class="table_list">
         <el-table
           :data="taskListData"
           style="width: 100%"
-          :header-row-style="{'height': '70px','background': 'rgb(242, 242, 242)'}"
+          :header-row-style="{'height': '54px'}"
           :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
           height="100%"
           v-loading="loading"
@@ -200,7 +200,7 @@
           <el-table-column prop="status" label="状态" min-width="80">
             <template slot-scope="scope">
               <!-- {{scope.row.status}} -->
-              <div v-if="scope.row.status==0" class="statusColor0">进行中</div>
+              <div v-if="scope.row.status==0" class="statusColor0">执行中</div>
               <div v-if="scope.row.status==1" class="statusColor1">结算中</div>
               <div v-if="scope.row.status==2" class="statusColor2">完成</div>
               <div v-if="scope.row.status==3" class="statusColor3">延期</div>
@@ -217,7 +217,7 @@
             <template slot-scope="scope">{{$date(scope.row.endTime)}}</template>
           </el-table-column>
           <el-table-column prop="delayReason" label="延期原因" min-width="100"></el-table-column>
-          <el-table-column prop="address" label="操作" width="200" v-if="subordinate==150">
+          <el-table-column prop="address" label="操作" width="200" v-if="subordinate==150||userId==3910||userId==4023">
             <template slot-scope="scope">
               <el-tooltip class="item" effect="dark" content="编辑任务" placement="top">
                 <i class="el-icon-edit" @click="addTask(1, scope.row.taskId)"></i>
@@ -232,7 +232,7 @@
               </el-tooltip>
 
               <el-tooltip class="item" effect="dark" content="删除任务" placement="top">
-                <i class="el-icon-circle-close" @click="delContent(scope.row.taskId)" v-if="postId==231"></i>
+                <i class="el-icon-circle-close" @click="delContent(scope.row.taskId)" v-if="postId==231||userId==3910||userId==4023"></i>
               </el-tooltip>
             </template>
           </el-table-column>
@@ -258,8 +258,8 @@
         <el-table
           :data="taskListData"
           style="width: 100%"
-          :header-row-style="{'height': '70px','background': 'rgb(242, 242, 242)'}"
-          :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
+          :header-row-style="{'height': '54px'}"
+          :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)'}"
           height="100%"
           v-loading="loading"
         >
@@ -290,12 +290,15 @@
           <el-table-column prop="status" label="状态" min-width="80">
             <template slot-scope="scope">
               <!-- {{scope.row.status}} -->
-              <div v-if="scope.row.status==0" class="statusColor0">进行中</div>
+              <div v-if="scope.row.status==0" class="statusColor0">执行中</div>
               <div v-if="scope.row.status==1" class="statusColor1">结算中</div>
               <div v-if="scope.row.status==2" class="statusColor2">完成</div>
               <div v-if="scope.row.status==3" class="statusColor3">延期</div>
               <div v-if="scope.row.status==4" class="statusColor4">人工延期</div>
             </template>
+          </el-table-column>
+          <el-table-column prop="num" label="任务进度" min-width="80">
+            <template slot-scope="scope">{{scope.row.inviteNumOver}}/{{scope.row.num}}</template>
           </el-table-column>
           <el-table-column prop="listInvite" label="结算进度" min-width="80" v-if="subordinate==150">
             <template slot-scope="scope">
@@ -330,7 +333,7 @@
         <el-table
           :data="taskListData"
           style="width: 100%"
-          :header-row-style="{'height': '70px','background': 'rgb(242, 242, 242)'}"
+          :header-row-style="{'height': '54px'}"
           :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
           height="100%"
           v-loading="loading"
@@ -362,7 +365,7 @@
           <el-table-column prop="status" label="状态" min-width="80">
             <template slot-scope="scope">
               <!-- {{scope.row.status}} -->
-              <div v-if="scope.row.status==0" class="statusColor0">进行中</div>
+              <div v-if="scope.row.status==0" class="statusColor0">执行中</div>
               <div v-if="scope.row.status==1" class="statusColor1">结算中</div>
               <div v-if="scope.row.status==2" class="statusColor2">完成</div>
               <div v-if="scope.row.status==3" class="statusColor3">延期</div>
@@ -1143,13 +1146,11 @@ $statusColor4: #ea8a85;
       align-items: center;
       justify-content: flex-end;
       box-sizing: border-box;
-      padding-right: 24px;
+      padding-right: 36px;
       .el-button-group {
         margin-right: 39px;
         button {
           width: 81px;
-          height: 32px;
-          border: none;
         }
       }
       .add_task {
@@ -1158,8 +1159,7 @@ $statusColor4: #ea8a85;
         font-size: 13px;
         cursor: pointer;
         i {
-          font-size: 26px;
-          font-weight: bold;
+          font-size: 24px;
         }
       }
     }
@@ -1196,7 +1196,7 @@ $statusColor4: #ea8a85;
         font-size: 20px;
         color: $icoColor;
         cursor: pointer;
-        margin-right: 13px;
+        margin-right: 9px;
       }
     }
     .paging {

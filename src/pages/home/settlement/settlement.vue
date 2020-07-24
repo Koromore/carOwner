@@ -41,7 +41,7 @@
         <el-table
           :data="inviteListData"
           style="width: 100%"
-          :header-row-style="{'height': '59px','background': 'rgb(242, 242, 242)'}"
+          :header-row-style="{'height': '54px','background': 'rgb(242, 242, 242)'}"
           :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
           height="100%"
         >
@@ -93,7 +93,7 @@
         <el-table
           :data="inviteListData1"
           style="width: 100%"
-          :header-row-style="{'height': '70px','background': 'rgb(242, 242, 242)'}"
+          :header-row-style="{'height': '54px','background': 'rgb(242, 242, 242)'}"
           :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)'}"
           height="100%"
         >
@@ -351,7 +351,7 @@ $icoColor: rgb(106, 145, 232);
         .but {
           width: 81px;
           height: 32px;
-          line-height: 34px;
+          line-height: 32px;
           font-size: 14px;
           text-align: center;
           cursor: pointer;

@@ -16,10 +16,12 @@
         <el-col :span="12" class="left">
           <el-col :span="24" class="list">
             <div class="key">任务名称</div>
+            <div>:</div>
             <div class="val">{{taskDetail.taskName}}</div>
           </el-col>
           <el-col :span="24" class="list">
             <div class="key">任务状态</div>
+            <div>:</div>
             <div class="val">
               <template v-if="taskDetail.status==0">执行中</template>
               <template v-else-if="taskDetail.status==1">审核中</template>
@@ -30,6 +32,7 @@
           </el-col>
           <el-col :span="24" class="list">
             <div class="key">品牌车型</div>
+            <div>:</div>
             <div class="val">
               <template v-if="taskDetail.carSeriesName">{{taskDetail.carSeriesName}}</template>
               <template v-else>
@@ -42,6 +45,7 @@
           </el-col>
           <el-col :span="24" class="list">
             <div class="key">邀约对象</div>
+            <div>:</div>
             <div class="val">
               <template v-if="taskDetail.listInvite.length!=0">
                 <div v-for="(item, index) in taskDetail.listInvite" :key="index">
@@ -54,35 +58,56 @@
           </el-col>
           <el-col :span="24" class="list">
             <div class="key">计划周期</div>
+            <div>:</div>
             <div class="val">{{taskDetail.startTime}}---{{taskDetail.endTime}}</div>
           </el-col>
           <el-col :span="24" class="list">
             <div class="key">计划邀约量</div>
+            <div>:</div>
             <div class="val">{{taskDetail.num}}</div>
           </el-col>
           <el-col :span="24" class="list">
             <div class="key">创建人</div>
+            <div>:</div>
             <div class="val">{{taskDetail.initUserRealName}}</div>
           </el-col>
           <el-col :span="24" class="list">
             <div class="key">备注</div>
-            <div class="val">{{taskDetail.remark}}</div>
+            <div>:</div>
+            <div class="val">
+              
+              <template v-if="taskDetail.remark">
+                {{taskDetail.remark}}
+              </template>
+              <template v-else>
+                暂无
+              </template>
+            </div>
           </el-col>
 
           <el-col :span="24" class="list">
             <div class="key">完成时间</div>
+            <div>:</div>
             <div class="val">{{taskDetail.endTime}}</div>
           </el-col>
         </el-col>
         <el-col :span="12" class="right">
           <el-col :span="24" class="list">
             <div class="key">任务描述</div>
+            <div>:</div>
             <div class="val">
-              <pre>{{taskDetail.taskDesc}}</pre>
+              <template v-if="taskDetail.taskDesc">
+                <pre>{{taskDetail.taskDesc}}</pre>
+              </template>
+              <template v-else>
+                暂无
+              </template>
+              
             </div>
           </el-col>
           <el-col :span="24" class="list">
             <div class="key">任务文件</div>
+            <div>:</div>
             <div class="val">
               <template v-if="taskDetail.listTaskFile.length!=0">
                 <img
@@ -116,6 +141,7 @@
           </el-col>
           <el-col :span="24" class="list">
             <div class="key">结算清单</div>
+            <div>:</div>
             <div class="val">
               <span v-if="taskDetail.status==1||taskDetail.status==2">
                 <img src="static/images/document/excle.png" width="16" alt srcset />
@@ -127,6 +153,7 @@
           </el-col>
           <el-col :span="24" class="list">
             <div class="key">完成进度</div>
+            <div>:</div>
             <div class="val">{{taskDetail.inviteNumOver}}/{{taskDetail.num}}</div>
           </el-col>
         </el-col>
@@ -134,7 +161,7 @@
           <el-table
             :data="taskDetail.listInvite"
             style="width: 100%;margin-bottom: 72px"
-            :header-row-style="{'height': '70px','background': 'rgb(242, 242, 242)'}"
+            :header-row-style="{'height': '54px','background': 'rgb(242, 242, 242)'}"
             :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
             v-loading="loading"
             @header-click="exportTaskDetail"
@@ -150,11 +177,11 @@
             <el-table-column prop="title" label="标题" min-width="130" show-overflow-tooltip></el-table-column>
             <el-table-column prop="effectName" label="成果" min-width="80"></el-table-column>
             <el-table-column prop label="发布时间" min-width="80"></el-table-column>
-            <!-- <el-table-column prop label="dow" width="64">
+            <el-table-column prop label="dow" width="64">
               <template slot="header">
                 <i class="el-icon-download dow"></i>
               </template>
-            </el-table-column> -->
+            </el-table-column>
           </el-table>
         </el-col>
         <el-col :span="24" class="btn">
@@ -177,7 +204,7 @@ export default {
       // 任务ID
       taskId: 1,
       taskDetail: { listTaskFile: [], listInvite: [] },
-      loading: false
+      loading: false,
     }
   },
   // 侦听器
@@ -202,9 +229,9 @@ export default {
     getTaskDetails() {
       this.loading = true
       let data = {
-        taskId: this.$route.query.id
+        taskId: this.$route.query.id,
       }
-      this.$axios.post('/ocarplay/task/edit', data).then(res => {
+      this.$axios.post('/ocarplay/task/edit', data).then((res) => {
         // console.log(res)
         if (res.status == 200) {
           let data = res.data.data
@@ -223,7 +250,7 @@ export default {
           // console.log(data)
           data.inviteNum = data.listInvite.length
           data.inviteNumOver = 0
-          data.listInvite.forEach(element => {
+          data.listInvite.forEach((element) => {
             if (element.isWrite == 1) {
               data.inviteNumOver += 1
             }
@@ -241,7 +268,7 @@ export default {
       let id = this.taskId
       this.$router.push({
         path: '/home/addTask',
-        query: { type: 2, id: id }
+        query: { type: 2, id: id },
       })
     },
     ///////// 跳转新增任务页面 end /////////
@@ -249,9 +276,9 @@ export default {
     ///////// 发送邀请函 start /////////
     sendInvitation() {
       let data = {
-        taskId: this.taskId
+        taskId: this.taskId,
       }
-      this.$axios.post('/ocarplay/task/sendInvitation', data).then(res => {
+      this.$axios.post('/ocarplay/task/sendInvitation', data).then((res) => {
         console.log(res)
         if (res.status == 200) {
           if (res.data.errcode == 0) {
@@ -278,20 +305,20 @@ export default {
     ///////// 导出结算清单 end /////////
     exportInvite(prm) {
       let data = {
-        taskId: prm.taskId
+        taskId: prm.taskId,
       }
       this.$axios
         .post('/ocarplay/api/invite/exportInvite', data, {
-          responseType: 'blob' //--设置请求数据格式
+          responseType: 'blob', //--设置请求数据格式
         })
-        .then(res => {
+        .then((res) => {
           console.log(res)
           if (res.status == 200) {
             // this.$message.success('删除任务成功！')
             // ///////// 获取任务列表 start /////////
             // this.getTaskListAjax()
             var blob = new Blob([res.data], {
-              type: 'text/plain;charset=utf-8'
+              type: 'text/plain;charset=utf-8',
             })
             saveAs(blob, prm.taskName + '.xls')
           } else {
@@ -300,30 +327,30 @@ export default {
         })
     },
     ///////// 导出结算清单 end /////////
-        ///////// 完成详情列表下载 start /////////
+    ///////// 完成详情列表下载 start /////////
     exportTaskDetail(column, event) {
       // console.log(column.label)
-      // let data = {
-      //   taskId: this.taskId*1
-      // }
-      // this.$axios
-      //   .post('/ocarplay/task/exportTaskDetail', data, {
-      //     responseType: 'blob' //--设置请求数据格式
-      //   })
-      //   .then(res => {
-      //     if (res.status == 200) {
-      //       var blob = new Blob([res.data], {
-      //         type: 'text/plain;charset=utf-8'
-      //       })
-      //       saveAs(blob,  '123.xls')
-      //     } else {
-      //       this.$message.error('删除任务失败！')
-      //     }
-      //   })
-      // 
-    }
+      let taskDetail = this.taskDetail
+      let data = {
+        taskId: this.taskId * 1,
+      }
+      this.$axios
+        .post('/ocarplay/task/exportTaskDetail', data, {
+          responseType: 'blob', //--设置请求数据格式
+        })
+        .then((res) => {
+          if (res.status == 200) {
+            var blob = new Blob([res.data], {
+              type: 'text/plain;charset=utf-8',
+            })
+            saveAs(blob, taskDetail.taskName + '结算进度.xls')
+          } else {
+            this.$message.error('导出失败！')
+          }
+        })
+    },
     ///////// 完成详情列表下载 end /////////
-  }
+  },
 }
 </script>
 <style lang="scss" scoped>
@@ -340,11 +367,12 @@ export default {
       flex-wrap: wrap;
       align-items: flex-start;
       margin: 0;
-      .key {
-        width: 96px;
+      > div {
         height: 40px;
         line-height: 40px;
-        margin-right: 13px;
+      }
+      .key {
+        width: 96px;
         text-align: justify;
         box-sizing: border-box;
       }
@@ -355,7 +383,8 @@ export default {
       }
       .val {
         width: 420px;
-        line-height: 40px;
+        height: auto;
+        margin-left: 13px;
         pre {
           font-family: '微软雅黑';
           // line-height: 24px;

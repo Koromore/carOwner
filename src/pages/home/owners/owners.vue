@@ -70,7 +70,7 @@
         </el-select>
         <!-- {{cityName}} -->
         <div @click="submit" class="add">
-          <template v-if="subordinate==150">
+          <template v-if="subordinate==150||userId==3910||userId==4023">
             <i class="el-icon-circle-plus-outline"></i>
             <br />添加车主
           </template>
@@ -81,7 +81,7 @@
 
     <!-- 内容列表 start -->
 
-    <!-- content1 start -->
+    <!-- 支持型车主列表 start -->
     <el-row class="content content1" v-show="tab1act==1">
       <div class="table_list">
         <el-table
@@ -130,7 +130,7 @@
               <template v-if="scope.row.period == 2">按季度结算</template>
             </template>
           </el-table-column>
-          <el-table-column prop label="操作" width="160" v-if="subordinate==150">
+          <el-table-column prop label="操作" width="160" v-if="subordinate==150||userId==3910||userId==4023">
             <template slot-scope="scope">
               <el-tooltip class="item" effect="dark" content="车主信息" placement="top">
                 <i class="el-icon-view" @click="toDetail(scope.row)"></i>
@@ -139,7 +139,7 @@
                 <i class="el-icon-map-location" @click="toOwnerssite(scope.row)"></i>
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="删除" placement="top">
-                <i class="el-icon-delete" @click="delContent(scope.row)" v-if="postId==231"></i>
+                <i class="el-icon-delete" @click="delContent(scope.row)" v-if="postId==231||userId==3910||userId==4023"></i>
               </el-tooltip>
             </template>
           </el-table-column>
@@ -158,16 +158,16 @@
         ></el-pagination>
       </el-col>
     </el-row>
-    <!-- content1 end -->
+    <!-- 支持型车主列表 end -->
 
-    <!-- content2 -->
+    <!-- 拍摄型车主列表 -->
     <el-row class="content content2" v-show="tab1act==2">
       <div class="table_list">
         <el-table
           v-loading="listLoading"
           :data="ownerListData"
           style="width: 100%"
-          :header-row-style="{'height': '54px','background': 'rgb(242, 242, 242)'}"
+          :header-row-style="{'height': '54px'}"
           :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
           height="100%"
         >
@@ -179,26 +179,38 @@
           </el-table-column>
           <el-table-column prop="carSeriesName" label="车型" min-width="100" show-overflow-tooltip>
             <template slot-scope="scope">
-              <span v-for="(item, index) in scope.row.ownerCarSeries" :key="index">
-                {{item.carSeriesName}}
-                <template
-                  v-if="scope.row.ownerCarSeries.length>1&&index!=scope.row.ownerCarSeries.length-1"
-                >,</template>
-              </span>
+              <template v-if="scope.row.ownerCarSeries.length!=0">
+                <span v-for="(item, index) in scope.row.ownerCarSeries" :key="index">
+                  {{item.carSeriesName}}
+                  <template
+                    v-if="scope.row.ownerCarSeries.length>1&&index!=scope.row.ownerCarSeries.length-1"
+                  >,</template>
+                </span>
+              </template>
+              <template v-else>/</template>
             </template>
           </el-table-column>
           <el-table-column prop="ownerArea" label="所在区域" min-width="81" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="skillName" label="特长" min-width="81"></el-table-column>
+          <el-table-column prop="skillName" label="特长" min-width="81">
+            <template slot-scope="scope">
+              <template v-if="scope.row.skillName">{{scope.row.skillName}}</template>
+              <template v-else>/</template>
+            </template>
+          </el-table-column>
           <el-table-column prop="nickname" label="IP账号" min-width="81">
             <template slot-scope="scope">
-              <!-- {{scope.row.ipGrows}} -->
-              <span v-for="(item, index) in scope.row.ipGrows" :key="index">
-                {{item.nickname}}
-                <template
-                  v-if="scope.row.ipGrows.length>1&&index!=scope.row.ipGrows.length-1&&item.nickname!=''"
-                >,</template>
-              </span>
-              <!-- <template></template> -->
+              <template v-if="scope.row.ipGrows">
+                <template v-if="scope.row.ipGrows[0].nickname!=''">
+                  <span v-for="(item, index) in scope.row.ipGrows" :key="index">
+                    {{item.nickname}}
+                    <template
+                      v-if="scope.row.ipGrows.length>1&&index!=scope.row.ipGrows.length-1&&item.nickname!=''"
+                    >,</template>
+                  </span>
+                </template>
+                <template v-else>/</template>
+              </template>
+              <template v-else>/</template>
             </template>
           </el-table-column>
           <el-table-column prop="timeLimit" label="合作时长" min-width="100">
@@ -210,8 +222,13 @@
               <template v-else>0</template>
             </template>
           </el-table-column>
-          <el-table-column prop="currMonthCooperateNum" label="本月合作次数" min-width="100"></el-table-column>
-          <el-table-column prop label="操作" width="230" v-if="subordinate==150">
+          <el-table-column prop="currMonthCooperateNum" label="本月合作次数" min-width="100">
+            <template slot-scope="scope">
+              <template v-if="scope.row.currMonthCooperateNum">{{scope.row.currMonthCooperateNum}}</template>
+              <template v-else>0</template>
+            </template>
+          </el-table-column>
+          <el-table-column prop label="操作" width="230" v-if="subordinate==150||userId==3910||userId==4023">
             <template slot-scope="scope">
               <el-tooltip class="item" effect="dark" content="预约记录" placement="top">
                 <i class="el-icon-time" @click="toRecord(scope.row.ownerId)"></i>
@@ -226,7 +243,7 @@
                 <i class="el-icon-map-location" @click="toOwnerssite(scope.row)"></i>
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="删除" placement="top">
-                <i class="el-icon-delete" @click="delContent(scope.row)" v-if="postId==231"></i>
+                <i class="el-icon-delete" @click="delContent(scope.row)" v-if="postId==231||userId==3910||userId==4023"></i>
               </el-tooltip>
             </template>
           </el-table-column>
@@ -245,16 +262,16 @@
         ></el-pagination>
       </el-col>
     </el-row>
-    <!-- content2 end -->
+    <!-- 拍摄型车主列表 end -->
 
-    <!-- content3 -->
+    <!-- 资源型车主列表 -->
     <el-row class="content content3" v-show="tab1act==3">
       <div class="table_list">
         <el-table
           v-loading="listLoading"
           :data="ownerListData"
           style="width: 100%"
-          :header-row-style="{'height': '54px','background': 'rgb(242, 242, 242)'}"
+          :header-row-style="{'height': '54px'}"
           :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
           height="100%"
         >
@@ -266,17 +283,40 @@
           </el-table-column>
           <el-table-column prop="carSeriesName" label="车型" min-width="100" show-overflow-tooltip>
             <template slot-scope="scope">
-              <span v-for="(item, index) in scope.row.ownerCarSeries" :key="index">
-                {{item.carSeriesName}}
-                <template
-                  v-if="scope.row.ownerCarSeries.length>1&&index!=scope.row.ownerCarSeries.length-1"
-                >,</template>
-              </span>
+              <template v-if="scope.row.ownerCarSeries.length!=0">
+                <span v-for="(item, index) in scope.row.ownerCarSeries" :key="index">
+                  {{item.carSeriesName}}
+                  <template
+                    v-if="scope.row.ownerCarSeries.length>1&&index!=scope.row.ownerCarSeries.length-1"
+                  >,</template>
+                </span>
+              </template>
+              <template v-else>/</template>
             </template>
           </el-table-column>
           <el-table-column prop="ownerArea" label="所在区域" min-width="81" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="skillName" label="特长" min-width="81"></el-table-column>
-          <el-table-column prop="nickname" label="IP账号" min-width="81"></el-table-column>
+          <el-table-column prop="skillName" label="特长" min-width="81">
+            <template slot-scope="scope">
+              <template v-if="scope.row.skillName">{{scope.row.skillName}}</template>
+              <template v-else>/</template>
+            </template>
+          </el-table-column>
+          <el-table-column prop="nickname" label="IP账号" min-width="81">
+            <template slot-scope="scope">
+              <template v-if="scope.row.ipGrows">
+                <template v-if="scope.row.ipGrows[0].nickname!=''">
+                  <span v-for="(item, index) in scope.row.ipGrows" :key="index">
+                    {{item.nickname}}
+                    <template
+                      v-if="scope.row.ipGrows.length>1&&index!=scope.row.ipGrows.length-1&&item.nickname!=''"
+                    >,</template>
+                  </span>
+                </template>
+                <template v-else>/</template>
+              </template>
+              <template v-else>/</template>
+            </template>
+          </el-table-column>
           <el-table-column prop="timeLimit" label="合作时长" min-width="100">
             <template slot-scope="scope">{{$duration(scope.row.timeLimit)}}</template>
           </el-table-column>
@@ -286,8 +326,13 @@
               <template v-else>0</template>
             </template>
           </el-table-column>
-          <el-table-column prop="currMonthCooperateNum" label="本月合作次数" min-width="100"></el-table-column>
-          <el-table-column prop label="操作" width="230" v-if="subordinate==150">
+          <el-table-column prop="currMonthCooperateNum" label="本月合作次数" min-width="100">
+            <template slot-scope="scope">
+              <template v-if="scope.row.currMonthCooperateNum">{{scope.row.currMonthCooperateNum}}</template>
+              <template v-else>0</template>
+            </template>
+          </el-table-column>
+          <el-table-column prop label="操作" width="230" v-if="subordinate==150||userId==3910||userId==4023">
             <template slot-scope="scope">
               <el-tooltip class="item" effect="dark" content="预约记录" placement="top">
                 <i class="el-icon-time" @click="toRecord(scope.row.ownerId)"></i>
@@ -302,7 +347,7 @@
                 <i class="el-icon-map-location" @click="toOwnerssite(scope.row)"></i>
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="删除" placement="top">
-                <i class="el-icon-delete" @click="delContent(scope.row)" v-if="postId==231"></i>
+                <i class="el-icon-delete" @click="delContent(scope.row)" v-if="postId==231||userId==3910||userId==4023"></i>
               </el-tooltip>
             </template>
           </el-table-column>
@@ -321,7 +366,7 @@
         ></el-pagination>
       </el-col>
     </el-row>
-    <!-- content3 end -->
+    <!-- 资源型车主列表 end -->
 
     <!-- 内容列表 end -->
   </div>
@@ -352,47 +397,47 @@ export default {
       options: [
         {
           value: '选项1',
-          label: '黄金糕'
+          label: '黄金糕',
         },
         {
           value: '选项2',
-          label: '双皮奶'
+          label: '双皮奶',
         },
         {
           value: '选项3',
-          label: '蚵仔煎'
+          label: '蚵仔煎',
         },
         {
           value: '选项4',
-          label: '龙须面'
+          label: '龙须面',
         },
         {
           value: '选项5',
-          label: '北京烤鸭'
-        }
+          label: '北京烤鸭',
+        },
       ],
       value: '',
       leisureOwnersList: [
         {
           value: 0,
-          label: '空挡车主'
+          label: '空挡车主',
         },
         {
           value: 1,
-          label: '未来3天'
+          label: '未来3天',
         },
         {
           value: 2,
-          label: '未来5天'
+          label: '未来5天',
         },
         {
           value: 3,
-          label: '未来一周'
+          label: '未来一周',
         },
         {
           value: 4,
-          label: '未来一月'
-        }
+          label: '未来一月',
+        },
       ],
       leisureOwners: '',
       // 车系列表
@@ -404,15 +449,15 @@ export default {
       // 分页数据
       pageNum: 1,
       pageSize: 30,
-      total: 0
+      total: 0,
     }
   },
   // 侦听器
   watch: {
-    tab1act: function(newData, oldData) {
+    tab1act: function (newData, oldData) {
       // this.tabItems()
       this.geteventDataList(newData)
-    }
+    },
   },
   // 钩子函数
   beforeCreate() {},
@@ -452,7 +497,7 @@ export default {
       let eventList = []
       this.$axios
         .post('/ocarplay/api/carSeries/getCarSeriesLists', {})
-        .then(res => {
+        .then((res) => {
           // console.log(res)
           // this.loading = false
           if (res.status == 200) {
@@ -465,7 +510,7 @@ export default {
               }
               carSeriesList.push({
                 value: element.carTypeId,
-                label: `${element.deptName}-${element.carTypeName}`
+                label: `${element.deptName}-${element.carTypeName}`,
               })
             })
             this.carSeriesList = carSeriesList
@@ -487,21 +532,21 @@ export default {
       // console.log(1)
       let eventList = []
       let data = {
-        typeId: id
+        typeId: id,
       }
       this.$axios
         .post('/ocarplay/api/vehicleOwner/getOwnerTypeItems', data)
-        .then(res => {
+        .then((res) => {
           // console.log(res)
           // this.loading = false
           if (res.status == 200) {
             // console.log(res)
             let data = res.data
             let eventDataList = []
-            data.forEach(element => {
+            data.forEach((element) => {
               eventDataList.push({
                 id: element.itemId,
-                name: element.itemName
+                name: element.itemName,
               })
             })
             this.tab2Items = eventDataList
@@ -548,10 +593,10 @@ export default {
         futurePeriodType: this.leisureOwners,
         vehicleOwner: {
           typeId: this.tab1act,
-          itemId: this.tab2act
+          itemId: this.tab2act,
         },
         pageNum: this.pageNum,
-        pageSize: this.pageSize
+        pageSize: this.pageSize,
       }
       if (this.cityName) {
         data.city = this.cityName + '市'
@@ -560,7 +605,7 @@ export default {
       }
       this.$axios
         .post('/ocarplay/api/vehicleOwner/listAjax', data)
-        .then(res => {
+        .then((res) => {
           // console.log(res)
           // this.drawerLoading = false
           // this.drawerAdd = false
@@ -613,8 +658,8 @@ export default {
       this.$router.push({
         name: 'ownerssite',
         params: {
-          ownerId: prm.ownerId
-        }
+          ownerId: prm.ownerId,
+        },
       })
       // console.log(prm)
     },
@@ -630,8 +675,8 @@ export default {
         name: 'ownersrecord',
         // query: { id: id }
         params: {
-          id: id
-        }
+          id: id,
+        },
       })
     },
     ///////// 跳转预约记录页面 end /////////
@@ -646,8 +691,8 @@ export default {
         name: 'ownersschedule',
         // query: { id: id }
         params: {
-          id: id
-        }
+          id: id,
+        },
       })
     },
     ///////// 跳日程管理页面 end /////////
@@ -657,7 +702,7 @@ export default {
       this.$confirm('确认要删除该车主吗?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
       })
         .then(() => {
           // this.$message({
@@ -669,18 +714,18 @@ export default {
         .catch(() => {
           this.$message({
             type: 'info',
-            message: '已取消删除'
+            message: '已取消删除',
           })
         })
     },
     delOwners(par) {
       let data = {
         coopId: par.coopId,
-        typeId: par.typeId
+        typeId: par.typeId,
       }
       this.$axios
         .post('/ocarplay/api/vehicleOwner/deleteVehicleOwner', data)
-        .then(res => {
+        .then((res) => {
           // console.log(res)
           if (res.status == 200 && res.data.errcode == 0) {
             let data = res.data
@@ -702,8 +747,8 @@ export default {
         name: 'addowners',
         // query: { id: id }
         params: {
-          type: 0
-        }
+          type: 0,
+        },
       })
     },
     ///////// 确认 end /////////
@@ -733,12 +778,12 @@ export default {
         path: '/home/ownersdetail',
         query: {
           typeId: prm.typeId,
-          vehicleOwnerId: vehicleOwnerId
-        }
+          vehicleOwnerId: vehicleOwnerId,
+        },
       })
-    }
+    },
     ///////// 跳转车主信息页面 end /////////
-  }
+  },
 }
 </script>
 <style lang="scss" scoped>
@@ -755,7 +800,7 @@ $icoColor: rgb(106, 145, 232);
     align-items: center;
     .left {
       height: 100%;
-      font-size: 14px;
+      font-size: 12px;
       display: flex;
       flex-wrap: wrap;
       align-items: center;
@@ -767,14 +812,14 @@ $icoColor: rgb(106, 145, 232);
         display: flex;
         flex-wrap: wrap;
         align-items: center;
-        border-radius: 6px;
+        border-radius: 3px;
         border: 1px solid rgb(205, 205, 205);
         .but {
           width: 81px;
           height: 32px;
           line-height: 32px;
           text-align: center;
-          font-size: 14px;
+          font-size: 12px;
           cursor: pointer;
           box-sizing: border-box;
           border-left: 1px solid rgb(205, 205, 205);
@@ -797,14 +842,14 @@ $icoColor: rgb(106, 145, 232);
         display: flex;
         flex-wrap: wrap;
         align-items: center;
-        border-radius: 6px;
+        border-radius: 3px;
         border: 1px solid rgb(205, 205, 205);
         .but {
           width: 81px;
           height: 32px;
           line-height: 32px;
           text-align: center;
-          font-size: 14px;
+          font-size: 12px;
           cursor: pointer;
           box-sizing: border-box;
           border-left: 1px solid rgb(205, 205, 205);

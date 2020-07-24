@@ -64,11 +64,16 @@ export default new Vuex.Store({
     taskStatusNum: 0,
     ownersTypeNum: 1,
     vehicleOwnerDetailNum: [0, 0],
+    // 是否为管理员账号
+    adminShow: false
   },
   action: {
 
   },
   mutations: {
+    getAdminShow(state, data){
+      state.adminShow = data
+    },
     // 任务管理状态记录
     taskStatus(state, data) {
       state.taskStatusNum = data

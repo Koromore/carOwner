@@ -33,8 +33,8 @@
           <el-table-column prop="createTime" label="时间" width="81">
             <template slot-scope="scope">{{$date(scope.row.createTime)}}</template>
           </el-table-column>
-          <el-table-column prop="name" label="收件人" min-width="90"></el-table-column>
-          <el-table-column prop="itemName" label="合作事项" min-width="100"></el-table-column>
+          <el-table-column prop="name" label="收件人" min-width="70" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="itemName" label="合作事项" min-width="80" show-overflow-tooltip></el-table-column>
           <el-table-column prop="title" label="内容标题" min-width="130" show-overflow-tooltip></el-table-column>
           <el-table-column prop="link" label="链接" width="60">
             <template slot-scope="scope">
@@ -42,9 +42,9 @@
             </template>
           </el-table-column>
           <el-table-column prop="phone" label="电话" min-width="110"></el-table-column>
-          <el-table-column prop="homeAddress" label="地址" min-width="210" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="bankCard" label="银行卡号" min-width="130" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="isCard" label="油卡或现金" width="100" align="center">
+          <el-table-column prop="homeAddress" label="地址" min-width="180" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="bankCard" label="银行卡号" min-width="110" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="isCard" label="油卡或现金" min-width="90" align="center">
             <template slot-scope="scope">
               <template v-if="scope.row.isCard">现金</template>
               <template v-else>油卡</template>

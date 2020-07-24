@@ -356,7 +356,7 @@ export default {
                     element2.alreadyCooperateNum &&
                     element2.coopNum - element2.alreadyCooperateNum <= 0
                   ) {
-                    cosnole.log()
+                    // cosnole.log()
                     list[i].children[j].children.push({
                       value: element2.vehicleOwnerId,
                       label: element2.name,

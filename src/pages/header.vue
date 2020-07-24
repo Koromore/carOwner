@@ -1,9 +1,9 @@
 <template>
   <!-- <div> -->
 
-  <el-header style="height: 70px" id="homeHeader">
+  <el-header style="height: 60px" id="homeHeader">
     <el-row>
-      <el-col :span="16" class="header_left">
+      <el-col :span="18" class="header_left">
         <!-- logo start -->
         <img src="static/images/hander/logo.png" class="logo" alt srcset />
         <!-- logo start -->
@@ -11,19 +11,20 @@
         <!-- 导航 start -->
         <div class="navList">
           <div @click="navTo(1)" :class="[navNum==0?'act':'']">任务管理</div>
-          <!-- <div @click="navTo(2)" :class="[navNum==1?'act':'']" v-if="deptId==90">结算管理</div> -->
-          <div @click="navTo(2)" :class="[navNum==1?'act':'']">结算管理</div>
+          <div @click="navTo(2)" :class="[navNum==1?'act':'']" v-if="deptId==90||userId==3910||userId==4023">结算管理</div>
+          <!-- <div @click="navTo(2)" :class="[navNum==1?'act':'']">结算管理</div> -->
           <div @click="navTo(3)" :class="[navNum==2?'act':'']">车主管理</div>
           <div @click="navTo(4)" :class="[navNum==3?'act':'']">场地管理</div>
-          <div @click="navTo(5)" :class="[navNum==4?'act':'']">数据分析</div>
-          <!-- <div @click="navTo(6)" :class="[navNum==5?'act':'']" v-if="deptId==150">元数据管理</div> -->
-          <div @click="navTo(6)" :class="[navNum==5?'act':'']">元数据管理</div>
+          <div @click="navTo(5)" :class="[navNum==4?'act':'']" v-if="subordinate==150||userId==3910||userId==4023">数据分析</div>
+          <!-- <div @click="navTo(5)" :class="[navNum==4?'act':'']">数据分析</div> -->
+          <div @click="navTo(6)" :class="[navNum==5?'act':'']" v-if="postId==231||userId==3910||userId==4023">元数据管理</div>
+          <!-- <div @click="navTo(6)" :class="[navNum==5?'act':'']">元数据管理</div> -->
           <div @click="navTo(7)" :class="[navNum==6?'act':'']">合作文档</div>
         </div>
         <!-- 导航 end -->
       </el-col>
 
-      <el-col :span="6" :offset="2" class="header_right">
+      <el-col :span="6" class="header_right">
         <!-- 搜索框 start -->
         <!-- <el-input
           placeholder="请输入内容"
@@ -179,7 +180,8 @@ export default {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      justify-content: space-around;
+      justify-content: flex-start;
+      // margin-left: 6%;
       font-size: 16px;
       .act {
         font-weight: 700;
@@ -187,7 +189,10 @@ export default {
       }
       div {
         cursor: pointer;
-        // margin-right: 3%;
+        margin-right: 6%;
+        &:nth-last-of-type(1){
+          margin-right: 0;
+        }
       }
     }
   }

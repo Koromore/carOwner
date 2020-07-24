@@ -44,6 +44,7 @@
             <el-image :src="item.image" fit="cover"></el-image>
           </div>
           <div class="right">
+            <div>
             <p>车主姓名：{{item.name}}</p>
             <p>
               <template v-if="item.typeId == 1">车主类型：支持型</template>
@@ -51,8 +52,13 @@
               <template v-else-if="item.typeId == 3">车主类型：资源型</template>
             </p>
             <p>车主来源：{{item.sourceName}}</p>
+            </div>
           </div>
-          <div class="bottom">{{item.carSeriesName}}</div>
+          <div class="bottom">
+            <span v-for="(items,index2) in item.ownerCarSeries" :key="index2">
+              {{items.carSeriesName}}
+            </span>
+          </div>
         </el-col>
       </el-col>
       <el-col :span="24" class="paging">
@@ -242,32 +248,36 @@ $icoColor: rgb(106, 145, 232);
     }
   }
   .content {
-    height: calc(100% - 88px);
+    height: calc(100% - 104px);
     background: #fff;
     .table_list {
       height: calc(100% - 64px);
       padding: 0 36px;
       display: flex;
       flex-wrap: wrap;
-      justify-content: space-between;
+      justify-content: flex-start;
       align-content: flex-start;
       align-items: flex-start;
       .items {
         // width: 400px;
-        height: 30%;
+        height: 32%;
         min-height: 160px;
         margin-bottom: 1%;
+        margin-left: 6.25%;
         box-sizing: border-box;
         padding: 9px;
         border: 1px solid rgb(187, 187, 187);
         border-radius: 9px;
         display: flex;
         flex-wrap: wrap;
-        justify-content: space-between;
-        align-content: space-between;
+        justify-content: space-around;
+        align-content: space-around;
         align-items: flex-start;
+        &:nth-of-type(3n+1){
+          margin-left: 0;
+        }
         .left {
-          width: 48%;
+          width: 43%;
           height: 123px;
           .el-image {
             width: 100%;
@@ -275,12 +285,19 @@ $icoColor: rgb(106, 145, 232);
           }
         }
         .right {
-          width: 48%;
+          width: 43%;
           height: 123px;
           display: flex;
           flex-wrap: wrap;
-          justify-content: flex-start;
+          justify-content: center;
           align-items: center;
+          > div{
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: center;
+          }
           p {
             width: 100%;
           }

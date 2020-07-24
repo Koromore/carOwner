@@ -45,10 +45,10 @@
       </el-row>
       <el-col :span="24" class="btn">
           <el-col :span="6" :offset="5">
-            <el-button type="info" @click="cancel">取消</el-button>
+            <el-button type="info" @click="cancel" size="small">取消</el-button>
           </el-col>
           <el-col :span="6" :offset="2">
-            <el-button type="primary" @click="saveSubmit">提交</el-button>
+            <el-button type="primary" @click="saveSubmit" size="small">提交</el-button>
           </el-col>
         </el-col>
     </el-drawer>
@@ -254,7 +254,7 @@ $icoColor: rgb(106, 145, 232);
       }
     }
     i {
-      font-size: 24px;
+      font-size: 20px;
       color: $icoColor;
       cursor: pointer;
       margin-right: 13px;

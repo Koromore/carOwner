@@ -162,11 +162,10 @@ $icoColor: rgb(106, 145, 232);
         text-align: center;
         color: $icoColor;
         font-size: 13px;
-        margin-right: 24px;
+        margin-right: 36px;
         cursor: pointer;
         i {
-          font-size: 26px;
-          font-weight: bold;
+          font-size: 24px;
         }
       }
     }

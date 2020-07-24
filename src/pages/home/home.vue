@@ -17,6 +17,10 @@ export default {
   },
   data() {
     return {
+      userId: this.$store.state.user.userId, // 用户ID
+      deptId: this.$store.state.user.deptId, // 部门ID
+      postId: this.$store.state.user.postId, // 职位ID
+      subordinate: this.$store.state.user.subordinate, // 一级部门ID
       // 0-进行中，1-结算中，2-完成，3-延期，4-人工延期
       routeName: 'task',
       carSeriesList: [],
@@ -112,8 +116,18 @@ export default {
           }
         })
       }
-    }
+    },
     ///////// 用户列表获取 end /////////
+    gitAdmin(){
+      let adminList = []
+      let userId = this.userId
+      let adminShow = false
+      adminList.forEach(element => {
+        if (userId==element) {
+          adminShow = true
+        }
+      });
+    }
   }
 }
 </script>
@@ -123,7 +137,7 @@ export default {
   #content {
     min-width: 1300px;
     box-sizing: border-box;
-    height: calc(100vh - 70px);
+    height: calc(100vh - 60px);
     padding-top: 9px;
     padding-bottom: 0;
   }
@@ -150,5 +164,12 @@ export default {
     background: url('../../../static/images/ico/imp.png') left center no-repeat;
     background-size: 9px 9px;
   }
+}
+#home .el-table td,
+#home .el-table th {
+  padding: 9px 0;
+}
+.el-image{
+  display: block;
 }
 </style>

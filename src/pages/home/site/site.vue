@@ -32,7 +32,7 @@
         </el-select>-->
       </el-col>
 
-      <el-col :span="8" class="right" v-if="subordinate==150">
+      <el-col :span="8" class="right" v-if="subordinate==150||userId==3910||userId==4023">
         <div class="add_task" @click="addSite(0)">
           <i class="el-icon-circle-plus-outline"></i>
           <br />添加场地
@@ -47,7 +47,7 @@
         <el-table
           :data="placeListData"
           style="width: 100%"
-          :header-row-style="{'height': '54px','background': 'rgb(242, 242, 242)'}"
+          :header-row-style="{'height': '54px'}"
           :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
           height="100%"
         >
@@ -74,13 +74,13 @@
               <i class="el-icon-user" @click="toSitecarownerlist(scope.row.city)"></i>
             </template>
           </el-table-column>
-          <el-table-column label="操作" width="100" v-if="subordinate==150">
+          <el-table-column label="操作" width="100" v-if="subordinate==150||userId==3910||userId==4023">
             <template slot-scope="scope">
               <el-tooltip class="item" effect="dark" content="修改场地" placement="top">
                 <i class="el-icon-edit" @click="addSite(1, scope.row.placeId)"></i>
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="删除场地" placement="top">
-                <i class="el-icon-delete" @click="delSite(scope.row.placeId)" v-if="postId==231"></i>
+                <i class="el-icon-delete" @click="delSite(scope.row.placeId)" v-if="postId==231||userId==3910||userId==4023"></i>
               </el-tooltip>
             </template>
           </el-table-column>
@@ -163,10 +163,10 @@
         <!-- 底部按钮 -->
         <el-col :span="24" class="btn">
           <el-col :span="6" :offset="5">
-            <el-button type="info" @click="cancel">取消</el-button>
+            <el-button type="info" size="small" @click="cancel">取消</el-button>
           </el-col>
           <el-col :span="6" :offset="2">
-            <el-button type="primary" @click="addSubmit">提交</el-button>
+            <el-button type="primary" size="small" @click="addSubmit">提交</el-button>
           </el-col>
         </el-col>
       </el-row>
@@ -718,15 +718,14 @@ $icoColor: rgb(106, 145, 232);
       align-items: center;
       justify-content: flex-end;
       box-sizing: border-box;
-      padding-right: 24px;
+      padding-right: 36px;
       .add_task {
         text-align: center;
         color: $icoColor;
         font-size: 13px;
         cursor: pointer;
         i {
-          font-size: 26px;
-          font-weight: bold;
+          font-size: 24px;
         }
       }
     }

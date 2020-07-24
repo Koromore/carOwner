@@ -346,7 +346,7 @@ export default {
       this.$axios
         .post('/ocarplay/api/carSeries/getCarSeriesLists', data)
         .then(res => {
-          console.log(res)
+          // console.log(res)
           this.listLoading = false
           if (res.status == 200) {
             let data = res.data.carTypes
@@ -400,7 +400,7 @@ export default {
               }
             })
             this.carSeriesListData = carSeriesListData
-            console.log(carSeriesListData)
+            // console.log(carSeriesListData)
           }
         })
     },
@@ -470,7 +470,7 @@ $icoColor: rgb(106, 145, 232);
       }
     }
     i {
-      font-size: 24px;
+      font-size: 20px;
       color: $icoColor;
       cursor: pointer;
       margin-right: 13px;
@@ -494,7 +494,7 @@ $icoColor: rgb(106, 145, 232);
         align-items: center;
         justify-content: space-between;
         i {
-          font-size: 24px;
+          font-size: 20px;
           cursor: pointer;
         }
       }
