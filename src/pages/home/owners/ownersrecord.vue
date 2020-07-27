@@ -120,7 +120,7 @@ export default {
       let data = {
         pageNum: this.pageNum,
         pageSize: this.pageSize,
-        vehicleOwnerId: this.$route.params.id,
+        vehicleOwnerId: this.$route.query.id,
         isDo: true
       }
       this.$axios

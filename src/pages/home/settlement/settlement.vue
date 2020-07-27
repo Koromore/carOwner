@@ -135,11 +135,13 @@
 
 export default {
   name: 'settlement',
+  props: ['searchWordData'],
   components: {},
   data() {
     return {
       userId: this.$store.state.user.userId,
       deptId: this.$store.state.user.deptId,
+      adminShow: this.$store.state.adminShow, // 管理员
       // // top left 选项卡
       // tab1act: 1,
       // top right 选项卡
@@ -171,7 +173,12 @@ export default {
     }
   },
   // 侦听器
-  watch: {},
+  watch: {
+    searchWordData: function (newData, oldData) {
+      // console.log(newData)
+      this.getInviteList()
+    }
+  },
   // 钩子函数
   beforeCreate() {},
   beforeMount() {},
@@ -204,7 +211,8 @@ export default {
         task: {
           deleteFlag: false,
           status: 0,
-          deptId: this.memuValue
+          deptId: this.memuValue,
+          taskName: this.searchWordData.value
         },
         pageNum: this.pageNum,
         pageSize: this.pageSize
@@ -344,7 +352,7 @@ $icoColor: rgb(106, 145, 232);
         overflow: hidden;
         background: rgb(160, 160, 160);
         color: white;
-        border-radius: 6px;
+        border-radius: 3px;
         display: flex;
         flex-wrap: wrap;
         align-items: center;
@@ -352,7 +360,7 @@ $icoColor: rgb(106, 145, 232);
           width: 81px;
           height: 32px;
           line-height: 32px;
-          font-size: 14px;
+          font-size: 12px;
           text-align: center;
           cursor: pointer;
         }

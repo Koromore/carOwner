@@ -37,7 +37,6 @@
             >云图系统</div>-->
 
             <!-- {{date}} -->
-
             <div
               class="schedule"
               @click="scheduleDetail(item.schId)"
@@ -231,7 +230,7 @@ export default {
     return {
       num: [1],
       // 日程记录
-      ownerId: this.$route.params.id,
+      ownerId: this.$route.query.id,
       newDate: new Date(),
       scheduleRecord: false,
       // 日程列表

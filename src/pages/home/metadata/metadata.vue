@@ -136,14 +136,14 @@ $icoColor: rgb(106, 145, 232);
         display: flex;
         flex-wrap: wrap;
         align-items: center;
-        border-radius: 6px;
+        border-radius: 3px;
         border: 1px solid rgb(205, 205, 205);
         .but {
           width: 81px;
           height: 32px;
           line-height: 32px;
           text-align: center;
-          font-size: 14px;
+          font-size: 12px;
           cursor: pointer;
           box-sizing: border-box;
           border-left: 1px solid rgb(205, 205, 205);
@@ -161,7 +161,7 @@ $icoColor: rgb(106, 145, 232);
       .addContent {
         text-align: center;
         color: $icoColor;
-        font-size: 13px;
+        font-size: 12px;
         margin-right: 36px;
         cursor: pointer;
         i {

@@ -60,7 +60,7 @@
           <el-button type="warning" size="small" @click="statusChange(1)">结算中</el-button>
           <el-button type="info" size="small" @click="statusChange(2)">已完成</el-button>
         </el-button-group>
-        <div class="add_task" @click="addTask(0)" v-if="subordinate==150||userId==3910||userId==4023">
+        <div class="add_task" @click="addTask(0)" v-if="subordinate==150||adminShow">
           <i class="el-icon-circle-plus-outline"></i>
           <br />新建任务
         </div>
@@ -127,7 +127,7 @@
           <el-table-column prop="endTime" label="预计时间" min-width="100" sortable>
             <template slot-scope="scope">{{$date(scope.row.endTime)}}</template>
           </el-table-column>
-          <el-table-column prop="address" label="操作" width="200" v-if="subordinate==150||userId==3910||userId==4023">
+          <el-table-column prop="address" label="操作" width="200" v-if="subordinate==150||adminShow">
             <template slot-scope="scope">
               <el-tooltip class="item" effect="dark" content="编辑任务" placement="top">
                 <i class="el-icon-edit" @click="addTask(1, scope.row.taskId)"></i>
@@ -142,7 +142,7 @@
               </el-tooltip>
 
               <el-tooltip class="item" effect="dark" content="删除任务" placement="top">
-                <i class="el-icon-circle-close" @click="delContent(scope.row.taskId)" v-if="postId==231||userId==3910||userId==4023"></i>
+                <i class="el-icon-circle-close" @click="delContent(scope.row.taskId)" v-if="postId==231||adminShow"></i>
               </el-tooltip>
             </template>
           </el-table-column>
@@ -217,7 +217,8 @@
             <template slot-scope="scope">{{$date(scope.row.endTime)}}</template>
           </el-table-column>
           <el-table-column prop="delayReason" label="延期原因" min-width="100"></el-table-column>
-          <el-table-column prop="address" label="操作" width="200" v-if="subordinate==150||userId==3910||userId==4023">
+          <el-table-column prop="address" label="操作" width="200" v-if="subordinate==150||adminShow">
+            <!-- this.$store.state -->
             <template slot-scope="scope">
               <el-tooltip class="item" effect="dark" content="编辑任务" placement="top">
                 <i class="el-icon-edit" @click="addTask(1, scope.row.taskId)"></i>
@@ -232,7 +233,7 @@
               </el-tooltip>
 
               <el-tooltip class="item" effect="dark" content="删除任务" placement="top">
-                <i class="el-icon-circle-close" @click="delContent(scope.row.taskId)" v-if="postId==231||userId==3910||userId==4023"></i>
+                <i class="el-icon-circle-close" @click="delContent(scope.row.taskId)" v-if="postId==231||adminShow"></i>
               </el-tooltip>
             </template>
           </el-table-column>
@@ -513,6 +514,7 @@ import { saveAs } from 'file-saver'
 
 export default {
   name: 'task',
+  props: ['searchWordData'],
   components: {},
   data() {
     return {
@@ -520,6 +522,7 @@ export default {
       deptId: this.$store.state.user.deptId, // 部门ID
       postId: this.$store.state.user.postId, // 职位ID
       subordinate: this.$store.state.user.subordinate, // 一级部门ID
+      adminShow: this.$store.state.adminShow, // 超级管理员
 
       taskId: '', // 任务ID
       taskName: '', // 任务ID
@@ -593,7 +596,12 @@ export default {
     }
   },
   // 侦听器
-  watch: {},
+  watch: {
+    searchWordData: function (newData, oldData) {
+      // console.log(newData)
+      this.getTaskListAjax()
+    }
+  },
   // 钩子函数
   beforeCreate() {},
   beforeMount() {},
@@ -710,7 +718,8 @@ export default {
           status: this.status,
           typeId: this.typeId,
           itemId: this.itemId,
-          carSeriesId: this.carSeriesId
+          carSeriesId: this.carSeriesId,
+          taskName: this.searchWordData.value
         }
 
         // task: {
@@ -1156,7 +1165,7 @@ $statusColor4: #ea8a85;
       .add_task {
         text-align: center;
         color: $icoColor;
-        font-size: 13px;
+        font-size: 12px;
         cursor: pointer;
         i {
           font-size: 24px;

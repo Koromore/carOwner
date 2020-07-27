@@ -66,6 +66,7 @@
 
 export default {
   name: 'document',
+  props: ['searchWordData'],
   components: {},
   data() {
     return {
@@ -77,7 +78,12 @@ export default {
     }
   },
   // 侦听器
-  watch: {},
+  watch: {
+    searchWordData: function (newData, oldData) {
+      // console.log(newData)
+      this.getTaskListAjax()
+    }
+  },
   // 钩子函数
   beforeCreate() {},
   beforeMount() {},
@@ -92,14 +98,17 @@ export default {
       let data = {
         pageNum: this.pageNum,
         pageSize: this.pageSize,
+        cooperate:{
+          fileName: this.searchWordData.value
+        }
       }
       this.$axios.post('/ocarplay/api/cooperate/listAjax', data).then(res => {
-        console.log(res)
+        // console.log(res)
         if (res.status == 200) {
           let data = res.data
           this.cooperateleListData = data.items
           this.total = data.totalRows
-          console.log(this.cooperateleListData)
+          // console.log(this.cooperateleListData)
         }
       })
     },

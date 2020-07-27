@@ -65,12 +65,13 @@ export default new Vuex.Store({
     ownersTypeNum: 1,
     vehicleOwnerDetailNum: [0, 0],
     // 是否为管理员账号
-    adminShow: false
+    adminShow: true
   },
   action: {
 
   },
   mutations: {
+    // 判断管理员账号
     getAdminShow(state, data){
       state.adminShow = data
     },

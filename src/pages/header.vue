@@ -3,7 +3,7 @@
 
   <el-header style="height: 60px" id="homeHeader">
     <el-row>
-      <el-col :span="18" class="header_left">
+      <el-col :span="17" class="header_left">
         <!-- logo start -->
         <img src="static/images/hander/logo.png" class="logo" alt srcset />
         <!-- logo start -->
@@ -11,22 +11,22 @@
         <!-- 导航 start -->
         <div class="navList">
           <div @click="navTo(1)" :class="[navNum==0?'act':'']">任务管理</div>
-          <div @click="navTo(2)" :class="[navNum==1?'act':'']" v-if="deptId==90||userId==3910||userId==4023">结算管理</div>
+          <div @click="navTo(2)" :class="[navNum==1?'act':'']" v-if="deptId==90||adminShow">结算管理</div>
           <!-- <div @click="navTo(2)" :class="[navNum==1?'act':'']">结算管理</div> -->
           <div @click="navTo(3)" :class="[navNum==2?'act':'']">车主管理</div>
           <div @click="navTo(4)" :class="[navNum==3?'act':'']">场地管理</div>
-          <div @click="navTo(5)" :class="[navNum==4?'act':'']" v-if="subordinate==150||userId==3910||userId==4023">数据分析</div>
+          <div @click="navTo(5)" :class="[navNum==4?'act':'']" v-if="postId==231||adminShow">数据分析</div>
           <!-- <div @click="navTo(5)" :class="[navNum==4?'act':'']">数据分析</div> -->
-          <div @click="navTo(6)" :class="[navNum==5?'act':'']" v-if="postId==231||userId==3910||userId==4023">元数据管理</div>
+          <div @click="navTo(6)" :class="[navNum==5?'act':'']" v-if="postId==231||adminShow">元数据管理</div>
           <!-- <div @click="navTo(6)" :class="[navNum==5?'act':'']">元数据管理</div> -->
           <div @click="navTo(7)" :class="[navNum==6?'act':'']">合作文档</div>
         </div>
         <!-- 导航 end -->
       </el-col>
 
-      <el-col :span="6" class="header_right">
+      <el-col :span="7" class="header_right">
         <!-- 搜索框 start -->
-        <!-- <el-input
+        <el-input
           placeholder="请输入内容"
           v-model="searchWord"
           class="input-with-select search"
@@ -43,7 +43,7 @@
             <el-option label="文档" value="5"></el-option>
           </el-select>
           <el-button slot="append" icon="el-icon-search" @click="searchStart"></el-button>
-        </el-input> -->
+        </el-input>
         <!-- 搜索框 end -->
 
         <!-- 用户信息 start -->
@@ -66,7 +66,7 @@
 export default {
   name: 'homeHeader',
   props: {
-    routeName: String
+    routeName: String,
   },
   data() {
     return {
@@ -74,11 +74,14 @@ export default {
       deptId: this.$store.state.user.deptId, // 部门ID
       postId: this.$store.state.user.postId, // 职位ID
       subordinate: this.$store.state.user.subordinate, // 一级部门ID
+      adminShow: this.$store.state.adminShow, // 管理员
+
       // 搜索内容
+      searchWordKey: 0,
       searchWord: '',
       // 搜索维度
       select: '1',
-      navNum: 0
+      navNum: 0,
     }
   },
   // 侦听器
@@ -87,19 +90,35 @@ export default {
     // unread: function(newQuestion, oldQuestion) {
     // }
     routeName: function (newData, oldData) {
-      let list = [['task','addTask','taskDetail','tasksettlement'],['settlement','settlementDetail'],['owners','ownerssite','ownersrecord','ownersschedule','addowners','ownersdetail'],['site','sitecarownerlist'],['analysis'],['metadata'],['document']]
+      let list = [
+        ['task', 'addTask', 'taskDetail', 'tasksettlement'],
+        ['settlement', 'settlementDetail'],
+        [
+          'owners',
+          'ownerssite',
+          'ownersrecord',
+          'ownersschedule',
+          'addowners',
+          'ownersdetail',
+        ],
+        ['site', 'sitecarownerlist'],
+        ['analysis'],
+        ['metadata'],
+        ['document'],
+      ]
       let navNum = 0
       list.forEach((element, i) => {
         for (let j = 0; j < element.length; j++) {
-          const element_ = element[j];
+          const element_ = element[j]
           if (newData == element_) {
             // console.log(i)
             this.navNum = i
             break
           }
         }
-      });
-    }
+      })
+      // console.log(this.navNum)
+    },
   },
   // 钩子函数
   mounted() {
@@ -112,7 +131,7 @@ export default {
       this.$confirm('是否退出?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
       })
         .then(() => {
           this.$store.commit('logout')
@@ -124,9 +143,35 @@ export default {
 
     ///////// 搜索事件 start /////////
     searchStart() {
-      let searchWord = this.searchWord
       let select = this.select
-      console.log(searchWord, select)
+      let routeName = this.$route.name
+      // let searchWord = {
+      //   searchWord: this.searchWord,
+      //   select: this.select,
+      //   routeName = this.$route.name
+      // }
+      this.searchWordKey + 1
+      let searchWordValue = this.searchWord.replace(/\s+/g,"");     
+      let searchWord = {
+        key: this.searchWordKey,
+        value: searchWordValue,
+        type: select,
+      }
+      // console.log(searchWord)
+      // console.log(select)
+      // console.log(this.$route.name)
+      if (select == 1 && routeName !== 'task') {
+        this.$router.push({ path: '/home/task' })
+      } else if (select == 2 && routeName !== 'settlement') {
+        this.$router.push({ path: '/home/settlement' })
+      } else if (select == 3 && routeName !== 'owners') {
+        this.$router.push({ path: '/home/owners' })
+      } else if (select == 4 && routeName !== 'site') {
+        this.$router.push({ path: '/home/site' })
+      } else if (select == 5 && routeName !== 'document') {
+        this.$router.push({ path: '/home/document' })
+      }
+      this.$emit('sousuo', searchWord)
     },
     ///////// 搜索事件 end /////////
 
@@ -151,9 +196,9 @@ export default {
         url = '/home/document'
       }
       this.$router.push({ path: url })
-    }
+    },
     ///////// 导航页面跳转 end /////////
-  }
+  },
 }
 </script>
 
@@ -190,7 +235,7 @@ export default {
       div {
         cursor: pointer;
         margin-right: 6%;
-        &:nth-last-of-type(1){
+        &:nth-last-of-type(1) {
           margin-right: 0;
         }
       }
@@ -205,11 +250,11 @@ export default {
       width: 320px;
       margin-right: 13px;
       .el-select {
-        width: 81px;
+        width: 72px;
       }
     }
     .admin {
-      width: 210px;
+      // width: 210px;
       display: flex;
       flex-wrap: wrap;
       align-items: center;
@@ -223,5 +268,12 @@ export default {
     }
   }
 }
-
+</style>
+<style lang="scss">
+#homeHeader {
+  .el-input-group__append,
+  .el-input-group__prepend {
+    background: none;
+  }
+}
 </style>

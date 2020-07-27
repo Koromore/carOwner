@@ -38,10 +38,11 @@
               {{scope.row.province}}{{scope.row.city}}{{scope.row.area}}{{scope.row.address}}
             </template>
           </el-table-column>
-          <el-table-column prop="address" label="环境图片" width="130" align="center">
+          <el-table-column prop="address" label="环境图片" width="130">
             <template slot-scope="scope">
               <el-image
-                style="width: 30px"
+                style="width: 20px;height: 20px;margin-left: 16px;"
+                fit="contain"
                 src="static/images/ico/eye.png"
                 :preview-src-list="['/ocarplay/'+scope.row.image]"
               ></el-image>
@@ -105,34 +106,13 @@ export default {
   beforeCreate() {},
   beforeMount() {},
   mounted() {
-    console.log(this.$route.params.ownerId)
+    console.log(this.$route.query.ownerId)
     // this.foreach()
     ///////// 获取场地信息 start /////////
     this.getOwnerRelatePlace()
   },
   // 方法
   methods: {
-    ///////// 循环 start /////////
-    // foreach() {
-    //   for (let i = 0; i < 30; i++) {
-    //     // const element = array[i];
-    //     this.tableData.push({
-    //       time: '20-05-04',
-    //       addressee: '解雨臣',
-    //       matter: '文案约稿',
-    //       title: '我和我的XC60生活，此刻是美好的开端',
-    //       link: '',
-    //       tele: '15996325468',
-    //       site: '湖北省武汉市洪山区武大园路武大航宇一期',
-    //       type: '1',
-    //       trackNum: '7894561234561',
-    //       evidence: '7894561234561',
-    //       budget: 500
-    //     })
-    //   }
-    // },
-    ///////// 循环 end /////////
-
     ///////// 返回上一页 start /////////
     previous() {
       this.$router.push({
@@ -146,12 +126,12 @@ export default {
       let data = {
         pageNum: this.pageNum,
         pageSize: this.pageSize,
-        vehicleOwnerId: this.$route.params.ownerId
+        vehicleOwnerId: this.$route.query.ownerId
       }
       this.$axios
         .post('/ocarplay/api/vehicleOwner/getOwnerRelatePlace', data)
         .then(res => {
-          console.log(res)
+          // console.log(res)
           if (res.status == 200) {
             let data = res.data
             this.ownerRelate = data.items

@@ -1347,7 +1347,7 @@ export default {
         })
         data.ipGrows = ipGrows
       }
-      // console.log(data)
+      console.log(data)
       // console.log(judgeList)
 
       let isEmail = this.$isEmail(data.email)

@@ -70,7 +70,7 @@
         </el-select>
         <!-- {{cityName}} -->
         <div @click="submit" class="add">
-          <template v-if="subordinate==150||userId==3910||userId==4023">
+          <template v-if="subordinate==150||adminShow">
             <i class="el-icon-circle-plus-outline"></i>
             <br />添加车主
           </template>
@@ -130,7 +130,7 @@
               <template v-if="scope.row.period == 2">按季度结算</template>
             </template>
           </el-table-column>
-          <el-table-column prop label="操作" width="160" v-if="subordinate==150||userId==3910||userId==4023">
+          <el-table-column prop label="操作" width="160" v-if="subordinate==150||adminShow">
             <template slot-scope="scope">
               <el-tooltip class="item" effect="dark" content="车主信息" placement="top">
                 <i class="el-icon-view" @click="toDetail(scope.row)"></i>
@@ -139,7 +139,11 @@
                 <i class="el-icon-map-location" @click="toOwnerssite(scope.row)"></i>
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="删除" placement="top">
-                <i class="el-icon-delete" @click="delContent(scope.row)" v-if="postId==231||userId==3910||userId==4023"></i>
+                <i
+                  class="el-icon-delete"
+                  @click="delContent(scope.row)"
+                  v-if="postId==231||adminShow"
+                ></i>
               </el-tooltip>
             </template>
           </el-table-column>
@@ -228,7 +232,7 @@
               <template v-else>0</template>
             </template>
           </el-table-column>
-          <el-table-column prop label="操作" width="230" v-if="subordinate==150||userId==3910||userId==4023">
+          <el-table-column prop label="操作" width="230" v-if="subordinate==150||adminShow">
             <template slot-scope="scope">
               <el-tooltip class="item" effect="dark" content="预约记录" placement="top">
                 <i class="el-icon-time" @click="toRecord(scope.row.ownerId)"></i>
@@ -237,13 +241,17 @@
                 <i class="el-icon-view" @click="toDetail(scope.row)"></i>
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="日程管理" placement="top">
-                <i class="el-icon-date" @click="toOwnersschedule(scope.row.ownerId)"></i>
+                <i class="el-icon-date" @click="toOwnersschedule(scope.row.vehicleOwnerId)"></i>
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="场地信息" placement="top">
                 <i class="el-icon-map-location" @click="toOwnerssite(scope.row)"></i>
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="删除" placement="top">
-                <i class="el-icon-delete" @click="delContent(scope.row)" v-if="postId==231||userId==3910||userId==4023"></i>
+                <i
+                  class="el-icon-delete"
+                  @click="delContent(scope.row)"
+                  v-if="postId==231||adminShow"
+                ></i>
               </el-tooltip>
             </template>
           </el-table-column>
@@ -332,7 +340,7 @@
               <template v-else>0</template>
             </template>
           </el-table-column>
-          <el-table-column prop label="操作" width="230" v-if="subordinate==150||userId==3910||userId==4023">
+          <el-table-column prop label="操作" width="230" v-if="subordinate==150||adminShow">
             <template slot-scope="scope">
               <el-tooltip class="item" effect="dark" content="预约记录" placement="top">
                 <i class="el-icon-time" @click="toRecord(scope.row.ownerId)"></i>
@@ -341,13 +349,17 @@
                 <i class="el-icon-view" @click="toDetail(scope.row)"></i>
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="日程管理" placement="top">
-                <i class="el-icon-date" @click="toOwnersschedule(scope.row.ownerId)"></i>
+                <i class="el-icon-date" @click="toOwnersschedule(scope.row.vehicleOwnerId)"></i>
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="场地信息" placement="top">
                 <i class="el-icon-map-location" @click="toOwnerssite(scope.row)"></i>
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="删除" placement="top">
-                <i class="el-icon-delete" @click="delContent(scope.row)" v-if="postId==231||userId==3910||userId==4023"></i>
+                <i
+                  class="el-icon-delete"
+                  @click="delContent(scope.row)"
+                  v-if="postId==231||adminShow"
+                ></i>
               </el-tooltip>
             </template>
           </el-table-column>
@@ -375,6 +387,7 @@
 import cityList from '@/common/city.js' // 引入城市数据
 export default {
   name: 'owners',
+  props: ['searchWordData'],
   components: {},
   data() {
     return {
@@ -382,6 +395,7 @@ export default {
       deptId: this.$store.state.user.deptId, // 部门ID
       postId: this.$store.state.user.postId, // 职位ID
       subordinate: this.$store.state.user.subordinate, // 一级部门ID
+      adminShow: this.$store.state.adminShow, // 一级部门ID
 
       listLoading: false, // 列表Loading控制
       ownerListData: [],
@@ -458,6 +472,10 @@ export default {
       // this.tabItems()
       this.geteventDataList(newData)
     },
+    searchWordData: function (newData, oldData) {
+      // console.log(newData)
+      this.getVehicleOwnerList()
+    }
   },
   // 钩子函数
   beforeCreate() {},
@@ -594,6 +612,7 @@ export default {
         vehicleOwner: {
           typeId: this.tab1act,
           itemId: this.tab2act,
+          name: this.searchWordData.value
         },
         pageNum: this.pageNum,
         pageSize: this.pageSize,
@@ -637,6 +656,7 @@ export default {
     changeSize(pageSize) {
       // console.log(pageSize)
       this.pageSize = pageSize
+      // this.pageNum = 1
       ///////// 车主列表获取 start /////////
       this.getVehicleOwnerList()
     },
@@ -656,9 +676,9 @@ export default {
       let tab2act = this.tab2act
       this.$store.commit('ownersType', tab1act)
       this.$router.push({
-        name: 'ownerssite',
-        params: {
-          ownerId: prm.ownerId,
+        path: '/home/ownerssite',
+        query: {
+          ownerId: prm.ownerId||par.vehicleOwnerId,
         },
       })
       // console.log(prm)
@@ -672,9 +692,8 @@ export default {
       let tab2act = this.tab2act
       this.$store.commit('ownersType', tab1act)
       this.$router.push({
-        name: 'ownersrecord',
-        // query: { id: id }
-        params: {
+        path: '/home/ownersrecord',
+        query: {
           id: id,
         },
       })
@@ -683,14 +702,14 @@ export default {
 
     ///////// 跳日程管理页面 start /////////
     toOwnersschedule(id) {
+      console.log(id)
       // 记录类型
       let tab1act = this.tab1act
       let tab2act = this.tab2act
       this.$store.commit('ownersType', tab1act)
       this.$router.push({
-        name: 'ownersschedule',
-        // query: { id: id }
-        params: {
+        path: '/home/ownersschedule',
+        query: {
           id: id,
         },
       })
@@ -720,9 +739,13 @@ export default {
     },
     delOwners(par) {
       let data = {
-        coopId: par.coopId,
+        // coopId: par.coopId,
+        // typeId: par.typeId,
         typeId: par.typeId,
+        vehicleOwnerId: par.ownerId||par.vehicleOwnerId,
+        itemId: this.tab2act,
       }
+      // console.log(data)
       this.$axios
         .post('/ocarplay/api/vehicleOwner/deleteVehicleOwner', data)
         .then((res) => {
@@ -743,10 +766,8 @@ export default {
     ///////// 确认 start /////////
     submit() {
       this.$router.push({
-        // path: '/home/addowners'
-        name: 'addowners',
-        // query: { id: id }
-        params: {
+        path: '/home/addowners',
+        query: {
           type: 0,
         },
       })
@@ -769,12 +790,6 @@ export default {
       // 记录车主ID
       this.$store.commit('ownerDetailId', [prm.typeId, prm.ownerId])
       this.$router.push({
-        // name: 'ownersdetail',
-        // params: {
-        //   typeId: prm.typeId,
-        //   vehicleOwnerId: prm.ownerId,
-        //   itemName: prm.itemName
-        // }
         path: '/home/ownersdetail',
         query: {
           typeId: prm.typeId,
@@ -879,6 +894,7 @@ $icoColor: rgb(106, 145, 232);
         margin-left: 13px;
       }
       .add {
+        font-size: 12px;
         min-width: 26px;
         margin-left: 13px;
         text-align: center;

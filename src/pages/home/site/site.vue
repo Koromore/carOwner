@@ -32,7 +32,7 @@
         </el-select>-->
       </el-col>
 
-      <el-col :span="8" class="right" v-if="subordinate==150||userId==3910||userId==4023">
+      <el-col :span="8" class="right" v-if="subordinate==150||adminShow">
         <div class="add_task" @click="addSite(0)">
           <i class="el-icon-circle-plus-outline"></i>
           <br />添加场地
@@ -74,13 +74,13 @@
               <i class="el-icon-user" @click="toSitecarownerlist(scope.row.city)"></i>
             </template>
           </el-table-column>
-          <el-table-column label="操作" width="100" v-if="subordinate==150||userId==3910||userId==4023">
+          <el-table-column label="操作" width="100" v-if="subordinate==150||adminShow">
             <template slot-scope="scope">
               <el-tooltip class="item" effect="dark" content="修改场地" placement="top">
                 <i class="el-icon-edit" @click="addSite(1, scope.row.placeId)"></i>
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="删除场地" placement="top">
-                <i class="el-icon-delete" @click="delSite(scope.row.placeId)" v-if="postId==231||userId==3910||userId==4023"></i>
+                <i class="el-icon-delete" @click="delSite(scope.row.placeId)" v-if="postId==231||adminShow"></i>
               </el-tooltip>
             </template>
           </el-table-column>
@@ -219,6 +219,7 @@ import cityList from '@/common/city.js' // 引入城市数据
 
 export default {
   name: 'site',
+  props: ['searchWordData'],
   components: {},
   data() {
     return {
@@ -226,6 +227,7 @@ export default {
       deptId: this.$store.state.user.deptId, // 部门ID
       postId: this.$store.state.user.postId, // 职位ID
       subordinate: this.$store.state.user.subordinate, // 一级部门ID
+      adminShow: this.$store.state.adminShow, // 超级管理员
       
       // 筛选条件
       filtrateCity: '',
@@ -313,6 +315,10 @@ export default {
     },
     filtrateType: function(newData, oldData) {
       this.getPlaceList()
+    },
+    searchWordData: function (newData, oldData) {
+      // console.log(newData)
+      this.getPlaceList()
     }
   },
   // 钩子函数
@@ -350,7 +356,8 @@ export default {
         // 筛选条件
         place: {
           // city: this.filtrateCity,
-          placeTypeId: this.filtrateType
+          placeTypeId: this.filtrateType,
+          placeName: this.searchWordData.value
         }
       }
       if (this.filtrateCity) {
@@ -722,7 +729,7 @@ $icoColor: rgb(106, 145, 232);
       .add_task {
         text-align: center;
         color: $icoColor;
-        font-size: 13px;
+        font-size: 12px;
         cursor: pointer;
         i {
           font-size: 24px;

@@ -1,8 +1,8 @@
 <template>
   <div id="home">
-    <Home-Header :routeName="routeName"></Home-Header>
+    <Home-Header :routeName="routeName" :adminShow="adminShow" @sousuo="getSearchWord"></Home-Header>
     <el-main id="content">
-      <router-view :carSeriesList="carSeriesList"></router-view>
+      <router-view :carSeriesList="carSeriesList" :searchWordData="searchWordData"></router-view>
     </el-main>
   </div>
 </template>
@@ -21,10 +21,14 @@ export default {
       deptId: this.$store.state.user.deptId, // 部门ID
       postId: this.$store.state.user.postId, // 职位ID
       subordinate: this.$store.state.user.subordinate, // 一级部门ID
+      adminShow: this.$store.state.adminShow, // 一级部门ID
+
       // 0-进行中，1-结算中，2-完成，3-延期，4-人工延期
       routeName: 'task',
       carSeriesList: [],
-      userList: []
+      userList: [],
+      // 搜索
+      searchWordData: ''
     }
   },
   // 侦听器
@@ -36,14 +40,16 @@ export default {
   },
   // 钩子函数
   beforeCreate() {},
-  beforeMount() {},
+  beforeMount() {
+    // 判断超级管理员
+    this.gitAdmin()
+  },
   mounted() {
     // 路由获取
     this.getRoute()
     // 清空缓存
     // this.$store.commit('clearToken')
     this.getCarSeriesLists()
-
     this.getUserListAjax()
   },
   // 方法
@@ -119,7 +125,8 @@ export default {
     },
     ///////// 用户列表获取 end /////////
     gitAdmin(){
-      let adminList = []
+      let adminList = [704,160,152,134,3910,4001,4023]
+                    // 姚菲、杜总、谭总、成总、黄天倚、石杨、张倩
       let userId = this.userId
       let adminShow = false
       adminList.forEach(element => {
@@ -127,6 +134,12 @@ export default {
           adminShow = true
         }
       });
+      this.$store.commit('getAdminShow',adminShow)
+    },
+    // 接受搜索字段
+    getSearchWord(data) {
+      this.searchWordData = data
+      // console.log(this.searchWordData)
     }
   }
 }
@@ -171,5 +184,11 @@ export default {
 }
 .el-image{
   display: block;
+  .el-icon-circle-close{
+    color: #fff;
+  }
+}
+.el-table::before {
+    height: 0px;
 }
 </style>

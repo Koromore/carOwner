@@ -356,10 +356,11 @@ export default {
 <style lang="scss" scoped>
 #taskdetail {
   height: 100%;
-  background: white;
+  
   .content {
     position: relative;
-    height: 100%;
+    height: calc(100% - 16px);
+    background: white;
     box-sizing: border-box;
     padding: 36px;
     .list {
