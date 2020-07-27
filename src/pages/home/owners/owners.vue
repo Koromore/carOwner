@@ -678,7 +678,7 @@ export default {
       this.$router.push({
         path: '/home/ownerssite',
         query: {
-          ownerId: prm.ownerId||par.vehicleOwnerId,
+          ownerId: prm.ownerId||prm.vehicleOwnerId,
         },
       })
       // console.log(prm)
