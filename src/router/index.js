@@ -328,11 +328,18 @@ const router = new Router({
           }
         ]
       },
-
       {
         path: '/home/document',
         name: 'document',
         component: resolve => require(['@/pages/home/document/document'], resolve),
+        meta: {
+          requireAuth: true,
+        }
+      },
+      {
+        path: '/home/resource',
+        name: 'resource',
+        component: resolve => require(['@/pages/home/resource/resource'], resolve),
         meta: {
           requireAuth: true,
         }

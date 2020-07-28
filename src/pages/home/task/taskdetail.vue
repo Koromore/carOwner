@@ -176,7 +176,7 @@
             </el-table-column>
             <el-table-column prop="title" label="标题" min-width="130" show-overflow-tooltip></el-table-column>
             <el-table-column prop="effectName" label="成果" min-width="80"></el-table-column>
-            <el-table-column prop label="发布时间" min-width="80"></el-table-column>
+            <el-table-column prop="publishedTime" label="发布时间" min-width="80"></el-table-column>
             <el-table-column prop label="dow" width="64">
               <template slot="header">
                 <i class="el-icon-download dow"></i>
@@ -449,6 +449,9 @@ export default {
       button {
         width: 136px;
         margin-left: 49px;
+        &:nth-of-type(1){
+          margin: 0;
+        }
       }
     }
   }

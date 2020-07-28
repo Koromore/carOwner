@@ -3,6 +3,15 @@
     <!-- 头部选项框 start -->
     <el-row class="top">
       <el-col :span="12" class="left">
+        <el-button-group>
+          <el-button type="success" size="small" @click="statusChange(0)">执行中</el-button>
+          <el-button type="danger" size="small" @click="statusChange(3)">延期</el-button>
+          <el-button type="warning" size="small" @click="statusChange(1)">结算中</el-button>
+          <el-button type="info" size="small" @click="statusChange(2)">已完成</el-button>
+        </el-button-group>
+      </el-col>
+
+      <el-col :span="12" class="right">
         <!-- 邀约对象 -->
         <el-select
           v-model="typeId"
@@ -51,18 +60,8 @@
             :value="item.value"
           ></el-option>
         </el-select>
-      </el-col>
-
-      <el-col :span="12" class="right">
-        <el-button-group>
-          <el-button type="success" size="small" @click="statusChange(0)">执行中</el-button>
-          <el-button type="danger" size="small" @click="statusChange(3)">延期</el-button>
-          <el-button type="warning" size="small" @click="statusChange(1)">结算中</el-button>
-          <el-button type="info" size="small" @click="statusChange(2)">已完成</el-button>
-        </el-button-group>
         <div class="add_task" @click="addTask(0)" v-if="subordinate==150||adminShow">
-          <i class="el-icon-circle-plus-outline"></i>
-          <br />新建任务
+          <el-button type="primary" icon="el-icon-circle-plus-outline" size="small">新建任务</el-button>
         </div>
       </el-col>
     </el-row>
@@ -76,7 +75,7 @@
           :data="taskListData"
           style="width: 100%"
           :header-row-style="{'height': '54px'}"
-          :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)'}"
+          :header-cell-style="{'color': '#000'}"
           height="100%"
           v-loading="loading"
         >
@@ -142,7 +141,11 @@
               </el-tooltip>
 
               <el-tooltip class="item" effect="dark" content="删除任务" placement="top">
-                <i class="el-icon-circle-close" @click="delContent(scope.row.taskId)" v-if="postId==231||adminShow"></i>
+                <i
+                  class="el-icon-circle-close"
+                  @click="delContent(scope.row.taskId)"
+                  v-if="postId==231||adminShow"
+                ></i>
               </el-tooltip>
             </template>
           </el-table-column>
@@ -169,7 +172,7 @@
           :data="taskListData"
           style="width: 100%"
           :header-row-style="{'height': '54px'}"
-          :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
+          :header-cell-style="{'color': '#000'}"
           height="100%"
           v-loading="loading"
         >
@@ -233,7 +236,11 @@
               </el-tooltip>
 
               <el-tooltip class="item" effect="dark" content="删除任务" placement="top">
-                <i class="el-icon-circle-close" @click="delContent(scope.row.taskId)" v-if="postId==231||adminShow"></i>
+                <i
+                  class="el-icon-circle-close"
+                  @click="delContent(scope.row.taskId)"
+                  v-if="postId==231||adminShow"
+                ></i>
               </el-tooltip>
             </template>
           </el-table-column>
@@ -260,7 +267,7 @@
           :data="taskListData"
           style="width: 100%"
           :header-row-style="{'height': '54px'}"
-          :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)'}"
+          :header-cell-style="{'color': '#000'}"
           height="100%"
           v-loading="loading"
         >
@@ -335,7 +342,7 @@
           :data="taskListData"
           style="width: 100%"
           :header-row-style="{'height': '54px'}"
-          :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
+          :header-cell-style="{'color': '#000'}"
           height="100%"
           v-loading="loading"
         >
@@ -532,29 +539,29 @@ export default {
           ownersName: '',
           link: '',
           sum: '',
-          type: true
+          type: true,
         },
         {
           ownersName: '',
           link: '',
           sum: '',
-          type: true
-        }
+          type: true,
+        },
       ],
       // 筛选start
       typeList: [
         {
           value: 1,
-          label: '支持型'
+          label: '支持型',
         },
         {
           value: 2,
-          label: '拍摄型'
+          label: '拍摄型',
         },
         {
           value: 3,
-          label: '资源型'
-        }
+          label: '资源型',
+        },
       ],
       typeId: '',
       itemIdList: [],
@@ -586,13 +593,13 @@ export default {
       pickerOptions: {
         disabledDate(time) {
           return time.getTime() < Date.now() - 8.64e7
-        }
+        },
       },
       // 提交任务车主列表
       listInviteList: [],
       // 车主选择器列表
       options2: [],
-      listInviteData: []
+      listInviteData: [],
     }
   },
   // 侦听器
@@ -600,7 +607,7 @@ export default {
     searchWordData: function (newData, oldData) {
       // console.log(newData)
       this.getTaskListAjax()
-    }
+    },
   },
   // 钩子函数
   beforeCreate() {},
@@ -620,25 +627,25 @@ export default {
   methods: {
     ///////// 获取合作事项列表 start /////////
     getshowOwnerType() {
-      let data = {typeId: this.typeId}
+      let data = { typeId: this.typeId }
       this.$axios
         .post('/ocarplay/api/vehicleOwner/getOwnerTypeItems', data)
-        .then(res => {
+        .then((res) => {
           // console.log(res)
           // this.loading = false
           if (res.status == 200) {
             // console.log(res)
             let data = res.data
             let itemIdList = []
-            data.forEach(element => {
+            data.forEach((element) => {
               // console.log(element)
               // let listId = element.itemIds.split('/')
               // let listName = element.itemName.split('/')
               // listId.forEach((element0, i) => {
-                itemIdList.push({
-                  value: element.itemId,
-                  label: element.itemName
-                })
+              itemIdList.push({
+                value: element.itemId,
+                label: element.itemName,
+              })
               // })
             })
             this.itemIdList = itemIdList
@@ -652,7 +659,7 @@ export default {
       let eventList = []
       this.$axios
         .post('/ocarplay/api/carSeries/getCarSeriesLists', {})
-        .then(res => {
+        .then((res) => {
           // console.log(res)
           if (res.status == 200) {
             let data = res.data.carTypes
@@ -663,7 +670,7 @@ export default {
               }
               carSeriesList.push({
                 value: element.carTypeId,
-                label: `${element.deptName}—${element.carTypeName}`
+                label: `${element.deptName}—${element.carTypeName}`,
               })
             })
             this.carSeriesIdList = carSeriesList
@@ -719,24 +726,24 @@ export default {
           typeId: this.typeId,
           itemId: this.itemId,
           carSeriesId: this.carSeriesId,
-          taskName: this.searchWordData.value
-        }
+          taskName: this.searchWordData.value,
+        },
 
         // task: {
         //   initUserId: 266
         // }
       }
-      this.$axios.post('/ocarplay/task/listAjax', data).then(res => {
+      this.$axios.post('/ocarplay/task/listAjax', data).then((res) => {
         // console.log(res)
         if (res.status == 200 && data) {
           let data = res.data.data
-          data.items.forEach(element => {
+          data.items.forEach((element) => {
             element.typeList = []
             element.ownerItemList = []
             element.ownerName = []
             element.invMoney = 0
             element.inviteNumOver = 0
-            element.listInvite.forEach(element1 => {
+            element.listInvite.forEach((element1) => {
               // console.log(element1)
               if (element1.listOwnerType) {
                 element.typeList.push(element1.listOwnerType[0].typeName)
@@ -751,7 +758,7 @@ export default {
             // Array.form(new Set(arr))
             element.typeList = [...new Set(element.typeList)]
             element.ownerItemList = [...new Set(element.ownerItemList)]
-            element.ownerName =[...new Set(element.ownerName)]
+            element.ownerName = [...new Set(element.ownerName)]
             // console.log(element.typeList)
             element.typeList = element.typeList.join(',')
             element.ownerItemList = element.ownerItemList.join(',')
@@ -772,7 +779,7 @@ export default {
       this.$store.commit('taskStatus', this.status)
       this.$router.push({
         path: '/home/addtask',
-        query: { type: type, id: id }
+        query: { type: type, id: id },
       })
     },
     ///////// 添加任务 end /////////
@@ -805,18 +812,18 @@ export default {
         taskId: this.taskId,
         status: 4,
         delayReason: this.delayReason,
-        endTime: endTime
+        endTime: endTime,
       }
       // console.log(data)
       let list = [data.delayReason, data.endTime]
       let falg = true
-      list.forEach(element => {
+      list.forEach((element) => {
         if (!element) {
           falg = false
         }
       })
       if (falg) {
-        this.$axios.post('/ocarplay/task/save', data).then(res => {
+        this.$axios.post('/ocarplay/task/save', data).then((res) => {
           // console.log(res)
           if (res.status == 200 && res.data == 1) {
             this.$message.success('任务延期成功！')
@@ -841,7 +848,7 @@ export default {
       let data = []
       this.$axios
         .post('/ocarplay/api/vehicleOwner/ownerTypeCoopItemOwners', data)
-        .then(res => {
+        .then((res) => {
           // console.log(res)
           if (res.status == 200) {
             let data = res.data
@@ -851,18 +858,18 @@ export default {
               list.push({
                 value: element.typeId,
                 label: element.typeName,
-                children: []
+                children: [],
               })
               element.ownerItems.forEach((element1, j) => {
                 list[i].children.push({
                   value: element1.itemId,
                   label: element1.itemName,
-                  children: []
+                  children: [],
                 })
-                element1.vehicleOwners.forEach(element2 => {
+                element1.vehicleOwners.forEach((element2) => {
                   list[i].children[j].children.push({
                     value: element2.vehicleOwnerId,
-                    label: element2.name
+                    label: element2.name,
                   })
                   // console.log(list[i].children[j])
                 })
@@ -884,7 +891,7 @@ export default {
       this.taskName = prm.taskName
       let listInviteList = []
 
-      prm.listInvite.forEach(element => {
+      prm.listInvite.forEach((element) => {
         listInviteList.push({
           inviteData: [element.typeId, element.itemId, element.ownerId],
           typeId: element.typeId,
@@ -892,7 +899,7 @@ export default {
           ownerId: element.ownerId,
           url: element.url,
           money: element.money,
-          isCard: true
+          isCard: true,
         })
       })
       this.listInviteList = listInviteList
@@ -907,7 +914,7 @@ export default {
         ownerId: '',
         url: '',
         money: '',
-        isCard: true
+        isCard: true,
       })
     },
     // 删除明细
@@ -921,7 +928,7 @@ export default {
     submitBtn(e) {
       this.drawerLoading = true
       let listInviteList = this.listInviteList
-      listInviteList.forEach(element => {
+      listInviteList.forEach((element) => {
         element.taskId = this.taskId
         element.typeId = element.inviteData[0]
         element.itemId = element.inviteData[1]
@@ -936,16 +943,16 @@ export default {
         taskId: this.taskId,
         status: e,
         updateTime: this.$time0(new Date()),
-        listInvite: listInviteList
+        listInvite: listInviteList,
       }
       let flag = true
-      data.listInvite.forEach(element => {
+      data.listInvite.forEach((element) => {
         if (!element.ownerId) {
           flag = false
         }
       })
       if (flag) {
-        data.listInvite.forEach(element => {
+        data.listInvite.forEach((element) => {
           if (element.isCard) {
             element.isCard = 1
           } else {
@@ -955,7 +962,7 @@ export default {
         // console.log(data)
         this.$axios
           .post('/ocarplay/task/save', data)
-          .then(res => {
+          .then((res) => {
             // console.log(res)
             if (res.status == 200 && res.data == 1) {
               if (e) {
@@ -972,7 +979,7 @@ export default {
               this.drawerLoading = false
             }
           })
-          .catch(res => {
+          .catch((res) => {
             console.log(res)
             // this.putLoading = false
           })
@@ -988,7 +995,7 @@ export default {
       this.$store.commit('taskStatus', this.status)
       this.$router.push({
         path: '/home/taskDetail',
-        query: { id: id }
+        query: { id: id },
         // params: {
         //   id: id
         // }
@@ -1002,8 +1009,8 @@ export default {
       this.$router.push({
         path: '/home/tasksettlement',
         query: {
-          id: prm.taskId
-        }
+          id: prm.taskId,
+        },
       })
     },
     ///////// 跳转结算进度页 end /////////
@@ -1013,7 +1020,7 @@ export default {
       this.$confirm('确认要删除该任务吗?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
       })
         .then(() => {
           this.delTask(id)
@@ -1021,13 +1028,13 @@ export default {
         .catch(() => {
           this.$message({
             type: 'info',
-            message: '已取消删除'
+            message: '已取消删除',
           })
         })
     },
     delTask(id) {
       let data = { taskId: id, deleteFlag: 1 }
-      this.$axios.post('/ocarplay/task/delTask', data).then(res => {
+      this.$axios.post('/ocarplay/task/delTask', data).then((res) => {
         console.log(res)
         if (res.status == 200 && res.data == 1) {
           this.$message.success('删除任务成功！')
@@ -1048,20 +1055,20 @@ export default {
     ///////// 导出结算清单 end /////////
     exportInvite(prm) {
       let data = {
-        taskId: prm.taskId
+        taskId: prm.taskId,
       }
       this.$axios
         .post('/ocarplay/api/invite/exportInvite', data, {
-          responseType: 'blob' //--设置请求数据格式
+          responseType: 'blob', //--设置请求数据格式
         })
-        .then(res => {
+        .then((res) => {
           console.log(res)
           if (res.status == 200) {
             // this.$message.success('删除任务成功！')
             // ///////// 获取任务列表 start /////////
             // this.getTaskListAjax()
             var blob = new Blob([res.data], {
-              type: 'text/plain;charset=utf-8'
+              type: 'text/plain;charset=utf-8',
             })
             saveAs(blob, prm.taskName + '.xls')
           } else {
@@ -1107,12 +1114,12 @@ export default {
           {},
           {
             headers: {
-              'content-type': 'application/json; charset=utf-8'
+              'content-type': 'application/json; charset=utf-8',
             },
-            responseType: 'blob' //--设置请求数据格式
+            responseType: 'blob', //--设置请求数据格式
           }
         )
-        .then(res => {
+        .then((res) => {
           console.log(res.data)
           var blob = new Blob([res.data], { type: 'text/plain;charset=utf-8' })
           // saveAs(blob, '导出excel.xls')
@@ -1120,8 +1127,8 @@ export default {
         .catch(() => {
           console.log('捕获错误')
         })
-    }
-  }
+    },
+  },
 }
 </script>
 <style lang="scss" scoped>
@@ -1136,24 +1143,13 @@ $statusColor4: #ea8a85;
 #task {
   height: 100%;
   .top {
-    height: 72px;
+    height: 45px;
     margin-bottom: 9px;
-    background: #fff;
+    // background: #fff;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     .left {
-      box-sizing: border-box;
-      padding-left: 32px;
-      .el-select {
-        width: 160px;
-      }
-    }
-    .right {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: flex-end;
       box-sizing: border-box;
       padding-right: 36px;
       .el-button-group {
@@ -1162,20 +1158,29 @@ $statusColor4: #ea8a85;
           width: 81px;
         }
       }
+    }
+    .right {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: flex-end;
+      box-sizing: border-box;
+      .el-select {
+        width: 136px;
+        margin-right: 9px;
+      }
       .add_task {
-        text-align: center;
-        color: $icoColor;
-        font-size: 12px;
-        cursor: pointer;
-        i {
-          font-size: 24px;
+        button{
+          width: 136px;
         }
       }
     }
   }
   .content {
-    height: calc(100% - 97px);
-    background: #fff;
+    height: calc(100% - 54px);
+    border: 1px solid #dddddd;
+    border-radius: 8px 8px 0 0;
+    // background: #fff;
     .table_list {
       height: calc(100% - 64px);
       .statusColor0 {
@@ -1195,6 +1200,14 @@ $statusColor4: #ea8a85;
         color: $statusColor4;
       }
       .el-table {
+        background: none;
+        & >>> .el-table__header-wrapper{
+          margin-bottom: 10px;
+          border-radius: 8px 8px 0 0;
+        }
+        & >>> .el-table__body-wrapper{
+          background: #fff;
+        }
         .el-table__header {
           th {
             background: none;
@@ -1213,6 +1226,7 @@ $statusColor4: #ea8a85;
       box-sizing: border-box;
       padding: 16px;
       text-align: center;
+      background: #fff;
     }
   }
   // 抽屉弹窗延期原因样式

@@ -7,7 +7,7 @@
   </div>
 </template>
 <script>
-import HomeHeader from '@/pages/header'
+import HomeHeader from '@/components/header'
 // import { matchType } from '@/utils/matchType' // 引入文件格式判断方法
 
 export default {
@@ -146,7 +146,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 #home {
-  background: rgb(228, 230, 236);
+  background: rgb(241, 241, 241);
   #content {
     min-width: 1300px;
     box-sizing: border-box;

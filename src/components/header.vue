@@ -14,6 +14,7 @@
           <div @click="navTo(2)" :class="[navNum==1?'act':'']" v-if="deptId==90||adminShow">结算管理</div>
           <!-- <div @click="navTo(2)" :class="[navNum==1?'act':'']">结算管理</div> -->
           <div @click="navTo(3)" :class="[navNum==2?'act':'']">车主管理</div>
+          <div @click="navTo(8)" :class="[navNum==8?'act':'']">资源管理</div>
           <div @click="navTo(4)" :class="[navNum==3?'act':'']">场地管理</div>
           <div @click="navTo(5)" :class="[navNum==4?'act':'']" v-if="postId==231||adminShow">数据分析</div>
           <!-- <div @click="navTo(5)" :class="[navNum==4?'act':'']">数据分析</div> -->
@@ -37,7 +38,7 @@
         >
           <el-select v-model="select" slot="prepend" placeholder="请选择">
             <el-option label="任务" value="1"></el-option>
-            <el-option label="结算" value="2"></el-option>
+            <el-option label="结算" value="2" :disabled="selectDisabled"></el-option>
             <el-option label="车主" value="3"></el-option>
             <el-option label="场地" value="4"></el-option>
             <el-option label="文档" value="5"></el-option>
@@ -80,6 +81,7 @@ export default {
       searchWordKey: 0,
       searchWord: '',
       // 搜索维度
+      selectDisabled: false,
       select: '1',
       navNum: 0,
     }
@@ -122,7 +124,7 @@ export default {
   },
   // 钩子函数
   mounted() {
-    // this.countIsRead()
+    this.selectDisabledShow()
     // console.log(this.$parent.routeName)
   },
   methods: {
@@ -151,7 +153,7 @@ export default {
       //   routeName = this.$route.name
       // }
       this.searchWordKey + 1
-      let searchWordValue = this.searchWord.replace(/\s+/g,"");     
+      let searchWordValue = this.searchWord.replace(/\s+/g, '')
       let searchWord = {
         key: this.searchWordKey,
         value: searchWordValue,
@@ -194,17 +196,28 @@ export default {
         url = '/home/metadata'
       } else if (index == 7) {
         url = '/home/document'
+      } else if (index == 8) {
+        url = '/home/resource'
       }
       this.$router.push({ path: url })
     },
     ///////// 导航页面跳转 end /////////
+
+    // deptId==90||adminShow
+    selectDisabledShow() {
+      if (this.deptId == 90 || this.adminShow) {
+        this.selectDisabled = false
+      } else {
+        this.selectDisabled = true
+      }
+    },
   },
 }
 </script>
 
 <style lang="scss" scoped>
-.el-header {
-  background-color: #fff;
+#homeHeader {
+  background-color: #292929;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -217,11 +230,12 @@ export default {
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    .logo {
+    .logo { 
       width: 128px;
     }
     .navList {
       width: calc(100% - 200px);
+      color: #848484;
       display: flex;
       flex-wrap: wrap;
       align-items: center;
@@ -230,7 +244,7 @@ export default {
       font-size: 16px;
       .act {
         font-weight: 700;
-        color: rgba(106, 145, 232, 1);
+        color: #ffffff;
       }
       div {
         cursor: pointer;
@@ -255,6 +269,7 @@ export default {
     }
     .admin {
       // width: 210px;
+      color: white;
       display: flex;
       flex-wrap: wrap;
       align-items: center;
@@ -270,10 +285,10 @@ export default {
 }
 </style>
 <style lang="scss">
-#homeHeader {
-  .el-input-group__append,
-  .el-input-group__prepend {
-    background: none;
-  }
-}
+// #homeHeader {
+//   .el-input-group__append,
+//   .el-input-group__prepend {
+//     background: none;
+//   }
+// }
 </style>
