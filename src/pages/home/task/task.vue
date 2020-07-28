@@ -90,8 +90,14 @@
               >{{scope.row.taskName}}</el-link>
             </template>
           </el-table-column>
+          <el-table-column prop label="任务类型" min-width="90" show-overflow-tooltip>
+            拍摄
+          </el-table-column>
           <el-table-column prop="ownerName" label="邀约对象" min-width="130" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="ownerItemList" label="邀约事项" min-width="130" show-overflow-tooltip></el-table-column>
+          <!-- <el-table-column prop="ownerItemList" label="邀约事项" min-width="130" show-overflow-tooltip></el-table-column> -->
+          <el-table-column prop label="摄影师" min-width="90" show-overflow-tooltip>摄影师</el-table-column>
+          <el-table-column prop label="模特" min-width="90" show-overflow-tooltip>模特</el-table-column>
+          <el-table-column prop label="场地" min-width="90" show-overflow-tooltip>场地</el-table-column>
           <el-table-column prop="carSeriesName" label="邀约车型" min-width="130" show-overflow-tooltip>
             <template slot-scope="scope">
               <template v-if="scope.row.carSeriesName">{{scope.row.carSeriesName}}</template>
@@ -187,8 +193,14 @@
               >{{scope.row.taskName}}</el-link>
             </template>
           </el-table-column>
+          <el-table-column prop label="任务类型" min-width="90" show-overflow-tooltip>
+            拍摄
+          </el-table-column>
           <el-table-column prop="ownerName" label="邀约对象" min-width="130" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="ownerItemList" label="邀约事项" min-width="130" show-overflow-tooltip></el-table-column>
+          <!-- <el-table-column prop="ownerItemList" label="邀约事项" min-width="130" show-overflow-tooltip></el-table-column> -->
+          <el-table-column prop label="摄影师" min-width="90" show-overflow-tooltip>摄影师</el-table-column>
+          <el-table-column prop label="模特" min-width="90" show-overflow-tooltip>模特</el-table-column>
+          <el-table-column prop label="场地" min-width="90" show-overflow-tooltip>场地</el-table-column>
           <el-table-column prop="carSeriesName" label="邀约车型" min-width="130" show-overflow-tooltip>
             <template slot-scope="scope">
               <template v-if="scope.row.carSeriesName">{{scope.row.carSeriesName}}</template>
@@ -220,7 +232,7 @@
             <template slot-scope="scope">{{$date(scope.row.endTime)}}</template>
           </el-table-column>
           <el-table-column prop="delayReason" label="延期原因" min-width="100"></el-table-column>
-          <el-table-column prop="address" label="操作" width="200" v-if="subordinate==150||adminShow">
+          <el-table-column prop="address" label="操作" min-width="160" v-if="subordinate==150||adminShow">
             <!-- this.$store.state -->
             <template slot-scope="scope">
               <el-tooltip class="item" effect="dark" content="编辑任务" placement="top">
@@ -282,8 +294,14 @@
               >{{scope.row.taskName}}</el-link>
             </template>
           </el-table-column>
-          <el-table-column prop="typeList" label="邀约对象" min-width="130" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="ownerItemList" label="邀约事项" min-width="130" show-overflow-tooltip></el-table-column>
+          <el-table-column prop label="任务类型" min-width="90" show-overflow-tooltip>
+            拍摄
+          </el-table-column>
+          <el-table-column prop="ownerName" label="邀约对象" min-width="130" show-overflow-tooltip></el-table-column>
+          <!-- <el-table-column prop="ownerItemList" label="邀约事项" min-width="130" show-overflow-tooltip></el-table-column> -->
+          <el-table-column prop label="摄影师" min-width="90" show-overflow-tooltip>摄影师</el-table-column>
+          <el-table-column prop label="模特" min-width="90" show-overflow-tooltip>模特</el-table-column>
+          <el-table-column prop label="场地" min-width="90" show-overflow-tooltip>场地</el-table-column>
           <el-table-column prop="carSeriesName" label="邀约车型" min-width="130" show-overflow-tooltip>
             <template slot-scope="scope">
               <template v-if="scope.row.carSeriesName">{{scope.row.carSeriesName}}</template>
@@ -357,8 +375,14 @@
               >{{scope.row.taskName}}</el-link>
             </template>
           </el-table-column>
+          <el-table-column prop label="任务类型" min-width="90" show-overflow-tooltip>
+            拍摄
+          </el-table-column>
           <el-table-column prop="ownerName" label="邀约对象" min-width="130" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="ownerItemList" label="邀约事项" min-width="130" show-overflow-tooltip></el-table-column>
+          <!-- <el-table-column prop="ownerItemList" label="邀约事项" min-width="130" show-overflow-tooltip></el-table-column> -->
+          <el-table-column prop label="摄影师" min-width="90" show-overflow-tooltip>摄影师</el-table-column>
+          <el-table-column prop label="模特" min-width="90" show-overflow-tooltip>模特</el-table-column>
+          <el-table-column prop label="场地" min-width="90" show-overflow-tooltip>场地</el-table-column>
           <el-table-column prop="carSeriesName" label="邀约车型" min-width="130" show-overflow-tooltip>
             <template slot-scope="scope">
               <template v-if="scope.row.carSeriesName">{{scope.row.carSeriesName}}</template>
@@ -380,7 +404,7 @@
               <div v-if="scope.row.status==4" class="statusColor4">人工延期</div>
             </template>
           </el-table-column>
-          <!-- <el-table-column prop="num" label="任务量" min-width="80"></el-table-column> -->
+          <el-table-column prop="num" label="车主数量" min-width="80"></el-table-column>
           <!-- <el-table-column prop="listInvite" label="车主数量" min-width="80">
             <template slot-scope="scope">
               {{scope.row.listInvite.length}}
@@ -1133,7 +1157,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 $white: #fff;
-$icoColor: rgb(106, 145, 232);
+$icoColor: #6a91e8;
 $statusColor0: #67c23a;
 $statusColor1: #e6a23c;
 $statusColor2: #909399;
@@ -1172,6 +1196,7 @@ $statusColor4: #ea8a85;
       .add_task {
         button{
           width: 136px;
+          background: #6a91e8;
         }
       }
     }

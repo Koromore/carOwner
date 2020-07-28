@@ -13,6 +13,17 @@
       </el-col>
       <el-col :span="12" class="left">
         <el-col :span="24" class="list">
+          <div class="key">任务类型</div>
+          <div class="val">
+            <el-radio-group v-model="taskType">
+              <el-radio :label="0">借车</el-radio>
+              <el-radio :label="1">素材</el-radio>
+              <el-radio :label="2">邀约</el-radio>
+              <el-radio :label="3">拍摄</el-radio>
+            </el-radio-group>
+          </div>
+        </el-col>
+        <el-col :span="24" class="list">
           <div class="key">任务名称</div>
           <div class="val">
             <el-input placeholder="请输入内容" v-model="taskName" clearable></el-input>
@@ -45,6 +56,47 @@
             ></el-cascader>
           </div>
         </el-col>
+        <!-- 摄影填写 start -->
+        <el-col :span="24" class="list">
+          <div class="key">摄影师</div>
+          <div class="val">
+            <el-cascader
+              :options="options2"
+              :props="props"
+              v-model="listInviteList"
+              clearable
+              filterable
+              collapse-tags
+            ></el-cascader>
+          </div>
+        </el-col>
+        <el-col :span="24" class="list">
+          <div class="key">模特</div>
+          <div class="val">
+            <el-cascader
+              :options="options2"
+              :props="props"
+              v-model="listInviteList"
+              clearable
+              filterable
+              collapse-tags
+            ></el-cascader>
+          </div>
+        </el-col>
+        <el-col :span="24" class="list">
+          <div class="key">场地</div>
+          <div class="val">
+            <el-cascader
+              :options="options2"
+              :props="props"
+              v-model="listInviteList"
+              clearable
+              filterable
+              collapse-tags
+            ></el-cascader>
+          </div>
+        </el-col>
+        <!-- 摄影填写 end -->
         <el-col :span="24" class="list">
           <div class="key">计划周期</div>
           <div class="val">
@@ -140,24 +192,24 @@ export default {
       options: [
         {
           value: '选项1',
-          label: '黄金糕'
+          label: '黄金糕',
         },
         {
           value: '选项2',
-          label: '双皮奶'
+          label: '双皮奶',
         },
         {
           value: '选项3',
-          label: '蚵仔煎'
+          label: '蚵仔煎',
         },
         {
           value: '选项4',
-          label: '龙须面'
+          label: '龙须面',
         },
         {
           value: '选项5',
-          label: '北京烤鸭'
-        }
+          label: '北京烤鸭',
+        },
       ],
       // 计划周期
       input4: '',
@@ -166,6 +218,7 @@ export default {
       // 文件上传
       fileList: [],
       // 任务新增信息
+      taskType: '',
       taskName: '',
       listInviteList: [],
       carSeriesList: [],
@@ -180,32 +233,32 @@ export default {
       fileList: [],
       // 按钮开关
       submitFlag: true,
-      putLoading: false
+      putLoading: false,
     }
   },
   // 侦听器
   watch: {
-    carSeriesList: function(newData, oldData) {
+    carSeriesList: function (newData, oldData) {
       if (newData.length != 0) {
         this.getCarSeriesId()
       }
     },
-    seriesId: function(newData, oldData) {
+    seriesId: function (newData, oldData) {
       if (newData != '') {
         this.getCarSeriesId()
       }
     },
-    carSeriesId: function(newData, oldData) {
+    carSeriesId: function (newData, oldData) {
       if (newData != '') {
         // console.log(res)
         let data = []
-        newData.forEach(element => {
+        newData.forEach((element) => {
           data.push(element[1])
         })
         ///////// 获取车主列表 start /////////
         this.getOwnerList(data)
       }
-    }
+    },
   },
   // 钩子函数
   beforeCreate() {},
@@ -245,7 +298,7 @@ export default {
     carSeriesChange(res) {
       // console.log(res)
       let data = []
-      res.forEach(element => {
+      res.forEach((element) => {
         data.push(element[1])
       })
       ///////// 获取车主列表 start /////////
@@ -258,14 +311,14 @@ export default {
       // console.log(this.seriesId)
       let carSeriesId = []
 
-      this.carSeriesList.forEach(element0 => {
-        element0.children.forEach(element1 => {
-          this.seriesId.forEach(element2 => {
-          if (element1.value == element2) {
-            carSeriesId.push([element0.value,element1.value])
-            // carSeriesId.push(element1.value)
-            // carSeriesId.push(element2.value)
-          }
+      this.carSeriesList.forEach((element0) => {
+        element0.children.forEach((element1) => {
+          this.seriesId.forEach((element2) => {
+            if (element1.value == element2) {
+              carSeriesId.push([element0.value, element1.value])
+              // carSeriesId.push(element1.value)
+              // carSeriesId.push(element2.value)
+            }
           })
         })
       })
@@ -277,31 +330,31 @@ export default {
     ///////// 获取任务详情 start /////////
     getTaskDetail(id) {
       let data = {
-        taskId: id
+        taskId: id,
       }
-      this.$axios.post('/ocarplay/task/edit', data).then(res => {
+      this.$axios.post('/ocarplay/task/edit', data).then((res) => {
         // console.log(res)
         if (res.status == 200) {
           let data = res.data.data
           this.taskName = data.taskName
           let listInviteList = []
-          data.listInvite.forEach(element => {
+          data.listInvite.forEach((element) => {
             listInviteList.push([
               element.listOwnerType[0].typeId,
               element.listOwnerItem[0].itemId,
-              element.ownerId
+              element.ownerId,
             ])
           })
 
           this.listInviteList = listInviteList
           // this.carSeriesId = [null,null,data.carSeriesId]
-          data.listTaskOfCartype.forEach(element => {
+          data.listTaskOfCartype.forEach((element) => {
             this.seriesId.push(element.cartypeId)
-          });
-          
+          })
+
           this.periodTime = [
             new Date(data.startTime.replace(/-/g, '/')),
-            new Date(data.endTime.replace(/-/g, '/'))
+            new Date(data.endTime.replace(/-/g, '/')),
           ]
           this.taskNum = data.num
           this.taskDesc = data.taskDesc
@@ -309,15 +362,15 @@ export default {
           let fileList = []
           let taskFileList = []
 
-          data.listTaskFile.forEach(element => {
+          data.listTaskFile.forEach((element) => {
             fileList.push({
               name: element.fileName,
-              url: element.localPath
+              url: element.localPath,
             })
             taskFileList.push({
               fileName: '端午大礼包',
               localPath: 'uploadtemp//doc/1592452790041.jpg',
-              suffix: 'jpg'
+              suffix: 'jpg',
             })
           })
           this.fileList = fileList
@@ -333,7 +386,7 @@ export default {
       // let data = []
       this.$axios
         .post('/ocarplay/api/vehicleOwner/ownerTypeCoopItemOwners', data)
-        .then(res => {
+        .then((res) => {
           // console.log(res)
           if (res.status == 200) {
             let data = res.data
@@ -342,15 +395,15 @@ export default {
               list.push({
                 value: element.typeId,
                 label: element.typeName,
-                children: []
+                children: [],
               })
               element.ownerItems.forEach((element1, j) => {
                 list[i].children.push({
                   value: element1.itemId,
                   label: element1.itemName,
-                  children: []
+                  children: [],
                 })
-                element1.vehicleOwners.forEach(element2 => {
+                element1.vehicleOwners.forEach((element2) => {
                   if (
                     element2.coopNum &&
                     element2.alreadyCooperateNum &&
@@ -360,12 +413,12 @@ export default {
                     list[i].children[j].children.push({
                       value: element2.vehicleOwnerId,
                       label: element2.name,
-                      disabled: true
+                      disabled: true,
                     })
                   } else {
                     list[i].children[j].children.push({
                       value: element2.vehicleOwnerId,
-                      label: element2.name
+                      label: element2.name,
                     })
                   }
                   // console.log(element2)
@@ -386,11 +439,11 @@ export default {
       let data = {
         ids: 0,
         pageNum: 1,
-        pageSize: 30
+        pageSize: 30,
       }
       this.$axios
         .post('/ocarplay/api/carSeries/getCarSeriesLists', data)
-        .then(res => {
+        .then((res) => {
           // console.log(res)
           // this.listLoading = false
           if (res.status == 200) {
@@ -400,23 +453,23 @@ export default {
               {
                 value: 105,
                 label: '沃尔沃',
-                children: []
+                children: [],
               },
               {
                 value: 110,
                 label: '吉利',
-                children: []
+                children: [],
               },
               {
                 value: 153,
                 label: '长城',
-                children: []
-              }
+                children: [],
+              },
             ]
-            data.forEach(element => {
+            data.forEach((element) => {
               let children = {
                 value: element.carTypeId,
-                label: element.carTypeName
+                label: element.carTypeName,
                 // children: []
               }
               // element.carSeries.forEach(element_ => {
@@ -444,7 +497,7 @@ export default {
     ///////// 返回上一页 start /////////
     previous() {
       this.$router.push({
-        path: '/home/task'
+        path: '/home/task',
       })
     },
     ///////// 返回上一页 end /////////
@@ -454,7 +507,7 @@ export default {
     taskFileSuccess(res, file, fileList) {
       // this.taskFileList = res
       let list = []
-      fileList.forEach(element => {
+      fileList.forEach((element) => {
         list.push(element.response.data)
         // console.log(element.response)
       })
@@ -467,7 +520,7 @@ export default {
     // 删除成功回调
     taskFileRemove(file, fileList) {
       let list = []
-      fileList.forEach(element => {
+      fileList.forEach((element) => {
         list.push(element.response.data)
       })
       this.taskFileList = list
@@ -496,7 +549,7 @@ export default {
       let listInviteList = this.listInviteList
       let carSeriesId = this.carSeriesId
       let listTaskOfCartype = []
-      carSeriesId.forEach(element => {
+      carSeriesId.forEach((element) => {
         listTaskOfCartype.push({ cartypeId: element[1] })
       })
       let data = {
@@ -517,14 +570,14 @@ export default {
         taskDesc: this.taskDesc,
         remark: this.remark,
         listInvite: [],
-        listTaskFile: this.taskFileList
+        listTaskFile: this.taskFileList,
       }
 
-      listInviteList.forEach(element => {
+      listInviteList.forEach((element) => {
         data.listInvite.push({
           typeId: element[0],
           itemId: element[1],
-          ownerId: element[2]
+          ownerId: element[2],
         })
       })
       let flag = true
@@ -533,10 +586,10 @@ export default {
         data.startTime,
         data.num,
         data.listTaskOfCartype.length,
-        data.listInvite.length
+        data.listInvite.length,
       ]
 
-      list.forEach(element => {
+      list.forEach((element) => {
         if (!element) {
           flag = false
         }
@@ -547,7 +600,7 @@ export default {
         this.putLoading = true
         this.$axios
           .post('/ocarplay/task/save', data)
-          .then(res => {
+          .then((res) => {
             // console.log(res)
             if (res.status == 200 && res.data == 1) {
               if (this.taskId) {
@@ -557,7 +610,7 @@ export default {
               }
               setTimeout(() => {
                 this.$router.push({
-                  name: 'task'
+                  name: 'task',
                 })
               }, 1000)
             } else {
@@ -565,7 +618,7 @@ export default {
               this.putLoading = false
             }
           })
-          .catch(res => {
+          .catch((res) => {
             // console.log(res)
             this.putLoading = false
           })
@@ -580,28 +633,29 @@ export default {
       // 成功提示
       this.$message({
         message: message,
-        type: 'success'
+        type: 'success',
       })
     },
     messageWarning(message) {
       // 警告提示
       this.$message({
         message: message,
-        type: 'warning'
+        type: 'warning',
       })
     },
     messageError(message) {
       // 错误提示
       this.$message.error(message)
-    }
+    },
     ///////// 消息提示 end /////////
-  }
+  },
 }
 </script>
 <style lang="scss" scoped>
 #addTask {
   height: 100%;
   background: white;
+  border-radius: 8px 8px 0 0;
   .content {
     position: relative;
     height: 100%;
@@ -632,6 +686,11 @@ export default {
         .el-date-editor,
         .el-input {
           width: 100%;
+        }
+        .el-radio-group {
+          height: 40px;
+          display: flex;
+          align-items: center;
         }
       }
     }
