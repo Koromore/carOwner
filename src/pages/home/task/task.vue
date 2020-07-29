@@ -525,6 +525,7 @@ export default {
       adminShow: this.$store.state.adminShow, // 超级管理员
 
       taskId: '', // 任务ID
+      taskDeptId: '',
       taskName: '', // 任务ID
       drawerLoading: false,
       detailList: [
@@ -882,6 +883,7 @@ export default {
       this.drawerPuttask = true
       this.taskId = prm.taskId
       this.taskName = prm.taskName
+      this.taskDeptId = prm.deptId
       let listInviteList = []
 
       prm.listInvite.forEach(element => {
@@ -934,9 +936,12 @@ export default {
       })
       let data = {
         taskId: this.taskId,
+        deptId: this.taskDeptId,
         status: e,
         updateTime: this.$time0(new Date()),
-        listInvite: listInviteList
+        listInvite: listInviteList,
+        nowUserId: this.userId,
+        nowUserDeptId: this.deptId
       }
       let flag = true
       data.listInvite.forEach(element => {
