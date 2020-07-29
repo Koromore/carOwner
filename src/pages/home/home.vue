@@ -125,7 +125,7 @@ export default {
     },
     ///////// 用户列表获取 end /////////
     gitAdmin(){
-      let adminList = [704,160,152,134,3910,4001,4023]
+      let adminList = [704,160,152,134,3910,4001,4023,3985,521,266,10,3962]
                     // 姚菲、杜总、谭总、成总、黄天倚、石杨、张倩
       let userId = this.userId
       let adminShow = false
