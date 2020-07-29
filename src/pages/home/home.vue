@@ -13,7 +13,7 @@ import HomeHeader from '@/components/header'
 export default {
   name: 'home',
   components: {
-    HomeHeader
+    HomeHeader,
   },
   data() {
     return {
@@ -28,7 +28,7 @@ export default {
       carSeriesList: [],
       userList: [],
       // 搜索
-      searchWordData: ''
+      searchWordData: '',
     }
   },
   // 侦听器
@@ -36,7 +36,7 @@ export default {
     $route(to, from) {
       // console.log(to)
       this.routeName = this.$route.matched[1].name
-    }
+    },
   },
   // 钩子函数
   beforeCreate() {},
@@ -65,11 +65,11 @@ export default {
       let data = {
         ids: 0,
         pageNum: 1,
-        pageSize: 100
+        pageSize: 100,
       }
       this.$axios
         .post('/ocarplay/api/carSeries/getCarSeriesLists', data)
-        .then(res => {
+        .then((res) => {
           // console.log(res)
           // this.listLoading = false
           if (res.status == 200) {
@@ -79,23 +79,23 @@ export default {
               {
                 value: 105,
                 label: '沃尔沃',
-                children: []
+                children: [],
               },
               {
                 value: 110,
                 label: '吉利',
-                children: []
+                children: [],
               },
               {
                 value: 153,
                 label: '长城',
-                children: []
-              }
+                children: [],
+              },
             ]
-            data.forEach(element => {
+            data.forEach((element) => {
               let children = {
                 value: element.carTypeId,
-                label: element.carTypeName
+                label: element.carTypeName,
               }
               if (element.deptId == 105) {
                 carSeriesList[0].children.push(children)
@@ -116,32 +116,45 @@ export default {
     getUserListAjax(res) {
       let userList = this.userList
       if (userList.length == 0) {
-        this.$axios.post('/ocarplay/api/user/list').then(res=>{
-          if (res.status==200&&res.data.errcode==0) {
+        this.$axios.post('/ocarplay/api/user/list').then((res) => {
+          if (res.status == 200 && res.data.errcode == 0) {
             this.userList = res.data.data
           }
         })
       }
     },
     ///////// 用户列表获取 end /////////
-    gitAdmin(){
-      let adminList = [704,160,152,134,3910,4001,4023]
-                    // 姚菲、杜总、谭总、成总、黄天倚、石杨、张倩
+    gitAdmin() {
+      let adminList = [
+        704,
+        160,
+        152,
+        134,
+        3910,
+        4001,
+        4023,
+        3985,
+        521,
+        266,
+        10,
+        3962,
+      ]
+      // 姚菲、杜总、谭总、成总、黄天倚、石杨、张倩、朱俊、潘群、冯永强、陆彪、刘小龙
       let userId = this.userId
       let adminShow = false
-      adminList.forEach(element => {
-        if (userId==element) {
+      adminList.forEach((element) => {
+        if (userId == element) {
           adminShow = true
         }
-      });
-      this.$store.commit('getAdminShow',adminShow)
+      })
+      this.$store.commit('getAdminShow', adminShow)
     },
     // 接受搜索字段
     getSearchWord(data) {
       this.searchWordData = data
       // console.log(this.searchWordData)
-    }
-  }
+    },
+  },
 }
 </script>
 <style lang="scss" scoped>
@@ -158,7 +171,7 @@ export default {
 </style>
 <style lang="scss">
 #home {
-  .el-drawer__body{
+  .el-drawer__body {
     height: calc(100% - 87px);
   }
   .omit {
@@ -170,25 +183,48 @@ export default {
       text-overflow: ellipsis;
     }
   }
-  .el-scrollbar__wrap{
+  .el-scrollbar__wrap {
     overflow-x: hidden;
   }
-  .imp{
+  .imp {
     background: url('../../../static/images/ico/imp.png') left center no-repeat;
     background-size: 9px 9px;
+  }
+  .el-table {
+    background: none;
+    .el-table__header-wrapper {
+      margin-bottom: 10px;
+      border-radius: 8px 8px 0 0;
+      // background: #fff;
+    }
+    .el-table__body-wrapper {
+      background: #fff;
+    }
+    .el-table__header {
+      th {
+        background: none;
+      }
+    }
+  }
+  .paging {
+    height: 64px;
+    box-sizing: border-box;
+    padding: 16px;
+    text-align: center;
+    background: #fff;
   }
 }
 #home .el-table td,
 #home .el-table th {
   padding: 9px 0;
 }
-.el-image{
+.el-image {
   display: block;
-  .el-icon-circle-close{
+  .el-icon-circle-close {
     color: #fff;
   }
 }
 .el-table::before {
-    height: 0px;
+  height: 0px;
 }
 </style>

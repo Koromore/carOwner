@@ -2,7 +2,7 @@
   <div id="owners">
     <!-- 头部选项框 start -->
     <el-row class="top">
-      <el-col :span="15" class="left">
+      <el-col :span="14" class="left">
         <div class="butBox1">
           <div :class="[tab1act==1?'but act':'but']" @click="tab1(1)">支持型</div>
           <div :class="[tab1act==2?'but act':'but']" @click="tab1(2)">拍摄型</div>
@@ -19,7 +19,7 @@
           <!-- <div :class="[tab2act==2?'but act':'but']" @click="tab2(2)">项目组分布</div> -->
         </div>
       </el-col>
-      <el-col :span="9" class="right">
+      <el-col :span="10" class="right">
         <!-- 邀约对象 -->
         <el-select
           v-model="leisureOwners"
@@ -71,8 +71,9 @@
         <!-- {{cityName}} -->
         <div @click="submit" class="add">
           <template v-if="subordinate==150||adminShow">
-            <i class="el-icon-circle-plus-outline"></i>
-            <br />添加车主
+            <!-- <i class="el-icon-circle-plus-outline"></i>
+            <br />添加车主 -->
+            <el-button type="primary" icon="el-icon-circle-plus-outline" size="small">添加车主</el-button>
           </template>
         </div>
       </el-col>
@@ -88,8 +89,8 @@
           v-loading="listLoading"
           :data="ownerListData"
           style="width: 100%"
-          :header-row-style="{'height': '54px','background': 'rgb(242, 242, 242)'}"
-          :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
+          :header-row-style="{'height': '54px'}"
+          :header-cell-style="{'color': '#000'}"
           height="100%"
         >
           <el-table-column prop label="序号" width="81" align="center" type="index"></el-table-column>
@@ -807,9 +808,9 @@ $icoColor: rgb(106, 145, 232);
 #owners {
   height: 100%;
   .top {
-    height: 72px;
+    height: 45px;
     margin-bottom: 9px;
-    background: #fff;
+    // background: #fff;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -822,7 +823,6 @@ $icoColor: rgb(106, 145, 232);
       .butBox1 {
         width: auto;
         height: 32px;
-        margin-left: 36px;
         overflow: hidden;
         display: flex;
         flex-wrap: wrap;
@@ -886,28 +886,36 @@ $icoColor: rgb(106, 145, 232);
       flex-wrap: wrap;
       align-items: center;
       justify-content: flex-end;
-      padding-right: 36px;
+      // padding-right: 36px;
       color: $icoColor;
       font-size: 13px;
       .el-select {
-        width: 100px;
-        margin-left: 13px;
+        width: 136px;
+        margin-right: 9px;
       }
       .add {
-        font-size: 12px;
-        min-width: 26px;
-        margin-left: 13px;
-        text-align: center;
+        // font-size: 12px;
+        // min-width: 26px;
+        // margin-left: 13px;
+        // text-align: center;
         cursor: pointer;
-        i {
-          font-size: 24px;
+        button{
+          width: 136px;
+          background: $icoColor;
         }
+        // i {
+        //   font-size: 24px;
+        // }
       }
     }
   }
   .content {
-    height: calc(100% - 97px);
-    background: #fff;
+    height: calc(100% - 54px);
+    // background: #fff;
+    // height: calc(100% - 54px);
+    overflow: hidden;
+    border: 1px solid #dddddd;
+    border-radius: 8px 8px 0 0;
     .table_list {
       height: calc(100% - 64px);
       .el-table {
@@ -923,15 +931,6 @@ $icoColor: rgb(106, 145, 232);
         cursor: pointer;
         margin-right: 13px;
       }
-    }
-    .paging {
-      height: 64px;
-      box-sizing: border-box;
-      padding: 16px;
-      text-align: center;
-      // flex-wrap: wrap;
-      // align-items: center;
-      // justify-content: center;
     }
   }
 }

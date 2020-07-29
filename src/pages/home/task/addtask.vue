@@ -2,141 +2,142 @@
   <div id="addTask">
     <!-- 内容列表 start -->
     <el-row class="content" v-loading="putLoading">
-      <el-col :span="24" class="title">
-        <el-col :span="6" class="previousBox">
-          <div @click="previous">
-            <i class="el-icon-arrow-left"></i>
-            返回
-          </div>
+      <el-scrollbar style="height:100%">
+        <el-col :span="24" class="title">
+          <el-col :span="6" class="previousBox">
+            <div @click="previous">
+              <i class="el-icon-arrow-left"></i>
+              返回
+            </div>
+          </el-col>
+          <el-col :span="12">{{title}}</el-col>
         </el-col>
-        <el-col :span="12">{{title}}</el-col>
-      </el-col>
-      <el-col :span="12" class="left">
-        <el-col :span="24" class="list">
-          <div class="key">任务类型</div>
-          <div class="val">
-            <el-radio-group v-model="taskType">
-              <el-radio :label="0">借车</el-radio>
-              <el-radio :label="1">素材</el-radio>
-              <el-radio :label="2">邀约</el-radio>
-              <el-radio :label="3">拍摄</el-radio>
-            </el-radio-group>
-          </div>
+        <el-col :span="12" class="left">
+          <el-col :span="24" class="list">
+            <div class="key">任务类型</div>
+            <div class="val">
+              <el-radio-group v-model="taskType">
+                <el-radio :label="0">借车</el-radio>
+                <el-radio :label="1">素材</el-radio>
+                <el-radio :label="2">邀约</el-radio>
+                <el-radio :label="3">拍摄</el-radio>
+              </el-radio-group>
+            </div>
+          </el-col>
+          <el-col :span="24" class="list">
+            <div class="key">任务名称</div>
+            <div class="val">
+              <el-input placeholder="请输入内容" v-model="taskName" clearable></el-input>
+            </div>
+          </el-col>
+          <el-col :span="24" class="list">
+            <div class="key">品牌车型</div>
+            <div class="val">
+              <el-cascader
+                v-model="carSeriesId"
+                :props="props"
+                :options="carSeriesList"
+                clearable
+                filterable
+                collapse-tags
+                @change="carSeriesChange"
+              ></el-cascader>
+            </div>
+          </el-col>
+          <el-col :span="24" class="list">
+            <div class="key">任务对象</div>
+            <div class="val">
+              <el-cascader
+                :options="options2"
+                :props="props"
+                v-model="listInviteList"
+                clearable
+                filterable
+                collapse-tags
+              ></el-cascader>
+            </div>
+          </el-col>
+          <!-- 摄影填写 start -->
+          <el-col :span="24" class="list">
+            <div class="key">摄影师</div>
+            <div class="val">
+              <el-cascader
+                :options="options2"
+                :props="props"
+                v-model="listInviteList"
+                clearable
+                filterable
+                collapse-tags
+              ></el-cascader>
+            </div>
+          </el-col>
+          <el-col :span="24" class="list">
+            <div class="key">模特</div>
+            <div class="val">
+              <el-cascader
+                :options="options2"
+                :props="props"
+                v-model="listInviteList"
+                clearable
+                filterable
+                collapse-tags
+              ></el-cascader>
+            </div>
+          </el-col>
+          <el-col :span="24" class="list">
+            <div class="key">场地</div>
+            <div class="val">
+              <el-cascader
+                :options="options2"
+                :props="props"
+                v-model="listInviteList"
+                clearable
+                filterable
+                collapse-tags
+              ></el-cascader>
+            </div>
+          </el-col>
+          <!-- 摄影填写 end -->
+          <el-col :span="24" class="list">
+            <div class="key">计划周期</div>
+            <div class="val">
+              <el-date-picker
+                v-model="periodTime"
+                type="daterange"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+              ></el-date-picker>
+            </div>
+          </el-col>
+          <el-col :span="24" class="list">
+            <div class="key">计划邀约量</div>
+            <div class="val">
+              <el-input placeholder="请输入内容" v-model="taskNum" clearable></el-input>
+            </div>
+          </el-col>
+          <el-col :span="24" class="list">
+            <div class="key">任务文件</div>
+            <div class="val">
+              <el-upload
+                class="upload-demo"
+                action="/ocarplay/file/upload"
+                :on-remove="taskFileRemove"
+                :on-success="taskFileSuccess"
+                :file-list="fileList"
+              >
+                <el-button size="small" type="primary">点击上传</el-button>
+                <div slot="tip" class="el-upload__tip"></div>
+              </el-upload>
+            </div>
+          </el-col>
         </el-col>
-        <el-col :span="24" class="list">
-          <div class="key">任务名称</div>
-          <div class="val">
-            <el-input placeholder="请输入内容" v-model="taskName" clearable></el-input>
-          </div>
-        </el-col>
-        <el-col :span="24" class="list">
-          <div class="key">品牌车型</div>
-          <div class="val">
-            <el-cascader
-              v-model="carSeriesId"
-              :props="props"
-              :options="carSeriesList"
-              clearable
-              filterable
-              collapse-tags
-              @change="carSeriesChange"
-            ></el-cascader>
-          </div>
-        </el-col>
-        <el-col :span="24" class="list">
-          <div class="key">任务对象</div>
-          <div class="val">
-            <el-cascader
-              :options="options2"
-              :props="props"
-              v-model="listInviteList"
-              clearable
-              filterable
-              collapse-tags
-            ></el-cascader>
-          </div>
-        </el-col>
-        <!-- 摄影填写 start -->
-        <el-col :span="24" class="list">
-          <div class="key">摄影师</div>
-          <div class="val">
-            <el-cascader
-              :options="options2"
-              :props="props"
-              v-model="listInviteList"
-              clearable
-              filterable
-              collapse-tags
-            ></el-cascader>
-          </div>
-        </el-col>
-        <el-col :span="24" class="list">
-          <div class="key">模特</div>
-          <div class="val">
-            <el-cascader
-              :options="options2"
-              :props="props"
-              v-model="listInviteList"
-              clearable
-              filterable
-              collapse-tags
-            ></el-cascader>
-          </div>
-        </el-col>
-        <el-col :span="24" class="list">
-          <div class="key">场地</div>
-          <div class="val">
-            <el-cascader
-              :options="options2"
-              :props="props"
-              v-model="listInviteList"
-              clearable
-              filterable
-              collapse-tags
-            ></el-cascader>
-          </div>
-        </el-col>
-        <!-- 摄影填写 end -->
-        <el-col :span="24" class="list">
-          <div class="key">计划周期</div>
-          <div class="val">
-            <el-date-picker
-              v-model="periodTime"
-              type="daterange"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-            ></el-date-picker>
-          </div>
-        </el-col>
-        <el-col :span="24" class="list">
-          <div class="key">计划邀约量</div>
-          <div class="val">
-            <el-input placeholder="请输入内容" v-model="taskNum" clearable></el-input>
-          </div>
-        </el-col>
-        <el-col :span="24" class="list">
-          <div class="key">任务文件</div>
-          <div class="val">
-            <el-upload
-              class="upload-demo"
-              action="/ocarplay/file/upload"
-              :on-remove="taskFileRemove"
-              :on-success="taskFileSuccess"
-              :file-list="fileList"
-            >
-              <el-button size="small" type="primary">点击上传</el-button>
-              <div slot="tip" class="el-upload__tip"></div>
-            </el-upload>
-          </div>
-        </el-col>
-      </el-col>
-      <el-col :span="12" class="right">
-        <el-col :span="24" class="list">
-          <div class="key">任务描述</div>
-          <div class="val valList">
-            <el-input type="textarea" :rows="7" placeholder="请输入内容" v-model="taskDesc"></el-input>
-            <!-- <div class="miKey">邀约目的:</div>
+        <el-col :span="12" class="right">
+          <el-col :span="24" class="list">
+            <div class="key">任务描述</div>
+            <div class="val valList">
+              <el-input type="textarea" :rows="7" placeholder="请输入内容" v-model="taskDesc"></el-input>
+              <!-- <div class="miKey">邀约目的:</div>
             <el-input placeholder="请输入内容" v-model="taskDesc.input1"></el-input>
             <div class="miKey">参与资格:</div>
             <el-input placeholder="请输入内容" v-model="taskDesc.input2"></el-input>
@@ -147,19 +148,20 @@
             <div class="miKey">费用情况:</div>
             <el-input placeholder="请输入内容" v-model="taskDesc.input5"></el-input>
             <div class="miKey">其他说明:</div>
-            <el-input placeholder="请输入内容" v-model="taskDesc.input6"></el-input>-->
-          </div>
+              <el-input placeholder="请输入内容" v-model="taskDesc.input6"></el-input>-->
+            </div>
+          </el-col>
+          <el-col :span="24" class="list">
+            <div class="key">备注</div>
+            <div class="val">
+              <el-input placeholder="请输入内容" v-model="remark" clearable></el-input>
+            </div>
+          </el-col>
         </el-col>
-        <el-col :span="24" class="list">
-          <div class="key">备注</div>
-          <div class="val">
-            <el-input placeholder="请输入内容" v-model="remark" clearable></el-input>
-          </div>
+        <el-col :span="24" class="put">
+          <el-button type="primary" @click="saveTask">提交</el-button>
         </el-col>
-      </el-col>
-      <el-col :span="24" class="put">
-        <el-button type="primary" @click="saveTask">提交</el-button>
-      </el-col>
+      </el-scrollbar>
     </el-row>
     <!-- 内容列表 end -->
   </div>
@@ -718,6 +720,7 @@ export default {
     $pad: 49px;
     .left {
       padding-right: $pad;
+      margin-bottom: 36px;
       .list {
         justify-content: flex-end;
       }
@@ -749,8 +752,9 @@ export default {
       }
     }
     .put {
+      background: white;
       position: absolute;
-      bottom: 24px;
+      bottom: 0;
       left: 0;
       text-align: center;
       button {

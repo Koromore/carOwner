@@ -116,9 +116,9 @@ select {
 :focus {
   outline: 0;
 }
-.gutter {
+/* .gutter {
   background: rgb(242, 242, 242) !important;
-}
+} */
 .el-drawer{
   padding: 24px;
 }

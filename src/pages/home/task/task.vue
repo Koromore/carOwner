@@ -556,7 +556,8 @@ export default {
       adminShow: this.$store.state.adminShow, // 超级管理员
 
       taskId: '', // 任务ID
-      taskName: '', // 任务ID
+      taskName: '', // 任务NAME
+      taskDeptId: '', // 任务部门ID
       drawerLoading: false,
       detailList: [
         {
@@ -912,6 +913,7 @@ export default {
       // console.log(prm)
       this.drawerPuttask = true
       this.taskId = prm.taskId
+      this.taskDeptId = prm.deptId
       this.taskName = prm.taskName
       let listInviteList = []
 
@@ -965,9 +967,12 @@ export default {
       })
       let data = {
         taskId: this.taskId,
+        deptId: this.taskDeptId,
         status: e,
         updateTime: this.$time0(new Date()),
         listInvite: listInviteList,
+        nowUserId: this.userId,
+        nowUserDeptId: this.deptId
       }
       let flag = true
       data.listInvite.forEach((element) => {
@@ -1196,7 +1201,7 @@ $statusColor4: #ea8a85;
       .add_task {
         button{
           width: 136px;
-          background: #6a91e8;
+          background: $icoColor;
         }
       }
     }
@@ -1224,21 +1229,21 @@ $statusColor4: #ea8a85;
       .statusColor4 {
         color: $statusColor4;
       }
-      .el-table {
-        background: none;
-        & >>> .el-table__header-wrapper{
-          margin-bottom: 10px;
-          border-radius: 8px 8px 0 0;
-        }
-        & >>> .el-table__body-wrapper{
-          background: #fff;
-        }
-        .el-table__header {
-          th {
-            background: none;
-          }
-        }
-      }
+      // .el-table {
+      //   background: none;
+      //   & >>> .el-table__header-wrapper{
+      //     margin-bottom: 10px;
+      //     border-radius: 8px 8px 0 0;
+      //   }
+      //   & >>> .el-table__body-wrapper{
+      //     background: #fff;
+      //   }
+      //   .el-table__header {
+      //     th {
+      //       background: none;
+      //     }
+      //   }
+      // }
       i {
         font-size: 20px;
         color: $icoColor;
@@ -1246,13 +1251,7 @@ $statusColor4: #ea8a85;
         margin-right: 9px;
       }
     }
-    .paging {
-      height: 64px;
-      box-sizing: border-box;
-      padding: 16px;
-      text-align: center;
-      background: #fff;
-    }
+    
   }
   // 抽屉弹窗延期原因样式
   .drawerDelay {
@@ -1313,6 +1312,7 @@ $statusColor4: #ea8a85;
   }
   .btn {
     height: 54px;
+    background: white;
     position: absolute;
     left: 0;
     bottom: 0;
