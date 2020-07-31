@@ -418,6 +418,7 @@
             type="date"
             placeholder="选择日期"
             :picker-options="pickerOptions"
+            :unlink-panels="true"
           ></el-date-picker>
         </el-col>
         <el-col :span="4" class="key keycontent">延期说明:</el-col>
@@ -438,9 +439,9 @@
     <!-- 抽屉弹窗延期原因 end -->
 
     <!-- 抽屉弹窗提交任务 start -->
-    <el-drawer title="提交任务" :visible.sync="drawerPuttask" size="720px">
+    <el-drawer title="提交任务" :visible.sync="drawerPuttask" size="720px" v-loading="drawerLoading">
       <el-scrollbar style="height:100%">
-        <el-row class="drawerPuttask" v-loading="drawerLoading">
+        <el-row class="drawerPuttask">
           <el-col :span="4">任务名称:</el-col>
           <el-col :span="20">{{taskName}}</el-col>
           <el-col :span="4" class="keycontent">结算明细:</el-col>
@@ -861,10 +862,27 @@ export default {
                   children: []
                 })
                 element1.vehicleOwners.forEach(element2 => {
-                  list[i].children[j].children.push({
-                    value: element2.vehicleOwnerId,
-                    label: element2.name
-                  })
+                  if (
+                    element2.coopNum &&
+                    element2.alreadyCooperateNum &&
+                    element2.coopNum - element2.alreadyCooperateNum <= 0
+                  ) {
+                    // cosnole.log()
+                    list[i].children[j].children.push({
+                      value: element2.vehicleOwnerId,
+                      label: element2.name,
+                      disabled: true
+                    })
+                  } else {
+                    list[i].children[j].children.push({
+                      value: element2.vehicleOwnerId,
+                      label: element2.name
+                    })
+                  }
+                  // list[i].children[j].children.push({
+                  //   value: element2.vehicleOwnerId,
+                  //   label: element2.name
+                  // })
                   // console.log(list[i].children[j])
                 })
               })
@@ -894,7 +912,7 @@ export default {
           ownerId: element.ownerId,
           url: element.url,
           money: element.money,
-          isCard: true
+          isCard: element.isCard
         })
       })
       this.listInviteList = listInviteList

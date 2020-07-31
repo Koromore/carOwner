@@ -49,6 +49,17 @@
     </el-calendar>
 
     <div id="g2"></div>
+
+    <el-date-picker
+      v-model="periodTime"
+      :picker-options="pickerOptions"
+      type="daterange"
+      range-separator="至"
+      start-placeholder="开始日期"
+      end-placeholder="结束日期"
+      :onPick="onPick"
+      :unlink-panels="test"
+    ></el-date-picker>
   </div>
 </template>
 <script>
@@ -64,6 +75,14 @@ export default {
   // Data数据
   data() {
     return {
+      test: true,
+      // 禁止选择当前时间之前的时间
+      pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() < Date.now() - 8.64e7
+        },
+      },
+      periodTime: '',
       // valueDate: {
       //   time: 1
       // },
@@ -72,34 +91,35 @@ export default {
           date: '2016-05-02',
           name: '王小虎',
           address: '上海市普陀区金沙江路 1518 弄',
-          tag: '家'
+          tag: '家',
         },
         {
           date: '2016-05-04',
           name: '王小虎',
           address: '上海市普陀区金沙江路 1517 弄',
-          tag: '公司'
+          tag: '公司',
         },
         {
           date: '2016-05-01',
           name: '王小虎',
           address: '上海市普陀区金沙江路 1519 弄',
-          tag: '家'
+          tag: '家',
         },
         {
           date: '2016-05-03',
           name: '王小虎',
           address: '上海市普陀区金沙江路 1516 弄',
-          tag: '公司'
-        }
+          tag: '公司',
+        },
       ],
-      flag: true
+      flag: true,
     }
   },
   // 侦听器
   watch: {},
   // 钩子函数
   mounted() {
+    
     // test(){
     let data = {
       buyCode: 'string',
@@ -110,7 +130,7 @@ export default {
       createTime: {
         chronology: {
           calendarType: 'string',
-          id: 'string'
+          id: 'string',
         },
         dayOfMonth: 0,
         dayOfWeek: 'MONDAY',
@@ -121,7 +141,7 @@ export default {
         monthValue: 0,
         nano: 0,
         second: 0,
-        year: 0
+        year: 0,
       },
       delayReason: 'string',
       deleteFlag: true,
@@ -130,18 +150,18 @@ export default {
       endTime: {
         chronology: {
           calendarType: 'string',
-          id: 'string'
+          id: 'string',
         },
         dayOfMonth: 0,
         dayOfWeek: 'MONDAY',
         dayOfYear: 0,
         era: {
-          value: 0
+          value: 0,
         },
         leapYear: true,
         month: 0,
         monthValue: 0,
-        year: 0
+        year: 0,
       },
       initUserId: 0,
       invMoney: 0,
@@ -153,7 +173,7 @@ export default {
           createTime: {
             chronology: {
               calendarType: 'string',
-              id: 'string'
+              id: 'string',
             },
             dayOfMonth: 0,
             dayOfWeek: 'MONDAY',
@@ -164,7 +184,7 @@ export default {
             monthValue: 0,
             nano: 0,
             second: 0,
-            year: 0
+            year: 0,
           },
           deleteFlag: true,
           deptName: 'string',
@@ -184,7 +204,7 @@ export default {
               createTime: {
                 chronology: {
                   calendarType: 'string',
-                  id: 'string'
+                  id: 'string',
                 },
                 dayOfMonth: 0,
                 dayOfWeek: 'MONDAY',
@@ -195,7 +215,7 @@ export default {
                 monthValue: 0,
                 nano: 0,
                 second: 0,
-                year: 0
+                year: 0,
               },
               deleteFlag: true,
               isCard: true,
@@ -210,7 +230,7 @@ export default {
               updateTime: {
                 chronology: {
                   calendarType: 'string',
-                  id: 'string'
+                  id: 'string',
                 },
                 dayOfMonth: 0,
                 dayOfWeek: 'MONDAY',
@@ -221,7 +241,7 @@ export default {
                 monthValue: 0,
                 nano: 0,
                 second: 0,
-                year: 0
+                year: 0,
               },
               vehicleOwners: [
                 {
@@ -231,18 +251,18 @@ export default {
                   birthday: {
                     chronology: {
                       calendarType: 'string',
-                      id: 'string'
+                      id: 'string',
                     },
                     dayOfMonth: 0,
                     dayOfWeek: 'MONDAY',
                     dayOfYear: 0,
                     era: {
-                      value: 0
+                      value: 0,
                     },
                     leapYear: true,
                     month: 0,
                     monthValue: 0,
-                    year: 0
+                    year: 0,
                   },
                   buycarplace: 'string',
                   carSeriesName: 'string',
@@ -257,7 +277,7 @@ export default {
                       createTime: {
                         chronology: {
                           calendarType: 'string',
-                          id: 'string'
+                          id: 'string',
                         },
                         dayOfMonth: 0,
                         dayOfWeek: 'MONDAY',
@@ -268,25 +288,25 @@ export default {
                         monthValue: 0,
                         nano: 0,
                         second: 0,
-                        year: 0
+                        year: 0,
                       },
                       deleteFlag: true,
                       doUserId: 0,
                       endTime: {
                         chronology: {
                           calendarType: 'string',
-                          id: 'string'
+                          id: 'string',
                         },
                         dayOfMonth: 0,
                         dayOfWeek: 'MONDAY',
                         dayOfYear: 0,
                         era: {
-                          value: 0
+                          value: 0,
                         },
                         leapYear: true,
                         month: 0,
                         monthValue: 0,
-                        year: 0
+                        year: 0,
                       },
                       fileName: 'string',
                       id: 0,
@@ -297,25 +317,25 @@ export default {
                       startTime: {
                         chronology: {
                           calendarType: 'string',
-                          id: 'string'
+                          id: 'string',
                         },
                         dayOfMonth: 0,
                         dayOfWeek: 'MONDAY',
                         dayOfYear: 0,
                         era: {
-                          value: 0
+                          value: 0,
                         },
                         leapYear: true,
                         month: 0,
                         monthValue: 0,
-                        year: 0
+                        year: 0,
                       },
                       suffix: 'string',
                       timeLimit: 'string',
                       updateTime: {
                         chronology: {
                           calendarType: 'string',
-                          id: 'string'
+                          id: 'string',
                         },
                         dayOfMonth: 0,
                         dayOfWeek: 'MONDAY',
@@ -326,9 +346,9 @@ export default {
                         monthValue: 0,
                         nano: 0,
                         second: 0,
-                        year: 0
-                      }
-                    }
+                        year: 0,
+                      },
+                    },
                   ],
                   createTime: '2020-07-10T06:13:30.397Z',
                   deleteFlag: true,
@@ -341,7 +361,7 @@ export default {
                       createTime: {
                         chronology: {
                           calendarType: 'string',
-                          id: 'string'
+                          id: 'string',
                         },
                         dayOfMonth: 0,
                         dayOfWeek: 'MONDAY',
@@ -352,7 +372,7 @@ export default {
                         monthValue: 0,
                         nano: 0,
                         second: 0,
-                        year: 0
+                        year: 0,
                       },
                       deleteFlag: 0,
                       isCheck: 0,
@@ -361,7 +381,7 @@ export default {
                       updateTime: {
                         chronology: {
                           calendarType: 'string',
-                          id: 'string'
+                          id: 'string',
                         },
                         dayOfMonth: 0,
                         dayOfWeek: 'MONDAY',
@@ -372,9 +392,9 @@ export default {
                         monthValue: 0,
                         nano: 0,
                         second: 0,
-                        year: 0
-                      }
-                    }
+                        year: 0,
+                      },
+                    },
                   ],
                   deptId: 0,
                   doUserId: 0,
@@ -392,7 +412,7 @@ export default {
                       createTime: {
                         chronology: {
                           calendarType: 'string',
-                          id: 'string'
+                          id: 'string',
                         },
                         dayOfMonth: 0,
                         dayOfWeek: 'MONDAY',
@@ -403,7 +423,7 @@ export default {
                         monthValue: 0,
                         nano: 0,
                         second: 0,
-                        year: 0
+                        year: 0,
                       },
                       currMonthCooperateNum: 0,
                       deleteFlag: true,
@@ -417,7 +437,7 @@ export default {
                           createTime: {
                             chronology: {
                               calendarType: 'string',
-                              id: 'string'
+                              id: 'string',
                             },
                             dayOfMonth: 0,
                             dayOfWeek: 'MONDAY',
@@ -428,14 +448,14 @@ export default {
                             monthValue: 0,
                             nano: 0,
                             second: 0,
-                            year: 0
+                            year: 0,
                           },
                           id: 0,
                           seriesId: 0,
                           updateTime: {
                             chronology: {
                               calendarType: 'string',
-                              id: 'string'
+                              id: 'string',
                             },
                             dayOfMonth: 0,
                             dayOfWeek: 'MONDAY',
@@ -446,10 +466,10 @@ export default {
                             monthValue: 0,
                             nano: 0,
                             second: 0,
-                            year: 0
+                            year: 0,
                           },
-                          vehicleOwnerId: 0
-                        }
+                          vehicleOwnerId: 0,
+                        },
                       ],
                       ownerId: 0,
                       ownerName: 'string',
@@ -461,7 +481,7 @@ export default {
                       updateTime: {
                         chronology: {
                           calendarType: 'string',
-                          id: 'string'
+                          id: 'string',
                         },
                         dayOfMonth: 0,
                         dayOfWeek: 'MONDAY',
@@ -472,10 +492,10 @@ export default {
                         monthValue: 0,
                         nano: 0,
                         second: 0,
-                        year: 0
+                        year: 0,
                       },
-                      url: 'string'
-                    }
+                      url: 'string',
+                    },
                   ],
                   itemId: 0,
                   name: 'string',
@@ -486,7 +506,7 @@ export default {
                       createTime: {
                         chronology: {
                           calendarType: 'string',
-                          id: 'string'
+                          id: 'string',
                         },
                         dayOfMonth: 0,
                         dayOfWeek: 'MONDAY',
@@ -497,14 +517,14 @@ export default {
                         monthValue: 0,
                         nano: 0,
                         second: 0,
-                        year: 0
+                        year: 0,
                       },
                       id: 0,
                       seriesId: 0,
                       updateTime: {
                         chronology: {
                           calendarType: 'string',
-                          id: 'string'
+                          id: 'string',
                         },
                         dayOfMonth: 0,
                         dayOfWeek: 'MONDAY',
@@ -515,10 +535,10 @@ export default {
                         monthValue: 0,
                         nano: 0,
                         second: 0,
-                        year: 0
+                        year: 0,
                       },
-                      vehicleOwnerId: 0
-                    }
+                      vehicleOwnerId: 0,
+                    },
                   ],
                   ownerCoops: [
                     {
@@ -530,7 +550,7 @@ export default {
                       createTime: {
                         chronology: {
                           calendarType: 'string',
-                          id: 'string'
+                          id: 'string',
                         },
                         dayOfMonth: 0,
                         dayOfWeek: 'MONDAY',
@@ -541,7 +561,7 @@ export default {
                         monthValue: 0,
                         nano: 0,
                         second: 0,
-                        year: 0
+                        year: 0,
                       },
                       deleteFlag: true,
                       doUserId: 0,
@@ -553,7 +573,7 @@ export default {
                           createTime: {
                             chronology: {
                               calendarType: 'string',
-                              id: 'string'
+                              id: 'string',
                             },
                             dayOfMonth: 0,
                             dayOfWeek: 'MONDAY',
@@ -564,14 +584,14 @@ export default {
                             monthValue: 0,
                             nano: 0,
                             second: 0,
-                            year: 0
+                            year: 0,
                           },
                           id: 0,
                           seriesId: 0,
                           updateTime: {
                             chronology: {
                               calendarType: 'string',
-                              id: 'string'
+                              id: 'string',
                             },
                             dayOfMonth: 0,
                             dayOfWeek: 'MONDAY',
@@ -582,10 +602,10 @@ export default {
                             monthValue: 0,
                             nano: 0,
                             second: 0,
-                            year: 0
+                            year: 0,
                           },
-                          vehicleOwnerId: 0
-                        }
+                          vehicleOwnerId: 0,
+                        },
                       ],
                       ownerId: 0,
                       ownerName: 'string',
@@ -595,7 +615,7 @@ export default {
                       updateTime: {
                         chronology: {
                           calendarType: 'string',
-                          id: 'string'
+                          id: 'string',
                         },
                         dayOfMonth: 0,
                         dayOfWeek: 'MONDAY',
@@ -606,9 +626,9 @@ export default {
                         monthValue: 0,
                         nano: 0,
                         second: 0,
-                        year: 0
-                      }
-                    }
+                        year: 0,
+                      },
+                    },
                   ],
                   phone: 'string',
                   plateNum: 'string',
@@ -620,7 +640,7 @@ export default {
                       createTime: {
                         chronology: {
                           calendarType: 'string',
-                          id: 'string'
+                          id: 'string',
                         },
                         dayOfMonth: 0,
                         dayOfWeek: 'MONDAY',
@@ -631,7 +651,7 @@ export default {
                         monthValue: 0,
                         nano: 0,
                         second: 0,
-                        year: 0
+                        year: 0,
                       },
                       deleteFlag: true,
                       name: 'string',
@@ -640,7 +660,7 @@ export default {
                       updateTime: {
                         chronology: {
                           calendarType: 'string',
-                          id: 'string'
+                          id: 'string',
                         },
                         dayOfMonth: 0,
                         dayOfWeek: 'MONDAY',
@@ -651,11 +671,11 @@ export default {
                         monthValue: 0,
                         nano: 0,
                         second: 0,
-                        year: 0
+                        year: 0,
                       },
                       vehicleOwnerId: 0,
-                      work: 'string'
-                    }
+                      work: 'string',
+                    },
                   ],
                   seriesId: 0,
                   sex: true,
@@ -669,17 +689,17 @@ export default {
                   vinno: 'string',
                   weiboId: 'string',
                   work: 'string',
-                  wx: 'string'
-                }
-              ]
-            }
+                  wx: 'string',
+                },
+              ],
+            },
           ],
           listOwnerType: [
             {
               createTime: {
                 chronology: {
                   calendarType: 'string',
-                  id: 'string'
+                  id: 'string',
                 },
                 dayOfMonth: 0,
                 dayOfWeek: 'MONDAY',
@@ -690,7 +710,7 @@ export default {
                 monthValue: 0,
                 nano: 0,
                 second: 0,
-                year: 0
+                year: 0,
               },
               deleteFlag: true,
               ownerItems: [
@@ -700,7 +720,7 @@ export default {
                   createTime: {
                     chronology: {
                       calendarType: 'string',
-                      id: 'string'
+                      id: 'string',
                     },
                     dayOfMonth: 0,
                     dayOfWeek: 'MONDAY',
@@ -711,7 +731,7 @@ export default {
                     monthValue: 0,
                     nano: 0,
                     second: 0,
-                    year: 0
+                    year: 0,
                   },
                   deleteFlag: true,
                   isCard: true,
@@ -726,7 +746,7 @@ export default {
                   updateTime: {
                     chronology: {
                       calendarType: 'string',
-                      id: 'string'
+                      id: 'string',
                     },
                     dayOfMonth: 0,
                     dayOfWeek: 'MONDAY',
@@ -737,7 +757,7 @@ export default {
                     monthValue: 0,
                     nano: 0,
                     second: 0,
-                    year: 0
+                    year: 0,
                   },
                   vehicleOwners: [
                     {
@@ -747,18 +767,18 @@ export default {
                       birthday: {
                         chronology: {
                           calendarType: 'string',
-                          id: 'string'
+                          id: 'string',
                         },
                         dayOfMonth: 0,
                         dayOfWeek: 'MONDAY',
                         dayOfYear: 0,
                         era: {
-                          value: 0
+                          value: 0,
                         },
                         leapYear: true,
                         month: 0,
                         monthValue: 0,
-                        year: 0
+                        year: 0,
                       },
                       buycarplace: 'string',
                       carSeriesName: 'string',
@@ -773,7 +793,7 @@ export default {
                           createTime: {
                             chronology: {
                               calendarType: 'string',
-                              id: 'string'
+                              id: 'string',
                             },
                             dayOfMonth: 0,
                             dayOfWeek: 'MONDAY',
@@ -784,25 +804,25 @@ export default {
                             monthValue: 0,
                             nano: 0,
                             second: 0,
-                            year: 0
+                            year: 0,
                           },
                           deleteFlag: true,
                           doUserId: 0,
                           endTime: {
                             chronology: {
                               calendarType: 'string',
-                              id: 'string'
+                              id: 'string',
                             },
                             dayOfMonth: 0,
                             dayOfWeek: 'MONDAY',
                             dayOfYear: 0,
                             era: {
-                              value: 0
+                              value: 0,
                             },
                             leapYear: true,
                             month: 0,
                             monthValue: 0,
-                            year: 0
+                            year: 0,
                           },
                           fileName: 'string',
                           id: 0,
@@ -813,25 +833,25 @@ export default {
                           startTime: {
                             chronology: {
                               calendarType: 'string',
-                              id: 'string'
+                              id: 'string',
                             },
                             dayOfMonth: 0,
                             dayOfWeek: 'MONDAY',
                             dayOfYear: 0,
                             era: {
-                              value: 0
+                              value: 0,
                             },
                             leapYear: true,
                             month: 0,
                             monthValue: 0,
-                            year: 0
+                            year: 0,
                           },
                           suffix: 'string',
                           timeLimit: 'string',
                           updateTime: {
                             chronology: {
                               calendarType: 'string',
-                              id: 'string'
+                              id: 'string',
                             },
                             dayOfMonth: 0,
                             dayOfWeek: 'MONDAY',
@@ -842,9 +862,9 @@ export default {
                             monthValue: 0,
                             nano: 0,
                             second: 0,
-                            year: 0
-                          }
-                        }
+                            year: 0,
+                          },
+                        },
                       ],
                       createTime: '2020-07-10T06:13:30.398Z',
                       deleteFlag: true,
@@ -857,7 +877,7 @@ export default {
                           createTime: {
                             chronology: {
                               calendarType: 'string',
-                              id: 'string'
+                              id: 'string',
                             },
                             dayOfMonth: 0,
                             dayOfWeek: 'MONDAY',
@@ -868,7 +888,7 @@ export default {
                             monthValue: 0,
                             nano: 0,
                             second: 0,
-                            year: 0
+                            year: 0,
                           },
                           deleteFlag: 0,
                           isCheck: 0,
@@ -877,7 +897,7 @@ export default {
                           updateTime: {
                             chronology: {
                               calendarType: 'string',
-                              id: 'string'
+                              id: 'string',
                             },
                             dayOfMonth: 0,
                             dayOfWeek: 'MONDAY',
@@ -888,9 +908,9 @@ export default {
                             monthValue: 0,
                             nano: 0,
                             second: 0,
-                            year: 0
-                          }
-                        }
+                            year: 0,
+                          },
+                        },
                       ],
                       deptId: 0,
                       doUserId: 0,
@@ -908,7 +928,7 @@ export default {
                           createTime: {
                             chronology: {
                               calendarType: 'string',
-                              id: 'string'
+                              id: 'string',
                             },
                             dayOfMonth: 0,
                             dayOfWeek: 'MONDAY',
@@ -919,7 +939,7 @@ export default {
                             monthValue: 0,
                             nano: 0,
                             second: 0,
-                            year: 0
+                            year: 0,
                           },
                           currMonthCooperateNum: 0,
                           deleteFlag: true,
@@ -933,7 +953,7 @@ export default {
                               createTime: {
                                 chronology: {
                                   calendarType: 'string',
-                                  id: 'string'
+                                  id: 'string',
                                 },
                                 dayOfMonth: 0,
                                 dayOfWeek: 'MONDAY',
@@ -944,14 +964,14 @@ export default {
                                 monthValue: 0,
                                 nano: 0,
                                 second: 0,
-                                year: 0
+                                year: 0,
                               },
                               id: 0,
                               seriesId: 0,
                               updateTime: {
                                 chronology: {
                                   calendarType: 'string',
-                                  id: 'string'
+                                  id: 'string',
                                 },
                                 dayOfMonth: 0,
                                 dayOfWeek: 'MONDAY',
@@ -962,10 +982,10 @@ export default {
                                 monthValue: 0,
                                 nano: 0,
                                 second: 0,
-                                year: 0
+                                year: 0,
                               },
-                              vehicleOwnerId: 0
-                            }
+                              vehicleOwnerId: 0,
+                            },
                           ],
                           ownerId: 0,
                           ownerName: 'string',
@@ -977,7 +997,7 @@ export default {
                           updateTime: {
                             chronology: {
                               calendarType: 'string',
-                              id: 'string'
+                              id: 'string',
                             },
                             dayOfMonth: 0,
                             dayOfWeek: 'MONDAY',
@@ -988,10 +1008,10 @@ export default {
                             monthValue: 0,
                             nano: 0,
                             second: 0,
-                            year: 0
+                            year: 0,
                           },
-                          url: 'string'
-                        }
+                          url: 'string',
+                        },
                       ],
                       itemId: 0,
                       name: 'string',
@@ -1002,7 +1022,7 @@ export default {
                           createTime: {
                             chronology: {
                               calendarType: 'string',
-                              id: 'string'
+                              id: 'string',
                             },
                             dayOfMonth: 0,
                             dayOfWeek: 'MONDAY',
@@ -1013,14 +1033,14 @@ export default {
                             monthValue: 0,
                             nano: 0,
                             second: 0,
-                            year: 0
+                            year: 0,
                           },
                           id: 0,
                           seriesId: 0,
                           updateTime: {
                             chronology: {
                               calendarType: 'string',
-                              id: 'string'
+                              id: 'string',
                             },
                             dayOfMonth: 0,
                             dayOfWeek: 'MONDAY',
@@ -1031,10 +1051,10 @@ export default {
                             monthValue: 0,
                             nano: 0,
                             second: 0,
-                            year: 0
+                            year: 0,
                           },
-                          vehicleOwnerId: 0
-                        }
+                          vehicleOwnerId: 0,
+                        },
                       ],
                       ownerCoops: [
                         {
@@ -1046,7 +1066,7 @@ export default {
                           createTime: {
                             chronology: {
                               calendarType: 'string',
-                              id: 'string'
+                              id: 'string',
                             },
                             dayOfMonth: 0,
                             dayOfWeek: 'MONDAY',
@@ -1057,7 +1077,7 @@ export default {
                             monthValue: 0,
                             nano: 0,
                             second: 0,
-                            year: 0
+                            year: 0,
                           },
                           deleteFlag: true,
                           doUserId: 0,
@@ -1069,7 +1089,7 @@ export default {
                               createTime: {
                                 chronology: {
                                   calendarType: 'string',
-                                  id: 'string'
+                                  id: 'string',
                                 },
                                 dayOfMonth: 0,
                                 dayOfWeek: 'MONDAY',
@@ -1080,14 +1100,14 @@ export default {
                                 monthValue: 0,
                                 nano: 0,
                                 second: 0,
-                                year: 0
+                                year: 0,
                               },
                               id: 0,
                               seriesId: 0,
                               updateTime: {
                                 chronology: {
                                   calendarType: 'string',
-                                  id: 'string'
+                                  id: 'string',
                                 },
                                 dayOfMonth: 0,
                                 dayOfWeek: 'MONDAY',
@@ -1098,10 +1118,10 @@ export default {
                                 monthValue: 0,
                                 nano: 0,
                                 second: 0,
-                                year: 0
+                                year: 0,
                               },
-                              vehicleOwnerId: 0
-                            }
+                              vehicleOwnerId: 0,
+                            },
                           ],
                           ownerId: 0,
                           ownerName: 'string',
@@ -1111,7 +1131,7 @@ export default {
                           updateTime: {
                             chronology: {
                               calendarType: 'string',
-                              id: 'string'
+                              id: 'string',
                             },
                             dayOfMonth: 0,
                             dayOfWeek: 'MONDAY',
@@ -1122,9 +1142,9 @@ export default {
                             monthValue: 0,
                             nano: 0,
                             second: 0,
-                            year: 0
-                          }
-                        }
+                            year: 0,
+                          },
+                        },
                       ],
                       phone: 'string',
                       plateNum: 'string',
@@ -1136,7 +1156,7 @@ export default {
                           createTime: {
                             chronology: {
                               calendarType: 'string',
-                              id: 'string'
+                              id: 'string',
                             },
                             dayOfMonth: 0,
                             dayOfWeek: 'MONDAY',
@@ -1147,7 +1167,7 @@ export default {
                             monthValue: 0,
                             nano: 0,
                             second: 0,
-                            year: 0
+                            year: 0,
                           },
                           deleteFlag: true,
                           name: 'string',
@@ -1156,7 +1176,7 @@ export default {
                           updateTime: {
                             chronology: {
                               calendarType: 'string',
-                              id: 'string'
+                              id: 'string',
                             },
                             dayOfMonth: 0,
                             dayOfWeek: 'MONDAY',
@@ -1167,11 +1187,11 @@ export default {
                             monthValue: 0,
                             nano: 0,
                             second: 0,
-                            year: 0
+                            year: 0,
                           },
                           vehicleOwnerId: 0,
-                          work: 'string'
-                        }
+                          work: 'string',
+                        },
                       ],
                       seriesId: 0,
                       sex: true,
@@ -1185,17 +1205,17 @@ export default {
                       vinno: 'string',
                       weiboId: 'string',
                       work: 'string',
-                      wx: 'string'
-                    }
-                  ]
-                }
+                      wx: 'string',
+                    },
+                  ],
+                },
               ],
               typeId: 0,
               typeName: 'string',
               updateTime: {
                 chronology: {
                   calendarType: 'string',
-                  id: 'string'
+                  id: 'string',
                 },
                 dayOfMonth: 0,
                 dayOfWeek: 'MONDAY',
@@ -1206,9 +1226,9 @@ export default {
                 monthValue: 0,
                 nano: 0,
                 second: 0,
-                year: 0
-              }
-            }
+                year: 0,
+              },
+            },
           ],
           money: 0,
           name: 'string',
@@ -1216,7 +1236,7 @@ export default {
           overTime: {
             chronology: {
               calendarType: 'string',
-              id: 'string'
+              id: 'string',
             },
             dayOfMonth: 0,
             dayOfWeek: 'MONDAY',
@@ -1227,7 +1247,7 @@ export default {
             monthValue: 0,
             nano: 0,
             second: 0,
-            year: 0
+            year: 0,
           },
           ownerId: 0,
           phone: 'string',
@@ -1235,7 +1255,7 @@ export default {
           publishedTime: {
             chronology: {
               calendarType: 'string',
-              id: 'string'
+              id: 'string',
             },
             dayOfMonth: 0,
             dayOfWeek: 'MONDAY',
@@ -1246,7 +1266,7 @@ export default {
             monthValue: 0,
             nano: 0,
             second: 0,
-            year: 0
+            year: 0,
           },
           realName: 'string',
           sourceName: 'string',
@@ -1258,7 +1278,7 @@ export default {
           updateTime: {
             chronology: {
               calendarType: 'string',
-              id: 'string'
+              id: 'string',
             },
             dayOfMonth: 0,
             dayOfWeek: 'MONDAY',
@@ -1269,18 +1289,18 @@ export default {
             monthValue: 0,
             nano: 0,
             second: 0,
-            year: 0
+            year: 0,
           },
           url: 'string',
-          userId: 0
-        }
+          userId: 0,
+        },
       ],
       listTaskFile: [
         {
           createTime: {
             chronology: {
               calendarType: 'string',
-              id: 'string'
+              id: 'string',
             },
             dayOfMonth: 0,
             dayOfWeek: 'MONDAY',
@@ -1291,7 +1311,7 @@ export default {
             monthValue: 0,
             nano: 0,
             second: 0,
-            year: 0
+            year: 0,
           },
           deleteFlag: true,
           fileId: 0,
@@ -1302,7 +1322,7 @@ export default {
           updateTime: {
             chronology: {
               calendarType: 'string',
-              id: 'string'
+              id: 'string',
             },
             dayOfMonth: 0,
             dayOfWeek: 'MONDAY',
@@ -1313,10 +1333,10 @@ export default {
             monthValue: 0,
             nano: 0,
             second: 0,
-            year: 0
+            year: 0,
           },
-          updateUserId: 0
-        }
+          updateUserId: 0,
+        },
       ],
       listTaskOfCartype: [
         {
@@ -1324,7 +1344,7 @@ export default {
           creatDate: {
             chronology: {
               calendarType: 'string',
-              id: 'string'
+              id: 'string',
             },
             dayOfMonth: 0,
             dayOfWeek: 'MONDAY',
@@ -1335,14 +1355,14 @@ export default {
             monthValue: 0,
             nano: 0,
             second: 0,
-            year: 0
+            year: 0,
           },
           taskId: 0,
           tcId: 0,
           updtaeDate: {
             chronology: {
               calendarType: 'string',
-              id: 'string'
+              id: 'string',
             },
             dayOfMonth: 0,
             dayOfWeek: 'MONDAY',
@@ -1353,15 +1373,15 @@ export default {
             monthValue: 0,
             nano: 0,
             second: 0,
-            year: 0
-          }
-        }
+            year: 0,
+          },
+        },
       ],
       num: 0,
       overTime: {
         chronology: {
           calendarType: 'string',
-          id: 'string'
+          id: 'string',
         },
         dayOfMonth: 0,
         dayOfWeek: 'MONDAY',
@@ -1372,24 +1392,24 @@ export default {
         monthValue: 0,
         nano: 0,
         second: 0,
-        year: 0
+        year: 0,
       },
       remark: 'string',
       startTime: {
         chronology: {
           calendarType: 'string',
-          id: 'string'
+          id: 'string',
         },
         dayOfMonth: 0,
         dayOfWeek: 'MONDAY',
         dayOfYear: 0,
         era: {
-          value: 0
+          value: 0,
         },
         leapYear: true,
         month: 0,
         monthValue: 0,
-        year: 0
+        year: 0,
       },
       status: 0,
       taskDesc: 'string',
@@ -1399,7 +1419,7 @@ export default {
       updateTime: {
         chronology: {
           calendarType: 'string',
-          id: 'string'
+          id: 'string',
         },
         dayOfMonth: 0,
         dayOfWeek: 'MONDAY',
@@ -1410,14 +1430,17 @@ export default {
         monthValue: 0,
         nano: 0,
         second: 0,
-        year: 0
+        year: 0,
       },
-      years: 'string'
+      years: 'string',
     }
     this.G2()
   },
   // 方法
   methods: {
+    onPick(time){
+      console.log(123)
+    },
     resetDateFilter() {
       this.$refs.filterTable.clearFilter('date')
       console.log(1)
@@ -1454,7 +1477,7 @@ export default {
         createTime: {
           chronology: {
             calendarType: 'string',
-            id: 'string'
+            id: 'string',
           },
           dayOfMonth: 0,
           dayOfWeek: 'MONDAY',
@@ -1465,7 +1488,7 @@ export default {
           monthValue: 0,
           nano: 0,
           second: 0,
-          year: 0
+          year: 0,
         },
         delayReason: 'string',
         deleteFlag: true,
@@ -1473,18 +1496,18 @@ export default {
         endTime: {
           chronology: {
             calendarType: 'string',
-            id: 'string'
+            id: 'string',
           },
           dayOfMonth: 0,
           dayOfWeek: 'MONDAY',
           dayOfYear: 0,
           era: {
-            value: 0
+            value: 0,
           },
           leapYear: true,
           month: 0,
           monthValue: 0,
-          year: 0
+          year: 0,
         },
         initUserId: 0,
         invMoney: 0,
@@ -1495,7 +1518,7 @@ export default {
             createTime: {
               chronology: {
                 calendarType: 'string',
-                id: 'string'
+                id: 'string',
               },
               dayOfMonth: 0,
               dayOfWeek: 'MONDAY',
@@ -1506,7 +1529,7 @@ export default {
               monthValue: 0,
               nano: 0,
               second: 0,
-              year: 0
+              year: 0,
             },
             deleteFlag: true,
             homeAddress: 'string',
@@ -1521,7 +1544,7 @@ export default {
                 createTime: {
                   chronology: {
                     calendarType: 'string',
-                    id: 'string'
+                    id: 'string',
                   },
                   dayOfMonth: 0,
                   dayOfWeek: 'MONDAY',
@@ -1532,7 +1555,7 @@ export default {
                   monthValue: 0,
                   nano: 0,
                   second: 0,
-                  year: 0
+                  year: 0,
                 },
                 deleteFlag: true,
                 isCard: true,
@@ -1546,7 +1569,7 @@ export default {
                 updateTime: {
                   chronology: {
                     calendarType: 'string',
-                    id: 'string'
+                    id: 'string',
                   },
                   dayOfMonth: 0,
                   dayOfWeek: 'MONDAY',
@@ -1557,7 +1580,7 @@ export default {
                   monthValue: 0,
                   nano: 0,
                   second: 0,
-                  year: 0
+                  year: 0,
                 },
                 vehicleOwners: [
                   {
@@ -1565,18 +1588,18 @@ export default {
                     birthday: {
                       chronology: {
                         calendarType: 'string',
-                        id: 'string'
+                        id: 'string',
                       },
                       dayOfMonth: 0,
                       dayOfWeek: 'MONDAY',
                       dayOfYear: 0,
                       era: {
-                        value: 0
+                        value: 0,
                       },
                       leapYear: true,
                       month: 0,
                       monthValue: 0,
-                      year: 0
+                      year: 0,
                     },
                     buycarplace: 'string',
                     carSeriesName: 'string',
@@ -1589,7 +1612,7 @@ export default {
                         createTime: {
                           chronology: {
                             calendarType: 'string',
-                            id: 'string'
+                            id: 'string',
                           },
                           dayOfMonth: 0,
                           dayOfWeek: 'MONDAY',
@@ -1600,25 +1623,25 @@ export default {
                           monthValue: 0,
                           nano: 0,
                           second: 0,
-                          year: 0
+                          year: 0,
                         },
                         deleteFlag: true,
                         doUserId: 0,
                         endTime: {
                           chronology: {
                             calendarType: 'string',
-                            id: 'string'
+                            id: 'string',
                           },
                           dayOfMonth: 0,
                           dayOfWeek: 'MONDAY',
                           dayOfYear: 0,
                           era: {
-                            value: 0
+                            value: 0,
                           },
                           leapYear: true,
                           month: 0,
                           monthValue: 0,
-                          year: 0
+                          year: 0,
                         },
                         fileName: 'string',
                         id: 0,
@@ -1628,25 +1651,25 @@ export default {
                         startTime: {
                           chronology: {
                             calendarType: 'string',
-                            id: 'string'
+                            id: 'string',
                           },
                           dayOfMonth: 0,
                           dayOfWeek: 'MONDAY',
                           dayOfYear: 0,
                           era: {
-                            value: 0
+                            value: 0,
                           },
                           leapYear: true,
                           month: 0,
                           monthValue: 0,
-                          year: 0
+                          year: 0,
                         },
                         suffix: 'string',
                         timeLimit: 'string',
                         updateTime: {
                           chronology: {
                             calendarType: 'string',
-                            id: 'string'
+                            id: 'string',
                           },
                           dayOfMonth: 0,
                           dayOfWeek: 'MONDAY',
@@ -1657,9 +1680,9 @@ export default {
                           monthValue: 0,
                           nano: 0,
                           second: 0,
-                          year: 0
-                        }
-                      }
+                          year: 0,
+                        },
+                      },
                     ],
                     createTime: '2020-06-16T05:25:11.905Z',
                     deleteFlag: true,
@@ -1678,7 +1701,7 @@ export default {
                         createTime: {
                           chronology: {
                             calendarType: 'string',
-                            id: 'string'
+                            id: 'string',
                           },
                           dayOfMonth: 0,
                           dayOfWeek: 'MONDAY',
@@ -1689,7 +1712,7 @@ export default {
                           monthValue: 0,
                           nano: 0,
                           second: 0,
-                          year: 0
+                          year: 0,
                         },
                         deleteFlag: true,
                         doUserId: 0,
@@ -1706,7 +1729,7 @@ export default {
                         updateTime: {
                           chronology: {
                             calendarType: 'string',
-                            id: 'string'
+                            id: 'string',
                           },
                           dayOfMonth: 0,
                           dayOfWeek: 'MONDAY',
@@ -1717,10 +1740,10 @@ export default {
                           monthValue: 0,
                           nano: 0,
                           second: 0,
-                          year: 0
+                          year: 0,
                         },
-                        url: 'string'
-                      }
+                        url: 'string',
+                      },
                     ],
                     itemId: 0,
                     name: 'string',
@@ -1734,7 +1757,7 @@ export default {
                         createTime: {
                           chronology: {
                             calendarType: 'string',
-                            id: 'string'
+                            id: 'string',
                           },
                           dayOfMonth: 0,
                           dayOfWeek: 'MONDAY',
@@ -1745,7 +1768,7 @@ export default {
                           monthValue: 0,
                           nano: 0,
                           second: 0,
-                          year: 0
+                          year: 0,
                         },
                         deleteFlag: true,
                         doUserId: 0,
@@ -1759,7 +1782,7 @@ export default {
                         updateTime: {
                           chronology: {
                             calendarType: 'string',
-                            id: 'string'
+                            id: 'string',
                           },
                           dayOfMonth: 0,
                           dayOfWeek: 'MONDAY',
@@ -1770,9 +1793,9 @@ export default {
                           monthValue: 0,
                           nano: 0,
                           second: 0,
-                          year: 0
-                        }
-                      }
+                          year: 0,
+                        },
+                      },
                     ],
                     phone: 'string',
                     plateNum: 'string',
@@ -1784,7 +1807,7 @@ export default {
                         createTime: {
                           chronology: {
                             calendarType: 'string',
-                            id: 'string'
+                            id: 'string',
                           },
                           dayOfMonth: 0,
                           dayOfWeek: 'MONDAY',
@@ -1795,7 +1818,7 @@ export default {
                           monthValue: 0,
                           nano: 0,
                           second: 0,
-                          year: 0
+                          year: 0,
                         },
                         deleteFlag: true,
                         name: 'string',
@@ -1804,7 +1827,7 @@ export default {
                         updateTime: {
                           chronology: {
                             calendarType: 'string',
-                            id: 'string'
+                            id: 'string',
                           },
                           dayOfMonth: 0,
                           dayOfWeek: 'MONDAY',
@@ -1815,11 +1838,11 @@ export default {
                           monthValue: 0,
                           nano: 0,
                           second: 0,
-                          year: 0
+                          year: 0,
                         },
                         vehicleOwnerId: 0,
-                        work: 'string'
-                      }
+                        work: 'string',
+                      },
                     ],
                     seriesId: 0,
                     sex: true,
@@ -1833,17 +1856,17 @@ export default {
                     vinno: 'string',
                     weiboId: 'string',
                     work: 'string',
-                    wx: 'string'
-                  }
-                ]
-              }
+                    wx: 'string',
+                  },
+                ],
+              },
             ],
             listOwnerType: [
               {
                 createTime: {
                   chronology: {
                     calendarType: 'string',
-                    id: 'string'
+                    id: 'string',
                   },
                   dayOfMonth: 0,
                   dayOfWeek: 'MONDAY',
@@ -1854,7 +1877,7 @@ export default {
                   monthValue: 0,
                   nano: 0,
                   second: 0,
-                  year: 0
+                  year: 0,
                 },
                 deleteFlag: true,
                 ownerItems: [
@@ -1863,7 +1886,7 @@ export default {
                     createTime: {
                       chronology: {
                         calendarType: 'string',
-                        id: 'string'
+                        id: 'string',
                       },
                       dayOfMonth: 0,
                       dayOfWeek: 'MONDAY',
@@ -1874,7 +1897,7 @@ export default {
                       monthValue: 0,
                       nano: 0,
                       second: 0,
-                      year: 0
+                      year: 0,
                     },
                     deleteFlag: true,
                     isCard: true,
@@ -1888,7 +1911,7 @@ export default {
                     updateTime: {
                       chronology: {
                         calendarType: 'string',
-                        id: 'string'
+                        id: 'string',
                       },
                       dayOfMonth: 0,
                       dayOfWeek: 'MONDAY',
@@ -1899,7 +1922,7 @@ export default {
                       monthValue: 0,
                       nano: 0,
                       second: 0,
-                      year: 0
+                      year: 0,
                     },
                     vehicleOwners: [
                       {
@@ -1907,18 +1930,18 @@ export default {
                         birthday: {
                           chronology: {
                             calendarType: 'string',
-                            id: 'string'
+                            id: 'string',
                           },
                           dayOfMonth: 0,
                           dayOfWeek: 'MONDAY',
                           dayOfYear: 0,
                           era: {
-                            value: 0
+                            value: 0,
                           },
                           leapYear: true,
                           month: 0,
                           monthValue: 0,
-                          year: 0
+                          year: 0,
                         },
                         buycarplace: 'string',
                         carSeriesName: 'string',
@@ -1931,7 +1954,7 @@ export default {
                             createTime: {
                               chronology: {
                                 calendarType: 'string',
-                                id: 'string'
+                                id: 'string',
                               },
                               dayOfMonth: 0,
                               dayOfWeek: 'MONDAY',
@@ -1942,25 +1965,25 @@ export default {
                               monthValue: 0,
                               nano: 0,
                               second: 0,
-                              year: 0
+                              year: 0,
                             },
                             deleteFlag: true,
                             doUserId: 0,
                             endTime: {
                               chronology: {
                                 calendarType: 'string',
-                                id: 'string'
+                                id: 'string',
                               },
                               dayOfMonth: 0,
                               dayOfWeek: 'MONDAY',
                               dayOfYear: 0,
                               era: {
-                                value: 0
+                                value: 0,
                               },
                               leapYear: true,
                               month: 0,
                               monthValue: 0,
-                              year: 0
+                              year: 0,
                             },
                             fileName: 'string',
                             id: 0,
@@ -1970,25 +1993,25 @@ export default {
                             startTime: {
                               chronology: {
                                 calendarType: 'string',
-                                id: 'string'
+                                id: 'string',
                               },
                               dayOfMonth: 0,
                               dayOfWeek: 'MONDAY',
                               dayOfYear: 0,
                               era: {
-                                value: 0
+                                value: 0,
                               },
                               leapYear: true,
                               month: 0,
                               monthValue: 0,
-                              year: 0
+                              year: 0,
                             },
                             suffix: 'string',
                             timeLimit: 'string',
                             updateTime: {
                               chronology: {
                                 calendarType: 'string',
-                                id: 'string'
+                                id: 'string',
                               },
                               dayOfMonth: 0,
                               dayOfWeek: 'MONDAY',
@@ -1999,9 +2022,9 @@ export default {
                               monthValue: 0,
                               nano: 0,
                               second: 0,
-                              year: 0
-                            }
-                          }
+                              year: 0,
+                            },
+                          },
                         ],
                         createTime: '2020-06-16T05:25:11.906Z',
                         deleteFlag: true,
@@ -2020,7 +2043,7 @@ export default {
                             createTime: {
                               chronology: {
                                 calendarType: 'string',
-                                id: 'string'
+                                id: 'string',
                               },
                               dayOfMonth: 0,
                               dayOfWeek: 'MONDAY',
@@ -2031,7 +2054,7 @@ export default {
                               monthValue: 0,
                               nano: 0,
                               second: 0,
-                              year: 0
+                              year: 0,
                             },
                             deleteFlag: true,
                             doUserId: 0,
@@ -2048,7 +2071,7 @@ export default {
                             updateTime: {
                               chronology: {
                                 calendarType: 'string',
-                                id: 'string'
+                                id: 'string',
                               },
                               dayOfMonth: 0,
                               dayOfWeek: 'MONDAY',
@@ -2059,10 +2082,10 @@ export default {
                               monthValue: 0,
                               nano: 0,
                               second: 0,
-                              year: 0
+                              year: 0,
                             },
-                            url: 'string'
-                          }
+                            url: 'string',
+                          },
                         ],
                         itemId: 0,
                         name: 'string',
@@ -2076,7 +2099,7 @@ export default {
                             createTime: {
                               chronology: {
                                 calendarType: 'string',
-                                id: 'string'
+                                id: 'string',
                               },
                               dayOfMonth: 0,
                               dayOfWeek: 'MONDAY',
@@ -2087,7 +2110,7 @@ export default {
                               monthValue: 0,
                               nano: 0,
                               second: 0,
-                              year: 0
+                              year: 0,
                             },
                             deleteFlag: true,
                             doUserId: 0,
@@ -2101,7 +2124,7 @@ export default {
                             updateTime: {
                               chronology: {
                                 calendarType: 'string',
-                                id: 'string'
+                                id: 'string',
                               },
                               dayOfMonth: 0,
                               dayOfWeek: 'MONDAY',
@@ -2112,9 +2135,9 @@ export default {
                               monthValue: 0,
                               nano: 0,
                               second: 0,
-                              year: 0
-                            }
-                          }
+                              year: 0,
+                            },
+                          },
                         ],
                         phone: 'string',
                         plateNum: 'string',
@@ -2126,7 +2149,7 @@ export default {
                             createTime: {
                               chronology: {
                                 calendarType: 'string',
-                                id: 'string'
+                                id: 'string',
                               },
                               dayOfMonth: 0,
                               dayOfWeek: 'MONDAY',
@@ -2137,7 +2160,7 @@ export default {
                               monthValue: 0,
                               nano: 0,
                               second: 0,
-                              year: 0
+                              year: 0,
                             },
                             deleteFlag: true,
                             name: 'string',
@@ -2146,7 +2169,7 @@ export default {
                             updateTime: {
                               chronology: {
                                 calendarType: 'string',
-                                id: 'string'
+                                id: 'string',
                               },
                               dayOfMonth: 0,
                               dayOfWeek: 'MONDAY',
@@ -2157,11 +2180,11 @@ export default {
                               monthValue: 0,
                               nano: 0,
                               second: 0,
-                              year: 0
+                              year: 0,
                             },
                             vehicleOwnerId: 0,
-                            work: 'string'
-                          }
+                            work: 'string',
+                          },
                         ],
                         seriesId: 0,
                         sex: true,
@@ -2175,17 +2198,17 @@ export default {
                         vinno: 'string',
                         weiboId: 'string',
                         work: 'string',
-                        wx: 'string'
-                      }
-                    ]
-                  }
+                        wx: 'string',
+                      },
+                    ],
+                  },
                 ],
                 typeId: 0,
                 typeName: 'string',
                 updateTime: {
                   chronology: {
                     calendarType: 'string',
-                    id: 'string'
+                    id: 'string',
                   },
                   dayOfMonth: 0,
                   dayOfWeek: 'MONDAY',
@@ -2196,9 +2219,9 @@ export default {
                   monthValue: 0,
                   nano: 0,
                   second: 0,
-                  year: 0
-                }
-              }
+                  year: 0,
+                },
+              },
             ],
             money: 0,
             name: 'string',
@@ -2206,7 +2229,7 @@ export default {
             overTime: {
               chronology: {
                 calendarType: 'string',
-                id: 'string'
+                id: 'string',
               },
               dayOfMonth: 0,
               dayOfWeek: 'MONDAY',
@@ -2217,7 +2240,7 @@ export default {
               monthValue: 0,
               nano: 0,
               second: 0,
-              year: 0
+              year: 0,
             },
             ownerId: 0,
             phone: 'string',
@@ -2229,7 +2252,7 @@ export default {
             updateTime: {
               chronology: {
                 calendarType: 'string',
-                id: 'string'
+                id: 'string',
               },
               dayOfMonth: 0,
               dayOfWeek: 'MONDAY',
@@ -2240,18 +2263,18 @@ export default {
               monthValue: 0,
               nano: 0,
               second: 0,
-              year: 0
+              year: 0,
             },
             url: 'string',
-            userId: 0
-          }
+            userId: 0,
+          },
         ],
         listTaskFile: [
           {
             createTime: {
               chronology: {
                 calendarType: 'string',
-                id: 'string'
+                id: 'string',
               },
               dayOfMonth: 0,
               dayOfWeek: 'MONDAY',
@@ -2262,7 +2285,7 @@ export default {
               monthValue: 0,
               nano: 0,
               second: 0,
-              year: 0
+              year: 0,
             },
             deleteFlag: true,
             fileId: 0,
@@ -2273,7 +2296,7 @@ export default {
             updateTime: {
               chronology: {
                 calendarType: 'string',
-                id: 'string'
+                id: 'string',
               },
               dayOfMonth: 0,
               dayOfWeek: 'MONDAY',
@@ -2284,16 +2307,16 @@ export default {
               monthValue: 0,
               nano: 0,
               second: 0,
-              year: 0
+              year: 0,
             },
-            updateUserId: 0
-          }
+            updateUserId: 0,
+          },
         ],
         num: 0,
         overTime: {
           chronology: {
             calendarType: 'string',
-            id: 'string'
+            id: 'string',
           },
           dayOfMonth: 0,
           dayOfWeek: 'MONDAY',
@@ -2304,24 +2327,24 @@ export default {
           monthValue: 0,
           nano: 0,
           second: 0,
-          year: 0
+          year: 0,
         },
         remark: 'string',
         startTime: {
           chronology: {
             calendarType: 'string',
-            id: 'string'
+            id: 'string',
           },
           dayOfMonth: 0,
           dayOfWeek: 'MONDAY',
           dayOfYear: 0,
           era: {
-            value: 0
+            value: 0,
           },
           leapYear: true,
           month: 0,
           monthValue: 0,
-          year: 0
+          year: 0,
         },
         status: 0,
         taskDesc: 'string',
@@ -2331,7 +2354,7 @@ export default {
         updateTime: {
           chronology: {
             calendarType: 'string',
-            id: 'string'
+            id: 'string',
           },
           dayOfMonth: 0,
           dayOfWeek: 'MONDAY',
@@ -2342,31 +2365,31 @@ export default {
           monthValue: 0,
           nano: 0,
           second: 0,
-          year: 0
+          year: 0,
         },
-        years: 'string'
+        years: 'string',
       }
     },
     G2() {
       // 数据来源于 https://github.com/react-d3/react-d3-map-bubble
       fetch('https:/g2.antv.vision/zh/examples/data/china-provinces.geo.json')
-        .then(res => res.json())
-        .then(mapData => {
+        .then((res) => res.json())
+        .then((mapData) => {
           fetch('../data/earthquake.json')
             // .then(res => res.json())
-            .then(data => {
+            .then((data) => {
               console.log(data)
               const chart = new Chart({
                 container: 'g2',
                 autoFit: true,
                 width: 700,
                 height: 500,
-                padding: []
+                padding: [],
               })
               // force sync scales
               chart.scale({
                 x: { sync: false },
-                y: { sync: false }
+                y: { sync: false },
               })
               chart.coordinate('rect').reflect('y')
               chart.legend(false)
@@ -2386,9 +2409,9 @@ export default {
                     borderRadius: '2px',
                     backgroundColor: '#DDDDDD',
                     padding: 0,
-                    border: '1px solid #333'
-                  }
-                }
+                    border: '1px solid #333',
+                  },
+                },
               })
               // data set
               const ds = new DataSet()
@@ -2397,31 +2420,28 @@ export default {
               const dv = ds
                 .createView('back')
                 .source(mapData, {
-                  type: 'GeoJSON'
+                  type: 'GeoJSON',
                 })
                 .transform({
                   type: 'geo.projection',
                   projection: 'geoMercator',
-                  as: ['x', 'y', 'centroidX', 'centroidY']
+                  as: ['x', 'y', 'centroidX', 'centroidY'],
                 })
               const bgView = chart.createView()
               bgView.data(dv.rows)
               bgView.tooltip(false)
-              bgView
-                .polygon()
-                .position('x*y')
-                .style({
-                  fill: '#DDDDDD',
-                  stroke: '#b1b1b1',
-                  lineWidth: 0.5,
-                  fillOpacity: 0.85
-                })
+              bgView.polygon().position('x*y').style({
+                fill: '#DDDDDD',
+                stroke: '#b1b1b1',
+                lineWidth: 0.5,
+                fillOpacity: 0.85,
+              })
 
               // draw the bubble plot
               const userData = ds.createView().source(data)
               userData.transform({
                 type: 'map',
-                callback: obj => {
+                callback: (obj) => {
                   const projectedCoord = dv.geoProjectPosition(
                     [obj.lng * 1, obj.lat * 1],
                     'geoMercator'
@@ -2431,7 +2451,7 @@ export default {
                   obj.deaths = obj.deaths * 1
                   obj.magnitude = obj.magnitude * 1
                   return obj
-                }
+                },
               })
               const pointView = chart.createView()
               pointView.data(userData.rows)
@@ -2443,22 +2463,22 @@ export default {
                 .color('#FF2F29')
                 .tooltip('date*location*lat*lng*deaths*magnitude')
                 .style({
-                  fillOpacity: 0.45
+                  fillOpacity: 0.45,
                 })
                 .state({
                   active: {
                     style: {
                       lineWidth: 1,
-                      stroke: '#FF2F29'
-                    }
-                  }
+                      stroke: '#FF2F29',
+                    },
+                  },
                 })
               pointView.interaction('element-active')
               chart.render()
             })
         })
-    }
-  }
+    },
+  },
 }
 </script>
 <style lang="scss" scoped>

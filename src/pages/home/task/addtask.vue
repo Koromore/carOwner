@@ -137,30 +137,15 @@ export default {
       carSeriesList: [],
       // 品牌车型
       input3: '',
-      options: [
-        {
-          value: '选项1',
-          label: '黄金糕'
-        },
-        {
-          value: '选项2',
-          label: '双皮奶'
-        },
-        {
-          value: '选项3',
-          label: '蚵仔煎'
-        },
-        {
-          value: '选项4',
-          label: '龙须面'
-        },
-        {
-          value: '选项5',
-          label: '北京烤鸭'
-        }
-      ],
+      options: [],
       // 计划周期
       input4: '',
+      // 禁止选择当前时间之前的时间
+      pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() < Date.now() - 8.64e7
+        }
+      },
       // 计划邀约量
       input5: '',
       // 文件上传
