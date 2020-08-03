@@ -2,7 +2,6 @@
   <div id="sitecarownerlist">
     <!-- 头部选项框 start -->
     <el-row class="top">
-      <!-- <el-row class="top"> -->
       <el-col :span="8" class="left cont">
         <div @click="previous">
           <i class="el-icon-arrow-left"></i>
@@ -26,7 +25,6 @@
           ></el-option>
         </el-select>
       </el-col>
-      <!-- </el-row> -->
     </el-row>
     <!-- 头部选项框 end -->
 
@@ -260,7 +258,7 @@ $icoColor: rgb(106, 145, 232);
       align-items: flex-start;
       .items {
         // width: 400px;
-        height: 32%;
+        height: 31%;
         min-height: 160px;
         margin-bottom: 1%;
         margin-left: 6.25%;

@@ -3,13 +3,10 @@
     <!-- 头部选项框 start -->
     <el-row class="top">
       <el-col :span="12" class="left">
-        <!-- <div class="butBox">
-          <div :class="[tab1act==1?'but act':'but']" @click="tab1(1)">采购结算</div>
-          <div :class="[tab1act==2?'but act':'but']" @click="tab1(2)">采购统计</div>
-        </div>-->
-      </el-col>
-
-      <el-col :span="12" class="right">
+        <div class="butBox">
+          <div :class="[tabact==1?'but act':'but']" @click="tab(1)">未结算</div>
+          <div :class="[tabact==2?'but act':'but']" @click="tab(2)">已结算</div>
+        </div>
         <div class="memu">
           <el-select
             v-model="memuValue"
@@ -26,10 +23,9 @@
             ></el-option>
           </el-select>
         </div>
-        <div class="butBox">
-          <div :class="[tabact==1?'but act':'but']" @click="tab(1)">未结算</div>
-          <div :class="[tabact==2?'but act':'but']" @click="tab(2)">已结算</div>
-        </div>
+      </el-col>
+      <el-col :span="12" class="right">
+        <el-button type="primary" icon="el-icon-download" size="small">下载清单</el-button>
       </el-col>
     </el-row>
     <!-- 头部选项框 end -->
@@ -44,7 +40,9 @@
           :header-row-style="{'height': '54px','background': 'rgb(242, 242, 242)'}"
           :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
           height="100%"
+          @selection-change="handleSelectionChange"
         >
+          <el-table-column label="全选" type="selection" width="55"></el-table-column>
           <el-table-column prop label width="24" show-overflow-tooltip></el-table-column>
           <!-- <el-table-column prop="serNum" label="采购编号" min-width="180"></el-table-column> -->
           <el-table-column prop="deptName" label="项目组" min-width="130"></el-table-column>
@@ -150,16 +148,16 @@ export default {
       options: [
         {
           value: 105,
-          label: '沃尔沃项目组'
+          label: '沃尔沃项目组',
         },
         {
           value: 110,
-          label: '吉利项目组'
+          label: '吉利项目组',
         },
         {
           value: 153,
-          label: '长城项目组'
-        }
+          label: '长城项目组',
+        },
       ],
       memuValue: '',
       // 未结算数据列表
@@ -169,7 +167,7 @@ export default {
       // 分页数据
       pageNum: 1,
       pageSize: 30,
-      total: 0
+      total: 0,
     }
   },
   // 侦听器
@@ -177,7 +175,7 @@ export default {
     searchWordData: function (newData, oldData) {
       // console.log(newData)
       this.getInviteList()
-    }
+    },
   },
   // 钩子函数
   beforeCreate() {},
@@ -193,7 +191,7 @@ export default {
     //   this.tab1act = e
     // },
     tab(e) {
-      console.log(e)
+      // console.log(e)
       this.tabact = e
       this.getInviteList(this.memuValue)
     },
@@ -212,27 +210,29 @@ export default {
           deleteFlag: false,
           status: 0,
           deptId: this.memuValue,
-          taskName: this.searchWordData.value
+          taskName: this.searchWordData.value,
         },
         pageNum: this.pageNum,
-        pageSize: this.pageSize
+        pageSize: this.pageSize,
       }
       let tabact = this.tabact
       if (tabact == 1) {
         data.task.status = 1
-        this.$axios.post('/ocarplay/api/invite/getTaskOfInviteList', data).then(res => {
-          // console.log(res)
-          if (res.status == 200) {
-            let data = res.data
-            this.inviteListData = data.items
-            this.total = data.totalRows
-          }
-        })
+        this.$axios
+          .post('/ocarplay/api/invite/getTaskOfInviteList', data)
+          .then((res) => {
+            // console.log(res)
+            if (res.status == 200) {
+              let data = res.data
+              this.inviteListData = data.items
+              this.total = data.totalRows
+            }
+          })
       } else if (tabact == 2) {
         data.task.status = 2
         this.$axios
           .post('/ocarplay/api/invite/getTaskOfInviteList', data)
-          .then(res => {
+          .then((res) => {
             // console.log(res)
             if (res.status == 200) {
               let data = res.data
@@ -247,7 +247,7 @@ export default {
     ///////// 分页 start /////////
     // 每页条数变化时触发事件
     changeSize(pageSize) {
-      console.log(pageSize)
+      // console.log(pageSize)
       this.pageNum = 1
       this.pageSize = pageSize
       let id = this.memuValue
@@ -255,7 +255,7 @@ export default {
     },
     // 页码变换时触发事件
     changePage(pageNum) {
-      console.log(pageNum)
+      // console.log(pageNum)
       this.pageNum = pageNum
       // this.pageSize = pageSize
       let id = this.memuValue
@@ -268,7 +268,7 @@ export default {
       this.$confirm('确认要驳回该任务吗?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
       })
         .then(() => {
           this.repulseInvite(id)
@@ -276,7 +276,7 @@ export default {
         .catch(() => {
           this.$message({
             type: 'info',
-            message: '已取消驳回'
+            message: '已取消驳回',
           })
         })
     },
@@ -284,22 +284,24 @@ export default {
     repulseInvite(id) {
       let data = {
         taskId: id,
-        status: 0
+        status: 0,
       }
-      this.$axios.post('/ocarplay/api/invite/repulseInvite', data).then(res => {
-        console.log(res)
-        if (res.status == 200 && res.data.errcode == 0) {
-          this.$message.success(res.data.msg)
-          // this.drawerLoading = false
-          // this.drawerPuttask = false
-          // this.getTaskListAjax()
-          ///////// 获取结算列表 start /////////
-          this.getInviteList(this.memuValue)
-        } else {
-          // this.$message.error("任务提交失败！")
-          // this.drawerLoading = false
-        }
-      })
+      this.$axios
+        .post('/ocarplay/api/invite/repulseInvite', data)
+        .then((res) => {
+          // console.log(res)
+          if (res.status == 200 && res.data.errcode == 0) {
+            this.$message.success(res.data.msg)
+            // this.drawerLoading = false
+            // this.drawerPuttask = false
+            // this.getTaskListAjax()
+            ///////// 获取结算列表 start /////////
+            this.getInviteList(this.memuValue)
+          } else {
+            // this.$message.error("任务提交失败！")
+            // this.drawerLoading = false
+          }
+        })
     },
     ///////// 驳回操作 end /////////
 
@@ -307,7 +309,7 @@ export default {
     toDetail(prm) {
       this.$router.push({
         // name: 'settlementDetail',
-        
+
         // params: {
         //   id: prm.taskId,
         //   name: prm.taskName
@@ -315,12 +317,19 @@ export default {
         path: '/home/settlementDetail',
         query: {
           id: prm.taskId,
-          name: prm.taskName
-        }
+          name: prm.taskName,
+        },
       })
-    }
+    },
     ///////// 结算清单 end /////////
-  }
+
+    ///////// 表格选中 start /////////
+    handleSelectionChange(val){
+      console.log(val)
+    }
+    ///////// 表格选中 end /////////
+    // handleSelectionChange
+  },
 }
 </script>
 <style lang="scss" scoped>
@@ -335,15 +344,14 @@ $icoColor: rgb(106, 145, 232);
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    .right {
+    .left {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      justify-content: flex-end;
+      justify-content: flex-start;
       box-sizing: border-box;
-      padding-right: 24px;
       .memu {
-        margin-right: 36px;
+        margin-left: 36px;
       }
       .butBox {
         $tabBg: rgb(126, 189, 81);
@@ -372,6 +380,12 @@ $icoColor: rgb(106, 145, 232);
         .but:hover {
           background: $tabBg;
         }
+      }
+    }
+    .right{
+      text-align: right;
+      button{
+        background: #6a91e8;
       }
     }
   }

@@ -15,6 +15,12 @@
         </el-col>
         <el-col :span="12" class="left">
           <el-col :span="24" class="list">
+            <div class="key">任务类型</div>
+            <div>:</div>
+            <!-- <div class="val">{{taskDetail.taskName}}</div> -->
+            <div class="val">拍摄</div>
+          </el-col>
+          <el-col :span="24" class="list">
             <div class="key">任务名称</div>
             <div>:</div>
             <div class="val">{{taskDetail.taskName}}</div>
@@ -46,7 +52,7 @@
           <el-col :span="24" class="list">
             <div class="key">邀约对象</div>
             <div>:</div>
-            <div class="val">
+            <!-- <div class="val">
               <template v-if="taskDetail.listInvite.length!=0">
                 <div v-for="(item, index) in taskDetail.listInvite" :key="index">
                   <span
@@ -54,7 +60,38 @@
                   >{{item.listOwnerType[0].typeName}}—{{item.listOwnerItem[0].itemName}}—{{item.realName}}</span>
                 </div>
               </template>
+            </div>-->
+            <div class="val">
+              <el-collapse v-model="activeNames">
+                <el-collapse-item title="邀约对象" name="1">
+                  <template v-if="taskDetail.listInvite.length!=0">
+                    <div v-for="(item, index) in taskDetail.listInvite" :key="index">
+                      <span
+                        v-if="item.listOwnerType"
+                      >{{item.listOwnerType[0].typeName}}—{{item.listOwnerItem[0].itemName}}—{{item.realName}}</span>
+                    </div>
+                  </template>
+                </el-collapse-item>
+              </el-collapse>
             </div>
+          </el-col>
+          <el-col :span="24" class="list">
+            <div class="key">摄影师</div>
+            <div>:</div>
+            <!-- <div class="val">{{taskDetail.num}}</div> -->
+            <div class="val">摄影师</div>
+          </el-col>
+          <el-col :span="24" class="list">
+            <div class="key">模特</div>
+            <div>:</div>
+            <!-- <div class="val">{{taskDetail.num}}</div> -->
+            <div class="val">模特</div>
+          </el-col>
+          <el-col :span="24" class="list">
+            <div class="key">场地</div>
+            <div>:</div>
+            <!-- <div class="val">{{taskDetail.num}}</div> -->
+            <div class="val">场地</div>
           </el-col>
           <el-col :span="24" class="list">
             <div class="key">计划周期</div>
@@ -75,13 +112,8 @@
             <div class="key">备注</div>
             <div>:</div>
             <div class="val">
-              
-              <template v-if="taskDetail.remark">
-                {{taskDetail.remark}}
-              </template>
-              <template v-else>
-                暂无
-              </template>
+              <template v-if="taskDetail.remark">{{taskDetail.remark}}</template>
+              <template v-else>暂无</template>
             </div>
           </el-col>
 
@@ -99,10 +131,7 @@
               <template v-if="taskDetail.taskDesc">
                 <pre>{{taskDetail.taskDesc}}</pre>
               </template>
-              <template v-else>
-                暂无
-              </template>
-              
+              <template v-else>暂无</template>
             </div>
           </el-col>
           <el-col :span="24" class="list">
@@ -205,6 +234,7 @@ export default {
       taskId: 1,
       taskDetail: { listTaskFile: [], listInvite: [] },
       loading: false,
+      activeNames: [],
     }
   },
   // 侦听器
@@ -356,7 +386,7 @@ export default {
 <style lang="scss" scoped>
 #taskdetail {
   height: 100%;
-  
+
   .content {
     position: relative;
     height: calc(100% - 16px);
@@ -449,7 +479,7 @@ export default {
       button {
         width: 136px;
         margin-left: 49px;
-        &:nth-of-type(1){
+        &:nth-of-type(1) { 
           margin: 0;
         }
       }
@@ -461,6 +491,25 @@ export default {
   font-size: 24px;
   &:hover {
     color: #6a91e8;
+  }
+}
+</style>
+<style lang="scss">
+.el-collapse {
+  border: 0;
+  .el-collapse-item__header {
+    height: 40px;
+    box-sizing: border-box;
+    border: 0;
+    font-size: 16px;
+    color: black;
+  }
+  .el-collapse-item__content {
+    // height: 40px;
+    box-sizing: border-box;
+    border: 0;
+    font-size: 16px;
+    color: black;
   }
 }
 </style>

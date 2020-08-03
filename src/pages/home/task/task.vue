@@ -3,7 +3,7 @@
     <!-- 头部选项框 start -->
     <el-row class="top">
       <el-col :span="12" class="left">
-        <el-button-group>
+        <el-button-group v-if="deptId!=90">
           <el-button type="success" size="small" @click="statusChange(0)">执行中</el-button>
           <el-button type="danger" size="small" @click="statusChange(3)">延期</el-button>
           <el-button type="warning" size="small" @click="statusChange(1)">结算中</el-button>
@@ -90,9 +90,7 @@
               >{{scope.row.taskName}}</el-link>
             </template>
           </el-table-column>
-          <el-table-column prop label="任务类型" min-width="90" show-overflow-tooltip>
-            拍摄
-          </el-table-column>
+          <el-table-column prop label="任务类型" min-width="90" show-overflow-tooltip>拍摄</el-table-column>
           <el-table-column prop="ownerName" label="邀约对象" min-width="130" show-overflow-tooltip></el-table-column>
           <!-- <el-table-column prop="ownerItemList" label="邀约事项" min-width="130" show-overflow-tooltip></el-table-column> -->
           <el-table-column prop label="摄影师" min-width="90" show-overflow-tooltip>摄影师</el-table-column>
@@ -132,27 +130,37 @@
           <el-table-column prop="endTime" label="预计时间" min-width="100" sortable>
             <template slot-scope="scope">{{$date(scope.row.endTime)}}</template>
           </el-table-column>
-          <el-table-column prop="address" label="操作" width="200" v-if="subordinate==150||adminShow">
+          <el-table-column prop="address" label="操作" min-width="140" v-if="subordinate==150||deptId==90||adminShow">
             <template slot-scope="scope">
-              <el-tooltip class="item" effect="dark" content="编辑任务" placement="top">
-                <i class="el-icon-edit" @click="addTask(1, scope.row.taskId)"></i>
-              </el-tooltip>
+              <template v-if="deptId!=90">
+                <el-tooltip class="item" effect="dark" content="编辑任务" placement="top">
+                  <i class="el-icon-edit" @click="addTask(1, scope.row.taskId)"></i>
+                </el-tooltip>
 
-              <el-tooltip class="item" effect="dark" content="延期任务" placement="top">
-                <i class="el-icon-timer" @click="delay(scope.row)"></i>
-              </el-tooltip>
+                <el-tooltip class="item" effect="dark" content="延期任务" placement="top">
+                  <i class="el-icon-timer" @click="delay(scope.row)"></i>
+                </el-tooltip>
 
-              <el-tooltip class="item" effect="dark" content="提交任务" placement="top">
-                <i class="el-icon-circle-check" @click="putTask(scope.row)"></i>
-              </el-tooltip>
+                <el-tooltip class="item" effect="dark" content="提交任务" placement="top">
+                  <i class="el-icon-circle-check" @click="putTask(scope.row)"></i>
+                </el-tooltip>
 
-              <el-tooltip class="item" effect="dark" content="删除任务" placement="top">
-                <i
-                  class="el-icon-circle-close"
-                  @click="delContent(scope.row.taskId)"
-                  v-if="postId==231||adminShow"
-                ></i>
-              </el-tooltip>
+                <el-tooltip class="item" effect="dark" content="删除任务" placement="top">
+                  <i
+                    class="el-icon-circle-close"
+                    @click="delContent(scope.row.taskId)"
+                    v-if="postId==231||adminShow"
+                  ></i>
+                </el-tooltip>
+              </template>
+              <template v-else>
+                <el-tooltip class="item" effect="dark" content="完善任务" placement="top">
+                  <i class="el-icon-document-checked" @click="addTask(1, scope.row.taskId)"></i>
+                </el-tooltip>
+                <el-tooltip class="item" effect="dark" content="编辑任务" placement="top">
+                  <i class="el-icon-edit" @click="addTask(1, scope.row.taskId)"></i>
+                </el-tooltip>
+              </template>
             </template>
           </el-table-column>
         </el-table>
@@ -193,9 +201,7 @@
               >{{scope.row.taskName}}</el-link>
             </template>
           </el-table-column>
-          <el-table-column prop label="任务类型" min-width="90" show-overflow-tooltip>
-            拍摄
-          </el-table-column>
+          <el-table-column prop label="任务类型" min-width="90" show-overflow-tooltip>拍摄</el-table-column>
           <el-table-column prop="ownerName" label="邀约对象" min-width="130" show-overflow-tooltip></el-table-column>
           <!-- <el-table-column prop="ownerItemList" label="邀约事项" min-width="130" show-overflow-tooltip></el-table-column> -->
           <el-table-column prop label="摄影师" min-width="90" show-overflow-tooltip>摄影师</el-table-column>
@@ -232,7 +238,12 @@
             <template slot-scope="scope">{{$date(scope.row.endTime)}}</template>
           </el-table-column>
           <el-table-column prop="delayReason" label="延期原因" min-width="100"></el-table-column>
-          <el-table-column prop="address" label="操作" min-width="160" v-if="subordinate==150||adminShow">
+          <el-table-column
+            prop="address"
+            label="操作"
+            min-width="160"
+            v-if="subordinate==150||adminShow"
+          >
             <!-- this.$store.state -->
             <template slot-scope="scope">
               <el-tooltip class="item" effect="dark" content="编辑任务" placement="top">
@@ -294,9 +305,7 @@
               >{{scope.row.taskName}}</el-link>
             </template>
           </el-table-column>
-          <el-table-column prop label="任务类型" min-width="90" show-overflow-tooltip>
-            拍摄
-          </el-table-column>
+          <el-table-column prop label="任务类型" min-width="90" show-overflow-tooltip>拍摄</el-table-column>
           <el-table-column prop="ownerName" label="邀约对象" min-width="130" show-overflow-tooltip></el-table-column>
           <!-- <el-table-column prop="ownerItemList" label="邀约事项" min-width="130" show-overflow-tooltip></el-table-column> -->
           <el-table-column prop label="摄影师" min-width="90" show-overflow-tooltip>摄影师</el-table-column>
@@ -375,9 +384,7 @@
               >{{scope.row.taskName}}</el-link>
             </template>
           </el-table-column>
-          <el-table-column prop label="任务类型" min-width="90" show-overflow-tooltip>
-            拍摄
-          </el-table-column>
+          <el-table-column prop label="任务类型" min-width="90" show-overflow-tooltip>拍摄</el-table-column>
           <el-table-column prop="ownerName" label="邀约对象" min-width="130" show-overflow-tooltip></el-table-column>
           <!-- <el-table-column prop="ownerItemList" label="邀约事项" min-width="130" show-overflow-tooltip></el-table-column> -->
           <el-table-column prop label="摄影师" min-width="90" show-overflow-tooltip>摄影师</el-table-column>
@@ -469,9 +476,9 @@
     <!-- 抽屉弹窗延期原因 end -->
 
     <!-- 抽屉弹窗提交任务 start -->
-    <el-drawer title="提交任务" :visible.sync="drawerPuttask" size="720px">
+    <el-drawer title="提交任务" :visible.sync="drawerPuttask" size="720px" v-loading="drawerLoading">
       <el-scrollbar style="height:100%">
-        <el-row class="drawerPuttask" v-loading="drawerLoading">
+        <el-row class="drawerPuttask">
           <el-col :span="4">任务名称:</el-col>
           <el-col :span="20">{{taskName}}</el-col>
           <el-col :span="4" class="keycontent">结算明细:</el-col>
@@ -493,34 +500,27 @@
                   clearable
                   filterable
                   :show-all-levels="false"
+                  size="medium"
                 ></el-cascader>
               </el-col>
               <el-col :span="6">
-                <el-input placeholder="链接" v-model="item.url" clearable></el-input>
+                <el-input placeholder="链接" size="medium" v-model="item.url" clearable></el-input>
               </el-col>
               <el-col :span="4">
-                <el-input placeholder="金额" v-model="item.money" clearable></el-input>
+                <el-input placeholder="金额" size="medium" v-model="item.money" clearable></el-input>
               </el-col>
-              <el-col :span="6">
-                <el-switch
-                  style="display: block"
-                  v-model="item.isCard"
-                  active-color="#13ce66"
-                  inactive-color="#ff4949"
-                  active-text="现金"
-                  inactive-text="油卡"
-                ></el-switch>
+              <el-col :span="3">
+                <el-button type="primary" size="medium" v-if="!item.isCard">油卡</el-button>
+                <el-button type="success" size="medium" v-else>现金</el-button>
               </el-col>
-              <!-- {{item}}-{{index}} -->
-              <el-col :span="2">
-                <!-- <template v-if="index == listInviteList.length-1"> -->
+              <el-col :span="4">
+                <i class="el-icon-document-copy" @click="copyDetailList(index)"></i>
                 <i class="el-icon-delete" @click="delDetailList(index)"></i>
                 <i class="el-icon-circle-plus-outline" @click="addDetailList"></i>
-                <!-- </template> -->
               </el-col>
+              <!-- {{item}}-{{index}} -->
             </el-col>
-            <!-- <el-col :span="24"></el-col>
-            <el-col :span="24"></el-col>-->
+            <!-- {{listInviteList}} -->
           </el-col>
         </el-row>
       </el-scrollbar>
@@ -892,10 +892,23 @@ export default {
                   children: [],
                 })
                 element1.vehicleOwners.forEach((element2) => {
-                  list[i].children[j].children.push({
-                    value: element2.vehicleOwnerId,
-                    label: element2.name,
-                  })
+                  if (
+                    element2.coopNum &&
+                    element2.alreadyCooperateNum &&
+                    element2.coopNum - element2.alreadyCooperateNum <= 0
+                  ) {
+                    // cosnole.log()
+                    list[i].children[j].children.push({
+                      value: element2.vehicleOwnerId,
+                      label: element2.name,
+                      disabled: true,
+                    })
+                  } else {
+                    list[i].children[j].children.push({
+                      value: element2.vehicleOwnerId,
+                      label: element2.name,
+                    })
+                  }
                   // console.log(list[i].children[j])
                 })
               })
@@ -911,25 +924,86 @@ export default {
     ///////// 提交任务 start /////////
     putTask(prm) {
       // console.log(prm)
+      this.drawerLoading = true
       this.drawerPuttask = true
       this.taskId = prm.taskId
       this.taskDeptId = prm.deptId
       this.taskName = prm.taskName
-      let listInviteList = []
-
-      prm.listInvite.forEach((element) => {
-        listInviteList.push({
-          inviteData: [element.typeId, element.itemId, element.ownerId],
-          typeId: element.typeId,
-          itemId: element.itemId,
-          ownerId: element.ownerId,
-          url: element.url,
-          money: element.money,
-          isCard: true,
-        })
+      let data = {
+        taskId: prm.taskId,
+      }
+      this.$axios.post('/ocarplay/task/edit', data).then((res) => {
+        // console.log(res)
+        if (res.status == 200) {
+          let data = res.data.data
+          let listInviteList = []
+          data.listInvite.forEach((element) => {
+            listInviteList.push({
+              inviteData: [element.typeId, element.itemId, element.ownerId],
+              typeId: element.typeId,
+              itemId: element.itemId,
+              ownerId: element.ownerId,
+              url: element.url,
+              money: element.money,
+              isCard: element.isCard,
+            })
+          })
+          this.listInviteList = listInviteList
+          this.drawerLoading = false
+        }
       })
-      this.listInviteList = listInviteList
-      // console.log(this.listInviteList)
+    },
+    putTaskif(prm) {
+      // console.log(prm)
+      if (prm.taskType == 3) {
+        if (prm) {
+        } else {
+          this.$message.error('无法提交，模特摄影师信息采购尚未填写')
+        }
+      } else {
+        this.drawerLoading = true
+        this.drawerPuttask = true
+        this.taskId = prm.taskId
+        this.taskDeptId = prm.deptId
+        this.taskName = prm.taskName
+        let data = {
+          taskId: prm.taskId,
+        }
+        this.$axios.post('/ocarplay/task/edit', data).then((res) => {
+          // console.log(res)
+          if (res.status == 200) {
+            let data = res.data.data
+            let listInviteList = []
+            data.listInvite.forEach((element) => {
+              listInviteList.push({
+                inviteData: [element.typeId, element.itemId, element.ownerId],
+                typeId: element.typeId,
+                itemId: element.itemId,
+                ownerId: element.ownerId,
+                url: element.url,
+                money: element.money,
+                isCard: element.isCard,
+              })
+            })
+            this.listInviteList = listInviteList
+            this.drawerLoading = false
+          }
+        })
+      }
+    },
+    // 添加明细
+    copyDetailList(index) {
+      let listInviteList = this.listInviteList
+      let data = {
+        inviteData: listInviteList[index].inviteData,
+        typeId: '',
+        itemId: '',
+        ownerId: '',
+        url: '',
+        money: '',
+        isCard: false,
+      }
+      this.listInviteList.splice(index + 1, 0, data)
     },
     // 添加明细
     addDetailList() {
@@ -940,7 +1014,7 @@ export default {
         ownerId: '',
         url: '',
         money: '',
-        isCard: true,
+        isCard: false,
       })
     },
     // 删除明细
@@ -972,7 +1046,7 @@ export default {
         updateTime: this.$time0(new Date()),
         listInvite: listInviteList,
         nowUserId: this.userId,
-        nowUserDeptId: this.deptId
+        nowUserDeptId: this.deptId,
       }
       let flag = true
       data.listInvite.forEach((element) => {
@@ -1149,12 +1223,12 @@ export default {
           }
         )
         .then((res) => {
-          console.log(res.data)
+          // console.log(res.data)
           var blob = new Blob([res.data], { type: 'text/plain;charset=utf-8' })
           // saveAs(blob, '导出excel.xls')
         })
         .catch(() => {
-          console.log('捕获错误')
+          // console.log('捕获错误')
         })
     },
   },
@@ -1199,7 +1273,7 @@ $statusColor4: #ea8a85;
         margin-right: 9px;
       }
       .add_task {
-        button{
+        button {
           width: 136px;
           background: $icoColor;
         }
@@ -1251,7 +1325,6 @@ $statusColor4: #ea8a85;
         margin-right: 9px;
       }
     }
-    
   }
   // 抽屉弹窗延期原因样式
   .drawerDelay {
@@ -1287,10 +1360,10 @@ $statusColor4: #ea8a85;
     align-items: center;
     align-content: flex-start;
     > .el-col {
-      margin-bottom: 36px;
+      margin-bottom: 16px;
       font-size: 18px;
       min-height: 40px;
-      line-height: 40px;
+      // line-height: 40px;
     }
     i {
       color: $icoColor;

@@ -113,247 +113,247 @@ const router = new Router({
       meta: {
         requireAuth: true,
       }
-    },{
-    path: '/',
-    name: '',
-    redirect: '/login',
-    // component: Login,
-    meta: {
-      requireAuth: true,
-    }
-  },
-  {
-    path: '/login',
-    name: 'login',
-    component: Login,
-    meta: {
-      requireAuth: true,
-    }
-  },
-  {
-    path: '/home',
-    name: 'home',
-    redirect: '/home/task',
-    component: resolve => require(['@/pages/home/home'], resolve),
-    meta: {
-      requireAuth: true,
-    },
-    children: [
-      {
-        path: '/home/task',
-        name: 'task',
-        component: resolve => require(['@/pages/home/task/task'], resolve),
-        meta: {
-          requireAuth: true,
-          title: '任务管理'
-        }
-      },
-      {
-        path: '/home/addTask',
-        name: 'addTask',
-        component: resolve => require(['@/pages/home/task/addtask'], resolve),
-        meta: {
-          requireAuth: true,
-        }
-      },
-      {
-        path: '/home/taskDetail',
-        name: 'taskDetail',
-        component: resolve => require(['@/pages/home/task/taskdetail'], resolve),
-        meta: {
-          requireAuth: true,
-        }
-      },
-      {
-        path: '/home/tasksettlement',
-        name: 'tasksettlement',
-        component: resolve => require(['@/pages/home/task/tasksettlement'], resolve),
-        meta: {
-          requireAuth: true,
-        }
-      },
-      {
-        path: '/home/settlement',
-        name: 'settlement',
-        component: resolve => require(['@/pages/home/settlement/settlement'], resolve),
-        meta: {
-          requireAuth: true,
-          title: '结算管理'
-        }
-      },
-      {
-        path: '/home/settlementDetail',
-        name: 'settlementDetail',
-        component: resolve => require(['@/pages/home/settlement/settlementdetail'], resolve),
-        meta: {
-          requireAuth: true,
-        }
-      },
-      {
-        path: '/home/owners',
-        name: 'owners',
-        component: resolve => require(['@/pages/home/owners/owners'], resolve),
-        meta: {
-          requireAuth: true,
-        }
-      },
-      {
-        path: '/home/ownerssite',
-        name: 'ownerssite',
-        component: resolve => require(['@/pages/home/owners/ownerssite'], resolve),
-        meta: {
-          requireAuth: true,
-        }
-      },
-      {
-        path: '/home/ownersrecord',
-        name: 'ownersrecord',
-        component: resolve => require(['@/pages/home/owners/ownersrecord'], resolve),
-        meta: {
-          requireAuth: true,
-        }
-      },
-      {
-        path: '/home/ownersschedule',
-        name: 'ownersschedule',
-        component: resolve => require(['@/pages/home/owners/ownersschedule'], resolve),
-        meta: {
-          requireAuth: true,
-        }
-      },
-      {
-        path: '/home/addowners',
-        name: 'addowners',
-        component: resolve => require(['@/pages/home/owners/addowners'], resolve),
-        meta: {
-          requireAuth: true,
-        }
-      },
-      {
-        path: '/home/ownersdetail',
-        name: 'ownersdetail',
-        component: resolve => require(['@/pages/home/owners/ownersdetail'], resolve),
-        meta: {
-          requireAuth: true,
-        }
-      },
-      {
-        path: '/home/site',
-        name: 'site',
-        component: resolve => require(['@/pages/home/site/site'], resolve),
-        meta: {
-          requireAuth: true,
-        }
-      },
-      {
-        path: '/home/sitecarownerlist',
-        name: 'sitecarownerlist',
-        component: resolve => require(['@/pages/home/site/sitecarownerlist'], resolve),
-        meta: {
-          requireAuth: true,
-        }
-      },
-      {
-        path: '/home/analysis',
-        name: 'analysis',
-        component: resolve => require(['@/pages/home/analysis/analysis'], resolve),
-        meta: {
-          requireAuth: true,
-        }
-      },
-      {
-        path: '/home/metadata',
-        name: 'metadata',
-        redirect: '/home/metadata/brand',
-        component: resolve => require(['@/pages/home/metadata/metadata'], resolve),
-        meta: {
-          requireAuth: true,
-        },
-        children: [
-          {
-            path: '/home/metadata/brand',
-            name: 'brand',
-            component: resolve => require(['@/pages/home/metadata/components/brand'], resolve),
-            meta: {
-              requireAuth: true,
-            }
-          },
-          {
-            path: '/home/metadata/certifications',
-            name: 'certifications',
-            component: resolve => require(['@/pages/home/metadata/components/certifications'], resolve),
-            meta: {
-              requireAuth: true,
-            }
-          },
-          {
-            path: '/home/metadata/carownertype',
-            name: 'carownertype',
-            component: resolve => require(['@/pages/home/metadata/components/carownertype'], resolve),
-            meta: {
-              requireAuth: true,
-            }
-          },
-          {
-            path: '/home/metadata/carownersource',
-            name: 'carownersource',
-            component: resolve => require(['@/pages/home/metadata/components/carownersource'], resolve),
-            meta: {
-              requireAuth: true,
-            }
-          },
-          {
-            path: '/home/metadata/carownerspeciality',
-            name: 'carownerspeciality',
-            component: resolve => require(['@/pages/home/metadata/components/carownerspeciality'], resolve),
-            meta: {
-              requireAuth: true,
-            }
-          },
-          {
-            path: '/home/metadata/scheduletype',
-            name: 'scheduletype',
-            component: resolve => require(['@/pages/home/metadata/components/scheduletype'], resolve),
-            meta: {
-              requireAuth: true,
-            }
-          },
-          {
-            path: '/home/metadata/sitetype',
-            name: 'sitetype',
-            component: resolve => require(['@/pages/home/metadata/components/sitetype'], resolve),
-            meta: {
-              requireAuth: true,
-            }
-          }
-        ]
-      },
-      {
-        path: '/home/document',
-        name: 'document',
-        component: resolve => require(['@/pages/home/document/document'], resolve),
-        meta: {
-          requireAuth: true,
-        }
-      },
-      {
-        path: '/home/resource',
-        name: 'resource',
-        component: resolve => require(['@/pages/home/resource/resource'], resolve),
-        meta: {
-          requireAuth: true,
-        }
+    }, {
+      path: '/',
+      name: '',
+      redirect: '/login',
+      // component: Login,
+      meta: {
+        requireAuth: true,
       }
-    ]
-  },
-  {
-    path: '/test',
-    name: 'test',
-    component: Test,
-    meta: {
-      requireAuth: true,
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: Login,
+      meta: {
+        requireAuth: true,
+      }
+    },
+    {
+      path: '/home',
+      name: 'home',
+      redirect: '/home/task',
+      component: resolve => require(['@/pages/home/home'], resolve),
+      meta: {
+        requireAuth: true,
+      },
+      children: [
+        {
+          path: '/home/task',
+          name: 'task',
+          component: resolve => require(['@/pages/home/task/task'], resolve),
+          meta: {
+            requireAuth: true,
+            title: '任务管理'
+          }
+        },
+        {
+          path: '/home/addTask',
+          name: 'addTask',
+          component: resolve => require(['@/pages/home/task/addtask'], resolve),
+          meta: {
+            requireAuth: true,
+          }
+        },
+        {
+          path: '/home/taskDetail',
+          name: 'taskDetail',
+          component: resolve => require(['@/pages/home/task/taskdetail'], resolve),
+          meta: {
+            requireAuth: true,
+          }
+        },
+        {
+          path: '/home/tasksettlement',
+          name: 'tasksettlement',
+          component: resolve => require(['@/pages/home/task/tasksettlement'], resolve),
+          meta: {
+            requireAuth: true,
+          }
+        },
+        {
+          path: '/home/settlement',
+          name: 'settlement',
+          component: resolve => require(['@/pages/home/settlement/settlement'], resolve),
+          meta: {
+            requireAuth: true,
+            title: '结算管理'
+          }
+        },
+        {
+          path: '/home/settlementDetail',
+          name: 'settlementDetail',
+          component: resolve => require(['@/pages/home/settlement/settlementdetail'], resolve),
+          meta: {
+            requireAuth: true,
+          }
+        },
+        {
+          path: '/home/owners',
+          name: 'owners',
+          component: resolve => require(['@/pages/home/owners/owners'], resolve),
+          meta: {
+            requireAuth: true,
+          }
+        },
+        {
+          path: '/home/ownerssite',
+          name: 'ownerssite',
+          component: resolve => require(['@/pages/home/owners/ownerssite'], resolve),
+          meta: {
+            requireAuth: true,
+          }
+        },
+        {
+          path: '/home/ownersrecord',
+          name: 'ownersrecord',
+          component: resolve => require(['@/pages/home/owners/ownersrecord'], resolve),
+          meta: {
+            requireAuth: true,
+          }
+        },
+        {
+          path: '/home/ownersschedule',
+          name: 'ownersschedule',
+          component: resolve => require(['@/pages/home/owners/ownersschedule'], resolve),
+          meta: {
+            requireAuth: true,
+          }
+        },
+        {
+          path: '/home/addowners',
+          name: 'addowners',
+          component: resolve => require(['@/pages/home/owners/addowners'], resolve),
+          meta: {
+            requireAuth: true,
+          }
+        },
+        {
+          path: '/home/ownersdetail',
+          name: 'ownersdetail',
+          component: resolve => require(['@/pages/home/owners/ownersdetail'], resolve),
+          meta: {
+            requireAuth: true,
+          }
+        },
+        {
+          path: '/home/site',
+          name: 'site',
+          component: resolve => require(['@/pages/home/site/site'], resolve),
+          meta: {
+            requireAuth: true,
+          }
+        },
+        {
+          path: '/home/sitecarownerlist',
+          name: 'sitecarownerlist',
+          component: resolve => require(['@/pages/home/site/sitecarownerlist'], resolve),
+          meta: {
+            requireAuth: true,
+          }
+        },
+        {
+          path: '/home/analysis',
+          name: 'analysis',
+          component: resolve => require(['@/pages/home/analysis/analysis'], resolve),
+          meta: {
+            requireAuth: true,
+          }
+        },
+        {
+          path: '/home/metadata',
+          name: 'metadata',
+          redirect: '/home/metadata/brand',
+          component: resolve => require(['@/pages/home/metadata/metadata'], resolve),
+          meta: {
+            requireAuth: true,
+          },
+          children: [
+            {
+              path: '/home/metadata/brand',
+              name: 'brand',
+              component: resolve => require(['@/pages/home/metadata/components/brand'], resolve),
+              meta: {
+                requireAuth: true,
+              }
+            },
+            {
+              path: '/home/metadata/certifications',
+              name: 'certifications',
+              component: resolve => require(['@/pages/home/metadata/components/certifications'], resolve),
+              meta: {
+                requireAuth: true,
+              }
+            },
+            {
+              path: '/home/metadata/carownertype',
+              name: 'carownertype',
+              component: resolve => require(['@/pages/home/metadata/components/carownertype'], resolve),
+              meta: {
+                requireAuth: true,
+              }
+            },
+            {
+              path: '/home/metadata/carownersource',
+              name: 'carownersource',
+              component: resolve => require(['@/pages/home/metadata/components/carownersource'], resolve),
+              meta: {
+                requireAuth: true,
+              }
+            },
+            {
+              path: '/home/metadata/carownerspeciality',
+              name: 'carownerspeciality',
+              component: resolve => require(['@/pages/home/metadata/components/carownerspeciality'], resolve),
+              meta: {
+                requireAuth: true,
+              }
+            },
+            {
+              path: '/home/metadata/scheduletype',
+              name: 'scheduletype',
+              component: resolve => require(['@/pages/home/metadata/components/scheduletype'], resolve),
+              meta: {
+                requireAuth: true,
+              }
+            },
+            {
+              path: '/home/metadata/sitetype',
+              name: 'sitetype',
+              component: resolve => require(['@/pages/home/metadata/components/sitetype'], resolve),
+              meta: {
+                requireAuth: true,
+              }
+            }
+          ]
+        },
+        {
+          path: '/home/document',
+          name: 'document',
+          component: resolve => require(['@/pages/home/document/document'], resolve),
+          meta: {
+            requireAuth: true,
+          }
+        },
+        {
+          path: '/home/resource',
+          name: 'resource',
+          component: resolve => require(['@/pages/home/resource/resource'], resolve),
+          meta: {
+            requireAuth: true,
+          }
+        }
+      ]
+    },
+    {
+      path: '/test',
+      name: 'test',
+      component: Test,
+      meta: {
+        requireAuth: true,
+      }
     }
-  }
   ]//Test
 })
 // TaskDetail

@@ -27,7 +27,12 @@
           <el-col :span="24" class="list">
             <div class="key">任务名称</div>
             <div class="val">
-              <el-input placeholder="请输入内容" v-model="taskName" clearable></el-input>
+              <el-input
+                placeholder="请输入内容"
+                v-model="taskName"
+                clearable
+                :disabled="!disabledCaigou"
+              ></el-input>
             </div>
           </el-col>
           <el-col :span="24" class="list">
@@ -41,6 +46,7 @@
                 filterable
                 collapse-tags
                 @change="carSeriesChange"
+                :disabled="!disabledCaigou"
               ></el-cascader>
             </div>
           </el-col>
@@ -54,48 +60,51 @@
                 clearable
                 filterable
                 collapse-tags
+                :disabled="!disabledCaigou"
               ></el-cascader>
             </div>
           </el-col>
           <!-- 摄影填写 start -->
-          <el-col :span="24" class="list">
-            <div class="key">摄影师</div>
-            <div class="val">
-              <el-cascader
-                :options="options2"
-                :props="props"
-                v-model="listInviteList"
-                clearable
-                filterable
-                collapse-tags
-              ></el-cascader>
-            </div>
-          </el-col>
-          <el-col :span="24" class="list">
-            <div class="key">模特</div>
-            <div class="val">
-              <el-cascader
-                :options="options2"
-                :props="props"
-                v-model="listInviteList"
-                clearable
-                filterable
-                collapse-tags
-              ></el-cascader>
-            </div>
-          </el-col>
-          <el-col :span="24" class="list">
-            <div class="key">场地</div>
-            <div class="val">
-              <el-cascader
-                :options="options2"
-                :props="props"
-                v-model="listInviteList"
-                clearable
-                filterable
-                collapse-tags
-              ></el-cascader>
-            </div>
+          <el-col :span="24" v-show="taskType==3">
+            <el-col :span="24" class="list">
+              <div class="key">摄影师</div>
+              <div class="val">
+                <el-cascader
+                  :options="options3"
+                  v-model="listInviteList"
+                  clearable
+                  filterable
+                  collapse-tags
+                  :disabled="disabledCaigou"
+                ></el-cascader>
+              </div>
+            </el-col>
+            <el-col :span="24" class="list">
+              <div class="key">模特</div>
+              <div class="val">
+                <el-cascader
+                  :options="options3"
+                  v-model="listInviteList"
+                  clearable
+                  filterable
+                  collapse-tags
+                  :disabled="disabledCaigou"
+                ></el-cascader>
+              </div>
+            </el-col>
+            <el-col :span="24" class="list">
+              <div class="key">场地</div>
+              <div class="val">
+                <el-cascader
+                  :options="options3"
+                  v-model="listInviteList"
+                  clearable
+                  filterable
+                  collapse-tags
+                  :disabled="disabledCaigou"
+                ></el-cascader>
+              </div>
+            </el-col>
           </el-col>
           <!-- 摄影填写 end -->
           <el-col :span="24" class="list">
@@ -107,13 +116,14 @@
                 range-separator="至"
                 start-placeholder="开始日期"
                 end-placeholder="结束日期"
+                :disabled="!disabledCaigou"
               ></el-date-picker>
             </div>
           </el-col>
           <el-col :span="24" class="list">
             <div class="key">计划邀约量</div>
             <div class="val">
-              <el-input placeholder="请输入内容" v-model="taskNum" clearable></el-input>
+              <el-input placeholder="请输入内容" v-model="taskNum" clearable :disabled="!disabledCaigou"></el-input>
             </div>
           </el-col>
           <el-col :span="24" class="list">
@@ -125,6 +135,7 @@
                 :on-remove="taskFileRemove"
                 :on-success="taskFileSuccess"
                 :file-list="fileList"
+                :disabled="!disabledCaigou"
               >
                 <el-button size="small" type="primary">点击上传</el-button>
                 <div slot="tip" class="el-upload__tip"></div>
@@ -136,7 +147,13 @@
           <el-col :span="24" class="list">
             <div class="key">任务描述</div>
             <div class="val valList">
-              <el-input type="textarea" :rows="7" placeholder="请输入内容" v-model="taskDesc"></el-input>
+              <el-input
+                type="textarea"
+                :rows="7"
+                placeholder="请输入内容"
+                v-model="taskDesc"
+                :disabled="!disabledCaigou"
+              ></el-input>
               <!-- <div class="miKey">邀约目的:</div>
             <el-input placeholder="请输入内容" v-model="taskDesc.input1"></el-input>
             <div class="miKey">参与资格:</div>
@@ -154,7 +171,7 @@
           <el-col :span="24" class="list">
             <div class="key">备注</div>
             <div class="val">
-              <el-input placeholder="请输入内容" v-model="remark" clearable></el-input>
+              <el-input placeholder="请输入内容" v-model="remark" clearable :disabled="!disabledCaigou"></el-input>
             </div>
           </el-col>
         </el-col>
@@ -175,7 +192,7 @@ export default {
   data() {
     return {
       userId: this.$store.state.user.userId,
-      deptId: this.$store.state.user.deptId,
+      deptId: this.$store.state.user.deptId, // 90
       // 页面类型
       taskId: '',
       type: 0,
@@ -189,9 +206,8 @@ export default {
       textarea: '',
       props: { multiple: true },
       carSeriesList: [],
-      // 品牌车型
-      input3: '',
-      options: [
+      // 摄影师  模特  场地
+      options3: [
         {
           value: '选项1',
           label: '黄金糕',
@@ -213,6 +229,10 @@ export default {
           label: '北京烤鸭',
         },
       ],
+      disabledCaigou: false,
+      // 品牌车型
+      input3: '',
+      options: [],
       // 计划周期
       input4: '',
       // 计划邀约量
@@ -270,9 +290,21 @@ export default {
     this.getQuery()
     ///////// 获取车型列表 start /////////
     this.getCarSeriesLists()
+    ///////// 判断部门 start /////////
+    this.isDeptId()
   },
   // 方法事件
   methods: {
+    ///////// 接受页面传参 start /////////
+    isDeptId() {
+      if (this.deptId == 90) {
+        this.disabledCaigou = false
+      } else {
+        this.disabledCaigou = true
+      }
+    },
+    ///////// 接受页面传参 end /////////
+
     ///////// 接受页面传参 start /////////
     getQuery() {
       let type = this.$route.query.type

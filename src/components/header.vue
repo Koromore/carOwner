@@ -14,7 +14,7 @@
           <div @click="navTo(2)" :class="[navNum==1?'act':'']" v-if="deptId==90||adminShow">结算管理</div>
           <!-- <div @click="navTo(2)" :class="[navNum==1?'act':'']">结算管理</div> -->
           <div @click="navTo(3)" :class="[navNum==2?'act':'']">车主管理</div>
-          <div @click="navTo(8)" :class="[navNum==8?'act':'']">资源管理</div>
+          <div @click="navTo(8)" :class="[navNum==7?'act':'']">资源管理</div>
           <div @click="navTo(4)" :class="[navNum==3?'act':'']">场地管理</div>
           <div @click="navTo(5)" :class="[navNum==4?'act':'']" v-if="postId==231||adminShow">数据分析</div>
           <!-- <div @click="navTo(5)" :class="[navNum==4?'act':'']">数据分析</div> -->
@@ -107,6 +107,7 @@ export default {
         ['analysis'],
         ['metadata'],
         ['document'],
+        ['resource'],
       ]
       let navNum = 0
       list.forEach((element, i) => {
@@ -119,7 +120,7 @@ export default {
           }
         }
       })
-      // console.log(this.navNum)
+      console.log(this.navNum)
     },
   },
   // 钩子函数
@@ -230,7 +231,7 @@ export default {
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    .logo { 
+    .logo {
       width: 128px;
     }
     .navList {
@@ -243,14 +244,23 @@ export default {
       // margin-left: 6%;
       font-size: 16px;
       .act {
-        font-weight: 700;
+        // font-weight: 700;
         color: #ffffff;
       }
       div {
+        height: 32px;
+        line-height: 32px;
+        // font-weight: 700;
         cursor: pointer;
-        margin-right: 6%;
+        margin-right: 4%;
         &:nth-last-of-type(1) {
           margin-right: 0;
+        }
+        &:hover {
+          // font-weight: 700;
+          color: #ffffff;
+          box-sizing: border-box;
+          border-bottom: 2px solid white;
         }
       }
     }
@@ -262,7 +272,7 @@ export default {
     justify-content: flex-end;
     .search {
       width: 320px;
-      margin-right: 13px;
+      // margin-right: 13px;
       .el-select {
         width: 72px;
       }
