@@ -12,6 +12,8 @@ import { date0, time0 } from '@/utils/time'
 import { isEmail, isMobile } from '@/utils/ifformat'
 import { duration } from '@/utils/duration'
 import { download } from '@/utils/download'
+import VueAwesomeSwiper from 'vue-awesome-swiper'
+import 'swiper/dist/css/swiper.css'
 
 // import {Decrypt,Encrypt} from '@/utils/cryptoJS'
 
@@ -46,6 +48,7 @@ Vue.prototype.$duration = duration
 
 Vue.prototype.$download = download
 
+Vue.use(VueAwesomeSwiper)
 // Vue.prototype.$Decrypt = Decrypt
 // Vue.prototype.$Encrypt = Encrypt
 

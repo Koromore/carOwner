@@ -5,7 +5,7 @@
       <el-col :span="14" class="left">
         <div class="butBox1">
           <div :class="[tab1act==1?'but act':'but']" @click="tab1(1)">支持型</div>
-          <div :class="[tab1act==2?'but act':'but']" @click="tab1(2)">拍摄型</div>
+          <!-- <div :class="[tab1act==2?'but act':'but']" @click="tab1(2)">拍摄型</div> -->
           <div :class="[tab1act==3?'but act':'but']" @click="tab1(3)">资源型</div>
         </div>
 
@@ -21,7 +21,7 @@
       </el-col>
       <el-col :span="10" class="right">
         <!-- 邀约对象 -->
-        <el-select
+        <!-- <el-select
           v-model="leisureOwners"
           filterable
           clearable
@@ -35,7 +35,7 @@
             :label="item.label"
             :value="item.value"
           ></el-option>
-        </el-select>
+        </el-select> -->
         <!-- 车型 -->
         <el-select
           v-model="carSeriesId"
@@ -829,6 +829,7 @@ $icoColor: rgb(106, 145, 232);
         align-items: center;
         border-radius: 3px;
         border: 1px solid rgb(205, 205, 205);
+        background: white;
         .but {
           width: 81px;
           height: 32px;
@@ -859,6 +860,7 @@ $icoColor: rgb(106, 145, 232);
         align-items: center;
         border-radius: 3px;
         border: 1px solid rgb(205, 205, 205);
+        background: white;
         .but {
           width: 81px;
           height: 32px;

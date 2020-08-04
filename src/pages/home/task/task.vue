@@ -13,7 +13,7 @@
 
       <el-col :span="12" class="right">
         <!-- 邀约对象 -->
-        <el-select
+        <!-- <el-select
           v-model="typeId"
           filterable
           clearable
@@ -27,13 +27,13 @@
             :label="item.label"
             :value="item.value"
           ></el-option>
-        </el-select>
+        </el-select> -->
         <!-- 邀约事项 -->
         <el-select
           v-model="itemId"
           filterable
           clearable
-          placeholder="邀约事项"
+          placeholder="任务类型"
           size="small"
           @change="itemIdChange"
         >
