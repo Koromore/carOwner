@@ -339,10 +339,53 @@ const router = new Router({
         {
           path: '/home/resource',
           name: 'resource',
+          redirect: '/home/resource/place',
           component: resolve => require(['@/pages/home/resource/resource'], resolve),
           meta: {
             requireAuth: true,
-          }
+          },
+          children:[//modelmen
+            {
+              path: '/home/resource/cameraman',
+              name: 'cameraman',
+              component: resolve => require(['@/pages/home/resource/cameraman/cameraman'], resolve),
+              meta: {
+                requireAuth: true,
+              }
+            },
+            {
+              path: '/home/resource/modelmen',
+              name: 'modelmen',
+              component: resolve => require(['@/pages/home/resource/modelmen/modelmen'], resolve),
+              meta: {
+                requireAuth: true,
+              }
+            },
+            {
+              path: '/home/resource/place',
+              name: 'place',
+              component: resolve => require(['@/pages/home/resource/place/place'], resolve),
+              meta: {
+                requireAuth: true,
+              }
+            },
+            {
+              path: '/home/resource/addplace',
+              name: 'addplace',
+              component: resolve => require(['@/pages/home/resource/place/addplace'], resolve),
+              meta: {
+                requireAuth: true,
+              }
+            },
+            {
+              path: '/home/resource/placedetails',
+              name: 'placedetails',
+              component: resolve => require(['@/pages/home/resource/place/placedetails'], resolve),
+              meta: {
+                requireAuth: true,
+              }
+            }
+          ]
         }
       ]
     },
