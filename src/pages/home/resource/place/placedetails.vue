@@ -11,11 +11,14 @@
             </div>
           </el-col>
           <el-col :span="12">{{title}}</el-col>
+          <el-col :span="6" class="redact">
+            <i class="el-icon-edit" @click="redact"></i>
+          </el-col>
         </el-col>
         <el-col :span="24" class="banner">
           <!-- <div style="height:100px;" v-for="(item, index) in swiperList" :key="index">
              <img class="swp-img" :src="'/ocarplay/'+item.imgUrl" alt />
-          </div> -->
+          </div>-->
           <!-- <section class="swiper"> -->
           <swiper :options="swiperOption" ref="goodSwiper">
             <swiper-slide
@@ -24,7 +27,7 @@
               :key="index"
               data-id="item.id"
             >
-              <img class="swp-img" :src="'/ocarplay/'+item.imgUrl" alt />
+              <img class="swp-img" :src="item.imgUrl" alt />
             </swiper-slide>
             <div class="swiper-pagination" slot="pagination"></div>
           </swiper>
@@ -33,6 +36,7 @@
         <el-col :span="10" :offset="2" class="left">
           <el-col :span="24" class="list">
             <div class="key">场地名称</div>
+            <div class="symbol">：</div>
             <div class="val">
               <!-- <el-input placeholder="请输入内容" v-model="placeName" clearable></el-input> -->
               {{placeName}}
@@ -40,26 +44,24 @@
           </el-col>
           <el-col :span="24" class="list">
             <div class="key">场地类型</div>
-            <div class="val">
-              {{placeTypeId}}
-            </div>
+            <div class="symbol">：</div>
+            <div class="val">{{placeTypeId}}</div>
           </el-col>
           <el-col :span="24" class="list">
             <div class="key">所在区域</div>
-            <div class="val">
-              {{district}}
-            </div>
+            <div class="symbol">：</div>
+            <div class="val">{{district}}</div>
           </el-col>
           <el-col :span="24" class="list">
             <div class="key">详细地址</div>
-            <div class="val">
-              {{address}}
-            </div>
+            <div class="symbol">：</div>
+            <div class="val">{{address}}</div>
           </el-col>
         </el-col>
         <el-col :span="10" class="right">
           <el-col :span="24" class="list">
             <div class="key">是否可停车</div>
+            <div class="symbol">：</div>
             <div class="val valList">
               <span v-if="car">是</span>
               <span v-else>否</span>
@@ -67,6 +69,7 @@
           </el-col>
           <el-col :span="24" class="list">
             <div class="key">是否可拍车</div>
+            <div class="symbol">：</div>
             <div class="val valList">
               <span v-if="park">是</span>
               <span v-else>否</span>
@@ -74,15 +77,13 @@
           </el-col>
           <el-col :span="24" class="list">
             <div class="key">费用</div>
-            <div class="val">
-              {{money}}
-            </div>
+            <div class="symbol">：</div>
+            <div class="val">{{money}}</div>
           </el-col>
           <el-col :span="24" class="list">
             <div class="key">备注</div>
-            <div class="val">
-              {{remark}}
-            </div>
+            <div class="symbol">：</div>
+            <div class="val">{{remark}}</div>
           </el-col>
         </el-col>
       </el-scrollbar>
@@ -134,28 +135,10 @@ export default {
       // 场地上传组件
       dialogVisible: false,
       dialogImageUrl: '',
-      /////////////////////////////////////
-      // 页面类型
-      taskId: '',
-      type: 0,
       title: '场地详情',
-      textarea: '',
-      placeTypeList: [],
-      // 文件上传
-      fileList: [],
-
-      listInviteList: [],
-      addplace: [],
-      seriesId: [],
-      periodTime: [],
-      taskNum: '',
-      listTaskFile: [],
-      remark: '',
-      taskFileList: [],
-      fileList: [],
-      // 按钮开关
-      submitFlag: true,
       putLoading: false,
+      /////////////////////////////////////
+      
     }
   },
   // 侦听器
@@ -233,13 +216,23 @@ export default {
           this.remark = data.remark // 备注
           this.photoList = data.photoList // 场地图片
           let swiperList = []
-          data.photoList.forEach((element) => {
-            swiperList.push({
-              id: element.photoId,
-              imgUrl: element.localPath,
+          if (data.photoList != 0) {
+            data.photoList.forEach((element) => {
+              swiperList.push({
+                id: element.photoId,
+                imgUrl: '/ocarplay/' + element.localPath,
+              })
             })
-          })
-          this.swiperList = swiperList;
+          } else {
+            swiperList = [
+              {
+                id: 0,
+                imgUrl: 'static/images/carow/handerimg.png',
+              },
+            ]
+          }
+          // console.log(swiperList)
+          this.swiperList = swiperList
 
           // console.log(this.swiperList)
           // console.log(this.$refs.goodSwiper.swiper)
@@ -252,6 +245,15 @@ export default {
     },
     ///////// 获取场地详情 end /////////
 
+    ///////// 跳转编辑页面 end /////////
+    redact(){
+      this.$router.push({
+        path: '/home/resource/addplace',
+        query: { id: this.placeId,type: 1 },
+      })
+    },
+    ///////// 跳转编辑页面 end /////////
+
     ///////// 返回上一页 start /////////
     previous() {
       this.$router.go(-1) //返回上一层
@@ -261,6 +263,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+$icoColor: #6a91e8;
 #placedetails {
   height: 100%;
   background: white;
@@ -279,7 +282,7 @@ export default {
         width: 96px;
         height: 40px;
         line-height: 40px;
-        margin-right: 13px;
+        // margin-right: 13px;
         text-align: justify;
         box-sizing: border-box;
       }
@@ -287,6 +290,10 @@ export default {
         display: inline-block;
         content: '';
         padding-left: 100%;
+      }
+      .symbol {
+        height: 40px;
+        line-height: 40px;
       }
       .val {
         width: 300px;
@@ -325,9 +332,19 @@ export default {
           font-weight: bold;
         }
       }
+      .redact {
+        text-align: right;
+
+        padding-right: 18px;
+        i {
+          cursor: pointer;
+          color: $icoColor;
+          font-size: 28px;
+        }
+      }
     }
-    .banner{
-      .swp-img{
+    .banner {
+      .swp-img {
         width: 100%;
         height: 260px;
         object-fit: cover;

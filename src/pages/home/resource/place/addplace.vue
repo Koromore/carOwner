@@ -77,7 +77,7 @@
           <el-col :span="24" class="list">
             <div class="key">是否可停车</div>
             <div class="val valList">
-              <el-radio-group v-model="car">
+              <el-radio-group v-model="isCar">
                 <el-radio :label="true">是</el-radio>
                 <el-radio :label="false">否</el-radio>
               </el-radio-group>
@@ -86,7 +86,7 @@
           <el-col :span="24" class="list">
             <div class="key">是否可拍车</div>
             <div class="val valList">
-              <el-radio-group v-model="park">
+              <el-radio-group v-model="isPark">
                 <el-radio :label="true">是</el-radio>
                 <el-radio :label="false">否</el-radio>
               </el-radio-group>
@@ -126,14 +126,15 @@ export default {
       deptId: this.$store.state.user.deptId, // 90
 
       // 场地新增信息
+      type: 0,
       placeId: '', // 场地ID
       placeName: '', // 场地名称
       placeTypeId: '', // 场地类型
       district_code: [], // 城市选择器代码
       district: [], // 城市选择器名称
       address: '', // 详细地址
-      car: null, // 是否可停车
-      park: null, // 是否可拍车
+      isCar: null, // 是否可停车
+      isPark: null, // 是否可拍车
       money: '', // 费用
       remark: '', // 备注
       photoList: [], // 场地图片
@@ -143,28 +144,13 @@ export default {
       // 场地上传组件
       dialogVisible: false,
       dialogImageUrl: '',
-      /////////////////////////////////////
-      // 页面类型
-      taskId: '',
-      type: 0,
-      title: '新增场地',
-      textarea: '',
-      placeTypeList: [],
-      // 文件上传
-      fileList: [],
 
-      listInviteList: [],
-      addplace: [],
-      seriesId: [],
-      periodTime: [],
-      taskNum: '',
-      listTaskFile: [],
-      remark: '',
-      taskFileList: [],
-      fileList: [],
-      // 按钮开关
-      submitFlag: true,
+      title: '新增场地',
       putLoading: false,
+
+      placeTypeList: [], // 场地类型列表
+      fileList: [], // 场地图片
+      /////////////////////////////////////
     }
   },
   // 侦听器
@@ -250,74 +236,59 @@ export default {
       let id = this.$route.query.id
       this.type = type
       if (type == 0) {
-        this.title = '新增任务'
-        this.taskId = ''
+        this.title = '新增场地'
+        this.placeId = ''
       } else if (type == 1) {
-        this.title = '编辑任务'
-        this.taskId = id
-        ///////// 获取任务详情 start /////////
-        this.getTaskDetail(id)
-      } else if (type == 2) {
-        this.title = '新增任务'
-        // this.taskId = id
-        ///////// 获取任务详情 start /////////
-        this.getTaskDetail(id)
+        this.title = '编辑场地'
+        this.placeId = id
+        ///////// 获取场地详情 start /////////
+        this.getPlaceDetail(id)
       }
       // console.log(type)
     },
     ///////// 接受页面传参 end /////////
 
-    ///////// 获取任务详情 start /////////
-    getTaskDetail(id) {
+    ///////// 获取场地详情 start /////////
+    getPlaceDetail(id) {
       let data = {
-        taskId: id,
+        placeId: id,
       }
-      this.$axios.post('/ocarplay/task/edit', data).then((res) => {
+      this.$axios.post('/ocarplay/api/place/preEditPlace', data).then((res) => {
         // console.log(res)
         if (res.status == 200) {
-          let data = res.data.data
-          this.taskName = data.taskName
-          let listInviteList = []
-          data.listInvite.forEach((element) => {
-            listInviteList.push([
-              element.listOwnerType[0].typeId,
-              element.listOwnerItem[0].itemId,
-              element.ownerId,
-            ])
-          })
+          let data = res.data
+          this.placeId = data.placeId // 场地ID
+          this.placeName = data.placeName // 场地名称
+          this.placeTypeId = data.placeTypeId // 场地类型
+          // this.district_code = data.district_code // 城市选择器代码
+          // this.district = [data.province, data.city, data.area] // 城市选择器名称
+          if (data.province) {
+            this.district = [data.province, data.city, data.area] // 城市选择器名称
+          } else {
+            this.district = [data.city, data.area] // 城市选择器名称
+          }
+          this.address = data.address // 详细地址
+          this.isCar = data.isCar // 是否可停车
+          this.isPark = data.isPark // 是否可拍车
+          this.money = data.money // 费用
+          this.remark = data.remark // 备注
+          this.photoList = data.photoList // 场地图片
+          //  通过名称获取城市代码回填
+          this.district_code = this.getValue(this.district, this.optionsCity)
 
-          this.listInviteList = listInviteList
-          // this.carSeriesId = [null,null,data.carSeriesId]
-          data.listTaskOfCartype.forEach((element) => {
-            this.seriesId.push(element.cartypeId)
-          })
-
-          this.periodTime = [
-            new Date(data.startTime.replace(/-/g, '/')),
-            new Date(data.endTime.replace(/-/g, '/')),
-          ]
-          this.taskNum = data.num
-          this.remark = data.remark
           let fileList = []
-          let taskFileList = []
-
-          data.listTaskFile.forEach((element) => {
+          data.photoList.forEach((element) => {
             fileList.push({
               name: element.fileName,
-              url: element.localPath,
-            })
-            taskFileList.push({
-              fileName: '端午大礼包',
-              localPath: 'uploadtemp//doc/1592452790041.jpg',
-              suffix: 'jpg',
+              url: '/ocarplay/' + element.localPath,
+              suffix: element.suffix,
             })
           })
           this.fileList = fileList
-          this.taskFileList = taskFileList
         }
       })
     },
-    ///////// 获取任务详情 end /////////
+    ///////// 获取场地详情 end /////////
 
     ///////// 获取场地类型 start /////////
     getPlaceTypeList() {
@@ -363,15 +334,24 @@ export default {
       if (res.errcode == 0) {
         let photoList = []
         fileList.forEach((element) => {
-          photoList.push({
-            doUserId: this.userId,
-            fileName: element.response.data.fileName,
-            localPath: element.response.data.localPath,
-            suffix: element.response.data.suffix,
-          })
+          if (element.response) {
+            photoList.push({
+              doUserId: this.userId,
+              fileName: element.response.data.fileName,
+              localPath: element.response.data.localPath,
+              suffix: element.response.data.suffix,
+            })
+          } else {
+            photoList.push({
+              doUserId: this.userId,
+              fileName: element.name,
+              localPath: element.url.replace('/ocarplay/', ''),
+              suffix: element.suffix,
+            })
+          }
         })
         this.photoList = photoList
-        console.log(this.photoList)
+        // console.log(this.photoList)
       }
     },
     // 预览事件
@@ -381,53 +361,80 @@ export default {
     },
     // 删除提示
     photoListbeforeRemove(file, fileList) {
-      return this.$confirm(`确定移除 ${file.name}？`)
+      // return this.$confirm(`确定移除 ${file.name}？`)
     },
     // 删除成功回调
     photoListRemove(file, fileList) {
+      // console.log(fileList)
       let photoList = []
       fileList.forEach((element) => {
         photoList.push({
           doUserId: this.userId,
-          fileName: element.response.data.fileName,
-          localPath: element.response.data.localPath,
-          suffix: element.response.data.suffix,
+          fileName: element.name,
+          localPath: element.url.replace('/ocarplay/', ''),
+          suffix: element.suffix,
         })
+        if (element.response) {
+          photoList.push({
+            doUserId: this.userId,
+            fileName: element.response.data.fileName,
+            localPath: element.response.data.localPath,
+            suffix: element.response.data.suffix,
+            type: 0,
+          })
+        } else {
+          photoList.push({
+            doUserId: this.userId,
+            fileName: element.name,
+            localPath: element.url.replace('/ocarplay/', ''),
+            suffix: element.suffix,
+            type: 0,
+          })
+        }
       })
       this.photoList = photoList
-      console.log(this.photoList)
+      // console.log(this.photoList)
     },
     ///////// 场地图片上传 end /////////
 
-    ///////// 新增任务 start /////////
+    ///////// 新增场地 start /////////
     // （0-进行中，1-结算中，2-完成，3-延期，4-人工延期
     savePlace() {
-      // let periodTime = this.periodTime
-      // let startTime = ''
-      // let endTime = ''
-      // if (periodTime.length != 0) {
-      //   startTime = this.$date0(periodTime[0])
-      //   endTime = this.$date0(periodTime[1])
-      // }
-      // let listInviteList = this.listInviteList
-      // let carSeriesId = this.carSeriesId
-      // let listTaskOfCartype = []
-      // carSeriesId.forEach((element) => {
-      //   listTaskOfCartype.push({ cartypeId: element[1] })
-      // })
       let placeId = this.placeId || ''
       let placeName = this.placeName || ''
       let placeTypeId = this.placeTypeId || ''
-      let province = this.district[0] || ''
-      let city = this.district[1] || ''
-      let area = this.district[2] || ''
+
+      let province = ''
+      let city = ''
+      let area = ''
+
       let address = this.address || ''
-      let car = this.car
-      let park = this.park
+      let isCar = this.isCar
+      let isPark = this.isPark
       let money = this.money || ''
       let remark = this.remark || ''
       let photoList = this.photoList
       let createTime = this.$time0(new Date())
+      if (placeId) {
+        createTime = ''
+      } else {
+        createTime = this.$time0(new Date())
+      }
+      // console.log(this.district)
+      if (this.district.length == 3) {
+        province = this.district[0]
+        city = this.district[1]
+        area = this.district[2]
+      }else if(this.district.length == 2){
+        province = ''
+        city = this.district[0]
+        area = this.district[1]
+      }
+      photoList.forEach((element) => {
+        element.placeId = placeId
+        delete element.photoId
+        delete element.deleteFlag
+      })
       let data = {
         placeId, // 场地ID
         placeName, // 场地名称
@@ -436,8 +443,8 @@ export default {
         city, // 市
         area, // 区
         address, // 详细地址
-        car, // 是否可停车
-        park, // 是否可拍车
+        isCar, // 是否可停车
+        isPark, // 是否可拍车
         money, // 费用
         remark, // 备注
         photoList, // 场地图片
@@ -449,10 +456,10 @@ export default {
       if (
         placeName == '' ||
         placeTypeId == '' ||
-        province == '' ||
+        area == '' ||
         address == '' ||
-        car === null ||
-        park === null ||
+        isCar === null ||
+        isPark === null ||
         money == '' ||
         remark == '' ||
         photoList.length == 0
@@ -477,7 +484,7 @@ export default {
                 this.putLoading = false
               }, 1000)
             } else {
-              this.$message.error('任务新建失败！')
+              this.$message.error(res.data.msg)
               this.putLoading = false
             }
           })

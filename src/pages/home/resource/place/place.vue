@@ -11,7 +11,7 @@
       </el-col>
       <el-col :span="15" class="right">
         <!-- 是否会开车 -->
-        <el-select v-model="value1" clearable placeholder="是否会开车" size="small">
+        <el-select v-model="isCar" clearable placeholder="是否能停车" size="small" @change="isCarChange">
           <el-option
             v-for="item in options"
             :key="item.value"
@@ -20,7 +20,14 @@
           ></el-option>
         </el-select>
         <!-- 城市 -->
-        <el-select v-model="value2" filterable clearable placeholder="城市" size="small">
+        <el-select
+          v-model="city"
+          filterable
+          clearable
+          placeholder="城市"
+          size="small"
+          @change="cityChange"
+        >
           <el-option
             v-for="item in cityList"
             :key="item.value"
@@ -47,33 +54,27 @@
           <el-col class="itemsBox" :span="6" v-for="(item,index) in placeList" :key="index">
             <div class="items">
               <div class="img" @click="toPlaceDetails(item.placeId)">
-                <el-image
-                  style="width: 100%; height: 100%"
-                  :src="'http://176.10.10.235:8080'+item.image"
-                  fit="cover"
-                ></el-image>
-                <!-- {{item.image}} -->
-                <!-- <img :src="item.image"> -->
+                <el-image style="width: 100%; height: 100%" :src="item.image" fit="cover"></el-image>
               </div>
               <div class="text">
                 <p>
                   <span>{{item.placeName}}</span>
-                  <span class="cost" v-if="item.money">{{item.money}}</span>
+                  <span class="cost" v-if="item.money">￥{{item.money}}</span>
                   <span class="free" v-else>免费</span>
                 </p>
                 <p>{{item.province+item.city}} · {{item.area+item.address}}</p>
                 <p>场地类型：{{item.placeTypeName}}</p>
-                <p>拍摄次数：3次</p>
+                <p @click="toPlaceCamera(item.placeId)">拍摄次数：{{item.cameraNum}}次</p>
               </div>
               <div class="bottom">
                 <el-col :span="6" :offset="3">
-                  <i class="el-icon-user"></i>
+                  <i class="el-icon-user" @click="toPlaceMan(item.city)"></i>
                 </el-col>
                 <el-col :span="6">
-                  <i class="el-icon-camera"></i>
+                  <i class="el-icon-camera" @click="addPlaceCamera(item.placeId)"></i>
                 </el-col>
                 <el-col :span="6">
-                  <i class="el-icon-delete"></i>
+                  <i class="el-icon-delete" @click="deletePlaceBtn(item.placeId)"></i>
                 </el-col>
               </div>
             </div>
@@ -92,14 +93,27 @@
       </el-col>
     </el-row>
     <!-- 内容列表 end -->
+
+    <!-- 新增场地拍摄 -->
+    <PlaceCamera :placeCameraShow="placeCameraShow"></PlaceCamera>
+    <!-- 新增场地拍摄 -->
+
+    <!-- 新增场地拍摄 -->
+    <PlaceCameraList :placeCameraListShow="placeCameraListShow"></PlaceCameraList>
+    <!-- 新增场地拍摄 -->
   </div>
 </template>
 <script>
 import cityList from '@/common/city.js' // 引入城市数据
+import PlaceCamera from '@/components/placeCamera'
+import PlaceCameraList from '@/components/PlaceCameraList'
 
 export default {
   name: 'place',
-  components: {},
+  components: {
+    PlaceCamera,
+    PlaceCameraList,
+  },
   data() {
     return {
       userId: this.$store.state.user.userId, // 用户ID
@@ -119,13 +133,18 @@ export default {
           label: '否',
         },
       ],
-      value1: '',
+      isCar: '',
       // 城市列表
       cityList: cityList, // 城市筛列表
-      value2: '',
+      city: '',
       // 内容列表
       listLoading: false,
-      placeList: [],
+      placeList: [{ localPath: '' }],
+      // 场地拍摄
+      placeId: 0,
+      placeCameraShow: 0,
+      // 拍摄记录
+      placeCameraListShow: 0,
       // 分页
       total: 0,
       pageNum: 1,
@@ -139,7 +158,7 @@ export default {
   beforeMount() {},
   mounted() {
     ///////// 获取车主列表 start /////////
-    this.getlistOwnerByCity()
+    this.getPlaceList()
   },
   // 方法
   methods: {
@@ -148,9 +167,9 @@ export default {
       this.tabact = prm
       let url = ''
       if (prm == 1) {
-        url = '/home/resource/cameraman'
+        url = '/home/resource/camera'
       } else if (prm == 2) {
-        url = '/home/resource/modelmen'
+        url = '/home/resource/model'
       } else if (prm == 3) {
         url = '/home/resource/place'
       }
@@ -161,15 +180,34 @@ export default {
     add_place() {
       this.$router.push({ path: '/home/resource/addplace' })
     },
-    ///////// 跳转场地添加页面 start /////////
+    ///////// 跳转场地添加页面 end /////////
 
-    ///////// 获取车主列表 start /////////
-    getlistOwnerByCity() {
+    ///////// 筛选能否停车 start /////////
+    isCarChange(e) {
+      console.log(e)
+      ///////// 获取场地列表 start /////////
+      this.getPlaceList()
+    },
+    ///////// 筛选能否停车 end /////////
+
+    ///////// 筛选城市 start /////////
+    cityChange(e) {
+      console.log(e)
+      ///////// 获取场地列表 start /////////
+      this.getPlaceList()
+    },
+    ///////// 筛选城市 end /////////
+
+    ///////// 获取场地列表 start /////////
+    getPlaceList() {
       this.listLoading = true
       let data = {
         pageNum: this.pageNum,
         pageSize: this.pageSize,
-        typeId: '',
+        place: {
+          isCar: this.isCar,
+          city: this.city,
+        },
       }
       this.$axios.post('/ocarplay/api/place/listAjax', data).then((res) => {
         // console.log(res)
@@ -178,18 +216,19 @@ export default {
         if (res.status == 200) {
           let data = res.data
           data.items.forEach((element) => {
-            if (element.image) {
-              element.image = '/ocarplay/' + element.image
+            if (element.photoList.length != 0) {
+              element.image = '/ocarplay/' + element.photoList[0].localPath
             } else {
               element.image = 'static/images/carow/handerimg.png'
             }
           })
           this.placeList = data.items
+          // console.log(this.placeList)
           this.total = data.totalRows
         }
       })
     },
-    ///////// 获取车主列表 end /////////
+    ///////// 获取场地列表 end /////////
 
     ///////// 跳转场地详情 start /////////
     toPlaceDetails(id) {
@@ -200,6 +239,64 @@ export default {
     },
     ///////// 跳转场地详情 end /////////
 
+    ///////// 打开场地拍摄记录 start /////////
+    toPlaceCamera(id) {
+      this.placeId = id
+      this.placeCameraListShow += 1
+    },
+    ///////// 打开场地拍摄记录 start /////////
+
+    ///////// 跳转场地摄影师和模特 start /////////
+    toPlaceMan(city) {
+      this.$router.push({
+        path: '/home/resource/placeman',
+        query: { city: city },
+      })
+    },
+    ///////// 跳转场地详情 end /////////
+
+    ///////// 新增场地拍摄 end /////////
+    addPlaceCamera(id) {
+      this.placeId = id
+      this.placeCameraShow += 1
+    },
+    ///////// 新增场地拍摄 end /////////
+
+    ///////// 删除场地 start /////////
+    deletePlaceBtn(id) {
+      this.$confirm('是否删除该场地?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      })
+        .then(() => {
+          this.deletePlace(id)
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除',
+          })
+        })
+    },
+    deletePlace(id) {
+      let data = { placeId: id }
+      this.$axios.post('/ocarplay/api/place/delete', data).then((res) => {
+        console.log(res)
+        let data = res.data
+        // this.listLoading = false
+        // // this.drawerAdd = false
+        if (res.status == 200 && res.data.errcode == 0) {
+          this.$message.success(res.data.msg)
+          // 获取场地列表
+          this.getPlaceList()
+        } else {
+          this.$message.error(res.data.msg)
+        }
+      })
+    },
+    ///////// 删除场地 end /////////
+
     ///////// 分页 start /////////
     // 每页条数变化时触发事件
     // changeSize(pageSize) {
@@ -208,7 +305,7 @@ export default {
     // 页码变换时触发事件
     changePage(pageNum) {
       this.pageNum = pageNum
-      this.getlistOwnerByCity()
+      this.getPlaceList()
     },
     ///////// 分页 end /////////
   },
@@ -339,6 +436,9 @@ $icoColor: #6a91e8;
                 overflow: hidden; // 超出隐藏
                 white-space: nowrap; // 不换行
                 text-overflow: ellipsis; // 显示省略号
+              }
+              &:nth-of-type(4) {
+                cursor: pointer;
               }
               .free {
                 color: #c73420;

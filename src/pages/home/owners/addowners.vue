@@ -369,11 +369,7 @@
                       @change="handleChangeCity0"
                       placeholder="请选择所在区域"
                     ></el-cascader>
-                    <!-- {{district0}} -->
                   </el-col>
-                  <!-- <el-col :span="12">
-                    <el-input placeholder="请输入详细地址" v-model="deliAddress"></el-input>
-                  </el-col>-->
                 </el-col>
               </el-col>
               <el-col :span="24" class="list">
@@ -423,16 +419,6 @@
                     <el-col :span="5">
                       <el-input placeholder="关系" v-model="item.relation"></el-input>
                     </el-col>
-                    <!-- <el-col :span="6">
-                      <el-input placeholder="出生日期" v-model="item.birthday"></el-input>
-                      <el-date-picker
-                        v-model="item.birthday"
-                        type="date"
-                        placeholder="生日"
-                        value-format="yyyy-MM-dd"
-                      ></el-date-picker>
-                      {{item.birthday}}
-                    </el-col> -->
                     <el-col :span="10">
                       <el-input placeholder="备注" v-model="item.work"></el-input>
                     </el-col>

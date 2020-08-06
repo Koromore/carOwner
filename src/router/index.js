@@ -339,24 +339,32 @@ const router = new Router({
         {
           path: '/home/resource',
           name: 'resource',
-          redirect: '/home/resource/place',
+          redirect: '/home/resource/model',
           component: resolve => require(['@/pages/home/resource/resource'], resolve),
           meta: {
             requireAuth: true,
           },
-          children:[//modelmen
+          children:[
             {
-              path: '/home/resource/cameraman',
-              name: 'cameraman',
-              component: resolve => require(['@/pages/home/resource/cameraman/cameraman'], resolve),
+              path: '/home/resource/camera',
+              name: 'camera',
+              component: resolve => require(['@/pages/home/resource/camera/camera'], resolve),
               meta: {
                 requireAuth: true,
               }
             },
             {
-              path: '/home/resource/modelmen',
-              name: 'modelmen',
-              component: resolve => require(['@/pages/home/resource/modelmen/modelmen'], resolve),
+              path: '/home/resource/model',
+              name: 'model',
+              component: resolve => require(['@/pages/home/resource/model/model'], resolve),
+              meta: {
+                requireAuth: true,
+              }
+            },
+            {
+              path: '/home/resource/addModel',
+              name: 'addModel',
+              component: resolve => require(['@/pages/home/resource/model/addModel'], resolve),
               meta: {
                 requireAuth: true,
               }
@@ -384,7 +392,15 @@ const router = new Router({
               meta: {
                 requireAuth: true,
               }
-            }
+            },
+            {
+              path: '/home/resource/placeman',
+              name: 'placeman',
+              component: resolve => require(['@/pages/home/resource/place/placeman'], resolve),
+              meta: {
+                requireAuth: true,
+              }
+            }//placeman
           ]
         }
       ]
@@ -408,7 +424,7 @@ try {
   var user = JSON.parse(localStorage.getItem('user'));
   let token = localStorage.getItem('token');
   let userSign = localStorage.getItem('userSign');
-  // store.commit('login', { token, user, userSign });
+  store.commit('login', { token, user, userSign });
   // if (user==null) {
   //   window.location.replace('http://guoxin.insun-china.com/hrm');
   // }

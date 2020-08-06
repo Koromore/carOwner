@@ -7,7 +7,8 @@
 
 export default {
   name: '',
-  components: {},
+  props: {}, // 接受参数
+  components: {}, // 注册组件
   data() {
     return {}
   },

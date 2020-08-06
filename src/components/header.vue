@@ -120,7 +120,7 @@ export default {
           }
         }
       })
-      console.log(this.navNum)
+      // console.log(this.navNum)
     },
   },
   // 钩子函数

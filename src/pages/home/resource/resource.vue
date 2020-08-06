@@ -26,7 +26,6 @@ export default {
 $icoColor: #6a91e8;
 #resource {
   height: 100%;
-  $icoColor: #6a91e8;
   .content {
     height: calc(100% - 54px);
     // background: #fff;
