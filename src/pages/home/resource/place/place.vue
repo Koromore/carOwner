@@ -64,14 +64,14 @@
                 </p>
                 <p>{{item.province+item.city}} · {{item.area+item.address}}</p>
                 <p>场地类型：{{item.placeTypeName}}</p>
-                <p @click="toPlaceCamera(item.placeId)">拍摄次数：{{item.cameraNum}}次</p>
+                <p @click="toCameraList(item.placeId,3)">拍摄次数：{{item.cameraNum}}次</p>
               </div>
               <div class="bottom">
                 <el-col :span="6" :offset="3">
                   <i class="el-icon-user" @click="toPlaceMan(item.city)"></i>
                 </el-col>
                 <el-col :span="6">
-                  <i class="el-icon-camera" @click="addPlaceCamera(item.placeId)"></i>
+                  <i class="el-icon-camera" @click="addCamera()"></i>
                 </el-col>
                 <el-col :span="6">
                   <i class="el-icon-delete" @click="deletePlaceBtn(item.placeId)"></i>
@@ -95,24 +95,24 @@
     <!-- 内容列表 end -->
 
     <!-- 新增场地拍摄 -->
-    <PlaceCamera :placeCameraShow="placeCameraShow"></PlaceCamera>
+    <camera :cameraShow="cameraShow"></camera>
     <!-- 新增场地拍摄 -->
 
     <!-- 新增场地拍摄 -->
-    <PlaceCameraList :placeCameraListShow="placeCameraListShow"></PlaceCameraList>
+    <cameraList :cameraListShow="cameraListShow"></cameraList>
     <!-- 新增场地拍摄 -->
   </div>
 </template>
 <script>
 import cityList from '@/common/city.js' // 引入城市数据
-import PlaceCamera from '@/components/placeCamera'
-import PlaceCameraList from '@/components/PlaceCameraList'
+import camera from '@/components/camera'
+import cameraList from '@/components/cameraList'
 
 export default {
   name: 'place',
   components: {
-    PlaceCamera,
-    PlaceCameraList,
+    camera,
+    cameraList,
   },
   data() {
     return {
@@ -121,6 +121,8 @@ export default {
       postId: this.$store.state.user.postId, // 职位ID
       subordinate: this.$store.state.user.subordinate, // 一级部门ID
       adminShow: this.$store.state.adminShow, // 超级管理员
+      placeId: null,
+      type: 2,
       // tab选项卡
       tabact: 3,
       options: [
@@ -140,11 +142,9 @@ export default {
       // 内容列表
       listLoading: false,
       placeList: [{ localPath: '' }],
-      // 场地拍摄
-      placeId: 0,
-      placeCameraShow: 0,
       // 拍摄记录
-      placeCameraListShow: 0,
+      cameraShow: 0,
+      cameraListShow: 0,
       // 分页
       total: 0,
       pageNum: 1,
@@ -184,7 +184,7 @@ export default {
 
     ///////// 筛选能否停车 start /////////
     isCarChange(e) {
-      console.log(e)
+      // console.log(e)
       ///////// 获取场地列表 start /////////
       this.getPlaceList()
     },
@@ -192,7 +192,7 @@ export default {
 
     ///////// 筛选城市 start /////////
     cityChange(e) {
-      console.log(e)
+      // console.log(e)
       ///////// 获取场地列表 start /////////
       this.getPlaceList()
     },
@@ -239,12 +239,12 @@ export default {
     },
     ///////// 跳转场地详情 end /////////
 
-    ///////// 打开场地拍摄记录 start /////////
-    toPlaceCamera(id) {
+    ///////// 打开拍摄记录 start /////////
+    toCameraList(id,type) {
       this.placeId = id
-      this.placeCameraListShow += 1
+      this.cameraListShow += 1
     },
-    ///////// 打开场地拍摄记录 start /////////
+    ///////// 打开拍摄记录 start /////////
 
     ///////// 跳转场地摄影师和模特 start /////////
     toPlaceMan(city) {
@@ -255,12 +255,11 @@ export default {
     },
     ///////// 跳转场地详情 end /////////
 
-    ///////// 新增场地拍摄 end /////////
-    addPlaceCamera(id) {
-      this.placeId = id
-      this.placeCameraShow += 1
+    ///////// 新增拍摄 start /////////
+    addCamera() {
+      this.cameraShow += 1
     },
-    ///////// 新增场地拍摄 end /////////
+    ///////// 新增拍摄 end /////////
 
     ///////// 删除场地 start /////////
     deletePlaceBtn(id) {

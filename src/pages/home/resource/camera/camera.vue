@@ -29,7 +29,12 @@
           ></el-option>
         </el-select>
         <div class="add_task">
-          <el-button type="primary" icon="el-icon-circle-plus-outline" size="small">添加摄影师</el-button>
+          <el-button
+            type="primary"
+            icon="el-icon-circle-plus-outline"
+            size="small"
+            @click="addCamera"
+          >添加摄影师</el-button>
         </div>
       </el-col>
     </el-row>
@@ -39,28 +44,102 @@
     <el-row class="content" v-loading="listLoading">
       <el-scrollbar>
         <el-col :span="24" class="table_list">
-          <el-col class="itemsBox" :span="6" v-for="(item,index) in ownerList" :key="index">
+          <el-col class="itemsBox" :span="6" v-for="(item,index) in cameraList" :key="index">
             <div class="items">
-              <div class="left">
+              <div class="left" @click="toCameraDetails(item.personId)">
                 <div class="el-imageBox">
                   <div class="sex">
-                    <i class="el-icon-female"></i>
+                    <template v-if="item.sex">
+                      <i class="el-icon-female"></i>
+                    </template>
+                    <template v-else>
+                      <i class="el-icon-male"></i>
+                    </template>
                   </div>
                   <div class="el-image">
-                    <img :src="item.image" alt="" srcset="">
-                    <div class="zhezhao">
-                      解雨臣
-                    </div>
+                    <img :src="'/ocarplay/'+item.image" alt srcset />
+                    <div class="zhezhao">{{item.name}}</div>
                   </div>
                 </div>
               </div>
               <div class="right">
                 <div>
-                  <p><svg xmlns="http://www.w3.org/2000/svg" class="svg-icon" viewBox="0 0 24 24" width="18" height="18" style="fill: rgb(106, 145, 232);"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z"></path></svg>&nbsp;湖北省武汉市</p>
-                  <p><svg xmlns="http://www.w3.org/2000/svg" class="svg-icon" viewBox="0 0 24 24" width="18" height="18" style="fill: rgb(106, 145, 232);"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"></path></svg>&nbsp;不会开车</p>
-                  <p><svg xmlns="http://www.w3.org/2000/svg" class="svg-icon" viewBox="0 0 24 24" width="17" height="17" style="fill: rgb(106, 145, 232);"><path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z"></path></svg>&nbsp;可爱萝莉</p>
-                  <p><svg xmlns="http://www.w3.org/2000/svg" class="svg-icon" viewBox="64 64 896 896" width="15" height="15" style="fill: rgb(106, 145, 232);"><path d="M864 260H728l-32.4-90.8a32.07 32.07 0 0 0-30.2-21.2H358.6c-13.5 0-25.6 8.5-30.1 21.2L296 260H160c-44.2 0-80 35.8-80 80v456c0 44.2 35.8 80 80 80h704c44.2 0 80-35.8 80-80V340c0-44.2-35.8-80-80-80zM512 716c-88.4 0-160-71.6-160-160s71.6-160 160-160 160 71.6 160 160-71.6 160-160 160zm-96-160a96 96 0 1 0 192 0 96 96 0 1 0-192 0z"></path></svg>&nbsp;合作拍摄5次</p>
-                  <p><svg xmlns="http://www.w3.org/2000/svg" class="svg-icon" viewBox="64 64 896 896" width="15" height="15" style="fill: rgb(106, 145, 232);"><path d="M908.1 353.1l-253.9-36.9L540.7 86.1c-3.1-6.3-8.2-11.4-14.5-14.5-15.8-7.8-35-1.3-42.9 14.5L369.8 316.2l-253.9 36.9c-7 1-13.4 4.3-18.3 9.3a32.05 32.05 0 0 0 .6 45.3l183.7 179.1-43.4 252.9a31.95 31.95 0 0 0 46.4 33.7L512 754l227.1 119.4c6.2 3.3 13.4 4.4 20.3 3.2 17.4-3 29.1-19.5 26.1-36.9l-43.4-252.9 183.7-179.1c5-4.9 8.3-11.3 9.3-18.3 2.7-17.5-9.5-33.7-27-36.3z"></path></svg>&nbsp;总体评分<span>97分</span></p>
+                  <p>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="svg-icon"
+                      viewBox="0 0 24 24"
+                      width="18"
+                      height="18"
+                      style="fill: rgb(106, 145, 232);"
+                    >
+                      <path
+                        d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z"
+                      />
+                    </svg>
+                    &nbsp;{{item.province+item.city}}
+                  </p>
+                  <p>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="svg-icon"
+                      viewBox="0 0 24 24"
+                      width="18"
+                      height="18"
+                      style="fill: rgb(106, 145, 232);"
+                    >
+                      <path
+                        d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"
+                      />
+                    </svg>&nbsp;
+                    <template v-if="item.isCar">会开车</template>
+                    <template v-else>不会开车</template>
+                  </p>
+                  <p>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="svg-icon"
+                      viewBox="0 0 24 24"
+                      width="17"
+                      height="17"
+                      style="fill: rgb(106, 145, 232);"
+                    >
+                      <path
+                        d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z"
+                      />
+                    </svg>
+                    &nbsp;{{item.tag}}
+                  </p>
+                  <p @click="toCameraList(item.personId,1)">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="svg-icon"
+                      viewBox="64 64 896 896"
+                      width="15"
+                      height="15"
+                      style="fill: rgb(106, 145, 232);"
+                    >
+                      <path
+                        d="M864 260H728l-32.4-90.8a32.07 32.07 0 0 0-30.2-21.2H358.6c-13.5 0-25.6 8.5-30.1 21.2L296 260H160c-44.2 0-80 35.8-80 80v456c0 44.2 35.8 80 80 80h704c44.2 0 80-35.8 80-80V340c0-44.2-35.8-80-80-80zM512 716c-88.4 0-160-71.6-160-160s71.6-160 160-160 160 71.6 160 160-71.6 160-160 160zm-96-160a96 96 0 1 0 192 0 96 96 0 1 0-192 0z"
+                      />
+                    </svg>
+                    &nbsp;合作拍摄{{item.coopNum}}次
+                  </p>
+                  <p>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="svg-icon"
+                      viewBox="64 64 896 896"
+                      width="15"
+                      height="15"
+                      style="fill: rgb(106, 145, 232);"
+                    >
+                      <path
+                        d="M908.1 353.1l-253.9-36.9L540.7 86.1c-3.1-6.3-8.2-11.4-14.5-14.5-15.8-7.8-35-1.3-42.9 14.5L369.8 316.2l-253.9 36.9c-7 1-13.4 4.3-18.3 9.3a32.05 32.05 0 0 0 .6 45.3l183.7 179.1-43.4 252.9a31.95 31.95 0 0 0 46.4 33.7L512 754l227.1 119.4c6.2 3.3 13.4 4.4 20.3 3.2 17.4-3 29.1-19.5 26.1-36.9l-43.4-252.9 183.7-179.1c5-4.9 8.3-11.3 9.3-18.3 2.7-17.5-9.5-33.7-27-36.3z"
+                      />
+                    </svg>&nbsp;总体评分
+                    <span>{{item.avgScore}}</span>
+                  </p>
                 </div>
               </div>
               <div class="bottom">
@@ -74,10 +153,10 @@
                   <i class="el-icon-date"></i>
                 </el-col>
                 <el-col :span="4">
-                  <i class="el-icon-camera"></i>
+                  <i class="el-icon-camera" @click="addCameraa"></i>
                 </el-col>
                 <el-col :span="4">
-                  <i class="el-icon-delete"></i>
+                  <i class="el-icon-delete" @click="deleteCameraBtn(item.personId)"></i>
                 </el-col>
               </div>
             </div>
@@ -96,14 +175,27 @@
       </el-col>
     </el-row>
     <!-- 内容列表 end -->
+
+    <!-- 新增场地拍摄 -->
+    <cameraa :cameraShow="cameraShow"></cameraa>
+    <!-- 新增场地拍摄 -->
+
+    <!-- 新增场地拍摄 -->
+    <cameraList :cameraListShow="cameraListShow"></cameraList>
+    <!-- 新增场地拍摄 -->
   </div>
 </template>
 <script>
 import cityList from '@/common/city.js' // 引入城市数据
+import cameraa from '@/components/camera'
+import cameraList from '@/components/cameraList'
 
 export default {
   name: 'camera',
-  components: {},
+  components: {
+    cameraa,
+    cameraList
+  },
   data() {
     return {
       userId: this.$store.state.user.userId, // 用户ID
@@ -111,6 +203,8 @@ export default {
       postId: this.$store.state.user.postId, // 职位ID
       subordinate: this.$store.state.user.subordinate, // 一级部门ID
       adminShow: this.$store.state.adminShow, // 超级管理员
+      personId: null,
+      type: 0,
       // tab选项卡
       tabact: 1,
       options: [
@@ -121,7 +215,7 @@ export default {
         {
           value: 0,
           label: '否',
-        }
+        },
       ],
       value1: '',
       // 城市列表
@@ -129,7 +223,10 @@ export default {
       value2: '',
       // 内容列表
       listLoading: false,
-      ownerList: [],
+      cameraList: [],
+      // 拍摄记录
+      cameraShow: 0,
+      cameraListShow: 0,
       // 分页
       total: 0,
       pageNum: 1,
@@ -143,7 +240,7 @@ export default {
   beforeMount() {},
   mounted() {
     ///////// 获取车主列表 start /////////
-    this.getlistOwnerByCity()
+    this.getlistPhotoPerson()
   },
   // 方法
   methods: {
@@ -160,39 +257,89 @@ export default {
       }
       this.$router.push({ path: url })
     },
-    ///////// 获取车主列表 start /////////
-    getlistOwnerByCity() {
+    addCamera() {
+      this.$router.push({
+        path: '/home/resource/addCamera',
+        query: { type: 0 },
+      })
+    },
+    ///////// 获取摄影师列表 start /////////
+    getlistPhotoPerson() {
       this.listLoading = true
       let data = {
         pageNum: this.pageNum,
         pageSize: this.pageSize,
-        place: {
-          city: '武汉',
-        },
-        typeId: '',
       }
       this.$axios
-        .post('/ocarplay/api/place/listOwnerByCity', data)
+        .post('/ocarplay/api/photoPerson/listAjax', data)
         .then((res) => {
           // console.log(res)
           this.listLoading = false
-          // this.drawerAdd = false
           if (res.status == 200) {
             let data = res.data
-            data.items.forEach((element) => {
-              if (element.image) {
-                element.image = '/ocarplay/' + element.image
-              } else {
-                element.image = 'static/images/carow/handerimg.png'
-              }
-            })
-            this.ownerList = data.items
-            // console.log(this.ownerList)
+            this.cameraList = data.items
             this.total = data.totalRows
           }
         })
     },
-    ///////// 获取车主列表 end /////////
+    ///////// 获取摄影师列表 end /////////
+
+    ///////// 摄影师详情页 start /////////
+    toCameraDetails(id) {
+      this.$router.push({
+        path: '/home/resource/cameraDetails',
+        query: { id: id },
+      })
+    },
+    ///////// 摄影师详情页 end /////////
+
+    ///////// 打开拍摄记录 start /////////
+    toCameraList(id, type) {
+      this.personId = id
+      this.cameraListShow += 1
+    },
+    ///////// 打开拍摄记录 start /////////
+
+    ///////// 新增场地拍摄 start /////////
+    addCameraa() {
+      this.cameraShow += 1
+    },
+    ///////// 新增场地拍摄 end /////////
+
+    ///////// 删除摄影师 start /////////
+    deleteCameraBtn(id) {
+      this.$confirm('是否删除该摄影师?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      })
+        .then(() => {
+          this.deleteCamera(id)
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除',
+          })
+        })
+    },
+    deleteCamera(id) {
+      let data = `?id=${id}`
+      this.$axios
+        .post('/ocarplay/api/photoPerson/delete' + data)
+        .then((res) => {
+          console.log(res)
+          let data = res.data
+          if (res.status == 200 && res.data.errcode == 0) {
+            this.$message.success(res.data.msg)
+            ///////// 获取摄影师列表 start /////////
+            this.getlistPhotoPerson()
+          } else {
+            this.$message.error(res.data.msg)
+          }
+        })
+    },
+    ///////// 删除摄影师 end /////////
 
     ///////// 分页 start /////////
     // 每页条数变化时触发事件
@@ -202,8 +349,8 @@ export default {
     // 页码变换时触发事件
     changePage(pageNum) {
       this.pageNum = pageNum
-      this.getlistOwnerByCity()
-    }
+      this.getlistPhotoPerson()
+    },
     ///////// 分页 end /////////
   },
 }
@@ -274,6 +421,5 @@ $icoColor: #6a91e8;
       }
     }
   }
-  
 }
 </style>

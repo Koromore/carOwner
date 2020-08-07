@@ -339,7 +339,7 @@ const router = new Router({
         {
           path: '/home/resource',
           name: 'resource',
-          redirect: '/home/resource/model',
+          redirect: '/home/resource/camera',
           component: resolve => require(['@/pages/home/resource/resource'], resolve),
           meta: {
             requireAuth: true,
@@ -349,6 +349,22 @@ const router = new Router({
               path: '/home/resource/camera',
               name: 'camera',
               component: resolve => require(['@/pages/home/resource/camera/camera'], resolve),
+              meta: {
+                requireAuth: true,
+              }
+            },
+            {
+              path: '/home/resource/addCamera',
+              name: 'addCamera',
+              component: resolve => require(['@/pages/home/resource/camera/addCamera'], resolve),
+              meta: {
+                requireAuth: true,
+              }
+            },
+            {
+              path: '/home/resource/cameraDetails',
+              name: 'cameraDetails',
+              component: resolve => require(['@/pages/home/resource/camera/cameraDetails'], resolve),
               meta: {
                 requireAuth: true,
               }

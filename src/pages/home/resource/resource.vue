@@ -89,7 +89,12 @@ $icoColor: #6a91e8;
                 i {
                   font-weight: bold;
                   font-size: 16px;
-                  color: #ff94b8;
+                  &.el-icon-female {
+                    color: #ff94b8;
+                  }
+                  &.el-icon-male {
+                    color: $icoColor;
+                  }
                 }
               }
               $imgwidth: 120px;

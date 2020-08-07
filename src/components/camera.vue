@@ -1,14 +1,15 @@
 <template>
-  <div id="placeCamera">
+  <div id="camera">
     <el-drawer
       title="新增拍摄记录"
       :visible.sync="drawerData"
       size="566px"
       @close="drawerDataClose"
+      @open="drawerDataOpen"
       v-loading="loading"
     >
       <el-row class="drawerData">
-        <el-col :span="5" class="key imp">新增任务</el-col>
+        <el-col :span="5" class="key imp">新增拍摄</el-col>
         <el-col :span="1">:</el-col>
         <el-col :span="16" class="val">
           <el-input placeholder="请输入内容" v-model="title" clearable></el-input>
@@ -16,9 +17,9 @@
         <el-col :span="5" class="key imp">摄影师</el-col>
         <el-col :span="1">:</el-col>
         <el-col :span="16" class="val">
-          <el-select v-model="value" placeholder="请选择">
+          <el-select v-model="personId" placeholder="请选择">
             <el-option
-              v-for="item in options"
+              v-for="item in personList"
               :key="item.value"
               :label="item.label"
               :value="item.value"
@@ -28,9 +29,9 @@
         <el-col :span="5" class="key imp">模特</el-col>
         <el-col :span="1">:</el-col>
         <el-col :span="16" class="val">
-          <el-select v-model="value" placeholder="请选择">
+          <el-select v-model="modelId" placeholder="请选择">
             <el-option
-              v-for="item in options"
+              v-for="item in modelList"
               :key="item.value"
               :label="item.label"
               :value="item.value"
@@ -40,9 +41,9 @@
         <el-col :span="5" class="key imp">场地</el-col>
         <el-col :span="1">:</el-col>
         <el-col :span="16" class="val">
-          <el-select v-model="value" placeholder="请选择">
+          <el-select v-model="placeId" placeholder="请选择">
             <el-option
-              v-for="item in options"
+              v-for="item in placeList"
               :key="item.value"
               :label="item.label"
               :value="item.value"
@@ -75,49 +76,33 @@
 // import { matchType } from '@/utils/matchType' // 引入文件格式判断方法
 
 export default {
-  name: 'placeCamera',
+  name: 'camera',
   // 接受参数
   props: {
-    placeCameraShow: Number,
+    cameraShow: Number,
   },
   components: {},
   data() {
     return {
       drawerData: false,
       loading: false,
+      personList: [], // 摄影师列表
+      modelList: [], // 模特列表
+      placeList: [], // 场地列表
+      personId: null, // 摄影师Id
+      modelId: null, // 模特Id
       placeId: null, // 场地Id
       title: null, // 任务名称
       cameraTime: null, // 拍摄时间
-      options: [
-        {
-          value: '选项1',
-          label: '黄金糕',
-        },
-        {
-          value: '选项2',
-          label: '双皮奶',
-        },
-        {
-          value: '选项3',
-          label: '蚵仔煎',
-        },
-        {
-          value: '选项4',
-          label: '龙须面',
-        },
-        {
-          value: '选项5',
-          label: '北京烤鸭',
-        },
-      ],
-      value: '',
     }
   },
   // 侦听器
   watch: {
-    placeCameraShow: function (newData, oldData) {
-      this.drawerData = true
-      this.placeId = this.$parent.placeId
+    cameraShow: function (newData, oldData) {
+      if (newData) {
+        this.drawerData = true
+      }
+      
     },
   },
   // 钩子函数
@@ -127,7 +112,94 @@ export default {
   // 方法
   methods: {
     //
-    drawerDataClose() {},
+    drawerDataClose() {
+      this.$parent.cameraShow=0
+    },
+    drawerDataOpen() {
+      this.getlistPhotoPerson()
+      this.getlistModel()
+      this.getListPlace()
+    },
+    ///////// 获取摄影师列表 start /////////
+    getlistPhotoPerson() {
+      let personList = this.personList
+      if (personList.length == 0) {
+        let data = {
+          pageNum: 1,
+          pageSize: 1000,
+        }
+        this.$axios
+          .post('/ocarplay/api/photoPerson/listAjax', data)
+          .then((res) => {
+            if (res.status == 200) {
+              let data = res.data.items
+              let list = []
+              data.forEach((element) => {
+                list.push({
+                  value: element.personId,
+                  label: element.name,
+                })
+              })
+              this.personList = list
+              // console.log(this.personList)
+            }
+          })
+      }
+    },
+    ///////// 获取摄影师列表 end /////////
+
+    ///////// 获取模特列表 start /////////
+    getlistModel() {
+      let modelList = this.modelList
+      if (modelList.length == 0) {
+        let data = {
+          pageNum: 1,
+          pageSize: 1000,
+        }
+        this.$axios.post('/ocarplay/api/model/listAjax', data).then((res) => {
+          if (res.status == 200) {
+            let data = res.data.items
+            let list = []
+            data.forEach((element) => {
+              list.push({
+                value: element.modelId,
+                label: element.name,
+              })
+            })
+            this.modelList = list
+            // console.log(this.personList)
+          }
+        })
+      }
+    },
+    ///////// 获取模特列表 end /////////
+
+    ///////// 获取场地列表 start /////////
+    getListPlace() {
+      let placeList = this.placeList
+      if (placeList.length == 0) {
+        let data = {
+          pageNum: 1,
+          pageSize: 1000,
+        }
+        this.$axios.post('/ocarplay/api/place/listAjax', data).then((res) => {
+          if (res.status == 200) {
+            let data = res.data.items
+            let list = []
+            data.forEach((element) => {
+              list.push({
+                value: element.placeId,
+                label: element.placeName,
+              })
+            })
+            this.placeList = list
+            // console.log(this.personList)
+          }
+        })
+      }
+    },
+    ///////// 获取场地列表 end /////////
+
     // 取消按钮
     cancel() {
       this.drawerData = false
@@ -137,13 +209,13 @@ export default {
     // 提交按钮
     saveBtn() {
       if (this.title || this.cameraTime) {
-        this.$confirm('是否删场地拍摄信息?', '提示', {
+        this.$confirm('是否提交拍摄信息?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning',
         })
           .then(() => {
-            this.placeCameraSave()
+            this.cameraShowSave()
           })
           .catch(() => {
             this.$message({
@@ -155,14 +227,16 @@ export default {
         this.$message.error('带*号信息不能为空！')
       }
     },
-    placeCameraSave() {
+    cameraShowSave() {
       this.loading = true
       let data = {
+        personId: this.personId, // 摄影师Id
+        modelId: this.modelId, // 模特Id
         placeId: this.placeId, // 场地Id
         title: this.title, // 拍摄任务名称
         cameraTime: this.cameraTime, // 拍摄时间
       }
-      this.$axios.post('/ocarplay/api/placeCamera/save', data).then((res) => {
+      this.$axios.post('/ocarplay/api/camera/save', data).then((res) => {
         // console.log(res)
         this.loading = false
         // this.drawerAdd = false
@@ -183,8 +257,9 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-#placeCamera {
-  .el-input {
+#camera {
+  .el-input,
+  .el-select {
     width: 100%;
   }
   .drawerData {

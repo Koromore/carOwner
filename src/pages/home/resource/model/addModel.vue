@@ -10,7 +10,7 @@
               返回
             </div>
           </el-col>
-          <el-col :span="12">新增模特</el-col>
+          <el-col :span="12">{{title}}</el-col>
         </el-col>
         <el-col :span="12" class="left">
           <el-col :span="24" class="list">
@@ -22,7 +22,14 @@
           <el-col :span="24" class="list">
             <div class="key">客户-车型</div>
             <div class="val">
-              <el-input placeholder="请输入内容" v-model="carTypeId" clearable></el-input>
+              <el-select v-model="carTypeId" placeholder="请选择">
+                <el-option
+                  v-for="item in carSeriesIdList"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                ></el-option>
+              </el-select>
             </div>
           </el-col>
           <el-col :span="24" class="list">
@@ -34,7 +41,7 @@
           <el-col :span="24" class="list">
             <div class="key">费用</div>
             <div class="val">
-              <el-input placeholder="请输入内容" v-model="money" clearable></el-input>
+              <el-input placeholder="请输入内容" type="number" v-model="money" clearable></el-input>
             </div>
           </el-col>
           <el-col :span="24" class="list">
@@ -46,7 +53,14 @@
           <el-col :span="24" class="list">
             <div class="key">性别</div>
             <div class="val">
-              <el-input placeholder="请输入内容" v-model="sex" clearable></el-input>
+              <el-select v-model="sex" placeholder="请选择">
+                <el-option
+                  v-for="item in options1"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                ></el-option>
+              </el-select>
             </div>
           </el-col>
           <el-col :span="24" class="list">
@@ -134,7 +148,14 @@
           <el-col :span="24" class="list">
             <div class="key">是否合作</div>
             <div class="val">
-              <el-input placeholder="请输入内容" v-model="isCoop" clearable></el-input>
+              <el-select v-model="isCoop" placeholder="请选择">
+                <el-option
+                  v-for="item in options2"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                ></el-option>
+              </el-select>
             </div>
           </el-col>
           <el-col :span="24" class="list">
@@ -179,7 +200,6 @@ export default {
       userId: this.$store.state.user.userId,
       deptId: this.$store.state.user.deptId, // 90
       // 页面类型
-      modelId: null,
       type: 0,
       putLoading: false,
       // 城市选择器数据
@@ -187,6 +207,8 @@ export default {
       district_code: [], // 区域代码
       district: [], // 区域名称
       // 信息
+      title: '新增模特',
+      modelId: null,
       name: null, // 名字
       carTypeId: null, // 客户车型
       phone: null, // 电话
@@ -207,14 +229,34 @@ export default {
       photoAttachmentList: [],
       introduceFileList: [], // 自我介绍文件列表
       introduceAttachmentList: [],
-      createTime: {},
+      options1: [
+        {
+          value: false,
+          label: '男',
+        },
+        {
+          value: true,
+          label: '女',
+        },
+      ],
+
       // 任务名称
-      options2: [],
+      options2: [
+        {
+          value: false,
+          label: '否',
+        },
+        {
+          value: true,
+          label: '是',
+        },
+      ],
+      options3: [],
       // 任务对象选择数据
       input2: '',
       textarea: '',
       props: { multiple: true },
-      carSeriesList: [],
+      carSeriesIdList: [],
       // 摄影师  模特  场地
       // 品牌车型
       // 文件上传
@@ -237,6 +279,8 @@ export default {
     this.getQuery()
     ///////// 判断部门 start /////////
     this.isDeptId()
+    ///////// 获取车系列表 start /////////
+    this.getCarSeriesLists()
   },
   // 方法事件
   methods: {
@@ -256,13 +300,14 @@ export default {
       let id = this.$route.query.id
       this.type = type
       if (type == 0) {
-        this.title = '新增任务'
+        this.title = '新增模特'
         this.modelId = ''
       } else if (type == 1) {
-        this.title = '编辑任务'
+        this.title = '编辑模特'
         this.modelId = id
-        ///////// 获取任务详情 start /////////
-        this.getTaskDetail(id)
+        ///////// 获取模特详情 start /////////
+        this.getModelDetail(id)
+        // /api/model/show
       }
       // console.log(type)
     },
@@ -310,19 +355,92 @@ export default {
     ///////// 城市选择器 end /////////
 
     ///////// 获取任务详情 start /////////
-    getTaskDetail(id) {
+    getModelDetail(id) {
+      this.putLoading = true
       let data = {
-        taskId: id,
+        modelId: id,
       }
-      // this.$axios.post('/ocarplay/task/edit', data).then((res) => {
-      //   // console.log(res)
-      //   if (res.status == 200) {}
-      // })
+      this.$axios.post('/ocarplay/api/model/show', data).then((res) => {
+        console.log(res)
+        if (res.status == 200) {
+          let data = res.data
+          if (data.errcode != -1) {
+            this.modelId = data.modelId
+            this.name = data.name // 名字
+            this.carTypeId = data.carTypeId * 1 // 客户车型
+            this.phone = data.phone // 电话
+            this.money = data.money // 费用
+            this.agent = data.agent // 经纪人
+            this.sex = data.sex // 性别
+            this.identity = data.identity // 身份证号
+            this.qq = data.qq
+            this.isCoop = data.isCoop // 是否合作
+            this.tag = data.tag // 标签
+            this.province = data.province
+            this.city = data.city
+            this.introduce = data.introduce // 模特介绍
+            let synopsisFileList = []
+            let photoFileList = []
+            let introduceFileList = []
+            
+            data.modelIntroList.forEach((element) => {
+              let pushData = {
+                name: element.fileName,
+                url: element.localPath,
+                suffix: element.suffix,
+                type: element.type,
+                modelId: element.modelId,
+                introId: element.introId,
+              }
+              if (element.type == 0) {
+                synopsisFileList.push(pushData)
+              } else if (element.type == 1) {
+                pushData.url = '/ocarplay/'+element.localPath
+                photoFileList.push(pushData)
+              } else if (element.type == 2) {
+                introduceFileList.push(pushData)
+              }
+            })
+            this.modelIntroList = [] // 模特附件
+            this.synopsisFileList = synopsisFileList // 简介文件列表
+            this.synopsisAttachmentList = []
+            this.photoFileList = photoFileList // 照片文件列表
+            this.photoAttachmentList = []
+            this.introduceFileList = introduceFileList // 自我介绍文件列表
+            this.introduceAttachmentList = []
+          } else {
+            this.$message.error('网络错误！')
+          }
+          this.putLoading = false
+        }
+      })
     },
     ///////// 获取任务详情 end /////////
 
-    ///////// 获取车型列表 start /////////
-    ///////// 获取车型列表 end /////////
+    ///////// 获取车系列表 start /////////
+    getCarSeriesLists() {
+      let eventList = []
+      this.$axios
+        .post('/ocarplay/api/carSeries/getCarSeriesLists', {})
+        .then((res) => {
+          // console.log(res)
+          if (res.status == 200) {
+            let data = res.data.carTypes
+            let carSeriesList = []
+            data.forEach((element, i) => {
+              if (element.deptId == 110) {
+                element.deptName = '吉利'
+              }
+              carSeriesList.push({
+                value: element.carTypeId,
+                label: `${element.deptName}—${element.carTypeName}`,
+              })
+            })
+            this.carSeriesIdList = carSeriesList
+          }
+        })
+    },
+    ///////// 获取车系列表 end /////////
 
     ///////// 返回上一页 start /////////
     previous() {
@@ -357,14 +475,14 @@ export default {
         }
       })
       this.synopsisAttachmentList = synopsisAttachmentList
-      console.log(this.synopsisAttachmentList)
+      // console.log(this.synopsisAttachmentList)
     },
     // 简介删除成功回调
     synopsisBeforeRemove(file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`)
     },
     synopsisRemove(file, fileList) {
-      console.log(fileList)
+      // console.log(fileList)
       let synopsisAttachmentList = []
       fileList.forEach((element) => {
         if (element.response) {
@@ -386,7 +504,7 @@ export default {
         }
       })
       this.synopsisAttachmentList = synopsisAttachmentList
-      console.log(this.synopsisAttachmentList)
+      // console.log(this.synopsisAttachmentList)
     },
     // 简介上传END
 
@@ -409,21 +527,21 @@ export default {
           photoAttachmentList.push({
             doUserId: this.userId,
             fileName: element.name,
-            localPath: element.url,
+            localPath: element.url.replace('/ocarplay/', ''),
             suffix: element.suffix,
             type: 1,
           })
         }
       })
       this.photoAttachmentList = photoAttachmentList
-      console.log(this.photoAttachmentList)
+      // console.log(this.photoAttachmentList)
     },
     // 照片删除成功回调
     photoBeforeRemove(file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`)
     },
     photoRemove(file, fileList) {
-      console.log(fileList)
+      // console.log(fileList)
       let photoAttachmentList = []
       fileList.forEach((element) => {
         if (element.response) {
@@ -438,14 +556,14 @@ export default {
           photoAttachmentList.push({
             doUserId: this.userId,
             fileName: element.name,
-            localPath: element.url,
+            localPath: element.url.replace('/ocarplay/', ''),
             suffix: element.suffix,
             type: 1,
           })
         }
       })
       this.photoAttachmentList = photoAttachmentList
-      console.log(this.photoAttachmentList)
+      // console.log(this.photoAttachmentList)
     },
     // 照片上传END
 
@@ -475,7 +593,7 @@ export default {
         }
       })
       this.introduceAttachmentList = introduceAttachmentList
-      console.log(this.introduceAttachmentList)
+      // console.log(this.introduceAttachmentList)
     },
     // 自我介绍删除成功回调
     introduceBeforeRemove(file, fileList) {
@@ -503,7 +621,7 @@ export default {
         }
       })
       this.introduceAttachmentList = introduceAttachmentList
-      console.log(this.introduceAttachmentList)
+      // console.log(this.introduceAttachmentList)
     },
     // 自我介绍上传END
     ///////// 文件上传 end /////////
@@ -526,7 +644,8 @@ export default {
       // })
     },
     saveModel() {
-      // this.putLoading = true
+      this.putLoading = true
+      let modelId = this.modelId // 模特Id
       let name = this.name // 名字
       let carTypeId = this.carTypeId // 客户车型
       let phone = this.phone // 电话
@@ -561,8 +680,9 @@ export default {
         photoAttachmentList,
         introduceAttachmentList
       )
-      console.log(modelIntroList)
+      // console.log(modelIntroList)
       let data = {
+        modelId, // 模特Id
         name, // 名字
         carTypeId, // 客户车型
         phone, // 电话
@@ -578,20 +698,39 @@ export default {
         introduce, // 模特介绍
         modelIntroList, // 模特附件
       }
-      console.log(data)
-      this.$axios.post('/ocarplay/api/model/save', data).then((res) => {
-        console.log(res)
-        if (res.status == 200) {
-          let data = res.data
-          if (data.errcode == 0) {
-            this.$message.success(res.data.msg)
+      // console.log(this.$parent)
+      // console.log(data)
+      this.$axios
+        .post('/ocarplay/api/model/save', data)
+        .then((res) => {
+          // console.log(res)
+          if (res.status == 200) {
+            let data = res.data
+            if (data.errcode == 0) {
+              if (modelId) {
+                this.$message.success(res.data.msg)
+              } else {
+                this.$message.success(res.data.msg)
+              }
+              setTimeout(() => {
+                this.$router.push({
+                  name: 'model',
+                })
+                this.putLoading = false
+              }, 1000)
+            } else {
+              this.$message.error(res.data.msg)
+              this.putLoading = false
+            }
           } else {
-            this.$message.error(res.data.msg)
+            this.$message.error('网络错误！')
+            this.putLoading = false
           }
-        }else{
+        })
+        .catch((res) => {
           this.$message.error('网络错误！')
-        }
-      })
+          this.putLoading = false
+        })
     },
     ///////// 新增模特 start /////////
   },
