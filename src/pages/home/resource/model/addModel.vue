@@ -281,6 +281,8 @@ export default {
     this.isDeptId()
     ///////// 获取车系列表 start /////////
     this.getCarSeriesLists()
+    ///////// 城市数据处理 start /////////
+    this.disCities()
   },
   // 方法事件
   methods: {
@@ -312,6 +314,28 @@ export default {
       // console.log(type)
     },
     ///////// 接受页面传参 end /////////
+
+        ///////// 城市数据处理 start /////////
+    disCities() {
+      // console.log(cities)
+      let optionsCity = []
+      cities.forEach((element) => {
+        let data = {
+          value: element.value,
+          label: element.label,
+          children: [],
+        }
+        element.children.forEach((element0) => {
+          data.children.push({
+            value: element0.value,
+            label: element0.label,
+          })
+        })
+        optionsCity.push(data)
+      })
+      this.optionsCity = optionsCity
+    },
+    ///////// 城市数据处理 end /////////
 
     ///////// 城市选择器 start /////////
     // 通过代码获取选择城市名称
@@ -354,7 +378,7 @@ export default {
     handleChange(val) {},
     ///////// 城市选择器 end /////////
 
-    ///////// 获取任务详情 start /////////
+    ///////// 获取模特详情 start /////////
     getModelDetail(id) {
       this.putLoading = true
       let data = {
@@ -378,11 +402,14 @@ export default {
             this.tag = data.tag // 标签
             this.province = data.province
             this.city = data.city
+            this.district = [data.province,data.city]
             this.introduce = data.introduce // 模特介绍
             let synopsisFileList = []
             let photoFileList = []
             let introduceFileList = []
-            
+
+            this.district_code = this.getValue(this.district,this.optionsCity)
+
             data.modelIntroList.forEach((element) => {
               let pushData = {
                 name: element.fileName,
@@ -395,7 +422,7 @@ export default {
               if (element.type == 0) {
                 synopsisFileList.push(pushData)
               } else if (element.type == 1) {
-                pushData.url = '/ocarplay/'+element.localPath
+                pushData.url = '/ocarplay/' + element.localPath
                 photoFileList.push(pushData)
               } else if (element.type == 2) {
                 introduceFileList.push(pushData)
@@ -671,9 +698,6 @@ export default {
         province = null
         city = district[0]
       }
-      let a = [1, 2]
-      let b = [1, 2]
-      let c = [1, 2]
       // modelIntroList.push.apply(synopsisAttachmentList,photoAttachmentList,introduceAttachmentList);
       modelIntroList = modelIntroList.concat(
         synopsisAttachmentList,

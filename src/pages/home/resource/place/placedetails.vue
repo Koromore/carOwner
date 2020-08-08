@@ -138,7 +138,6 @@ export default {
       title: '场地详情',
       putLoading: false,
       /////////////////////////////////////
-      
     }
   },
   // 侦听器
@@ -246,10 +245,10 @@ export default {
     ///////// 获取场地详情 end /////////
 
     ///////// 跳转编辑页面 end /////////
-    redact(){
+    redact() {
       this.$router.push({
         path: '/home/resource/addplace',
-        query: { id: this.placeId,type: 1 },
+        query: { id: this.placeId, type: 1 },
       })
     },
     ///////// 跳转编辑页面 end /////////
@@ -334,7 +333,6 @@ $icoColor: #6a91e8;
       }
       .redact {
         text-align: right;
-
         padding-right: 18px;
         i {
           cursor: pointer;

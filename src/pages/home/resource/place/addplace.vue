@@ -368,12 +368,6 @@ export default {
       // console.log(fileList)
       let photoList = []
       fileList.forEach((element) => {
-        // photoList.push({
-        //   doUserId: this.userId,
-        //   fileName: element.name,
-        //   localPath: element.url.replace('/ocarplay/', ''),
-        //   suffix: element.suffix,
-        // })
         if (element.response) {
           photoList.push({
             doUserId: this.userId,

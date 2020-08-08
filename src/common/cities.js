@@ -1195,7 +1195,7 @@ export default [
     children: [
       {
         value: '310101',
-        label: '黄浦区',
+        label: '上海市',
         children: [
           { value: '310101', label: '黄浦区' },
           { value: '310104', label: '徐汇区' },

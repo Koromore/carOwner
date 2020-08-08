@@ -192,6 +192,7 @@
                     action="/ocarplay/file/upload"
                     :on-success="vitaeSuccess"
                     :on-remove="vitaeRemove"
+                    :file-list="vitaeFileList"
                   >
                     <i class="el-icon-upload"></i>
                     <div class="el-upload__text">
@@ -212,6 +213,7 @@
                     action="/ocarplay/file/upload"
                     :on-success="worksSuccess"
                     :on-remove="worksRemove"
+                    :file-list="worksFileList"
                   >
                     <i class="el-icon-upload"></i>
                     <div class="el-upload__text">
@@ -253,29 +255,8 @@ export default {
       loading: false, // 上传loading
       checked: false,
       itemDisabled: false,
-      radio: '',
-      input1: '',
-      value1: '',
-      dialogImageUrl: '',
+      dialogImageUrl: '', // 上传头像预览
       dialogVisible: false,
-      dialogVisible: false,
-      options: [],
-      value: '',
-
-      periodList: [
-        {
-          value: 0,
-          label: '按月结算',
-        },
-        {
-          value: 1,
-          label: '按年结算',
-        },
-        {
-          value: 2,
-          label: '按季度结算',
-        },
-      ],
 
       // 摄影师基础信息
       personId: null, // 摄影师Id
@@ -295,16 +276,23 @@ export default {
       // 城市选择器数据
       optionsCity: cities,
       district_code: [], // 区域代码
-      district: [], // 区域名称
+      district: [null,null], // 区域名称
 
       // 签约合作信息
       pactFileList: [], // 回填列表
       pactName: null, // 合同文件名称
       pactPath: null, // 合同文件地址
       pactsuffix: null, // 合同文件后缀
-      allottedTime: null, // 合作期限
+      allottedTime: [], // 合作期限
       timeLimit: null, // 合作时长
       disabledAllottedTime: true, // 合作期限禁用
+
+      // 个人文档
+      photoIntroList: [],
+      vitaeList: [], // 履历文档
+      vitaeFileList: [], // 履历文档回填
+      worksList: [], // 作品文档
+      worksFileList: [], // 作品文档回填
 
       // 提交按钮开关
       submitFlag: true,
@@ -332,14 +320,11 @@ export default {
     ///////// 获取车主信息 start /////////
     if (this.$route.query.type == 1) {
       this.addType = 1
-      this.getVehicleOwnerDetail()
+      this.getPhotoPersonDetail()
     }
     ///////// 获取车型列表 start /////////
     this.getCarSeriesLists()
 
-    if (this.$route.query.vehicleOwnerId) {
-      this.itemDisabled = true
-    }
   },
   // 方法事件
   methods: {
@@ -371,169 +356,111 @@ export default {
     },
     ///////// 城市数据处理 end /////////
 
-    ///////// 获取车主信息 start /////////
-    getVehicleOwnerDetail() {
+    ///////// 获取摄影师信息 start /////////
+    getPhotoPersonDetail() {
       this.loading = true
-      let query = this.$route.query
-      let data = {
-        typeId: query.typeId,
-        vehicleOwnerId: query.vehicleOwnerId,
-      }
+      let id = this.$route.query.id
+      let data = `?id=${id}`
       // console.log(data)
-      this.$axios
-        .post('/ocarplay/api/vehicleOwner/preEdit', data)
-        .then((res) => {
-          // console.log(res)
-          // this.loading = false
-          if (res.status == 200) {
-            // console.log(res)
-            let data = res.data
-            this.vehicleOwnerId = data.vehicleOwnerId
-            this.ownerDetil = data
-            if (data.image) {
-              this.handerImg = data.image
-              data.image = '/ocarplay/' + data.image
-              this.fileList = [{ name: '', url: data.image }]
+      this.$axios.post('/ocarplay/api/photoPerson/show' + data).then((res) => {
+        // console.log(res)
+        // this.loading = false
+        if (res.status == 200) {
+          let data = res.data
+          if (data.errcode != -1) {
+            this.personId = data.personId // 摄影师Id
+            this.handerImg = data.image // 头像
+            this.name = data.name // 摄影师名字
+            this.age = data.age // 年龄
+            this.sex = data.sex // 摄影师性别
+            this.phone = data.phone // 手机号
+            this.money = data.money // 费用
+            this.goodAt = data.goodAt // 擅长
+            this.custom = data.custom // 客户
+            this.carTypeId = data.carTypeId*1 // 合作车型
+            this.tag = data.tag // 标签
+            this.isCar = data.isCar*1 // 会开车
+            this.introduce = data.introduce // 摄影师履历
+            let district = [data.province, data.city] // 城市选择器
+            this.district = district
+
+            this.district_code = this.getValue(district,this.optionsCity)
+            this.fileList = [{
+              name: '头像',
+              url: '/ocarplay/' + data.image
+            }]
+            let photoCooperate = null
+            if (data.photoCooperateList.length != 0) {
+              photoCooperate = data.photoCooperateList[0]
+              this.pactFileList = [{
+                name: photoCooperate.fileName,
+                url: photoCooperate.localPath
+              }]
             }
 
-            this.tabact = data.typeId
-            if (data.typeId == 1) {
-              let eventData = []
-              data.ownerCoops.forEach((element) => {
-                eventData.push(element.itemId)
-              })
-              eventData = Array.from(new Set(eventData))
-              // console.log(eventData)
-              this.eventData = eventData
-              // console.log(this.eventData)
+            this.pactName = photoCooperate.fileName
+            this.pactPath = photoCooperate.localPath
+            this.pactsuffix = photoCooperate.suffix
+            this.allottedTime = [
+              photoCooperate.startTime,
+              photoCooperate.endTime,
+            ]
 
-              let eventList = []
-              data.ownerCoops.forEach((element) => {
-                eventList.push({
-                  coopId: element.coopId, // 合作概况ID
-                  coopNum: element.coopNum, // 固定合作总量
-                  coopMoney: element.coopMoney, // 固定合作总价
-                  itemId: element.itemId, // 车主选择的合作事项ID
-                  itemName: element.itemName, // 车主选择的合作事项Name
-                  period: element.period, // 结算周期
-                  timeLimit: element.timeLimit, // 合作时长
-                  typeId: element.typeId,
+            let  photoIntroList = data.photoIntroList // 摄影师文档
+            let vitaeList = [] // 履历文档
+            let vitaeFileList = []
+            let worksList = [] // 作品文档
+            let worksFileList = []
+
+            photoIntroList.forEach(element => {
+              if (element.type==0) {
+                vitaeList.push({
+                  doUserId: this.userId,
+                  fileName: element.fileName,
+                  localPath: element.localPath,
+                  suffix: element.suffix,
+                  type: 0
                 })
-              })
-              this.eventList = eventList
-              // console.log(eventList)
-            } else if (data.typeId == 2 || data.typeId == 3) {
-              let eventData = []
-              data.ipGrows.forEach((element) => {
-                eventData.push(element.itemId)
-              })
-              eventData = Array.from(new Set(eventData))
-              // console.log(eventData)
-              this.eventData = eventData
-              // console.log(this.eventData)
-
-              let itemId = data.ipGrows[0].itemId
-              let ipGrows = []
-              data.ipGrows.forEach((element) => {
-                if (element.itemId == itemId) {
-                  ipGrows.push({
-                    coopId: element.coopId,
-                    plat: element.plat,
-                    platRole: element.platRole,
-                    nickname: element.nickname,
-                    url: element.url,
-                  })
-                }
-              })
-              // console.log(ipGrows)
-              this.hatchList = ipGrows
-            }
-            if (data.sex) {
-              this.sex = '1'
-            } else {
-              this.sex = '0'
-            }
-            // console.log(this.sex)
-            this.work = data.work
-            if (data.birthday) {
-              this.birthDate = new Date(data.birthday.replace(/-/g, '/'))
-            }
-
-            this.district = [data.province, data.city]
-            let district = [data.province, data.city]
-            let optionsCity = this.optionsCity
-            // console.log(district)
-            this.district_code = this.getValue(district, optionsCity)
-            this.speciality = data.skillId
-            this.ownersName = data.name
-            this.livelihood = data.carUse.split(',')
-            // console.log(this.livelihood)
-            this.source = data.sourceId
-            this.carSeriesId = data.ownerCarSeries
-            this.mail = data.email
-
-            this.tel = data.phone
-            this.wx = data.wx
-            this.qq = data.qq
-            this.carId = data.bbsId
-            this.carHome = data.homeUrl
-            this.microblog = data.weiboId
-            this.tikTokId = data.dyId
-            this.socialId = data.otherId
-            this.carNum = data.plateNum
-            this.vin = data.vinno
-            this.branch = data.buycarplace
-            this.address = data.homeAddress
-            // this.deliAddress = data.homeAddress
-            let relationList = []
-            data.relations.forEach((element) => {
-              relationList.push({
-                relationId: element.relationId,
-                name: element.name,
-                relation: element.relation,
-                birthday: element.birthday,
-                work: element.work,
-              })
-            })
-            this.relationList = relationList
-            if (data.cooperates.length != 0) {
-              if (data.cooperates[0].localPath) {
-                this.pactFileList = [
-                  {
-                    name: data.cooperates[0].fileName,
-                    url: data.cooperates[0].localPath,
-                  },
-                ]
+                vitaeFileList.push({
+                  doUserId: this.userId,
+                  name: element.fileName,
+                  url: element.localPath,
+                  suffix: element.suffix,
+                  type: 0
+                })
+              }else if (element.type==1) {
+                worksList.push({
+                  doUserId: this.userId,
+                  fileName: element.fileName,
+                  localPath: element.localPath,
+                  suffix: element.suffix,
+                  type: 1
+                })
+                worksFileList.push({
+                  doUserId: this.userId,
+                  name: element.fileName,
+                  url: element.localPath,
+                  suffix: element.suffix,
+                  type: 1
+                })
               }
-              this.cooperatesId = data.cooperates[0].id
-              this.pactName = data.cooperates[0].fileName
-              this.pactPath = data.cooperates[0].localPath
-              this.pactsuffix = data.cooperates[0].suffix
-              this.timeLimit = [
-                data.cooperates[0].startTime.replace(/-/g, '/'),
-                data.cooperates[0].endTime.replace(/-/g, '/'),
-              ]
-              this.duration = data.cooperates[0].timeLimit
-            }
-            if (data.deliveryAddresses.length) {
-              this.district0 = [
-                data.deliveryAddresses[0].province,
-                data.deliveryAddresses[0].city,
-                data.deliveryAddresses[0].area,
-              ]
-              this.deliAddress = data.deliveryAddresses[0].address
-            }
+            });
+            this.vitaeList = vitaeList
+            this.vitaeFileList = vitaeFileList
+            this.worksList = worksList
+            this.worksFileList = worksFileList
+            // let vitaeList = [] // 履历文档
+            // let vitaeFileList = []
+            // let worksList = [] // 作品文档
+            // let worksFileList = []
 
-            this.district_code0 = this.getValue(
-              this.district0,
-              this.optionsCity0
-            )
-            this.bankCard = data.bankCard
-            // console.log(this.district_code)
+            this.timeLimit = photoCooperate.timeLimit
           }
-          this.loading = false
-        })
+        }
+        this.loading = false
+      })
     },
+    ///////// 获取摄影师信息 end /////////
 
     ///////// 获取车型列表 start /////////
     getCarSeriesLists() {
@@ -652,35 +579,108 @@ export default {
     vitaeSuccess(res, file, fileList) {
       // this.fileList = fileList.slice(-3)
       // console.log(res)
-      let data = res.data
-      this.pactName = data.fileName
-      this.pactPath = data.localPath
-      this.pactsuffix = data.suffix
-      this.disabledAllottedTime = false
+      if (res.errcode == 0) {
+        let vitaeList = []
+        fileList.forEach((element) => {
+          if (element.response) {
+            vitaeList.push({
+              doUserId: this.userId,
+              fileName: element.response.data.fileName,
+              localPath: element.response.data.localPath,
+              suffix: element.response.data.suffix,
+              type: 0,
+            })
+          } else {
+            vitaeList.push({
+              doUserId: this.userId,
+              fileName: element.name,
+              localPath: element.url.replace('/ocarplay/', ''),
+              suffix: element.suffix,
+              type: 0,
+            })
+          }
+        })
+        this.vitaeList = vitaeList
+        // console.log(this.photoList)
+      }
     },
     vitaeRemove(file, fileList) {
-      this.pactName = ''
-      this.pactPath = ''
-      this.pactsuffix = ''
-      this.disabledAllottedTime = true
+      let vitaeList = []
+      fileList.forEach((element) => {
+        if (element.response) {
+          vitaeList.push({
+            doUserId: this.userId,
+            fileName: element.response.data.fileName,
+            localPath: element.response.data.localPath,
+            suffix: element.response.data.suffix,
+            type: 0,
+          })
+        } else {
+          vitaeList.push({
+            doUserId: this.userId,
+            fileName: element.name,
+            localPath: element.url.replace('/ocarplay/', ''),
+            suffix: element.suffix,
+            type: 0,
+          })
+        }
+      })
+      this.vitaeList = vitaeList
     },
     ///////// 个人履历上传 end /////////
 
     ///////// 个人作品上传 start /////////
     worksSuccess(res, file, fileList) {
+      let worksList = []
       // this.fileList = fileList.slice(-3)
       // console.log(res)
-      let data = res.data
-      this.pactName = data.fileName
-      this.pactPath = data.localPath
-      this.pactsuffix = data.suffix
-      this.disabledAllottedTime = false
+      if (res.errcode == 0) {
+        let worksList = []
+        fileList.forEach((element) => {
+          if (element.response) {
+            worksList.push({
+              doUserId: this.userId,
+              fileName: element.response.data.fileName,
+              localPath: element.response.data.localPath,
+              suffix: element.response.data.suffix,
+              type: 1,
+            })
+          } else {
+            worksList.push({
+              doUserId: this.userId,
+              fileName: element.name,
+              localPath: element.url.replace('/ocarplay/', ''),
+              suffix: element.suffix,
+              type: 1,
+            })
+          }
+        })
+        this.worksList = worksList
+        // console.log(this.photoList)
+      }
     },
     worksRemove(file, fileList) {
-      this.pactName = ''
-      this.pactPath = ''
-      this.pactsuffix = ''
-      this.disabledAllottedTime = true
+      let worksList = []
+      fileList.forEach((element) => {
+        if (element.response) {
+          worksList.push({
+            doUserId: this.userId,
+            fileName: element.response.data.fileName,
+            localPath: element.response.data.localPath,
+            suffix: element.response.data.suffix,
+            type: 1,
+          })
+        } else {
+          worksList.push({
+            doUserId: this.userId,
+            fileName: element.name,
+            localPath: element.url.replace('/ocarplay/', ''),
+            suffix: element.suffix,
+            type: 1,
+          })
+        }
+      })
+      this.worksList = worksList
     },
     ///////// 个人作品上传 end /////////
 
@@ -711,8 +711,14 @@ export default {
       let tag = this.tag // 标签
       let isCar = this.isCar // 会开车
       let introduce = this.introduce // 摄影师履历
-      let photoCooperateList = []
-
+      let photoCooperateList = [] // 合作文档
+      let photoIntroList = [] // 摄影师文档
+      let vitaeList = this.vitaeList // 履历文档
+      let worksList = this.worksList // 作品文档
+      photoIntroList = photoIntroList.concat(
+        vitaeList,
+        worksList
+      )
       let data = {
         // 摄影师基础信息
         personId, // 摄影师Id
@@ -730,6 +736,7 @@ export default {
         tag, // 标签
         isCar, // 会开车
         introduce, // 摄影师履历
+        photoIntroList, // 摄影师文档
       }
       if (this.pactPath) {
         data.photoCooperateList = [
@@ -744,7 +751,7 @@ export default {
           },
         ]
       }
-      console.log(data)
+      // console.log(data)
       this.$axios
         .post('/ocarplay/api/photoPerson/save', data)
         .then((res) => {
