@@ -308,9 +308,7 @@ export default {
   methods: {
     ///////// 返回上一页 start /////////
     previous() {
-      this.$router.push({
-        path: '/home/owners'
-      })
+      this.$router.go(-1) //返回上一层
     },
     ///////// 返回上一页 end /////////
 

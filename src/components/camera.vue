@@ -1,5 +1,5 @@
 <template>
-  <div id="camera">
+  <div id="addCamera">
     <el-drawer
       title="新增拍摄记录"
       :visible.sync="drawerData"
@@ -76,7 +76,7 @@
 // import { matchType } from '@/utils/matchType' // 引入文件格式判断方法
 
 export default {
-  name: 'camera',
+  name: 'addCamera',
   // 接受参数
   props: {
     cameraShow: Number,
@@ -257,7 +257,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-#camera {
+#addCamera {
   .el-input,
   .el-select {
     width: 100%;

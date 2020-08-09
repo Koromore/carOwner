@@ -9,12 +9,12 @@
       v-loading="loading"
     >
       <el-timeline>
-        <el-timeline-item :timestamp="item.cameraTime" placement="top" v-for="(item,index) in cameraList" :key="index">
+        <el-timeline-item :timestamp="item.updateTime" placement="top" v-for="(item,index) in personGradeList" :key="index">
           <el-card>
-            <p>拍摄任务：{{item.title}}</p>
-            <p>摄影师：{{item.personName}}</p>
-            <p>模特：{{item.modelName}}</p>
-            <p>场地：{{item.placeName}}</p>
+            <el-col :span="12">评分：{{item.personScore}}分</el-col>
+            <el-col :span="12">评价人：{{item.deptName}}-{{item.realName}}</el-col>
+            <el-col :span="24">{{item.remark}}</el-col>
+            <el-col :span="24">查看详细评分</el-col>
           </el-card>
         </el-timeline-item>
       </el-timeline>
@@ -28,23 +28,23 @@ export default {
   name: 'cameraList',
   // 接受参数
   props: {
-    cameraListShow: Number,
+    commentListShow: Number,
   },
   components: {},
   data() {
     return {
       drawerData: false,
-      drawerTitle: '场地拍摄记录',
+      drawerTitle: '评论详情',
       loading: false,
       placeId: null, // 场地Id
       title: null, // 任务名称
       cameraTime: null, // 拍摄时间
-      cameraList: [],
+      personGradeList: [],
     }
   },
   // 侦听器
   watch: {
-    cameraListShow: function (newData, oldData) {
+    commentListShow: function (newData, oldData) {
       if (newData != 0) {
         this.drawerData = true
       }
@@ -64,28 +64,29 @@ export default {
       let data = {
         pageNum: 1,
         pageSize: 1000,
-        camera: {},
+        personGrade: {
+          personId: this.$parent.personId
+        },
       }
-      let type = this.$parent.type
-      // console.log(this.$parent)
-      if (type == 0) {
-        data.camera.personId = this.$parent.personId
-      } else if (type == 1) {
-        data.camera.modelId = this.$parent.modelId
-      } else if (type == 2) {
-        data.camera.placeId = this.$parent.placeId
-      }
-      this.getCameraList(data)
+      // let type = this.$parent.type
+      // // console.log(this.$parent)
+      // if (type == 0) {
+      //   data.camera.personId = this.$parent.personId
+      // } else if (type == 1) {
+      //   data.camera.modelId = this.$parent.modelId
+      // } else if (type == 2) {
+      //   data.camera.placeId = this.$parent.placeId
+      // }
+      this.getPersonGradeList(data)
     },
-    // /api/camera/listAjax
-    getCameraList(data) {
+    getPersonGradeList(data) {
       console.log(data)
-      this.$axios.post('/ocarplay/api/camera/listAjax', data).then((res) => {
+      this.$axios.post('/ocarplay/api/personGrade/listAjax', data).then((res) => {
         console.log(res)
         if (res.status == 200) {
           let data = res.data
           
-          this.cameraList = data.items
+          this.personGradeList = data.items
           this.loading = false
         }
       })
@@ -101,8 +102,12 @@ export default {
   // .drawerData {
     // height: 100%;
     .el-card{
-      p{
+      .el-col{
         margin-bottom: 13px;
+        &:nth-last-of-type(3),
+        &:nth-last-of-type(1){
+          text-align: right;
+        }
       }
     }
   // }
