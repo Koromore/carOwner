@@ -15,7 +15,7 @@
           <!-- <div @click="navTo(2)" :class="[navNum==1?'act':'']">结算管理</div> -->
           <div @click="navTo(3)" :class="[navNum==2?'act':'']">车主管理</div>
           <div @click="navTo(8)" :class="[navNum==7?'act':'']">资源管理</div>
-          <div @click="navTo(4)" :class="[navNum==3?'act':'']">场地管理</div>
+          <!-- <div @click="navTo(4)" :class="[navNum==3?'act':'']">场地管理</div> -->
           <div @click="navTo(5)" :class="[navNum==4?'act':'']" v-if="postId==231||adminShow">数据分析</div>
           <!-- <div @click="navTo(5)" :class="[navNum==4?'act':'']">数据分析</div> -->
           <div @click="navTo(6)" :class="[navNum==5?'act':'']" v-if="postId==231||adminShow">元数据管理</div>

@@ -11,7 +11,7 @@
       </el-col>
       <el-col :span="15" class="right">
         <!-- 是否会开车 -->
-        <el-select v-model="value1" clearable placeholder="是否会开车" size="small">
+        <el-select v-model="isCar" clearable placeholder="是否会开车" size="small" @change="isCarChange">
           <el-option
             v-for="item in options"
             :key="item.value"
@@ -20,7 +20,7 @@
           ></el-option>
         </el-select>
         <!-- 城市 -->
-        <el-select v-model="value2" filterable clearable placeholder="城市" size="small">
+        <el-select v-model="city" filterable clearable placeholder="城市" size="small" @change="cityChange">
           <el-option
             v-for="item in cityList"
             :key="item.value"
@@ -137,9 +137,8 @@
                       <path
                         d="M908.1 353.1l-253.9-36.9L540.7 86.1c-3.1-6.3-8.2-11.4-14.5-14.5-15.8-7.8-35-1.3-42.9 14.5L369.8 316.2l-253.9 36.9c-7 1-13.4 4.3-18.3 9.3a32.05 32.05 0 0 0 .6 45.3l183.7 179.1-43.4 252.9a31.95 31.95 0 0 0 46.4 33.7L512 754l227.1 119.4c6.2 3.3 13.4 4.4 20.3 3.2 17.4-3 29.1-19.5 26.1-36.9l-43.4-252.9 183.7-179.1c5-4.9 8.3-11.3 9.3-18.3 2.7-17.5-9.5-33.7-27-36.3z"
                       />
-                    </svg>&nbsp;总体评分
-                    <span v-if="item.avgScore">{{item.avgScore}}</span>
-                    <span v-else>暂无</span>
+                    </svg>
+                    &nbsp;总体评分<span v-if="item.avgScore">{{item.avgScore}}</span><span v-else>暂无</span>
                   </p>
                 </div>
               </div>
@@ -148,10 +147,10 @@
                   <i class="el-icon-chat-dot-round" @click="addComment(item.personId)"></i>
                 </el-col>
                 <el-col :span="4">
-                  <i class="el-icon-map-location"></i>
+                  <i class="el-icon-map-location"  @click="toCameramanPlace(item.city)"></i>
                 </el-col>
                 <el-col :span="4">
-                  <i class="el-icon-date" @click="toOwnersschedule(item.personId)"></i>
+                  <i class="el-icon-date" @click="toCameramanSchedule(item.personId)"></i>
                 </el-col>
                 <el-col :span="4">
                   <i class="el-icon-camera" @click="addCameraa"></i>
@@ -216,8 +215,9 @@ export default {
       postId: this.$store.state.user.postId, // 职位ID
       subordinate: this.$store.state.user.subordinate, // 一级部门ID
       adminShow: this.$store.state.adminShow, // 超级管理员
-      personId: null,
+      personId: null, // 摄影师ID
       type: 0,
+      pgId: null, // 评论Id
       // tab选项卡
       tabact: 1,
       options: [
@@ -230,10 +230,10 @@ export default {
           label: '否',
         },
       ],
-      value1: '',
+      isCar: '',
       // 城市列表
       cityList: cityList, // 城市筛列表
-      value2: '',
+      city: '',
       // 内容列表
       listLoading: false,
       cameraList: [],
@@ -265,7 +265,7 @@ export default {
       this.tabact = prm
       let url = ''
       if (prm == 1) {
-        url = '/home/resource/camera'
+        url = '/home/resource/cameraman'
       } else if (prm == 2) {
         url = '/home/resource/model'
       } else if (prm == 3) {
@@ -275,16 +275,30 @@ export default {
     },
     addCamera() {
       this.$router.push({
-        path: '/home/resource/addCamera',
+        path: '/home/resource/addCameraman',
         query: { type: 0 },
       })
     },
+
+    ///////// 筛选摄影师列表 start /////////
+    isCarChange(){
+      this.getlistPhotoPerson()
+    },
+    cityChange(){
+      this.getlistPhotoPerson()
+    },
+    ///////// 筛选摄影师列表 end /////////
+
     ///////// 获取摄影师列表 start /////////
     getlistPhotoPerson() {
       this.listLoading = true
       let data = {
         pageNum: this.pageNum,
         pageSize: this.pageSize,
+        photoPerson: {
+          isCar: this.isCar,
+          city: this.city,
+        }
       }
       this.$axios
         .post('/ocarplay/api/photoPerson/listAjax', data)
@@ -303,7 +317,7 @@ export default {
     ///////// 摄影师详情页 start /////////
     toCameraDetails(id) {
       this.$router.push({
-        path: '/home/resource/cameraDetails',
+        path: '/home/resource/cameramanDetails',
         query: { id: id },
       })
     },
@@ -326,14 +340,28 @@ export default {
     ///////// 新增评论 start /////////
     addComment(id) {
       this.personId = id
+      this.type = 0
       this.commentShow += 1
     },
     ///////// 新增评论 end /////////
+    
+    ///////// 跳日程管理页面 start /////////
+    toCameramanPlace(city) {
+      // console.log(123)
+      this.$router.push({
+        path: '/home/resource/cameramanPlace',
+        query: {
+          city: city,
+        },
+      })
+    },
+    ///////// 跳日程管理页面 end /////////
 
     ///////// 跳日程管理页面 start /////////
-    toOwnersschedule(id) {
+    toCameramanSchedule(id) {
+      console.log(123)
       this.$router.push({
-        path: '/home/ownersschedule',
+        path: '/home/resource/cameramanSchedule',
         query: {
           id: id,
         },

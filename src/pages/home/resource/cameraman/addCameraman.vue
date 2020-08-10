@@ -276,7 +276,7 @@ export default {
       // 城市选择器数据
       optionsCity: cities,
       district_code: [], // 区域代码
-      district: [null,null], // 区域名称
+      district: [null, null], // 区域名称
 
       // 签约合作信息
       pactFileList: [], // 回填列表
@@ -324,7 +324,6 @@ export default {
     }
     ///////// 获取车型列表 start /////////
     this.getCarSeriesLists()
-
   },
   // 方法事件
   methods: {
@@ -377,25 +376,29 @@ export default {
             this.money = data.money // 费用
             this.goodAt = data.goodAt // 擅长
             this.custom = data.custom // 客户
-            this.carTypeId = data.carTypeId*1 // 合作车型
+            this.carTypeId = data.carTypeId * 1 // 合作车型
             this.tag = data.tag // 标签
-            this.isCar = data.isCar*1 // 会开车
+            this.isCar = data.isCar * 1 // 会开车
             this.introduce = data.introduce // 摄影师履历
             let district = [data.province, data.city] // 城市选择器
             this.district = district
 
-            this.district_code = this.getValue(district,this.optionsCity)
-            this.fileList = [{
-              name: '头像',
-              url: '/ocarplay/' + data.image
-            }]
+            this.district_code = this.getValue(district, this.optionsCity)
+            this.fileList = [
+              {
+                name: '头像',
+                url: '/ocarplay/' + data.image,
+              },
+            ]
             let photoCooperate = null
             if (data.photoCooperateList.length != 0) {
               photoCooperate = data.photoCooperateList[0]
-              this.pactFileList = [{
-                name: photoCooperate.fileName,
-                url: photoCooperate.localPath
-              }]
+              this.pactFileList = [
+                {
+                  name: photoCooperate.fileName,
+                  url: photoCooperate.localPath,
+                },
+              ]
             }
 
             this.pactName = photoCooperate.fileName
@@ -406,45 +409,49 @@ export default {
               photoCooperate.endTime,
             ]
 
-            let  photoIntroList = data.photoIntroList // 摄影师文档
+            let photoIntroList = data.photoIntroList // 摄影师文档
             let vitaeList = [] // 履历文档
             let vitaeFileList = []
             let worksList = [] // 作品文档
             let worksFileList = []
 
-            photoIntroList.forEach(element => {
-              if (element.type==0) {
+            photoIntroList.forEach((element) => {
+              if (element.type == 0) {
                 vitaeList.push({
+                  personId: this.personId,
                   doUserId: this.userId,
                   fileName: element.fileName,
                   localPath: element.localPath,
                   suffix: element.suffix,
-                  type: 0
+                  type: 0,
                 })
                 vitaeFileList.push({
+                  personId: this.personId,
                   doUserId: this.userId,
                   name: element.fileName,
                   url: element.localPath,
                   suffix: element.suffix,
-                  type: 0
+                  type: 0,
                 })
-              }else if (element.type==1) {
+              } else if (element.type == 1) {
                 worksList.push({
+                  personId: this.personId,
                   doUserId: this.userId,
                   fileName: element.fileName,
                   localPath: element.localPath,
                   suffix: element.suffix,
-                  type: 1
+                  type: 1,
                 })
                 worksFileList.push({
+                  personId: this.personId,
                   doUserId: this.userId,
                   name: element.fileName,
                   url: element.localPath,
                   suffix: element.suffix,
-                  type: 1
+                  type: 1,
                 })
               }
-            });
+            })
             this.vitaeList = vitaeList
             this.vitaeFileList = vitaeFileList
             this.worksList = worksList
@@ -584,6 +591,7 @@ export default {
         fileList.forEach((element) => {
           if (element.response) {
             vitaeList.push({
+              personId: this.personId,
               doUserId: this.userId,
               fileName: element.response.data.fileName,
               localPath: element.response.data.localPath,
@@ -592,6 +600,7 @@ export default {
             })
           } else {
             vitaeList.push({
+              personId: this.personId,
               doUserId: this.userId,
               fileName: element.name,
               localPath: element.url.replace('/ocarplay/', ''),
@@ -609,6 +618,7 @@ export default {
       fileList.forEach((element) => {
         if (element.response) {
           vitaeList.push({
+            personId: this.personId,
             doUserId: this.userId,
             fileName: element.response.data.fileName,
             localPath: element.response.data.localPath,
@@ -617,6 +627,7 @@ export default {
           })
         } else {
           vitaeList.push({
+            personId: this.personId,
             doUserId: this.userId,
             fileName: element.name,
             localPath: element.url.replace('/ocarplay/', ''),
@@ -639,6 +650,7 @@ export default {
         fileList.forEach((element) => {
           if (element.response) {
             worksList.push({
+              personId: this.personId,
               doUserId: this.userId,
               fileName: element.response.data.fileName,
               localPath: element.response.data.localPath,
@@ -647,6 +659,7 @@ export default {
             })
           } else {
             worksList.push({
+              personId: this.personId,
               doUserId: this.userId,
               fileName: element.name,
               localPath: element.url.replace('/ocarplay/', ''),
@@ -664,6 +677,7 @@ export default {
       fileList.forEach((element) => {
         if (element.response) {
           worksList.push({
+            personId: this.personId,
             doUserId: this.userId,
             fileName: element.response.data.fileName,
             localPath: element.response.data.localPath,
@@ -672,6 +686,7 @@ export default {
           })
         } else {
           worksList.push({
+            personId: this.personId,
             doUserId: this.userId,
             fileName: element.name,
             localPath: element.url.replace('/ocarplay/', ''),
@@ -699,10 +714,10 @@ export default {
       let personId = this.personId // 摄影师Id
       let image = this.handerImg // 头像
       let name = this.name // 摄影师名字
-      let age = this.age*1 // 年龄
+      let age = this.age * 1 // 年龄
       let sex = this.sex // 摄影师性别
       let phone = this.phone // 手机号
-      let money = this.money*1 // 费用
+      let money = this.money * 1 // 费用
       let goodAt = this.goodAt // 擅长
       let custom = this.custom // 客户
       let carTypeId = this.carTypeId // 合作车型
@@ -715,10 +730,7 @@ export default {
       let photoIntroList = [] // 摄影师文档
       let vitaeList = this.vitaeList // 履历文档
       let worksList = this.worksList // 作品文档
-      photoIntroList = photoIntroList.concat(
-        vitaeList,
-        worksList
-      )
+      photoIntroList = photoIntroList.concat(vitaeList, worksList)
       let data = {
         // 摄影师基础信息
         personId, // 摄影师Id
@@ -758,7 +770,7 @@ export default {
           // console.log(res)
           if (res.status == 200 && res.data.errcode == 0) {
             setTimeout(() => {
-              this.$router.push({ name: 'camera' })
+              this.$router.push({ name: 'cameraman' })
               this.loading = false
             }, 1000)
             this.$message.success(res.data.msg)

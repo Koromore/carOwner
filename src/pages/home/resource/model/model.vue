@@ -20,14 +20,14 @@
           ></el-option>
         </el-select>-->
         <!-- 城市 -->
-        <!-- <el-select v-model="value2" filterable clearable placeholder="城市" size="small">
+        <el-select v-model="city" filterable clearable placeholder="城市" size="small" @change="cityChange">
           <el-option
             v-for="item in cityList"
             :key="item.value"
             :label="item.label"
             :value="item.value"
           ></el-option>
-        </el-select>-->
+        </el-select>
         <div class="add_task">
           <el-button
             type="primary"
@@ -99,8 +99,8 @@
                       xmlns="http://www.w3.org/2000/svg"
                       class="svg-icon"
                       viewBox="0 0 24 24"
-                      width="17"
-                      height="17"
+                      width="18"
+                      height="18"
                       style="fill: rgb(106, 145, 232);"
                     >
                       <path
@@ -109,19 +109,20 @@
                     </svg>
                     &nbsp;{{item.tag}}
                   </p>
-                  <p @click="toCameraList(modelId,2)">
+                  <p @click="toCameraList(item.modelId)">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       class="svg-icon"
                       viewBox="64 64 896 896"
-                      width="15"
-                      height="15"
+                      width="18"
+                      height="18"
                       style="fill: rgb(106, 145, 232);"
                     >
                       <path
                         d="M864 260H728l-32.4-90.8a32.07 32.07 0 0 0-30.2-21.2H358.6c-13.5 0-25.6 8.5-30.1 21.2L296 260H160c-44.2 0-80 35.8-80 80v456c0 44.2 35.8 80 80 80h704c44.2 0 80-35.8 80-80V340c0-44.2-35.8-80-80-80zM512 716c-88.4 0-160-71.6-160-160s71.6-160 160-160 160 71.6 160 160-71.6 160-160 160zm-96-160a96 96 0 1 0 192 0 96 96 0 1 0-192 0z"
                       />
-                    </svg>&nbsp;合作拍摄5次
+                    </svg>
+                    &nbsp;合作拍摄{{item.cameraNum}}次
                   </p>
                 </div>
               </div>
@@ -197,7 +198,7 @@ export default {
       value1: '',
       // 城市列表
       cityList: cityList, // 城市筛列表
-      value2: '',
+      city: '',
       // 内容列表
       listLoading: false,
       modelList: [],
@@ -226,7 +227,7 @@ export default {
       this.tabact = prm
       let url = ''
       if (prm == 1) {
-        url = '/home/resource/camera'
+        url = '/home/resource/cameraman'
       } else if (prm == 2) {
         url = '/home/resource/model'
       } else if (prm == 3) {
@@ -244,15 +245,21 @@ export default {
     },
     ///////// 跳转新增模特界面 end /////////
 
+    ///////// 筛选模特列表 start /////////
+    cityChange(){
+      this.getlistModel()
+    },
+    ///////// 筛选模特列表 end /////////
+
     ///////// 获取模特列表 start /////////
     getlistModel() {
       this.listLoading = true
       let data = {
         pageNum: this.pageNum,
         pageSize: this.pageSize,
-        // place: {
-        //   city: '武汉',
-        // },
+        model: {
+          city: this.city,
+        },
         // typeId: '',
       }
       this.$axios.post('/ocarplay/api/model/listAjax', data).then((res) => {

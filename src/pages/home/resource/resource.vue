@@ -132,6 +132,7 @@ $icoColor: #6a91e8;
             justify-content: flex-start;
             align-items: center;
             > div {
+              width: 100%;
               height: 100%;
               display: flex;
               flex-direction: column;
@@ -141,6 +142,17 @@ $icoColor: #6a91e8;
             p {
               width: 100%;
               font-size: 14px;
+              overflow: hidden; // 超出隐藏
+              white-space: nowrap; // 不换行
+              text-overflow: ellipsis; // 显示省略号
+              &:nth-of-type(4),
+              &:nth-of-type(5) {
+                cursor: pointer;
+              }
+              &:nth-of-type(4):hover,
+              &:nth-of-type(5):hover {
+                color: $icoColor;
+              }
               i {
                 color: $icoColor;
               }

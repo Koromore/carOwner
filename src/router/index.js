@@ -339,32 +339,48 @@ const router = new Router({
         {
           path: '/home/resource',
           name: 'resource',
-          redirect: '/home/resource/camera',
+          redirect: '/home/resource/cameraman',
           component: resolve => require(['@/pages/home/resource/resource'], resolve),
           meta: {
             requireAuth: true,
           },
           children:[
             {
-              path: '/home/resource/camera',
-              name: 'camera',
-              component: resolve => require(['@/pages/home/resource/camera/camera'], resolve),
+              path: '/home/resource/cameraman',
+              name: 'cameraman',
+              component: resolve => require(['@/pages/home/resource/cameraman/cameraman'], resolve),
               meta: {
                 requireAuth: true,
               }
             },
             {
-              path: '/home/resource/addCamera',
-              name: 'addCamera',
-              component: resolve => require(['@/pages/home/resource/camera/addCamera'], resolve),
+              path: '/home/resource/addCameraman',
+              name: 'addCameraman',
+              component: resolve => require(['@/pages/home/resource/cameraman/addCameraman'], resolve),
               meta: {
                 requireAuth: true,
               }
             },
             {
-              path: '/home/resource/cameraDetails',
-              name: 'cameraDetails',
-              component: resolve => require(['@/pages/home/resource/camera/cameraDetails'], resolve),
+              path: '/home/resource/cameramanDetails',
+              name: 'cameramanDetails',
+              component: resolve => require(['@/pages/home/resource/cameraman/cameramanDetails'], resolve),
+              meta: {
+                requireAuth: true,
+              }
+            },
+            {
+              path: '/home/resource/cameramanSchedule',
+              name: 'cameramanSchedule',
+              component: resolve => require(['@/pages/home/resource/cameraman/cameramanSchedule'], resolve),
+              meta: {
+                requireAuth: true,
+              }
+            },
+            {
+              path: '/home/resource/cameramanPlace',
+              name: 'cameramanPlace',
+              component: resolve => require(['@/pages/home/resource/cameraman/cameramanPlace'], resolve),
               meta: {
                 requireAuth: true,
               }

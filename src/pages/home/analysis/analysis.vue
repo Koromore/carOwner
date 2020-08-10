@@ -52,95 +52,95 @@ export default {
       tab2Items: [
         {
           id: 0,
-          name: '状态分布'
+          name: '状态分布',
         },
         {
           id: 1,
-          name: '时间分布'
+          name: '时间分布',
         },
         {
           id: 2,
-          name: '对象分布'
+          name: '对象分布',
         },
         {
           id: 3,
-          name: '项目组分布'
-        }
+          name: '项目组分布',
+        },
       ],
       // 图表数据
       chartTitle: '任务完成数量',
       chartNum: 0,
       chartKeyData: ['执行中', '结算中', '延期', '已完成'],
-      chartvalData: [520, 360, 130, 240]
+      chartvalData: [520, 360, 130, 240],
     }
   },
   // 侦听器
   watch: {
-    tab1act: function(newData, oldData) {
+    tab1act: function (newData, oldData) {
       // console.log(newData)
       if (newData == 0) {
         this.chartTitle = '任务完成数量'
         this.tab2Items = [
           {
             id: 0,
-            name: '状态分布'
+            name: '状态分布',
           },
           {
             id: 1,
-            name: '时间分布'
+            name: '时间分布',
           },
           {
             id: 2,
-            name: '对象分布'
+            name: '对象分布',
           },
           {
             id: 3,
-            name: '项目组分布'
-          }
+            name: '项目组分布',
+          },
         ]
       } else if (newData == 1) {
         this.chartTitle = '车主发展数'
         this.tab2Items = [
           {
             id: 0,
-            name: '类型分布'
+            name: '类型分布',
           },
           {
             id: 1,
-            name: '时间分布'
+            name: '时间分布',
           },
           {
             id: 2,
-            name: '地域分布'
+            name: '地域分布',
           },
           {
             id: 3,
-            name: '项目组分布'
-          }
+            name: '项目组分布',
+          },
         ]
       } else if (newData == 2) {
         this.chartTitle = '累计支出费'
         this.tab2Items = [
           {
             id: 0,
-            name: '时间分布'
+            name: '时间分布',
           },
           {
             id: 1,
-            name: '项目组分布'
-          }
+            name: '项目组分布',
+          },
         ]
       } else if (newData == 3) {
         this.chartTitle = '累计合作次'
         this.tab2Items = [
           {
             id: 0,
-            name: '邀约对象'
+            name: '邀约对象',
           },
           {
             id: 1,
-            name: '项目组分布'
-          }
+            name: '项目组分布',
+          },
         ]
       }
 
@@ -150,7 +150,7 @@ export default {
       // 获取数据
       this.getData()
     },
-    tab2act: function(newData, oldData) {
+    tab2act: function (newData, oldData) {
       let tab1act = this.tab1act
       let tab2act = newData
       // console.log(tab2act)
@@ -172,7 +172,7 @@ export default {
           '2019-09',
           '2019-10',
           '2019-11',
-          '2019-12'
+          '2019-12',
         ]
         this.chartvalData = [
           520,
@@ -186,7 +186,7 @@ export default {
           240,
           240,
           240,
-          240
+          240,
         ]
         this.echartsPie(0)
         this.echartsBar()
@@ -204,7 +204,7 @@ export default {
       // this.chartvalData = [520, 360, 130, 240]
       // console.log(this.chartvalData)
       // this.echartsBar()
-    }
+    },
   },
   // 钩子函数
   beforeCreate() {},
@@ -236,7 +236,7 @@ export default {
       }
       this.$axios
         .post('/ocarplay/api/analysis/taskAnalysis', data)
-        .then(res => {
+        .then((res) => {
           // console.log(res)
           if (res.status == 200) {
             let data = res.data
@@ -244,35 +244,41 @@ export default {
             let tab2act = this.tab2act
             let chartKeyData = []
             let chartvalData = []
-            this.chartNum = data.count
+            if (tab1act == 0 || tab1act == 1) {
+              this.chartNum = data.count + '个'
+            } else if (tab1act == 2) {
+              this.chartNum = data.count + '元'
+            } else if (tab1act == 3) {
+              this.chartNum = data.count + '次'
+            }
+
             if (tab1act == 0) {
               if (tab2act == 0) {
-                data.data.forEach(element => {
+                data.data.forEach((element) => {
                   chartKeyData.push(element.type)
                   chartvalData.push(element.num)
                 })
                 chartKeyData.forEach((element, i) => {
                   if (element == 0) {
                     chartKeyData[i] = '执行中'
-                  }else if (element == 1) {
+                  } else if (element == 1) {
                     chartKeyData[i] = '结算中'
-                  }else if (element == 2) {
+                  } else if (element == 2) {
                     chartKeyData[i] = '已完成'
-                  }else if (element == 3) {
+                  } else if (element == 3) {
+                    chartKeyData[i] = '延期'
+                  } else if (element == 4) {
                     chartKeyData[i] = '延期'
                   }
-                  else if (element == 4) {
-                    chartKeyData[i] = '延期'
-                  }
-                });
+                })
                 this.chartKeyData = chartKeyData
                 this.chartvalData = chartvalData
                 // 图表生成
                 this.echartsPie(0)
                 this.echartsBar()
               } else if (tab2act == 1) {
-                data.data.forEach(element => {
-                  chartKeyData.push(element.TYPE||element.type)
+                data.data.forEach((element) => {
+                  chartKeyData.push(element.TYPE || element.type)
                   chartvalData.push(element.num)
                 })
                 this.chartKeyData = chartKeyData
@@ -281,7 +287,7 @@ export default {
                 this.echartsPie(0)
                 this.echartsBar()
               } else if (tab2act == 2) {
-                data.data.forEach(element => {
+                data.data.forEach((element) => {
                   chartKeyData.push(element.TYPE)
                   chartvalData.push(element.num)
                 })
@@ -291,11 +297,11 @@ export default {
                 this.echartsPie(0)
                 this.echartsBar()
               } else if (tab2act == 3) {
-                data.data.forEach(element => {
+                data.data.forEach((element) => {
                   chartKeyData.push(element.TYPE || '默认')
                   chartvalData.push({
                     value: element.num,
-                    name: element.TYPE || '默认'
+                    name: element.TYPE || '默认',
                   })
                 })
                 console.log(chartKeyData)
@@ -308,7 +314,7 @@ export default {
               }
             } else if (tab1act == 1) {
               if (tab2act == 0) {
-                data.data.forEach(element => {
+                data.data.forEach((element) => {
                   chartKeyData.push(element.TYPE)
                   chartvalData.push(element.num)
                 })
@@ -318,8 +324,8 @@ export default {
                 this.echartsPie(0)
                 this.echartsBar()
               } else if (tab2act == 1) {
-                data.data.forEach(element => {
-                  chartKeyData.push(element.TYPE||element.type)
+                data.data.forEach((element) => {
+                  chartKeyData.push(element.TYPE || element.type)
                   chartvalData.push(element.num)
                 })
                 this.chartKeyData = chartKeyData
@@ -328,7 +334,7 @@ export default {
                 this.echartsPie(0)
                 this.echartsBar()
               } else if (tab2act == 2) {
-                data.data.forEach(element => {
+                data.data.forEach((element) => {
                   chartKeyData.push(element.TYPE)
                   chartvalData.push(element.num)
                 })
@@ -338,11 +344,11 @@ export default {
                 this.echartsPie(0)
                 this.echartsBar()
               } else if (tab2act == 3) {
-                data.data.forEach(element => {
+                data.data.forEach((element) => {
                   chartKeyData.push(element.TYPE || '默认')
                   chartvalData.push({
                     value: element.num,
-                    name: element.TYPE || '默认'
+                    name: element.TYPE || '默认',
                   })
                 })
                 this.chartKeyData = chartKeyData
@@ -353,7 +359,7 @@ export default {
               }
             } else if (tab1act == 2) {
               if (tab2act == 0) {
-                data.data.forEach(element => {
+                data.data.forEach((element) => {
                   chartKeyData.push(element.TYPE)
                   chartvalData.push(element.num)
                 })
@@ -363,11 +369,11 @@ export default {
                 this.echartsPie(0)
                 this.echartsBar()
               } else if (tab2act == 1) {
-                data.data.forEach(element => {
+                data.data.forEach((element) => {
                   chartKeyData.push(element.TYPE || element.type)
                   chartvalData.push({
                     value: element.num,
-                    name: element.TYPE || element.type
+                    name: element.TYPE || element.type,
                   })
                 })
                 this.chartKeyData = chartKeyData
@@ -378,7 +384,7 @@ export default {
               }
             } else if (tab1act == 3) {
               if (tab2act == 0) {
-                data.data.forEach(element => {
+                data.data.forEach((element) => {
                   chartKeyData.push(element.TYPE)
                   chartvalData.push(element.num)
                 })
@@ -388,11 +394,11 @@ export default {
                 this.echartsPie(0)
                 this.echartsBar()
               } else if (tab2act == 1) {
-                data.data.forEach(element => {
+                data.data.forEach((element) => {
                   chartKeyData.push(element.TYPE || element.type)
                   chartvalData.push({
                     value: element.num,
-                    name: element.TYPE || element.type
+                    name: element.TYPE || element.type,
                   })
                 })
                 this.chartKeyData = chartKeyData
@@ -417,14 +423,14 @@ export default {
       myChart.setOption({
         title: {
           text: title,
-          subtext: chartNum + '个',
-          subtextStyle: { fontSize: 20 }
+          subtext: chartNum,
+          subtextStyle: { fontSize: 20 },
           // fontSize
         },
         color: 'rgb(106, 145, 232)',
         tooltip: {},
         xAxis: {
-          data: chartKeyData
+          data: chartKeyData,
         },
         yAxis: {},
         series: [
@@ -437,10 +443,10 @@ export default {
               show: true,
               position: 'top',
               fontSize: 16,
-              color: 'black'
-            }
-          }
-        ]
+              color: 'black',
+            },
+          },
+        ],
       })
       if (res == 0) {
         myChart.dispose()
@@ -459,19 +465,19 @@ export default {
       myChart.setOption({
         title: {
           text: title,
-          subtext: chartNum + '个',
+          subtext: chartNum,
           subtextStyle: { fontSize: 20 },
-          left: 'left'
+          left: 'left',
         },
         color: ['#2B4E76', '#4175B1', '#A4C3E2'],
         tooltip: {
           trigger: 'item',
-          formatter: '{a} <br/>{b} : {c} ({d}%)'
+          formatter: '{a} <br/>{b} : {c} ({d}%)',
         },
         legend: {
           orient: 'vertical',
           bottom: 'bottom',
-          data: chartKeyData
+          data: chartKeyData,
         },
         series: [
           {
@@ -484,17 +490,17 @@ export default {
               itemStyle: {
                 shadowBlur: 10,
                 shadowOffsetX: 0,
-                shadowColor: 'rgba(0, 0, 0, 0.5)'
-              }
-            }
-          }
-        ]
+                shadowColor: 'rgba(0, 0, 0, 0.5)',
+              },
+            },
+          },
+        ],
       })
       if (res == 0) {
         myChart.dispose()
       }
-    }
-  }
+    },
+  },
 }
 </script>
 <style lang="scss" scoped>

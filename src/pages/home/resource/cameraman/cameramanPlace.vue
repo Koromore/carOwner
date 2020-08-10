@@ -1,47 +1,11 @@
 <template>
-  <div id="place">
+  <div id="cameramanPlace">
     <!-- 头部选项框 start -->
     <el-row class="top">
-      <el-col :span="9" class="left">
-        <div class="butBox">
-          <div :class="[tabact==1?'but act':'but']" @click="tab(1)">摄影师</div>
-          <div :class="[tabact==2?'but act':'but']" @click="tab(2)">模特</div>
-          <div :class="[tabact==3?'but act':'but']" @click="tab(3)">场地</div>
-        </div>
-      </el-col>
-      <el-col :span="15" class="right">
-        <!-- 是否会开车 -->
-        <el-select v-model="isCar" clearable placeholder="是否能停车" size="small" @change="isCarChange">
-          <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          ></el-option>
-        </el-select>
-        <!-- 城市 -->
-        <el-select
-          v-model="city"
-          filterable
-          clearable
-          placeholder="城市"
-          size="small"
-          @change="cityChange"
-        >
-          <el-option
-            v-for="item in cityList"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          ></el-option>
-        </el-select>
-        <div class="add_place">
-          <el-button
-            type="primary"
-            icon="el-icon-circle-plus-outline"
-            size="small"
-            @click="add_place"
-          >添加场地</el-button>
+      <el-col :span="3" class="left">
+        <div @click="previous">
+          <i class="el-icon-arrow-left"></i>
+          返回
         </div>
       </el-col>
     </el-row>
@@ -66,7 +30,7 @@
                 <p>场地类型：{{item.placeTypeName}}</p>
                 <p @click="toCameraList(item.placeId,3)">拍摄次数：{{item.cameraNum}}次</p>
               </div>
-              <div class="bottom">
+              <!-- <div class="bottom">
                 <el-col :span="6" :offset="3">
                   <i class="el-icon-user" @click="toPlaceMan(item.city)"></i>
                 </el-col>
@@ -76,7 +40,7 @@
                 <el-col :span="6">
                   <i class="el-icon-delete" @click="deletePlaceBtn(item.placeId)"></i>
                 </el-col>
-              </div>
+              </div> -->
             </div>
           </el-col>
         </el-col>
@@ -93,27 +57,14 @@
       </el-col>
     </el-row>
     <!-- 内容列表 end -->
-
-    <!-- 新增场地拍摄 -->
-    <camera :cameraShow="cameraShow"></camera>
-    <!-- 新增场地拍摄 -->
-
-    <!-- 新增场地拍摄 -->
-    <cameraList :cameraListShow="cameraListShow"></cameraList>
-    <!-- 新增场地拍摄 -->
   </div>
 </template>
 <script>
 import cityList from '@/common/city.js' // 引入城市数据
-import camera from '@/components/camera'
-import cameraList from '@/components/cameraList'
 
 export default {
-  name: 'place',
-  components: {
-    camera,
-    cameraList,
-  },
+  name: 'cameramanPlace',
+  components: {},
   data() {
     return {
       userId: this.$store.state.user.userId, // 用户ID
@@ -121,30 +72,10 @@ export default {
       postId: this.$store.state.user.postId, // 职位ID
       subordinate: this.$store.state.user.subordinate, // 一级部门ID
       adminShow: this.$store.state.adminShow, // 超级管理员
-      placeId: null,
-      type: 2,
-      // tab选项卡
-      tabact: 3,
-      options: [
-        {
-          value: 1,
-          label: '是',
-        },
-        {
-          value: 0,
-          label: '否',
-        },
-      ],
-      isCar: '',
-      // 城市列表
-      cityList: cityList, // 城市筛列表
-      city: '',
+      value2: '',
       // 内容列表
       listLoading: false,
       placeList: [{ localPath: '' }],
-      // 拍摄记录
-      cameraShow: 0,
-      cameraListShow: 0,
       // 分页
       total: 0,
       pageNum: 1,
@@ -157,47 +88,11 @@ export default {
   beforeCreate() {},
   beforeMount() {},
   mounted() {
-    ///////// 获取车主列表 start /////////
+    ///////// 获取场地列表 start /////////
     this.getPlaceList()
   },
   // 方法
   methods: {
-    // tab选项卡
-    tab(prm) {
-      this.tabact = prm
-      let url = ''
-      if (prm == 1) {
-        url = '/home/resource/cameraman'
-      } else if (prm == 2) {
-        url = '/home/resource/model'
-      } else if (prm == 3) {
-        url = '/home/resource/place'
-      }
-      this.$router.push({ path: url })
-    },
-
-    ///////// 跳转场地添加页面 start /////////
-    add_place() {
-      this.$router.push({ path: '/home/resource/addplace' })
-    },
-    ///////// 跳转场地添加页面 end /////////
-
-    ///////// 筛选能否停车 start /////////
-    isCarChange(e) {
-      // console.log(e)
-      ///////// 获取场地列表 start /////////
-      this.getPlaceList()
-    },
-    ///////// 筛选能否停车 end /////////
-
-    ///////// 筛选城市 start /////////
-    cityChange(e) {
-      // console.log(e)
-      ///////// 获取场地列表 start /////////
-      this.getPlaceList()
-    },
-    ///////// 筛选城市 end /////////
-
     ///////// 获取场地列表 start /////////
     getPlaceList() {
       this.listLoading = true
@@ -205,8 +100,7 @@ export default {
         pageNum: this.pageNum,
         pageSize: this.pageSize,
         place: {
-          isCar: this.isCar,
-          city: this.city,
+          city: this.$route.query.city,
         },
       }
       this.$axios.post('/ocarplay/api/place/listAjax', data).then((res) => {
@@ -239,63 +133,6 @@ export default {
     },
     ///////// 跳转场地详情 end /////////
 
-    ///////// 打开拍摄记录 start /////////
-    toCameraList(id,type) {
-      this.placeId = id
-      this.cameraListShow += 1
-    },
-    ///////// 打开拍摄记录 start /////////
-
-    ///////// 跳转场地摄影师和模特 start /////////
-    toPlaceMan(city) {
-      this.$router.push({
-        path: '/home/resource/placeman',
-        query: { city: city },
-      })
-    },
-    ///////// 跳转场地详情 end /////////
-
-    ///////// 新增拍摄 start /////////
-    addCamera() {
-      this.cameraShow += 1
-    },
-    ///////// 新增拍摄 end /////////
-
-    ///////// 删除场地 start /////////
-    deletePlaceBtn(id) {
-      this.$confirm('是否删除该场地?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
-      })
-        .then(() => {
-          this.deletePlace(id)
-        })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除',
-          })
-        })
-    },
-    deletePlace(id) {
-      let data = { placeId: id }
-      this.$axios.post('/ocarplay/api/place/delete', data).then((res) => {
-        console.log(res)
-        let data = res.data
-        // this.listLoading = false
-        // // this.drawerAdd = false
-        if (res.status == 200 && res.data.errcode == 0) {
-          this.$message.success(res.data.msg)
-          // 获取场地列表
-          this.getPlaceList()
-        } else {
-          this.$message.error(res.data.msg)
-        }
-      })
-    },
-    ///////// 删除场地 end /////////
-
     ///////// 分页 start /////////
     // 每页条数变化时触发事件
     // changeSize(pageSize) {
@@ -307,29 +144,56 @@ export default {
       this.getPlaceList()
     },
     ///////// 分页 end /////////
+
+    ///////// 返回上一页 start /////////
+    previous() {
+      this.$router.go(-1) //返回上一层
+    },
+    ///////// 返回上一页 end /////////
   },
 }
 </script>
 <style lang="scss" scoped>
 $icoColor: #6a91e8;
-#place {
+#cameramanPlace {
   height: 100%;
+  box-sizing: border-box;
+  padding: 36px;
+  padding-bottom: 0;
+  background: white;
+  border-radius: 6px;
   .top {
     height: 45px;
     margin-bottom: 9px;
     display: flex;
     align-items: center;
     .left {
+      font-size: 22px;
+      text-align: left;
+      // padding-left: 36px;
+      div {
+        cursor: pointer;
+        text-align: left;
+        font-weight: 100;
+        height: 37px;
+        line-height: 37px;
+      }
+      i {
+        font-weight: bold;
+      }
+    }
+    .center {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      justify-content: flex-start;
+      justify-content: center;
       box-sizing: border-box;
       .butBox {
         // width: 220px;
         // height: 46px;
         overflow: hidden;
         background: white;
+        border: 1px solid #f0f0f0;
         color: #a0a0a0;
         border-radius: 3px;
         display: flex;
@@ -378,35 +242,22 @@ $icoColor: #6a91e8;
   }
   .content {
     .table_list {
-      // height: 97%;
-      // padding: 0 36px;
       .itemsBox {
         padding: 13px;
-        height: 390px;
+        height: 360px;
         .items {
-          // width: 400px;
           height: 100%;
           min-height: 160px;
           margin-bottom: 1%;
-          // margin-left: 6.25%;
           box-sizing: border-box;
-          // padding: 9px;
           overflow: hidden;
           padding: 0;
           border: 1px solid #e7e7e7;
           border-radius: 6px;
           background: white;
-          // display: flex;
-          // flex-wrap: wrap;
-          // justify-content: space-around;
-          // align-content: space-between;
-          // align-items: flex-start;
-          // &:nth-of-type(3n + 1) {
-          //   margin-left: 0;
-          // }
           .img {
             width: 100%;
-            height: 49%;
+            height: 190px;
             cursor: pointer;
           }
           .text {
@@ -438,9 +289,6 @@ $icoColor: #6a91e8;
               }
               &:nth-of-type(4) {
                 cursor: pointer;
-              }
-              &:nth-of-type(4):hover {
-                color: $icoColor;
               }
               .free {
                 color: #c73420;

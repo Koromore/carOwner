@@ -17,10 +17,10 @@
             <div class="key">任务类型</div>
             <div class="val">
               <el-radio-group v-model="taskType">
-                <el-radio :label="0">借车</el-radio>
-                <el-radio :label="1">素材</el-radio>
-                <el-radio :label="2">邀约</el-radio>
-                <el-radio :label="3">拍摄</el-radio>
+                <el-radio :label="1">借车</el-radio>
+                <el-radio :label="2">素材</el-radio>
+                <el-radio :label="3">邀约</el-radio>
+                <el-radio :label="4">拍摄</el-radio>
               </el-radio-group>
             </div>
           </el-col>
@@ -65,44 +65,60 @@
             </div>
           </el-col>
           <!-- 摄影填写 start -->
-          <el-col :span="24" v-show="taskType==3">
+          <el-col :span="24" v-show="taskType==4">
             <el-col :span="24" class="list">
               <div class="key">摄影师</div>
               <div class="val">
-                <el-cascader
-                  :options="options3"
-                  v-model="listInviteList"
-                  clearable
-                  filterable
-                  collapse-tags
-                  :disabled="disabledCaigou"
-                ></el-cascader>
+                <el-select v-model="personId" placeholder="请选择" :disabled="disabledCaigou">
+                  <el-option
+                    v-for="item in cameraList"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  ></el-option>
+                </el-select>
               </div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">模特</div>
               <div class="val">
-                <el-cascader
-                  :options="options3"
-                  v-model="listInviteList"
+                <!-- <el-cascader
+                  :options="modelList"
+                  v-model="modelId"
                   clearable
                   filterable
                   collapse-tags
                   :disabled="disabledCaigou"
-                ></el-cascader>
+                ></el-cascader> -->
+                <el-select v-model="modelId" placeholder="请选择" :disabled="disabledCaigou">
+                  <el-option
+                    v-for="item in modelList"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  ></el-option>
+                </el-select>
               </div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">场地</div>
               <div class="val">
-                <el-cascader
-                  :options="options3"
-                  v-model="listInviteList"
+                <!-- <el-cascader
+                  :options="placeList"
+                  v-model="placeId"
                   clearable
                   filterable
                   collapse-tags
                   :disabled="disabledCaigou"
-                ></el-cascader>
+                ></el-cascader> -->
+                <el-select v-model="placeId" placeholder="请选择" :disabled="disabledCaigou">
+                  <el-option
+                    v-for="item in placeList"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  ></el-option>
+                </el-select>
               </div>
             </el-col>
           </el-col>
@@ -229,6 +245,12 @@ export default {
           label: '北京烤鸭',
         },
       ],
+      cameraList: [], // 摄影师列表
+      modelList: [], // 模特列表
+      placeList: [], // 场地列表
+      personId: null,
+      modelId: null,
+      placeId: null,
       disabledCaigou: false,
       // 品牌车型
       input3: '',
@@ -292,6 +314,12 @@ export default {
     this.getCarSeriesLists()
     ///////// 判断部门 start /////////
     this.isDeptId()
+    ///////// 获取摄影师列表 start /////////
+    this.getlistPhotoPerson()
+    ///////// 获取模特列表 start /////////
+    this.getlistModel()
+    ///////// 获取场地列表 start /////////
+    this.getPlaceList()
   },
   // 方法事件
   methods: {
@@ -350,8 +378,6 @@ export default {
           this.seriesId.forEach((element2) => {
             if (element1.value == element2) {
               carSeriesId.push([element0.value, element1.value])
-              // carSeriesId.push(element1.value)
-              // carSeriesId.push(element2.value)
             }
           })
         })
@@ -359,7 +385,85 @@ export default {
       this.carSeriesId = carSeriesId
       // console.log(carSeriesId)
     },
-    ///////// 获取任务详情 start /////////
+    ///////// 循环查找品牌车型 start /////////
+
+    ///////// 获取摄影师列表 start /////////
+    getlistPhotoPerson() {
+      let data = {
+        pageNum: 1,
+        pageSize: 1000,
+      }
+      this.$axios
+        .post('/ocarplay/api/photoPerson/listAjax', data)
+        .then((res) => {
+          // console.log(res)
+          this.listLoading = false
+          if (res.status == 200) {
+            let data = res.data.items
+            let cameraList = []
+            data.forEach((element) => {
+              cameraList.push({
+                value: element.personId,
+                label: element.name,
+              })
+            })
+            this.cameraList = cameraList
+            // this.total = data.totalRows
+          }
+        })
+    },
+    ///////// 获取摄影师列表 end /////////
+
+    ///////// 获取模特列表 start /////////
+    getlistModel() {
+      let data = {
+        pageNum: 1,
+        pageSize: 1000,
+      }
+      this.$axios.post('/ocarplay/api/model/listAjax', data).then((res) => {
+        // console.log(res)
+        this.listLoading = false
+        if (res.status == 200) {
+          let data = res.data.items
+          let modelList = []
+          data.forEach((element) => {
+            modelList.push({
+              value: element.modelId,
+              label: element.name,
+            })
+          })
+          this.modelList = modelList
+          // this.total = data.totalRows
+        }
+      })
+    },
+    ///////// 获取模特列表 end /////////
+
+    ///////// 获取场地列表 start /////////
+    getPlaceList() {
+      this.listLoading = true
+      let data = {
+        pageNum: 1,
+        pageSize: 1000,
+      }
+      this.$axios.post('/ocarplay/api/place/listAjax', data).then((res) => {
+        // console.log(res)
+        this.listLoading = false
+        // this.drawerAdd = false
+        if (res.status == 200) {
+          let data = res.data.items
+          let placeList = []
+          data.forEach((element) => {
+            placeList.push({
+              value: element.placeId,
+              label: element.placeName,
+            })
+          })
+          this.placeList = placeList
+        }
+      })
+    },
+    ///////// 获取场地列表 end /////////
 
     ///////// 获取任务详情 start /////////
     getTaskDetail(id) {
@@ -371,6 +475,7 @@ export default {
         if (res.status == 200) {
           let data = res.data.data
           this.taskName = data.taskName
+          this.taskType = data.taskType
           let listInviteList = []
           data.listInvite.forEach((element) => {
             listInviteList.push([
@@ -402,9 +507,9 @@ export default {
               url: element.localPath,
             })
             taskFileList.push({
-              fileName: '端午大礼包',
-              localPath: 'uploadtemp//doc/1592452790041.jpg',
-              suffix: 'jpg',
+              fileName: element.fileName,
+              localPath: element.localPath,
+              suffix: element.suffix,
             })
           })
           this.fileList = fileList
@@ -590,6 +695,7 @@ export default {
         initUserId: this.userId,
         deptId: this.deptId,
         createTime: this.$time0(new Date()),
+        taskType: this.taskType,
         taskId: this.taskId,
         taskName: this.taskName,
         status: 0,
@@ -597,6 +703,9 @@ export default {
         endTime: endTime,
         num: this.taskNum,
 
+        personId: this.personId,
+        modelId: this.modelId,
+        placeId: this.placeId,
         // typeId: this.carSeriesId[0],
         // carTypeId: this.carSeriesId[1],
         // carSeriesId: this.carSeriesId[2],

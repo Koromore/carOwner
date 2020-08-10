@@ -65,9 +65,14 @@
         </swiper>
       </section>
     </div>
+    <div>
+      <ve-calendar v-model="selectDateList"></ve-calendar>
+      <!-- <ve-year v-model="selectDateList"></ve-year> -->
+    </div>
   </div>
 </template>
 <script>
+import veCalendar from 've-calendar'
 import DataSet from '@antv/data-set'
 import { Chart } from '@antv/g2'
 // import 'swiper/dist/css/swiper.css'
@@ -79,6 +84,7 @@ export default {
   props: {},
   // 定义模板
   components: {
+    veCalendar,
     // swiper,
     //  swiperSlide,
   },
@@ -202,115 +208,29 @@ export default {
     test(res) {
       return res
       let data = {
-        age: 0,
-        avgScore: 0,
-        carTypeId: 'string',
+        address: 'string',
+        area: 'string',
+        carTypeId: 0,
         city: 'string',
-        coopNum: 0,
-        createTime: {
-          chronology: {
-            calendarType: 'string',
-            id: 'string',
-          },
-          dayOfMonth: 0,
-          dayOfWeek: 'MONDAY',
-          dayOfYear: 0,
-          hour: 0,
-          minute: 0,
-          month: 'JANUARY',
-          monthValue: 0,
-          nano: 0,
-          second: 0,
-          year: 0,
-        },
-        custom: 'string',
+        createTime: {},
+        dayTypeId: 0,
+        dayTypeName: 'string',
         deleteFlag: true,
+        deptId: 0,
         doUserId: 0,
-        goodAt: 'string',
-        image: 'string',
-        introduce: 'string',
-        isCar: true,
-        money: 0,
-        name: 'string',
+        during: 0,
+        duringType: true,
+        endTime: {},
+        isDo: true,
         personId: 0,
-        phone: 'string',
-        photoCooperateList: [
-          {
-            deleteFlag: true,
-            doUserId: 0,
-            endTime: '',
-            fileName: 'string',
-            id: 0,
-            localPath: 'string',
-            personId: 0,
-            startTime: '',
-            suffix: 'string',
-            timeLimit: 'string',
-          },
-        ],
-        photoIntroList: [
-          {
-            createTime: {
-              chronology: {
-                calendarType: 'string',
-                id: 'string',
-              },
-              dayOfMonth: 0,
-              dayOfWeek: 'MONDAY',
-              dayOfYear: 0,
-              hour: 0,
-              minute: 0,
-              month: 'JANUARY',
-              monthValue: 0,
-              nano: 0,
-              second: 0,
-              year: 0,
-            },
-            deleteFlag: true,
-            doUserId: 0,
-            fileName: 'string',
-            introId: 0,
-            localPath: 'string',
-            personId: 0,
-            suffix: 'string',
-            type: 0,
-            updateTime: {
-              chronology: {
-                calendarType: 'string',
-                id: 'string',
-              },
-              dayOfMonth: 0,
-              dayOfWeek: 'MONDAY',
-              dayOfYear: 0,
-              hour: 0,
-              minute: 0,
-              month: 'JANUARY',
-              monthValue: 0,
-              nano: 0,
-              second: 0,
-              year: 0,
-            },
-          },
-        ],
+        placeTypeId: 0,
         province: 'string',
-        sex: true,
-        tag: 'string',
-        updateTime: {
-          chronology: {
-            calendarType: 'string',
-            id: 'string',
-          },
-          dayOfMonth: 0,
-          dayOfWeek: 'MONDAY',
-          dayOfYear: 0,
-          hour: 0,
-          minute: 0,
-          month: 'JANUARY',
-          monthValue: 0,
-          nano: 0,
-          second: 0,
-          year: 0,
-        },
+        remark: 'string',
+        schId: 0,
+        schLine: 'string',
+        schName: 'string',
+        schNum: 0,
+        startTime: {},
       }
     },
     G2() {

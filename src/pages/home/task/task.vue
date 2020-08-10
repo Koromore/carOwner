@@ -27,7 +27,7 @@
             :label="item.label"
             :value="item.value"
           ></el-option>
-        </el-select> -->
+        </el-select>-->
         <!-- 邀约事项 -->
         <el-select
           v-model="itemId"
@@ -90,12 +90,19 @@
               >{{scope.row.taskName}}</el-link>
             </template>
           </el-table-column>
-          <el-table-column prop label="任务类型" min-width="90" show-overflow-tooltip>拍摄</el-table-column>
+          <el-table-column prop label="任务类型" min-width="90" show-overflow-tooltip>
+            <template slot-scope="scope">
+              <template v-if="scope.row.taskType==1">借车</template>
+              <template v-else-if="scope.row.taskType==2">素材</template>
+              <template v-else-if="scope.row.taskType==3">邀约</template>
+              <template v-else-if="scope.row.taskType==4">拍摄</template>
+            </template>
+          </el-table-column>
           <el-table-column prop="ownerName" label="邀约对象" min-width="130" show-overflow-tooltip></el-table-column>
           <!-- <el-table-column prop="ownerItemList" label="邀约事项" min-width="130" show-overflow-tooltip></el-table-column> -->
-          <el-table-column prop label="摄影师" min-width="90" show-overflow-tooltip>摄影师</el-table-column>
-          <el-table-column prop label="模特" min-width="90" show-overflow-tooltip>模特</el-table-column>
-          <el-table-column prop label="场地" min-width="90" show-overflow-tooltip>场地</el-table-column>
+          <el-table-column prop="personName" label="摄影师" min-width="90" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="modelName" label="模特" min-width="90" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="placeName" label="场地" min-width="90" show-overflow-tooltip></el-table-column>
           <el-table-column prop="carSeriesName" label="邀约车型" min-width="130" show-overflow-tooltip>
             <template slot-scope="scope">
               <template v-if="scope.row.carSeriesName">{{scope.row.carSeriesName}}</template>
@@ -130,7 +137,12 @@
           <el-table-column prop="endTime" label="预计时间" min-width="100" sortable>
             <template slot-scope="scope">{{$date(scope.row.endTime)}}</template>
           </el-table-column>
-          <el-table-column prop="address" label="操作" min-width="140" v-if="subordinate==150||deptId==90||adminShow">
+          <el-table-column
+            prop="address"
+            label="操作"
+            min-width="140"
+            v-if="subordinate==150||deptId==90||adminShow"
+          >
             <template slot-scope="scope">
               <template v-if="deptId!=90">
                 <el-tooltip class="item" effect="dark" content="编辑任务" placement="top">
@@ -201,7 +213,14 @@
               >{{scope.row.taskName}}</el-link>
             </template>
           </el-table-column>
-          <el-table-column prop label="任务类型" min-width="90" show-overflow-tooltip>拍摄</el-table-column>
+          <el-table-column prop label="任务类型" min-width="90" show-overflow-tooltip>
+            <template slot-scope="scope">
+              <template v-if="scope.row.taskType==1">借车</template>
+              <template v-else-if="scope.row.taskType==2">素材</template>
+              <template v-else-if="scope.row.taskType==3">邀约</template>
+              <template v-else-if="scope.row.taskType==4">拍摄</template>
+            </template>
+          </el-table-column>
           <el-table-column prop="ownerName" label="邀约对象" min-width="130" show-overflow-tooltip></el-table-column>
           <!-- <el-table-column prop="ownerItemList" label="邀约事项" min-width="130" show-overflow-tooltip></el-table-column> -->
           <el-table-column prop label="摄影师" min-width="90" show-overflow-tooltip>摄影师</el-table-column>
@@ -305,7 +324,14 @@
               >{{scope.row.taskName}}</el-link>
             </template>
           </el-table-column>
-          <el-table-column prop label="任务类型" min-width="90" show-overflow-tooltip>拍摄</el-table-column>
+          <el-table-column prop label="任务类型" min-width="90" show-overflow-tooltip>
+            <template slot-scope="scope">
+              <template v-if="scope.row.taskType==1">借车</template>
+              <template v-else-if="scope.row.taskType==2">素材</template>
+              <template v-else-if="scope.row.taskType==3">邀约</template>
+              <template v-else-if="scope.row.taskType==4">拍摄</template>
+            </template>
+          </el-table-column>
           <el-table-column prop="ownerName" label="邀约对象" min-width="130" show-overflow-tooltip></el-table-column>
           <!-- <el-table-column prop="ownerItemList" label="邀约事项" min-width="130" show-overflow-tooltip></el-table-column> -->
           <el-table-column prop label="摄影师" min-width="90" show-overflow-tooltip>摄影师</el-table-column>
@@ -384,7 +410,14 @@
               >{{scope.row.taskName}}</el-link>
             </template>
           </el-table-column>
-          <el-table-column prop label="任务类型" min-width="90" show-overflow-tooltip>拍摄</el-table-column>
+          <el-table-column prop label="任务类型" min-width="90" show-overflow-tooltip>
+            <template slot-scope="scope">
+              <template v-if="scope.row.taskType==1">借车</template>
+              <template v-else-if="scope.row.taskType==2">素材</template>
+              <template v-else-if="scope.row.taskType==3">邀约</template>
+              <template v-else-if="scope.row.taskType==4">拍摄</template>
+            </template>
+          </el-table-column>
           <el-table-column prop="ownerName" label="邀约对象" min-width="130" show-overflow-tooltip></el-table-column>
           <!-- <el-table-column prop="ownerItemList" label="邀约事项" min-width="130" show-overflow-tooltip></el-table-column> -->
           <el-table-column prop label="摄影师" min-width="90" show-overflow-tooltip>摄影师</el-table-column>
@@ -924,34 +957,38 @@ export default {
     ///////// 提交任务 start /////////
     putTask(prm) {
       // console.log(prm)
-      this.drawerLoading = true
-      this.drawerPuttask = true
-      this.taskId = prm.taskId
-      this.taskDeptId = prm.deptId
-      this.taskName = prm.taskName
-      let data = {
-        taskId: prm.taskId,
-      }
-      this.$axios.post('/ocarplay/task/edit', data).then((res) => {
-        // console.log(res)
-        if (res.status == 200) {
-          let data = res.data.data
-          let listInviteList = []
-          data.listInvite.forEach((element) => {
-            listInviteList.push({
-              inviteData: [element.typeId, element.itemId, element.ownerId],
-              typeId: element.typeId,
-              itemId: element.itemId,
-              ownerId: element.ownerId,
-              url: element.url,
-              money: element.money,
-              isCard: element.isCard,
-            })
-          })
-          this.listInviteList = listInviteList
-          this.drawerLoading = false
+      if (prm.personId&&prm.modelId&&prm.placeId) {
+        this.drawerLoading = true
+        this.drawerPuttask = true
+        this.taskId = prm.taskId
+        this.taskDeptId = prm.deptId
+        this.taskName = prm.taskName
+        let data = {
+          taskId: prm.taskId,
         }
-      })
+        this.$axios.post('/ocarplay/task/edit', data).then((res) => {
+          // console.log(res)
+          if (res.status == 200) {
+            let data = res.data.data
+            let listInviteList = []
+            data.listInvite.forEach((element) => {
+              listInviteList.push({
+                inviteData: [element.typeId, element.itemId, element.ownerId],
+                typeId: element.typeId,
+                itemId: element.itemId,
+                ownerId: element.ownerId,
+                url: element.url,
+                money: element.money,
+                isCard: element.isCard,
+              })
+            })
+            this.listInviteList = listInviteList
+            this.drawerLoading = false
+          }
+        })
+      }else{
+        this.$message.error('无法提交，模特摄影师信息采购尚未填写！')
+      }
     },
     putTaskif(prm) {
       // console.log(prm)

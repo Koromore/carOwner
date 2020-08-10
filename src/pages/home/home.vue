@@ -174,6 +174,10 @@ export default {
   .el-drawer__body {
     height: calc(100% - 87px);
   }
+  .noData {
+    text-align: center;
+    color: #666;
+  }
   .omit {
     width: 100%;
     text-align: left;

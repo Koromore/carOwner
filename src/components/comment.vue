@@ -10,7 +10,7 @@
     >
       <el-scrollbar style="height:100%">
         <el-row>
-          <el-col :span="3" class="left">
+          <el-col :span="2" class="left">
             <el-col class="firstGrade">
               <span>技</span>
               <span>术</span>
@@ -24,31 +24,67 @@
               <span>导</span>
             </el-col>
           </el-col>
-          <el-col :span="21" class="right">
-            <el-col class="gradeList" v-for="(item,index) in gradeList" :key="index">
-              <span>{{item.secondGrade}}/</span>
-              <span>{{item.thirdGrade}}</span>
-              <div class="score">
-                <el-col :span="12">
-                  <el-input v-model="item.score" placeholder="请输入" type="number"></el-input>
-                </el-col>
-                <el-col :span="12">满分{{item.total}}</el-col>
-              </div>
-            </el-col>
+          <el-col :span="21" :offset="1" class="right">
+            <template v-if="type==0">
+              <el-col class="gradeList" v-for="(item,index) in gradeList" :key="index">
+                <span>{{item.secondGrade}}/</span>
+                <span>{{item.thirdGrade}}</span>
+                <div class="score">
+                  <template v-if="type==0">
+                    <el-col :span="16">
+                      <el-input
+                        v-model="item.score"
+                        placeholder="请输入"
+                        type="number"
+                        :max="5"
+                        :min="0"
+                        size="mini"
+                      ></el-input>
+                    </el-col>
+                    <el-col :span="8">/{{item.total}}</el-col>
+                  </template>
+                  <template v-if="type==1">
+                    <el-col :span="20" :offset="4">分数</el-col>
+                  </template>
+                </div>
+              </el-col>
+            </template>
+            <template v-else-if="type==1">
+              <el-col class="gradeList" v-for="(item,index) in gradeList" :key="index">
+                <span>{{item.grade.secondGrade}}/</span>
+                <span>{{item.grade.thirdGrade}}</span>
+                <div class="score">
+                  <el-col :span="20" :offset="4">{{item.score}}分</el-col>
+                </div>
+              </el-col>
+            </template>
           </el-col>
           <el-col class="bottom">
-            <el-col>备注信息</el-col>
-            <el-col>
-              <el-input v-model="remark" type="textarea" :rows="2" placeholder="请输入评论内容"></el-input>
-            </el-col>
+            <template v-if="type==0">
+              <el-col>备注信息</el-col>
+              <el-col>
+                <el-input v-model="remark" type="textarea" :rows="4" placeholder="请输入评论内容"></el-input>
+              </el-col>
+            </template>
+            <template v-if="type==1">
+              <el-col>总体评分 {{personScore}}分</el-col>
+              <el-col>备注信息 {{remark}}</el-col>
+            </template>
           </el-col>
           <el-col :span="24" class="btn">
-            <el-col :span="6" :offset="5">
-              <el-button type="info" @click="cancel" size="small">取消</el-button>
-            </el-col>
-            <el-col :span="6" :offset="2">
-              <el-button type="primary" @click="saveBtn" size="small">提交</el-button>
-            </el-col>
+            <template v-if="type==0">
+              <el-col :span="6" :offset="5">
+                <el-button type="info" @click="cancel" size="small">取消</el-button>
+              </el-col>
+              <el-col :span="6" :offset="2">
+                <el-button type="primary" @click="saveBtn" size="small">提交</el-button>
+              </el-col>
+            </template>
+            <template v-if="type==1">
+              <el-col :span="5" :offset="18">
+                <el-button type="primary" size="small" @click="close">返回</el-button>
+              </el-col>
+            </template>
           </el-col>
         </el-row>
       </el-scrollbar>
@@ -70,10 +106,12 @@ export default {
       drawerData: false,
       drawerTitle: '摄影师品论',
       loading: false,
+      type: 0,
       personId: null, // 摄影师Id
       cameraTime: null, // 拍摄时间
       gradeList: [], // 评分列表
       remark: null, // 备注
+      personScore: 0, // 总分
     }
   },
   // 侦听器
@@ -97,15 +135,23 @@ export default {
       this.$parent.cameraListShow = 0
     },
     drawerDataOpen() {
-      let data = {
-        pageNum: 1,
-        pageSize: 1000,
-        camera: {},
+      console.log(this.$parent.type)
+      this.type = this.$parent.type
+      if (this.type == 0) {
+        this.personId = this.personId
+        this.getGradeList()
+      } else if (this.type == 1) {
+        this.personGradeShow()
       }
-      this.personId = this.$parent.personId
-      this.getGradeList()
     },
     // /api/camera/listAjax
+
+    ///////// json数组排序 /////////
+    sortby(a, b) {
+      return a.gradeId - b.gradeId
+    },
+    ///////// json数组排序 /////////
+
     getGradeList() {
       // console.log(data)
       let data = {
@@ -113,18 +159,46 @@ export default {
         pageSize: 20,
       }
       this.$axios.post('/ocarplay/api/grade/listAjax', data).then((res) => {
-        console.log(res)
+        // console.log(res)
         if (res.status == 200) {
           let data = res.data
           data.items.forEach((element) => {
-            element.score = 1
+            element.score = 0
           })
+          ///////// json数组排序 /////////
+          data.items.sort(this.sortby)
           this.gradeList = data.items
           this.loading = false
         }
       })
     },
-    cancel() {},
+    personGradeShow() {
+      // console.log(data)
+      let data = {
+        pgId: this.$parent.pgId,
+      }
+      this.$axios.post('/ocarplay/api/personGrade/show', data).then((res) => {
+        console.log(res)
+        if (res.status == 200) {
+          let data = res.data
+          // data.items.forEach((element) => {
+          //   element.score = 0
+          // })
+          // ///////// json数组排序 /////////
+          // data.items.sort(this.sortby)
+          this.gradeList = data.gradeInfoList
+          this.personScore = data.personScore
+          this.remark = data.remark
+          // this.loading = false
+        }
+      })
+    },
+    close() {
+      this.drawerData = false
+    },
+    cancel() {
+      this.drawerData = false
+    },
     saveBtn() {
       let doUserId = this.$parent.userId
       let personId = this.personId
@@ -132,12 +206,16 @@ export default {
       let gradeInfoList = []
       let personScore = 0
       let gradeList = this.gradeList
+      let max = true
       gradeList.forEach((element) => {
         gradeInfoList.push({
           gradeId: element.gradeId,
-          score: element.score*1,
+          score: element.score * 1,
         })
-        personScore += element.score*1
+        if (element.score * 1 > element.total) {
+          max = false
+        }
+        personScore += element.score * 1
       })
       let data = {
         doUserId,
@@ -147,24 +225,25 @@ export default {
         remark,
       }
       // console.log(data)
-      this.loading = true
-      this.$axios.post('/ocarplay/api/personGrade/save', data).then((res) => {
-        console.log(res)
-        if (res.status == 200) {
-          let data = res.data
-          // data.items.forEach((element) => {
-          //   element.score = 0
-          // })
-          // this.gradeList = data.items
-          if (data.errcode==0) {
-            this.$message.success(data.msg)
-            this.drawerData = false
-          }else {
-            this.$message.error(data.msg)
+      if (max) {
+        this.loading = true
+        this.$axios.post('/ocarplay/api/personGrade/save', data).then((res) => {
+          console.log(res)
+          if (res.status == 200) {
+            let data = res.data
+            if (data.errcode == 0) {
+              this.$message.success(data.msg)
+              this.drawerData = false
+              this.$parent.getlistPhotoPerson()
+            } else {
+              this.$message.error(data.msg)
+            }
+            this.loading = false
           }
-          this.loading = false
-        }
-      })
+        })
+      } else {
+        this.$message.error('分数不可超过最大值')
+      }
     },
   },
 }
@@ -185,17 +264,25 @@ export default {
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      border-radius: 6px;
+      border: 1px solid #6a91e842;
+      color: #4a6fc2;
     }
     .firstGrade:nth-of-type(1) {
-      height: 405px;
+      height: 477px;
+      margin-bottom: 9px;
     }
     .firstGrade:nth-of-type(2) {
-      height: 180px;
+      height: 207px;
     }
   }
   .gradeList {
     height: 45px;
     line-height: 45px;
+    box-shadow: 0 0 10px 0 #ddd;
+    margin-bottom: 9px;
+    padding-left: 9px;
+    border-radius: 6px;
     span:nth-of-type(1) {
       font-size: 14px;
       font-weight: 700;
@@ -205,7 +292,7 @@ export default {
     }
     .score {
       float: right;
-      width: 100px;
+      width: 90px;
     }
   }
   .bottom {

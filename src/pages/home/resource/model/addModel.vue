@@ -683,21 +683,16 @@ export default {
       let qq = this.qq
       let isCoop = this.isCoop // 是否合作
       let tag = this.tag // 标签
-      let province = null
-      let city = null
+      let district = this.district
+      let province = district[0]
+      let city = district[1]
       let introduce = this.introduce // 模特介绍
       let modelIntroList = [] // 模特附件
       let synopsisAttachmentList = this.synopsisAttachmentList
       let photoAttachmentList = this.photoAttachmentList
       let introduceAttachmentList = this.introduceAttachmentList
-      let district = this.district
-      if (district.length == 3) {
-        province = district[0]
-        city = district[1]
-      } else if (district.length == 2) {
-        province = null
-        city = district[0]
-      }
+      
+
       // modelIntroList.push.apply(synopsisAttachmentList,photoAttachmentList,introduceAttachmentList);
       modelIntroList = modelIntroList.concat(
         synopsisAttachmentList,

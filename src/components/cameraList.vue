@@ -8,16 +8,24 @@
       @open="drawerDataOpen"
       v-loading="loading"
     >
-      <el-timeline>
-        <el-timeline-item :timestamp="item.cameraTime" placement="top" v-for="(item,index) in cameraList" :key="index">
-          <el-card>
-            <p>拍摄任务：{{item.title}}</p>
-            <p>摄影师：{{item.personName}}</p>
-            <p>模特：{{item.modelName}}</p>
-            <p>场地：{{item.placeName}}</p>
-          </el-card>
-        </el-timeline-item>
-      </el-timeline>
+      <el-scrollbar style="height:100%">
+        <el-timeline>
+          <el-timeline-item
+            :timestamp="item.cameraTime"
+            placement="top"
+            v-for="(item,index) in cameraList"
+            :key="index"
+          >
+            <el-card>
+              <p>拍摄任务：{{item.title}}</p>
+              <p>摄影师：{{item.personName}}</p>
+              <p>模特：{{item.modelName}}</p>
+              <p>场地：{{item.placeName}}</p>
+            </el-card>
+          </el-timeline-item>
+        </el-timeline>
+        <el-col v-if="cameraList.length==0" class="noData">暂无{{drawerTitle}}...</el-col>
+      </el-scrollbar>
     </el-drawer>
   </div>
 </template>
@@ -34,7 +42,7 @@ export default {
   data() {
     return {
       drawerData: false,
-      drawerTitle: '场地拍摄记录',
+      drawerTitle: '拍摄记录',
       loading: false,
       placeId: null, // 场地Id
       title: null, // 任务名称
@@ -66,25 +74,24 @@ export default {
         pageSize: 1000,
         camera: {},
       }
-      let type = this.$parent.type
-      // console.log(this.$parent)
-      if (type == 0) {
+      let type = this.$parent.$el.id
+      // console.log(this.$parent.$el.id)
+      if (type == 'cameraman') {
         data.camera.personId = this.$parent.personId
-      } else if (type == 1) {
+      } else if (type == 'model') {
         data.camera.modelId = this.$parent.modelId
-      } else if (type == 2) {
+      } else if (type == 'place') {
         data.camera.placeId = this.$parent.placeId
       }
       this.getCameraList(data)
     },
     // /api/camera/listAjax
     getCameraList(data) {
-      console.log(data)
+      // console.log(data)
       this.$axios.post('/ocarplay/api/camera/listAjax', data).then((res) => {
-        console.log(res)
+        // console.log(res)
         if (res.status == 200) {
           let data = res.data
-          
           this.cameraList = data.items
           this.loading = false
         }
@@ -98,13 +105,10 @@ export default {
   .el-input {
     width: 100%;
   }
-  // .drawerData {
-    // height: 100%;
-    .el-card{
-      p{
-        margin-bottom: 13px;
-      }
+  .el-card {
+    p {
+      margin-bottom: 13px;
     }
-  // }
+  }
 }
 </style>
