@@ -402,6 +402,14 @@ const router = new Router({
               }
             },
             {
+              path: '/home/resource/modelDetail',
+              name: 'modelDetail',
+              component: resolve => require(['@/pages/home/resource/model/modelDetail'], resolve),
+              meta: {
+                requireAuth: true,
+              }
+            },
+            {
               path: '/home/resource/place',
               name: 'place',
               component: resolve => require(['@/pages/home/resource/place/place'], resolve),
@@ -456,7 +464,7 @@ try {
   var user = JSON.parse(localStorage.getItem('user'));
   let token = localStorage.getItem('token');
   let userSign = localStorage.getItem('userSign');
-  store.commit('login', { token, user, userSign });
+  // store.commit('login', { token, user, userSign });
   // if (user==null) {
   //   window.location.replace('http://guoxin.insun-china.com/hrm');
   // }

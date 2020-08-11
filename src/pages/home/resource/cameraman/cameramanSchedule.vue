@@ -37,18 +37,30 @@
             >云图系统</div>-->
 
             <!-- {{date}} -->
-            <div
-              class="schedule"
-              @click="scheduleDetail(item.schId)"
-              v-for="(item, index) in photoScheduleListData"
-              :key="index"
-              v-if="item.startGetTime<=date.getTime()&&item.endGetTime>=date.getTime()"
-            >
-              {{item.schName}}
-              <!-- {{item.startGetTime}} -->
-              <!-- {{item.endGetTime}} -->
-            </div>
 
+            <el-tooltip placement="top" effect="light">
+              <div slot="content">
+                <div
+                  class="schedule"
+                  @click="scheduleDetail(item.schId)"
+                  v-for="(item, index) in photoScheduleListData"
+                  :key="index"
+                  v-show="item.startGetTime<=date.getTime()&&item.endGetTime>=date.getTime()"
+                >{{item.schName}}</div>
+                <!-- {{photoScheduleListData}} -->
+              </div>
+              <div class="scheduleBox">
+                <div
+                  class="schedule"
+                  @click="scheduleDetail(item.schId)"
+                  v-for="(item, index) in photoScheduleListData"
+                  :key="index"
+                  v-if="item.startGetTime<=date.getTime()&&item.endGetTime>=date.getTime()"
+                >{{item.schName}}</div>
+              </div>
+            </el-tooltip>
+            <!-- {{item.startGetTime}} -->
+            <!-- {{item.endGetTime}} -->
             <!-- {{date.getTime()}} -->
           </div>
         </template>
@@ -259,7 +271,7 @@ export default {
   beforeCreate() {},
   beforeMount() {},
   mounted() {
-    console.log(this.$parent)
+    // console.log(this.$parent)
     ///////// 获取预约日程列表 start /////////
     this.getPhotoScheduleList()
     ///////// 获取日程类型列表 start /////////
@@ -307,8 +319,8 @@ export default {
         pageNum: 1,
         pageSize: 1000,
         photoSchedule: {
-          personId: this.personId 
-        }
+          personId: this.personId,
+        },
       }
       this.$axios
         .post('/ocarplay/api/photoSchedule/listAjax', data)
@@ -378,20 +390,18 @@ export default {
         area: this.district[2],
         remark: this.remark,
       }
-      this.$axios
-        .post('/ocarplay/api/photoSchedule/save', data)
-        .then((res) => {
-          console.log(res)
-          if (res.status == 200 && res.data.errcode == 0) {
-            this.$message.success(res.data.msg)
-            this.drawerLoading = false
-            this.addSchedule = false
-            ///////// 获取日程列表 start /////////
-            this.getPhotoScheduleList()
-          } else {
-            this.$message.error(res.data.msg)
-          }
-        })
+      this.$axios.post('/ocarplay/api/photoSchedule/save', data).then((res) => {
+        console.log(res)
+        if (res.status == 200 && res.data.errcode == 0) {
+          this.$message.success(res.data.msg)
+          this.drawerLoading = false
+          this.addSchedule = false
+          ///////// 获取日程列表 start /////////
+          this.getPhotoScheduleList()
+        } else {
+          this.$message.error(res.data.msg)
+        }
+      })
     },
     ///////// 新建日程 end /////////
 
@@ -405,23 +415,21 @@ export default {
         deptId: this.carSeriesId[0],
         carTypeId: this.carSeriesId[1],
         schNum: this.schNum,
-        isDo: 1
+        isDo: 1,
       }
 
-      this.$axios
-        .post('/ocarplay/api/photoSchedule/save', data)
-        .then((res) => {
-          // console.log(res)
-          if (res.status == 200) {
-            this.$message.success('下单预约成功！')
-            this.drawerLoading = false
-            this.scheduleRecord = false
-            ///////// 获取日程列表 start /////////
-            this.getPhotoScheduleList()
-          } else {
-            this.$message.error(res.data.msg)
-          }
-        })
+      this.$axios.post('/ocarplay/api/photoSchedule/save', data).then((res) => {
+        // console.log(res)
+        if (res.status == 200) {
+          this.$message.success('下单预约成功！')
+          this.drawerLoading = false
+          this.scheduleRecord = false
+          ///////// 获取日程列表 start /////////
+          this.getPhotoScheduleList()
+        } else {
+          this.$message.error(res.data.msg)
+        }
+      })
     },
     ///////// 下单预约 end /////////
 
@@ -470,15 +478,13 @@ export default {
       let data = {
         schId: id,
       }
-      this.$axios
-        .post('/ocarplay/api/photoSchedule/show', data)
-        .then((res) => {
-          console.log(res)
-          if (res.status == 200) {
-            let data = res.data
-            this.preEditSchedule = data
-          }
-        })
+      this.$axios.post('/ocarplay/api/photoSchedule/show', data).then((res) => {
+        console.log(res)
+        if (res.status == 200) {
+          let data = res.data
+          this.preEditSchedule = data
+        }
+      })
     },
     ///////// 打开日程详情 end /////////
   },
@@ -486,7 +492,25 @@ export default {
 </script>
 <style lang="scss" scoped>
 $white: #fff;
+$isColor: #1989fa;
 $icoColor: rgb(106, 145, 232);
+.scheduleBox {
+  width: 172;
+  height: 30px;
+  overflow: hidden;
+}
+.schedule {
+  margin: 0 auto;
+  width: 172px;
+  height: 30px;
+  line-height: 30px;
+  font-size: 13px;
+  text-align: center;
+  background: $isColor;
+  color: #fff;
+  cursor: pointer;
+  margin-bottom: 3px;
+}
 #cameramanSchedule {
   height: 100%;
   .el-select,
@@ -536,7 +560,6 @@ $icoColor: rgb(106, 145, 232);
     }
   }
   .content {
-    $isColor: #1989fa;
     height: calc(100% - 88px);
     background: #fff;
     overflow: hidden;
@@ -567,17 +590,6 @@ $icoColor: rgb(106, 145, 232);
       align-content: space-between;
       .time {
         width: 100%;
-      }
-
-      .schedule {
-        margin: 0 auto;
-        width: 90%;
-        height: 30px;
-        line-height: 30px;
-        font-size: 13px;
-        text-align: center;
-        background: $isColor;
-        color: #fff;
       }
     }
   }

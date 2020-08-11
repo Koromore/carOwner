@@ -5,8 +5,8 @@
       v-loading="loading"
         :data="ownerSkillData"
         style="width: 100%"
-        :header-row-style="{'height': '54px','background': 'rgb(242, 242, 242)'}"
-        :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
+        :header-row-style="{'height': '54px'}"
+        :header-cell-style="{'color': '#000'}"
         height="100%"
       >
         <el-table-column prop="name" label="序号" width="81" align="center">
@@ -244,27 +244,5 @@ $icoColor: rgb(106, 145, 232);
 #carownerspeciality {
   width: 100%;
   height: 100%;
-  .table_list {
-    height: calc(100% - 64px);
-    .el-table {
-      .el-table__header {
-        th {
-          background: none;
-        }
-      }
-    }
-    i {
-      font-size: 20px;
-      color: $icoColor;
-      cursor: pointer;
-      margin-right: 13px;
-    }
-  }
-  .paging {
-    height: 64px;
-    box-sizing: border-box;
-    padding: 16px;
-    text-align: center;
-  }
 }
 </style>

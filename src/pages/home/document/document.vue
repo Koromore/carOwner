@@ -4,13 +4,13 @@
     <el-row class="content">
       <div class="table_list">
         <el-scrollbar style="width: 100%;height: 100%" ref="documentTable">
-          <el-col :span="8" class="items" v-for="(item,index) in cooperateleListData" :key="index">
+          <el-col :span="6" class="items" v-for="(item,index) in cooperateleListData" :key="index">
             <div class="item">
-              <el-col :span="6" class="icon">
+              <el-col :span="5" class="icon">
                 <template v-if="matchType0(item.suffix)=='word'">
                   <svg
-                    width="72"
-                    height="72"
+                    width="32"
+                    height="32"
                     viewBox="0 0 32 32"
                     version="1.1"
                     xmlns="http://www.w3.org/2000/svg"
@@ -31,8 +31,8 @@
                 </template>
                 <template v-else-if="matchType0(item.suffix)=='excel'">
                   <svg
-                    width="72"
-                    height="72"
+                    width="32"
+                    height="32"
                     viewBox="0 0 32 32"
                     version="1.1"
                     xmlns="http://www.w3.org/2000/svg"
@@ -53,8 +53,8 @@
                 </template>
                 <template v-else-if="matchType0(item.suffix)=='ppt'">
                   <svg
-                    width="72"
-                    height="72"
+                    width="32"
+                    height="32"
                     viewBox="0 0 32 32"
                     version="1.1"
                     xmlns="http://www.w3.org/2000/svg"
@@ -75,8 +75,8 @@
                 </template>
                 <template v-else-if="matchType0(item.suffix)=='pdf'">
                   <svg
-                    width="72"
-                    height="72"
+                    width="32"
+                    height="32"
                     viewBox="0 0 32 32"
                     version="1.1"
                     xmlns="http://www.w3.org/2000/svg"
@@ -97,8 +97,8 @@
                 </template>
                 <template v-else-if="matchType0(item.suffix)=='image'">
                   <svg
-                    width="72"
-                    height="72"
+                    width="32"
+                    height="32"
                     viewBox="0 0 32 32"
                     version="1.1"
                     xmlns="http://www.w3.org/2000/svg"
@@ -124,8 +124,8 @@
                 </template>
                 <template v-else>
                   <svg
-                    width="72"
-                    height="72"
+                    width="32"
+                    height="32"
                     viewBox="0 0 32 32"
                     version="1.1"
                     xmlns="http://www.w3.org/2000/svg"
@@ -145,8 +145,8 @@
                   </svg>
                 </template>
               </el-col>
-              <el-col :span="18" class="text">
-                <p>{{item.fileName}}</p>
+              <el-col :span="17" class="text">
+                <p @click="download(item)">{{item.fileName}}</p>
                 <p>{{item.carTypeName+item.coopItemsStr+item.name}}</p>
                 <p>{{item.name}}</p>
               </el-col>
@@ -258,6 +258,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+$icoColor: #6a91e8;
 #document {
   height: 100%;
   .content {
@@ -269,7 +270,7 @@ export default {
       padding-top: 13px;
       .items {
         // background: red;
-        height: 130px;
+        height: 90px;
         padding: 0 13px;
         margin-bottom: 26px;
         .item {
@@ -285,14 +286,19 @@ export default {
           }
           .text {
             p {
-              font-size: 16px;
+              width: 100%;
+              font-size: 13px;
               color: #999;
+              overflow: hidden; // 超出隐藏
+              white-space: nowrap; // 不换行
+              text-overflow: ellipsis; // 显示省略号
+              cursor: pointer;
               &:nth-of-type(1) {
-                font-size: 18px;
+                font-size: 16px;
                 color: #000;
-                overflow: hidden; // 超出隐藏
-                white-space: nowrap; // 不换行
-                text-overflow: ellipsis; // 显示省略号
+              }
+              &:nth-of-type(1):hover {
+                color: $icoColor;
               }
             }
           }

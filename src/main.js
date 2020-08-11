@@ -14,6 +14,7 @@ import { duration } from '@/utils/duration'
 import { download } from '@/utils/download'
 import VueAwesomeSwiper from 'vue-awesome-swiper'
 import 'swiper/dist/css/swiper.css'
+import { matchType, matchType0 } from '@/utils/matchType' // 引入文件格
 
 // import {Decrypt,Encrypt} from '@/utils/cryptoJS'
 
@@ -47,6 +48,10 @@ Vue.prototype.$isMobile = isMobile
 Vue.prototype.$duration = duration
 
 Vue.prototype.$download = download
+
+Vue.prototype.$matchType = matchType
+Vue.prototype.$matchType0 = matchType0
+
 
 Vue.use(VueAwesomeSwiper)
 // Vue.prototype.$Decrypt = Decrypt

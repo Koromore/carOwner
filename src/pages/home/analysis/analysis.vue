@@ -6,8 +6,8 @@
         <div class="butBox1">
           <div :class="[tab1act==0?'but act':'but']" @click="tab1(0)">任务完成数</div>
           <div :class="[tab1act==1?'but act':'but']" @click="tab1(1)">车主发展数</div>
-          <div :class="[tab1act==2?'but act':'but']" @click="tab1(2)">累计支出费用</div>
-          <div :class="[tab1act==3?'but act':'but']" @click="tab1(3)">累计合作次数</div>
+          <div :class="[tab1act==2?'but act':'but']" @click="tab1(2)">累计支出</div>
+          <div :class="[tab1act==3?'but act':'but']" @click="tab1(3)">累计合作</div>
         </div>
 
         <div class="butBox2">
@@ -509,9 +509,9 @@ $icoColor: rgb(106, 145, 232);
 #analysis {
   height: 100%;
   .top {
-    height: 72px;
+    height: 45px;
     margin-bottom: 9px;
-    background: #fff;
+    // background: #fff;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -523,22 +523,23 @@ $icoColor: rgb(106, 145, 232);
       .butBox1 {
         width: auto;
         height: 32px;
-        margin-left: 36px;
+        // margin-left: 36px;
         display: flex;
         flex-wrap: wrap;
         align-items: center;
         border-radius: 3px;
-        border: 1px solid rgb(205, 205, 205);
+        // border: 1px solid rgb(205, 205, 205);
         overflow: hidden;
         .but {
           width: 81px;
           height: 32px;
           line-height: 32px;
+          background: white;
           text-align: center;
           font-size: 12px;
           cursor: pointer;
           box-sizing: border-box;
-          border-left: 1px solid rgb(205, 205, 205);
+          border-left: 1px solid #f0f0f0;
         }
         .but:nth-of-type(1) {
           border: none;
@@ -559,16 +560,17 @@ $icoColor: rgb(106, 145, 232);
         flex-wrap: wrap;
         align-items: center;
         border-radius: 3px;
-        border: 1px solid rgb(205, 205, 205);
+        // border: 1px solid rgb(205, 205, 205);
         .but {
           width: 81px;
           height: 32px;
           line-height: 32px;
+          background: white;
           text-align: center;
           font-size: 12px;
           cursor: pointer;
           box-sizing: border-box;
-          border-left: 1px solid rgb(205, 205, 205);
+          border-left: 1px solid #f0f0f0;
         }
         .but:nth-of-type(1) {
           border: none;
@@ -583,8 +585,10 @@ $icoColor: rgb(106, 145, 232);
     }
   }
   .content {
-    height: calc(100% - 97px);
+    height: calc(100% - 54px);
     background: #fff;
+    border: 1px solid #e7e7e7;
+    border-radius: 8px 8px 0 0;
     display: flex;
     flex-wrap: wrap;
     align-items: center;

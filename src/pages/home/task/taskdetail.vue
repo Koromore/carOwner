@@ -63,14 +63,15 @@
             </div>-->
             <div class="val">
               <el-collapse v-model="activeNames">
-                <el-collapse-item title="邀约对象" name="1">
-                  <template v-if="taskDetail.listInvite.length!=0">
-                    <div v-for="(item, index) in taskDetail.listInvite" :key="index">
-                      <span
-                        v-if="item.listOwnerType"
-                      >{{item.listOwnerType[0].typeName}}—{{item.listOwnerItem[0].itemName}}—{{item.realName}}</span>
+                <el-collapse-item
+                  :title="taskDetail.listInvite[0].listOwnerType[0].typeName+'-'+taskDetail.listInvite[0].realName+'-'+taskDetail.listInvite[0].listOwnerItem[0].itemName"
+                  name="1"
+                >
+                  <!-- <template v-if="taskDetail.listInvite.length!=0">
+                    <div v-for="(item, index) in taskDetail.listInvite" :key="index" v-show="index!=0">
+                      <span>{{item.listOwnerType[0].typeName}}—{{item.listOwnerItem[0].itemName}}—{{item.realName}}</span>
                     </div>
-                  </template>
+                  </template>-->
                 </el-collapse-item>
               </el-collapse>
             </div>
@@ -79,19 +80,19 @@
             <div class="key">摄影师</div>
             <div>:</div>
             <!-- <div class="val">{{taskDetail.num}}</div> -->
-            <div class="val">摄影师</div>
+            <div class="val">{{taskDetail.personName}}</div>
           </el-col>
           <el-col :span="24" class="list">
             <div class="key">模特</div>
             <div>:</div>
             <!-- <div class="val">{{taskDetail.num}}</div> -->
-            <div class="val">模特</div>
+            <div class="val">{{taskDetail.modelName}}</div>
           </el-col>
           <el-col :span="24" class="list">
             <div class="key">场地</div>
             <div>:</div>
             <!-- <div class="val">{{taskDetail.num}}</div> -->
-            <div class="val">场地</div>
+            <div class="val">{{taskDetail.placeName}}</div>
           </el-col>
           <el-col :span="24" class="list">
             <div class="key">计划周期</div>
@@ -232,7 +233,23 @@ export default {
     return {
       // 任务ID
       taskId: 1,
-      taskDetail: { listTaskFile: [], listInvite: [] },
+      taskDetail: {
+        listTaskFile: [],
+        listInvite: [
+          {
+            listOwnerType: [
+              {
+                typeName: null,
+              },
+            ],
+            listOwnerItem: [
+              {
+                itemName: null,
+              },
+            ],
+          },
+        ],
+      },
       loading: false,
       activeNames: [],
     }
@@ -392,6 +409,8 @@ export default {
     height: calc(100% - 16px);
     background: white;
     box-sizing: border-box;
+    border-radius: 8px 8px 0 0;
+    border: 1px solid #e7e7e7;
     padding: 36px;
     .list {
       display: flex;
@@ -479,7 +498,7 @@ export default {
       button {
         width: 136px;
         margin-left: 49px;
-        &:nth-of-type(1) { 
+        &:nth-of-type(1) {
           margin: 0;
         }
       }

@@ -9,7 +9,7 @@
       v-loading="loading"
     >
       <el-row class="drawerData">
-        <el-col :span="5" class="key imp">新增拍摄</el-col>
+        <el-col :span="5" class="key imp">拍摄任务</el-col>
         <el-col :span="1">:</el-col>
         <el-col :span="16" class="val">
           <el-input placeholder="请输入内容" v-model="title" clearable></el-input>

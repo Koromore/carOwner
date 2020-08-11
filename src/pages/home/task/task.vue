@@ -12,14 +12,15 @@
       </el-col>
 
       <el-col :span="12" class="right">
-        <!-- 邀约对象 -->
-        <!-- <el-select
-          v-model="typeId"
+        <!-- 任务类型 -->
+        <el-select
+          v-model="taskType"
           filterable
           clearable
-          placeholder="邀约对象"
+          placeholder="任务类型"
           size="small"
           @change="typeIdChange"
+          v-if="deptId!=90"
         >
           <el-option
             v-for="item in typeList"
@@ -27,24 +28,7 @@
             :label="item.label"
             :value="item.value"
           ></el-option>
-        </el-select>-->
-        <!-- 邀约事项 -->
-        <el-select
-          v-model="itemId"
-          filterable
-          clearable
-          placeholder="任务类型"
-          size="small"
-          @change="itemIdChange"
-        >
-          <el-option
-            v-for="item in itemIdList"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          ></el-option>
         </el-select>
-        <!-- 邀约车型 -->
         <el-select
           v-model="carSeriesId"
           filterable
@@ -166,12 +150,16 @@
                 </el-tooltip>
               </template>
               <template v-else>
-                <el-tooltip class="item" effect="dark" content="完善任务" placement="top">
-                  <i class="el-icon-document-checked" @click="addTask(1, scope.row.taskId)"></i>
-                </el-tooltip>
-                <el-tooltip class="item" effect="dark" content="编辑任务" placement="top">
-                  <i class="el-icon-edit" @click="addTask(1, scope.row.taskId)"></i>
-                </el-tooltip>
+                <template v-if="scope.row.personId&&scope.row.modelId&&scope.row.placeId">
+                  <el-tooltip class="item" effect="dark" content="编辑任务" placement="top">
+                    <i class="el-icon-edit" @click="addTask(1, scope.row.taskId)"></i>
+                  </el-tooltip>
+                </template>
+                <template v-else>
+                  <el-tooltip class="item" effect="dark" content="完善任务" placement="top">
+                    <i class="el-icon-document-checked" @click="addTask(1, scope.row.taskId)"></i>
+                  </el-tooltip>
+                </template>
               </template>
             </template>
           </el-table-column>
@@ -223,9 +211,9 @@
           </el-table-column>
           <el-table-column prop="ownerName" label="邀约对象" min-width="130" show-overflow-tooltip></el-table-column>
           <!-- <el-table-column prop="ownerItemList" label="邀约事项" min-width="130" show-overflow-tooltip></el-table-column> -->
-          <el-table-column prop label="摄影师" min-width="90" show-overflow-tooltip>摄影师</el-table-column>
-          <el-table-column prop label="模特" min-width="90" show-overflow-tooltip>模特</el-table-column>
-          <el-table-column prop label="场地" min-width="90" show-overflow-tooltip>场地</el-table-column>
+          <el-table-column prop="personName" label="摄影师" min-width="90" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="modelName" label="模特" min-width="90" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="placeName" label="场地" min-width="90" show-overflow-tooltip></el-table-column>
           <el-table-column prop="carSeriesName" label="邀约车型" min-width="130" show-overflow-tooltip>
             <template slot-scope="scope">
               <template v-if="scope.row.carSeriesName">{{scope.row.carSeriesName}}</template>
@@ -256,7 +244,16 @@
           <el-table-column prop="endTime" label="预计时间" min-width="100" sortable>
             <template slot-scope="scope">{{$date(scope.row.endTime)}}</template>
           </el-table-column>
-          <el-table-column prop="delayReason" label="延期原因" min-width="100"></el-table-column>
+          <el-table-column prop="delayReason" label="延期原因" min-width="100">
+            <template slot-scope="scope">
+              <template v-if="scope.row.status==3">
+                由于未按时提交任务而延期
+              </template>
+              <template v-else>
+                {{scope.row.delayReason}}
+              </template>
+            </template>
+          </el-table-column>
           <el-table-column
             prop="address"
             label="操作"
@@ -509,7 +506,7 @@
     <!-- 抽屉弹窗延期原因 end -->
 
     <!-- 抽屉弹窗提交任务 start -->
-    <el-drawer title="提交任务" :visible.sync="drawerPuttask" size="720px" v-loading="drawerLoading">
+    <el-drawer title="提交任务" :visible.sync="drawerPuttask" size="720px" v-loading="drawerLoading" :destroy-on-close="true">
       <el-scrollbar style="height:100%">
         <el-row class="drawerPuttask">
           <el-col :span="4">任务名称:</el-col>
@@ -543,8 +540,8 @@
                 <el-input placeholder="金额" size="medium" v-model="item.money" clearable></el-input>
               </el-col>
               <el-col :span="3">
-                <el-button type="primary" size="medium" v-if="!item.isCard">油卡</el-button>
-                <el-button type="success" size="medium" v-else>现金</el-button>
+                <el-button type="success" size="medium" v-if="taskDetail.taskType==4">现金</el-button>
+                <el-button type="primary" size="medium" v-else>油卡</el-button>
               </el-col>
               <el-col :span="4">
                 <i class="el-icon-document-copy" @click="copyDetailList(index)"></i>
@@ -591,6 +588,7 @@ export default {
       taskId: '', // 任务ID
       taskName: '', // 任务NAME
       taskDeptId: '', // 任务部门ID
+      taskDetail: {taskType:0},
       drawerLoading: false,
       detailList: [
         {
@@ -610,18 +608,22 @@ export default {
       typeList: [
         {
           value: 1,
-          label: '支持型',
+          label: '借车',
         },
         {
           value: 2,
-          label: '拍摄型',
+          label: '素材',
         },
         {
           value: 3,
-          label: '资源型',
+          label: '邀约',
+        },
+        {
+          value: 4,
+          label: '拍摄',
         },
       ],
-      typeId: '',
+      taskType: '',
       itemIdList: [],
       itemId: '',
       carSeriesIdList: [],
@@ -672,8 +674,6 @@ export default {
   beforeMount() {},
   mounted() {
     // this.foreach()
-    ///////// 获取合作事项列表 start /////////
-    // this.getshowOwnerType()
     ///////// 获取车系列表 start /////////
     this.getCarSeriesLists()
     ///////// 获取任务列表 /////////
@@ -683,35 +683,6 @@ export default {
   },
   // 方法
   methods: {
-    ///////// 获取合作事项列表 start /////////
-    getshowOwnerType() {
-      let data = { typeId: this.typeId }
-      this.$axios
-        .post('/ocarplay/api/vehicleOwner/getOwnerTypeItems', data)
-        .then((res) => {
-          // console.log(res)
-          // this.loading = false
-          if (res.status == 200) {
-            // console.log(res)
-            let data = res.data
-            let itemIdList = []
-            data.forEach((element) => {
-              // console.log(element)
-              // let listId = element.itemIds.split('/')
-              // let listName = element.itemName.split('/')
-              // listId.forEach((element0, i) => {
-              itemIdList.push({
-                value: element.itemId,
-                label: element.itemName,
-              })
-              // })
-            })
-            this.itemIdList = itemIdList
-          }
-        })
-    },
-    ///////// 获取合作事项列表 end /////////
-
     ///////// 获取车系列表 start /////////
     getCarSeriesLists() {
       let eventList = []
@@ -737,14 +708,12 @@ export default {
     },
     ///////// 获取车系列表 end /////////
 
-    ///////// 任务列表对象筛选 start /////////
+    ///////// 任务列表任务类型筛选 start /////////
     typeIdChange(id) {
       // this.status = id
-      this.itemId = ''
       this.getTaskListAjax()
-      this.getshowOwnerType()
     },
-    ///////// 任务列表对象筛选 end /////////
+    ///////// 任务列表任务类型筛选 end /////////
 
     ///////// 任务列表事项筛选 start /////////
     itemIdChange(id) {
@@ -781,8 +750,8 @@ export default {
         task: {
           deleteFlag: false,
           status: this.status,
-          typeId: this.typeId,
-          itemId: this.itemId,
+          taskType: this.taskType,
+          // itemId: this.itemId,
           carSeriesId: this.carSeriesId,
           taskName: this.searchWordData.value,
         },
@@ -790,6 +759,9 @@ export default {
         // task: {
         //   initUserId: 266
         // }
+      }
+      if (this.deptId==90) {
+        data.task.taskType = 4
       }
       this.$axios.post('/ocarplay/task/listAjax', data).then((res) => {
         // console.log(res)
@@ -801,6 +773,15 @@ export default {
             element.ownerName = []
             element.invMoney = 0
             element.inviteNumOver = 0
+            if (element.personId == 0) {
+              element.personName = '/'
+            }
+            if (element.modelId == 0) {
+              element.modelName = '/'
+            }
+            if (element.placeId == 0) {
+              element.placeName = '/'
+            }
             element.listInvite.forEach((element1) => {
               // console.log(element1)
               if (element1.listOwnerType) {
@@ -956,8 +937,40 @@ export default {
 
     ///////// 提交任务 start /////////
     putTask(prm) {
-      // console.log(prm)
-      if (prm.personId&&prm.modelId&&prm.placeId) {
+      if (prm.taskType == 4) {
+        if (prm.personId && prm.modelId && prm.placeId) {
+          this.drawerLoading = true
+          this.drawerPuttask = true
+          this.taskId = prm.taskId
+          this.taskDeptId = prm.deptId
+          this.taskName = prm.taskName
+          let data = {
+            taskId: prm.taskId,
+          }
+          this.$axios.post('/ocarplay/task/edit', data).then((res) => {
+            if (res.status == 200) {
+              let data = res.data.data
+              let listInviteList = []
+              data.listInvite.forEach((element) => {
+                listInviteList.push({
+                  inviteData: [element.typeId, element.itemId, element.ownerId],
+                  typeId: element.typeId,
+                  itemId: element.itemId,
+                  ownerId: element.ownerId,
+                  url: element.url,
+                  money: element.money,
+                  isCard: element.isCard,
+                })
+              })
+              this.listInviteList = listInviteList
+              this.taskDetail = data
+              this.drawerLoading = false
+            }
+          })
+        } else {
+          this.$message.error('无法提交，模特摄影师信息采购尚未填写！')
+        }
+      } else {
         this.drawerLoading = true
         this.drawerPuttask = true
         this.taskId = prm.taskId
@@ -967,7 +980,6 @@ export default {
           taskId: prm.taskId,
         }
         this.$axios.post('/ocarplay/task/edit', data).then((res) => {
-          // console.log(res)
           if (res.status == 200) {
             let data = res.data.data
             let listInviteList = []
@@ -983,11 +995,10 @@ export default {
               })
             })
             this.listInviteList = listInviteList
+            this.taskDetail = data
             this.drawerLoading = false
           }
         })
-      }else{
-        this.$message.error('无法提交，模特摄影师信息采购尚未填写！')
       }
     },
     putTaskif(prm) {
@@ -1319,7 +1330,7 @@ $statusColor4: #ea8a85;
   }
   .content {
     height: calc(100% - 54px);
-    border: 1px solid #dddddd;
+    border: 1px solid #e7e7e7;
     border-radius: 8px 8px 0 0;
     // background: #fff;
     .table_list {

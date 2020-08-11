@@ -106,10 +106,13 @@ export default {
       // 轮播数据
       swiperOption: {
         pagination: '.swiper-pagination',
-        // autoplay: {},
+        autoplay: {
+          disableOnInteraction: false,
+        },
         observer: true, //修改swiper自己或子元素时，自动初始化swiper
         observeParents: true, //修改swiper的父元素时，自动初始化swiper
         loop: true, // 环路
+        centeredSlides: false, // 第一张图的对齐方式
         // //  pagination: '.swiper-pagination',
         slidesPerView: 3,
         paginationClickable: true,
@@ -162,13 +165,13 @@ export default {
   // 钩子函数
   created() {
     //只有一张图片时不轮播
-    this.swiperOption.autoplay =
-      this.swiperList.length != 1
-        ? {
-            disableOnInteraction: false, // 用户操作swiper之后，是否禁止autoplay
-            delay: 3000, // 自动切换的时间间隔（单位ms）
-          }
-        : false
+    // this.swiperOption.autoplay =
+    //   this.swiperList.length != 1
+    //     ? {
+    //         disableOnInteraction: false, // 用户操作swiper之后，是否禁止autoplay
+    //         delay: 3000, // 自动切换的时间间隔（单位ms）
+    //       }
+    //     : false
   },
   beforeCreate() {},
   beforeMount() {},
@@ -231,14 +234,19 @@ export default {
             ]
           }
           // console.log(swiperList)
+          if (swiperList.length==1) {
+            this.swiperOption.centeredSlides = true
+          }
+          // console.log(this.swiperOption)
           this.swiperList = swiperList
 
           // console.log(this.swiperList)
           // console.log(this.$refs.goodSwiper.swiper)
           // this.isshow = true
-          // this.$nextTick(() => {
-          //   // this.$refs.goodSwiper.swiper.update()
-          // })
+          this.$nextTick(() => {
+            this.$refs.goodSwiper.swiper.update()
+          })
+          console.log(this.$refs.goodSwiper.swiper)
         }
       })
     },
@@ -269,6 +277,8 @@ $icoColor: #6a91e8;
   border-radius: 8px 8px 0 0;
   .content {
     position: relative;
+    border: 1px solid #e7e7e7;
+    border-radius: 8px 8px 0 0;
     height: 100%;
     box-sizing: border-box;
     padding: 36px;

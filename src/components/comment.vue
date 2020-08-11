@@ -250,6 +250,9 @@ export default {
 </script>
 <style lang="scss" scoped>
 #comment {
+  .el-row{
+    padding-top: 6px;
+  }
   .el-input {
     width: 100%;
     & >>> input::-webkit-outer-spin-button,
@@ -296,7 +299,10 @@ export default {
     }
   }
   .bottom {
-    margin-bottom: 36px;
+    margin: 13px 0;
+    div:nth-of-type(1){
+      margin-bottom: 6px;
+    }
   }
   .el-row {
     position: relative;

@@ -77,7 +77,7 @@
                         d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z"
                       />
                     </svg>
-                    &nbsp;{{item.province+item.city}}
+                    <span>&nbsp;{{item.province+item.city}}</span>
                   </p>
                   <p>
                     <svg
@@ -91,9 +91,8 @@
                       <path
                         d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"
                       />
-                    </svg>&nbsp;
-                    <template v-if="item.isCar">会开车</template>
-                    <template v-else>不会开车</template>
+                    </svg>
+                    <span>&nbsp;<template v-if="item.isCar">会开车</template><template v-else>不会开车</template></span>
                   </p>
                   <p>
                     <svg
@@ -108,7 +107,7 @@
                         d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z"
                       />
                     </svg>
-                    &nbsp;{{item.tag}}
+                    <span>&nbsp;{{item.tag}}</span>
                   </p>
                   <p @click="toCameraList(item.personId,1)">
                     <svg
@@ -123,7 +122,7 @@
                         d="M864 260H728l-32.4-90.8a32.07 32.07 0 0 0-30.2-21.2H358.6c-13.5 0-25.6 8.5-30.1 21.2L296 260H160c-44.2 0-80 35.8-80 80v456c0 44.2 35.8 80 80 80h704c44.2 0 80-35.8 80-80V340c0-44.2-35.8-80-80-80zM512 716c-88.4 0-160-71.6-160-160s71.6-160 160-160 160 71.6 160 160-71.6 160-160 160zm-96-160a96 96 0 1 0 192 0 96 96 0 1 0-192 0z"
                       />
                     </svg>
-                    &nbsp;合作拍摄{{item.coopNum}}次
+                    <span>&nbsp;合作拍摄{{item.coopNum}}次</span>
                   </p>
                   <p @click="toCommentList(item.personId)">
                     <svg
@@ -138,7 +137,7 @@
                         d="M908.1 353.1l-253.9-36.9L540.7 86.1c-3.1-6.3-8.2-11.4-14.5-14.5-15.8-7.8-35-1.3-42.9 14.5L369.8 316.2l-253.9 36.9c-7 1-13.4 4.3-18.3 9.3a32.05 32.05 0 0 0 .6 45.3l183.7 179.1-43.4 252.9a31.95 31.95 0 0 0 46.4 33.7L512 754l227.1 119.4c6.2 3.3 13.4 4.4 20.3 3.2 17.4-3 29.1-19.5 26.1-36.9l-43.4-252.9 183.7-179.1c5-4.9 8.3-11.3 9.3-18.3 2.7-17.5-9.5-33.7-27-36.3z"
                       />
                     </svg>
-                    &nbsp;总体评分<span v-if="item.avgScore">{{item.avgScore}}</span><span v-else>暂无</span>
+                    <span>&nbsp;总体评分<span v-if="item.avgScore" class="num">{{item.avgScore}}</span><span v-else class="num">暂无</span></span>
                   </p>
                 </div>
               </div>
@@ -428,67 +427,5 @@ export default {
 $icoColor: #6a91e8;
 #camera {
   height: 100%;
-  .top {
-    height: 45px;
-    margin-bottom: 9px;
-    display: flex;
-    align-items: center;
-    .left {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: flex-start;
-      box-sizing: border-box;
-      .butBox {
-        // width: 220px;
-        // height: 46px;
-        overflow: hidden;
-        background: white;
-        color: #a0a0a0;
-        border-radius: 3px;
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        .but {
-          width: 81px;
-          height: 32px;
-          line-height: 32px;
-          font-size: 12px;
-          text-align: center;
-          cursor: pointer;
-          &:nth-of-type(1),
-          &:nth-of-type(2) {
-            box-sizing: border-box;
-            border-right: 1px solid #f0f0f0;
-          }
-        }
-        .but.act,
-        .but:hover {
-          background: $icoColor;
-          color: white;
-        }
-        .but:hover {
-          background: $icoColor;
-        }
-      }
-    }
-    .right {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: flex-end;
-      box-sizing: border-box;
-      .el-select {
-        width: 136px;
-        margin-right: 9px;
-      }
-      .add_task {
-        button {
-          width: 136px;
-          background: $icoColor;
-        }
-      }
-    }
-  }
 }
 </style>

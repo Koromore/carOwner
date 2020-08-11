@@ -132,10 +132,10 @@
             <el-col :span="24" class="title">合作信息</el-col>
             <el-col :span="12" class="box1">
               <el-col :span="24" class="list">
-                <el-col :span="7" class="key">签约合同</el-col>
+                <el-col :span="7" class="key" style="align-self: flex-start;">签约合同</el-col>
                 <el-col :span="14" class="val">
                   <el-upload
-                    class="upload-demo"
+                    class="pactUpload"
                     action="/ocarplay/file/upload"
                     :on-success="pactSuccess"
                     :on-remove="pactRemove"
@@ -186,7 +186,7 @@
                 </el-col>
                 <el-col :span="19" :offset="3" class="val">
                   <el-upload
-                    class="upload-demo"
+                    class="vitaeUpload"
                     drag
                     multiple
                     action="/ocarplay/file/upload"
@@ -839,6 +839,9 @@ export default {
       }
       .val {
         // width: 420px;
+        .vitaeUpload{
+          margin-top: 26px;
+        }
         .el-cascader,
         .el-select,
         .el-date-editor,

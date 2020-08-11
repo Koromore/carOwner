@@ -135,7 +135,7 @@
         <el-col :span="12" class="right">
           <el-col :span="24" class="list">
             <div class="key">身份证</div>
-            <div class="val valList">
+            <div class="val">
               <el-input placeholder="请输入内容" v-model="identity" clearable></el-input>
             </div>
           </el-col>
@@ -830,26 +830,6 @@ export default {
       padding-left: $pad;
       .list {
         justify-content: flex-start;
-        .valList {
-          box-sizing: border-box;
-          // border: 1px solid #dcdfe6;
-          // border-radius: 4px;
-          // padding: 16px;
-          display: flex;
-          flex-wrap: wrap;
-          justify-content: space-between;
-          align-items: center;
-          > div {
-            margin-bottom: 9px;
-          }
-          .miKey {
-            font-size: 14px;
-            color: #aaa;
-          }
-          .el-input {
-            width: calc(100% - 64px);
-          }
-        }
       }
     }
     .center {

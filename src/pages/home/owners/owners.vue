@@ -131,11 +131,11 @@
               <template v-if="scope.row.period == 2">按季度结算</template>
             </template>
           </el-table-column>
-          <el-table-column prop label="操作" width="160" v-if="subordinate==150||adminShow">
+          <el-table-column prop label="操作" min-width="81" v-if="subordinate==150||adminShow">
             <template slot-scope="scope">
-              <el-tooltip class="item" effect="dark" content="车主信息" placement="top">
+              <!-- <el-tooltip class="item" effect="dark" content="车主信息" placement="top">
                 <i class="el-icon-view" @click="toDetail(scope.row)"></i>
-              </el-tooltip>
+              </el-tooltip> -->
               <el-tooltip class="item" effect="dark" content="场地信息" placement="top">
                 <i class="el-icon-map-location" @click="toOwnerssite(scope.row)"></i>
               </el-tooltip>
@@ -173,7 +173,7 @@
           :data="ownerListData"
           style="width: 100%"
           :header-row-style="{'height': '54px'}"
-          :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
+          :header-cell-style="{'color': '#000'}"
           height="100%"
         >
           <el-table-column prop label="序号" width="81" align="center" type="index"></el-table-column>
@@ -233,14 +233,14 @@
               <template v-else>0</template>
             </template>
           </el-table-column>
-          <el-table-column prop label="操作" width="230" v-if="subordinate==150||adminShow">
+          <el-table-column prop label="操作" min-width="160" v-if="subordinate==150||adminShow">
             <template slot-scope="scope">
               <el-tooltip class="item" effect="dark" content="预约记录" placement="top">
                 <i class="el-icon-time" @click="toRecord(scope.row.ownerId)"></i>
               </el-tooltip>
-              <el-tooltip class="item" effect="dark" content="车主信息" placement="top">
+              <!-- <el-tooltip class="item" effect="dark" content="车主信息" placement="top">
                 <i class="el-icon-view" @click="toDetail(scope.row)"></i>
-              </el-tooltip>
+              </el-tooltip> -->
               <el-tooltip class="item" effect="dark" content="日程管理" placement="top">
                 <i class="el-icon-date" @click="toOwnersschedule(scope.row.vehicleOwnerId)"></i>
               </el-tooltip>
@@ -281,7 +281,7 @@
           :data="ownerListData"
           style="width: 100%"
           :header-row-style="{'height': '54px'}"
-          :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
+          :header-cell-style="{'color': '#000'}"
           height="100%"
         >
           <el-table-column prop label="序号" width="81" align="center" type="index"></el-table-column>
@@ -341,14 +341,14 @@
               <template v-else>0</template>
             </template>
           </el-table-column>
-          <el-table-column prop label="操作" width="230" v-if="subordinate==150||adminShow">
+          <el-table-column prop label="操作" min-width="160" v-if="subordinate==150||adminShow">
             <template slot-scope="scope">
               <el-tooltip class="item" effect="dark" content="预约记录" placement="top">
                 <i class="el-icon-time" @click="toRecord(scope.row.ownerId)"></i>
               </el-tooltip>
-              <el-tooltip class="item" effect="dark" content="车主信息" placement="top">
+              <!-- <el-tooltip class="item" effect="dark" content="车主信息" placement="top">
                 <i class="el-icon-view" @click="toDetail(scope.row)"></i>
-              </el-tooltip>
+              </el-tooltip> -->
               <el-tooltip class="item" effect="dark" content="日程管理" placement="top">
                 <i class="el-icon-date" @click="toOwnersschedule(scope.row.vehicleOwnerId)"></i>
               </el-tooltip>
@@ -828,7 +828,7 @@ $icoColor: rgb(106, 145, 232);
         flex-wrap: wrap;
         align-items: center;
         border-radius: 3px;
-        border: 1px solid rgb(205, 205, 205);
+        // border: 1px solid rgb(205, 205, 205);
         background: white;
         .but {
           width: 81px;
@@ -838,7 +838,7 @@ $icoColor: rgb(106, 145, 232);
           font-size: 12px;
           cursor: pointer;
           box-sizing: border-box;
-          border-left: 1px solid rgb(205, 205, 205);
+          border-left: 1px solid #f0f0f0;
         }
         .but:nth-of-type(1) {
           border: none;
@@ -859,7 +859,7 @@ $icoColor: rgb(106, 145, 232);
         flex-wrap: wrap;
         align-items: center;
         border-radius: 3px;
-        border: 1px solid rgb(205, 205, 205);
+        // border: 1px solid rgb(205, 205, 205);
         background: white;
         .but {
           width: 81px;
@@ -869,7 +869,7 @@ $icoColor: rgb(106, 145, 232);
           font-size: 12px;
           cursor: pointer;
           box-sizing: border-box;
-          border-left: 1px solid rgb(205, 205, 205);
+          border-left: 1px solid #f0f0f0;
         }
         .but:nth-of-type(1) {
           border: none;
@@ -916,7 +916,7 @@ $icoColor: rgb(106, 145, 232);
     // background: #fff;
     // height: calc(100% - 54px);
     overflow: hidden;
-    border: 1px solid #dddddd;
+    border: 1px solid #e7e7e7;
     border-radius: 8px 8px 0 0;
     .table_list {
       height: calc(100% - 64px);

@@ -20,7 +20,14 @@
           ></el-option>
         </el-select>-->
         <!-- 城市 -->
-        <el-select v-model="city" filterable clearable placeholder="城市" size="small" @change="cityChange">
+        <el-select
+          v-model="city"
+          filterable
+          clearable
+          placeholder="城市"
+          size="small"
+          @change="cityChange"
+        >
           <el-option
             v-for="item in cityList"
             :key="item.value"
@@ -47,7 +54,7 @@
           <el-col class="itemsBox" :span="6" v-for="(item,index) in modelList" :key="index">
             <div class="items">
               <div class="left">
-                <div class="el-imageBox">
+                <div class="el-imageBox" @click="toModelDetail(item.modelId)">
                   <div class="sex">
                     <template v-if="item.sex">
                       <i class="el-icon-female"></i>
@@ -246,7 +253,7 @@ export default {
     ///////// 跳转新增模特界面 end /////////
 
     ///////// 筛选模特列表 start /////////
-    cityChange(){
+    cityChange() {
       this.getlistModel()
     },
     ///////// 筛选模特列表 end /////////
@@ -283,6 +290,15 @@ export default {
     },
     ///////// 获取模特列表 end /////////
 
+    ///////// 跳转模特详情 start /////////
+    toModelDetail(id) {
+      this.$router.push({
+        path: '/home/resource/modelDetail',
+        query: { id: id },
+      })
+    },
+    ///////// 跳转模特详情 end /////////
+
     ///////// 跳转模特编辑 start /////////
     toModel(id) {
       this.$router.push({
@@ -293,7 +309,7 @@ export default {
     ///////// 跳转模特编辑 end /////////
 
     ///////// 打开拍摄记录 start /////////
-    toCameraList(id,type) {
+    toCameraList(id, type) {
       this.modelId = id
       this.cameraListShow += 1
     },
@@ -358,67 +374,5 @@ export default {
 $icoColor: #6a91e8;
 #model {
   height: 100%;
-  .top {
-    height: 45px;
-    margin-bottom: 9px;
-    display: flex;
-    align-items: center;
-    .left {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: flex-start;
-      box-sizing: border-box;
-      .butBox {
-        // width: 220px;
-        // height: 46px;
-        overflow: hidden;
-        background: white;
-        color: #a0a0a0;
-        border-radius: 3px;
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        .but {
-          width: 81px;
-          height: 32px;
-          line-height: 32px;
-          font-size: 12px;
-          text-align: center;
-          cursor: pointer;
-          &:nth-of-type(1),
-          &:nth-of-type(2) {
-            box-sizing: border-box;
-            border-right: 1px solid #f0f0f0;
-          }
-        }
-        .but.act,
-        .but:hover {
-          background: $icoColor;
-          color: white;
-        }
-        .but:hover {
-          background: $icoColor;
-        }
-      }
-    }
-    .right {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: flex-end;
-      box-sizing: border-box;
-      .el-select {
-        width: 136px;
-        margin-right: 9px;
-      }
-      .add_task {
-        button {
-          width: 136px;
-          background: $icoColor;
-        }
-      }
-    }
-  }
 }
 </style>

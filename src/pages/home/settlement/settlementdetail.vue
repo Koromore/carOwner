@@ -11,8 +11,9 @@
       <el-col :span="8" class="center cont">《{{taskName}}》</el-col>
       <el-col :span="8" class="right cont">
         <div @click="submitList">
-          <i class="el-icon-circle-check"></i>
-          <br />提交并完成
+          <!-- <i class="el-icon-circle-check"></i>
+          <br />提交并完成 -->
+          <el-button type="primary" icon="el-icon-circle-check" size="small">提交并完成</el-button>
         </div>
       </el-col>
     </el-row>
@@ -25,8 +26,8 @@
           v-loading="listLoading"
           :data="inviteList"
           style="width: 100%"
-          :header-row-style="{'height': '54px','background': 'rgb(242, 242, 242)'}"
-          :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
+          :header-row-style="{'height': '54px'}"
+          :header-cell-style="{'color': '#000'}"
           height="100%"
         >
           <el-table-column prop label width="24" show-overflow-tooltip></el-table-column>
@@ -34,7 +35,14 @@
             <template slot-scope="scope">{{$date(scope.row.createTime)}}</template>
           </el-table-column>
           <el-table-column prop="name" label="收件人" min-width="70" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="itemName" label="合作事项" min-width="80" show-overflow-tooltip></el-table-column>
+          <el-table-column prop label="任务类型" min-width="80" show-overflow-tooltip>
+            <template slot-scope="scope">
+              <template v-if="scope.row.taskType==1">借车</template>
+              <template v-else-if="scope.row.taskType==2">素材</template>
+              <template v-else-if="scope.row.taskType==3">邀约</template>
+              <template v-else-if="scope.row.taskType==4">拍摄</template>
+            </template>
+          </el-table-column>
           <el-table-column prop="title" label="内容标题" min-width="130" show-overflow-tooltip></el-table-column>
           <el-table-column prop="link" label="链接" width="60">
             <template slot-scope="scope">
@@ -46,7 +54,7 @@
           <el-table-column prop="bankCard" label="银行卡号" min-width="110" show-overflow-tooltip></el-table-column>
           <el-table-column prop="isCard" label="油卡或现金" min-width="90" align="center">
             <template slot-scope="scope">
-              <template v-if="scope.row.isCard">现金</template>
+              <template v-if="scope.row.taskType==4">现金</template>
               <template v-else>油卡</template>
             </template>
           </el-table-column>
@@ -71,7 +79,6 @@
               <template v-else-if="scope.row.isCard&&scope.row.prove">
                 <!-- <el-button size="mini" type="success">查看凭证</el-button> -->
                 <el-image
-                  style="width: 80px; height: 28px; cursor: pointer;font-size: 0;"
                   src="static/images/ico/btn.jpg"
                   :preview-src-list="['/ocarplay/'+scope.row.prove]"
                 ></el-image>
@@ -123,7 +130,7 @@ export default {
       pageNum: 1,
       tableData: [],
       prove: '',
-      inviteList: []
+      inviteList: [],
     }
   },
   // 侦听器
@@ -148,18 +155,18 @@ export default {
     getInvite() {
       let data = {
         invite: {
-          taskId: this.taskId
+          taskId: this.taskId,
         },
         pageNum: this.pageNum,
-        pageSize: this.pageSize
+        pageSize: this.pageSize,
       }
       this.$axios
         .post('/ocarplay/api/invite/getInvitePageListByTaskId', data)
-        .then(res => {
+        .then((res) => {
           // console.log(res)
           if (res.status == 200) {
             let data = res.data
-            res.data.items.forEach(element => {
+            res.data.items.forEach((element) => {
               element.prove0 = ''
             })
             this.inviteList = res.data.items
@@ -191,7 +198,7 @@ export default {
       this.$confirm('确认提交任务吗?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
       })
         .then(() => {
           // this.$message({
@@ -203,7 +210,7 @@ export default {
         .catch(() => {
           this.$message({
             type: 'info',
-            message: '已取消提交'
+            message: '已取消提交',
           })
         })
     },
@@ -215,7 +222,7 @@ export default {
         inviteId: prm.inviteId,
         prove: prm.prove,
         isOver: 1,
-        userId: this.userId
+        userId: this.userId,
       }
       if (prm.isCard) {
         data.prove = prm.prove
@@ -223,7 +230,7 @@ export default {
         data.prove = prm.prove0
       }
       if (data.prove) {
-        this.$axios.post('/ocarplay/api/invite/save', data).then(res => {
+        this.$axios.post('/ocarplay/api/invite/save', data).then((res) => {
           // console.log(res)
           this.listLoading = false
           if (res.status == 200 && res.data.errcode == 0) {
@@ -243,7 +250,7 @@ export default {
       this.$confirm('确认提交任务吗?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
       })
         .then(() => {
           // this.$message({
@@ -255,7 +262,7 @@ export default {
         .catch(() => {
           this.$message({
             type: 'info',
-            message: '已取消提交'
+            message: '已取消提交',
           })
         })
     },
@@ -263,9 +270,9 @@ export default {
     inviteUpdate() {
       this.listLoading = true
       let data = {
-        taskId: this.taskId
+        taskId: this.taskId,
       }
-      this.$axios.post('/ocarplay/api/invite/updateBatch', data).then(res => {
+      this.$axios.post('/ocarplay/api/invite/updateBatch', data).then((res) => {
         // console.log(res)
         this.listLoading = true
         if (res.status == 200 && res.data.errcode == 0) {
@@ -291,9 +298,9 @@ export default {
       // console.log(pageNum)
       ///////// 获取结算清单 start /////////
       this.getInvite()
-    }
+    },
     ///////// 分页 end /////////
-  }
+  },
 }
 </script>
 <style lang="scss" scoped>
@@ -302,9 +309,10 @@ $icoColor: rgb(106, 145, 232);
 #settlementDetail {
   height: 100%;
   .top {
-    height: 72px;
+    height: 45px;
     margin-bottom: 9px;
-    background: #fff;
+    // background: #fff;
+    // border-radius: 6px;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -316,7 +324,6 @@ $icoColor: rgb(106, 145, 232);
     .left {
       justify-content: flex-start;
       font-size: 22px;
-      padding-left: 36px;
       div {
         cursor: pointer;
       }
@@ -331,9 +338,12 @@ $icoColor: rgb(106, 145, 232);
     }
     .right {
       justify-content: flex-end;
-      padding-right: 36px;
       color: $icoColor;
       font-size: 13px;
+      button {
+          width: 136px;
+          background: $icoColor;
+        }
       div {
         text-align: center;
         cursor: pointer;
@@ -344,10 +354,18 @@ $icoColor: rgb(106, 145, 232);
     }
   }
   .content {
-    height: calc(100% - 97px);
-    background: #fff;
+    height: calc(100% - 54px);
+    border: 1px solid #e7e7e7;
+    border-radius: 8px 8px 0 0;
     .table_list {
       height: calc(100% - 64px);
+      .el-image {
+        width: 80px;
+        height: 28px;
+        cursor: pointer;
+        font-size: 0;
+        margin: 0 auto;
+      }
       .el-table {
         .el-table__header {
           th {

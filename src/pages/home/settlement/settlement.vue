@@ -7,6 +7,8 @@
           <div :class="[tabact==1?'but act':'but']" @click="tab(1)">未结算</div>
           <div :class="[tabact==2?'but act':'but']" @click="tab(2)">已结算</div>
         </div>
+      </el-col>
+      <el-col :span="12" class="right">
         <div class="memu">
           <el-select
             v-model="memuValue"
@@ -23,9 +25,7 @@
             ></el-option>
           </el-select>
         </div>
-      </el-col>
-      <el-col :span="12" class="right">
-        <el-button type="primary" icon="el-icon-download" size="small">下载清单</el-button>
+        <el-button type="primary" icon="el-icon-download" size="small" @click="downloadList">下载清单</el-button>
       </el-col>
     </el-row>
     <!-- 头部选项框 end -->
@@ -37,13 +37,13 @@
         <el-table
           :data="inviteListData"
           style="width: 100%"
-          :header-row-style="{'height': '54px','background': 'rgb(242, 242, 242)'}"
-          :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
+          :header-row-style="{'height': '54px'}"
+          :header-cell-style="{'color': '#000'}"
           height="100%"
           @selection-change="handleSelectionChange"
         >
           <el-table-column label="全选" type="selection" width="55"></el-table-column>
-          <el-table-column prop label width="24" show-overflow-tooltip></el-table-column>
+          <!-- <el-table-column prop label width="24" show-overflow-tooltip></el-table-column> -->
           <!-- <el-table-column prop="serNum" label="采购编号" min-width="180"></el-table-column> -->
           <el-table-column prop="deptName" label="项目组" min-width="130"></el-table-column>
           <el-table-column prop="taskName" label="任务名称" min-width="360"></el-table-column>
@@ -91,11 +91,12 @@
         <el-table
           :data="inviteListData1"
           style="width: 100%"
-          :header-row-style="{'height': '54px','background': 'rgb(242, 242, 242)'}"
-          :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)'}"
+          :header-row-style="{'height': '54px'}"
+          :header-cell-style="{'color': '#000'}"
           height="100%"
         >
-          <el-table-column prop label width="24" show-overflow-tooltip></el-table-column>
+          <el-table-column label="全选" type="selection" width="55"></el-table-column>
+          <!-- <el-table-column prop label width="24" show-overflow-tooltip></el-table-column> -->
           <!-- <el-table-column prop="serNum" label="采购编号" min-width="180"></el-table-column> -->
           <el-table-column prop="deptName" label="项目组" min-width="130"></el-table-column>
           <el-table-column prop="taskName" label="任务名称" min-width="360"></el-table-column>
@@ -130,6 +131,7 @@
 </template>
 <script>
 // import { matchType } from '@/utils/matchType' // 引入文件格式判断方法
+import { saveAs } from 'file-saver'
 
 export default {
   name: 'settlement',
@@ -144,6 +146,7 @@ export default {
       // tab1act: 1,
       // top right 选项卡
       tabact: 1,
+      taskIds: [],
       // 表格数据
       options: [
         {
@@ -324,10 +327,49 @@ export default {
     ///////// 结算清单 end /////////
 
     ///////// 表格选中 start /////////
-    handleSelectionChange(val){
-      console.log(val)
-    }
+    handleSelectionChange(val) {
+      // console.log(val)
+      // let taskIds = []
+      // val.forEach(element => {
+      //   taskIds.push(element.taskId)
+      // })
+      this.taskIds = val
+    },
     ///////// 表格选中 end /////////
+
+    ///////// 结算清单列表下载 end /////////
+    downloadList(){
+      let taskIds = this.taskIds
+      taskIds.forEach(element => {
+        this.exportInvite(element)
+      });
+    },
+    ///////// 表格选中 end /////////
+
+    ///////// 导出结算清单 end /////////
+    exportInvite(prm) {
+      let data = {
+        taskId: prm.taskId,
+      }
+      this.$axios
+        .post('/ocarplay/api/invite/exportInvite', data, {
+          responseType: 'blob', //--设置请求数据格式
+        })
+        .then((res) => {
+          console.log(res)
+          if (res.status == 200) {
+            // ///////// 开始下载 start /////////
+            var blob = new Blob([res.data], {
+              type: 'text/plain;charset=utf-8',
+            })
+            saveAs(blob, prm.taskName + '.xls')
+            this.$message.success('下载成功！')
+          } else {
+            this.$message.error('下载失败！')
+          }
+        })
+    },
+    ///////// 导出结算清单 end /////////
     // handleSelectionChange
   },
 }
@@ -338,9 +380,9 @@ $icoColor: rgb(106, 145, 232);
 #settlement {
   height: 100%;
   .top {
-    height: 72px;
+    height: 45px;
     margin-bottom: 9px;
-    background: #fff;
+    // background: #fff;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -382,16 +424,26 @@ $icoColor: rgb(106, 145, 232);
         }
       }
     }
-    .right{
+    .right {
       text-align: right;
-      button{
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: flex-end;
+      box-sizing: border-box;
+      .memu {
+        margin-right: 36px;
+      }
+      button {
         background: #6a91e8;
       }
     }
   }
   .content {
-    height: calc(100% - 97px);
-    background: #fff;
+    height: calc(100% - 54px);
+    border: 1px solid #e7e7e7;
+    // background: #fff;
+    border-radius: 8px 8px 0 0;
     .table_list {
       height: calc(100% - 64px);
       .el-table {

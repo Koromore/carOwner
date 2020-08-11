@@ -314,68 +314,7 @@ export default {
 $icoColor: #6a91e8;
 #place {
   height: 100%;
-  .top {
-    height: 45px;
-    margin-bottom: 9px;
-    display: flex;
-    align-items: center;
-    .left {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: flex-start;
-      box-sizing: border-box;
-      .butBox {
-        // width: 220px;
-        // height: 46px;
-        overflow: hidden;
-        background: white;
-        color: #a0a0a0;
-        border-radius: 3px;
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        .but {
-          width: 81px;
-          height: 32px;
-          line-height: 32px;
-          font-size: 12px;
-          text-align: center;
-          cursor: pointer;
-          &:nth-of-type(1),
-          &:nth-of-type(2) {
-            box-sizing: border-box;
-            border-right: 1px solid #f0f0f0;
-          }
-        }
-        .but.act,
-        .but:hover {
-          background: $icoColor;
-          color: white;
-        }
-        .but:hover {
-          background: $icoColor;
-        }
-      }
-    }
-    .right {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: flex-end;
-      box-sizing: border-box;
-      .el-select {
-        width: 136px;
-        margin-right: 9px;
-      }
-      .add_place {
-        button {
-          width: 136px;
-          background: $icoColor;
-        }
-      }
-    }
-  }
+
   .content {
     .table_list {
       // height: 97%;

@@ -11,9 +11,12 @@
             :key="index"
           >{{item.title}}</div>
         </div>
-        <div class="addContent" @click="addContent" v-show="tabact!='certifications'&&tabact!='brand'">
-          <i class="el-icon-circle-plus-outline"></i>
-          <br />添加内容
+        <div
+          class="addContent"
+          @click="addContent"
+          v-show="tabact!='certifications'&&tabact!='brand'"
+        >
+          <el-button type="primary" icon="el-icon-circle-plus-outline" size="small">添加内容</el-button>
         </div>
       </el-col>
     </el-row>
@@ -37,45 +40,45 @@ export default {
         {
           id: 1,
           title: '品牌车型',
-          name: 'brand'
+          name: 'brand',
         },
         {
           id: 2,
           title: '认证车型',
-          name: 'certifications'
+          name: 'certifications',
         },
         {
           id: 3,
           title: '车主类型',
-          name: 'carownertype'
+          name: 'carownertype',
         },
         {
           id: 4,
           title: '车主来源',
-          name: 'carownersource'
+          name: 'carownersource',
         },
         {
           id: 5,
           title: '车主特长',
-          name: 'carownerspeciality'
+          name: 'carownerspeciality',
         },
         {
           id: 6,
           title: '日程类型',
-          name: 'scheduletype'
+          name: 'scheduletype',
         },
         {
           id: 7,
           title: '场地类型',
-          name: 'sitetype'
-        }
+          name: 'sitetype',
+        },
       ],
       // 图表数据
       chartTitle: '任务完成数量',
       chartKeyData: ['执行中', '结算中', '延期', '已完成'],
       chartvalData: [520, 360, 130, 240],
       // 添加内容开关
-      openDrawer: 0
+      openDrawer: 0,
     }
   },
   // 侦听器
@@ -106,9 +109,9 @@ export default {
     ///////// 点击添加内容 start /////////
     addContent() {
       this.openDrawer = this.openDrawer + 1
-    }
+    },
     ///////// 点击添加内容 end /////////
-  }
+  },
 }
 </script>
 <style lang="scss" scoped>
@@ -117,9 +120,9 @@ $icoColor: rgb(106, 145, 232);
 #metadata {
   height: 100%;
   .top {
-    height: 72px;
+    height: 45px;
     margin-bottom: 9px;
-    background: #fff;
+    // background: #fff;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -131,22 +134,23 @@ $icoColor: rgb(106, 145, 232);
       align-items: center;
       .butBox {
         width: auto;
-        margin-left: 32px;
+        // margin-left: 32px;
         overflow: hidden;
         display: flex;
         flex-wrap: wrap;
         align-items: center;
         border-radius: 3px;
-        border: 1px solid rgb(205, 205, 205);
+        // border: 1px solid rgb(205, 205, 205);
         .but {
           width: 81px;
           height: 32px;
           line-height: 32px;
+          background: white;
           text-align: center;
           font-size: 12px;
           cursor: pointer;
           box-sizing: border-box;
-          border-left: 1px solid rgb(205, 205, 205);
+          border-left: 1px solid #f0f0f0;
         }
         .but:nth-of-type(1) {
           border: none;
@@ -162,7 +166,11 @@ $icoColor: rgb(106, 145, 232);
         text-align: center;
         color: $icoColor;
         font-size: 12px;
-        margin-right: 36px;
+        // margin-right: 36px;
+        button {
+          width: 136px;
+          background: #6a91e8;
+        }
         cursor: pointer;
         i {
           font-size: 24px;
@@ -171,8 +179,10 @@ $icoColor: rgb(106, 145, 232);
     }
   }
   .content {
-    height: calc(100% - 97px);
-    background: #fff;
+    height: calc(100% - 54px);
+    border-radius: 8px 8px 0 0;
+    border: 1px solid #e7e7e7;
+    // background: #fff;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -212,45 +222,70 @@ $icoColor: rgb(106, 145, 232);
 </style>
 <style lang="scss">
 // 抽屉弹窗新增/编辑数据
-.el-drawer {
-  .btn {
-    height: 54px;
-    background: white;
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    margin-bottom: 0 !important;
-    .el-col {
-      margin-bottom: 0;
-      button {
-        width: 100%;
+$icoColor: rgb(106, 145, 232);
+#metadata {
+  .table_list {
+    height: 100%;
+    .el-table {
+      .el-table__header {
+        th {
+          background: none;
+        }
       }
     }
+    i {
+      font-size: 24px;
+      color: $icoColor;
+      cursor: pointer;
+      margin-right: 13px;
+    }
   }
-  // el-scrollbar__view
-  .drawerData {
-    position: relative;
+  .paging {
+    height: 64px;
     box-sizing: border-box;
-    padding: 20px;
-    padding-bottom: 54px;
-    // height: 100%;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    align-content: flex-start;
-    > .el-col {
-      align-self: flex-start;
-      height: 40px;
-      line-height: 40px;
-      margin-bottom: 49px;
-      font-size: 18px;
+    padding: 16px;
+    text-align: center;
+  }
+  .el-drawer {
+    .btn {
+      height: 54px;
+      background: white;
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      margin-bottom: 0 !important;
+      .el-col {
+        margin-bottom: 0;
+        button {
+          width: 100%;
+        }
+      }
     }
-    .keycontent {
-      align-self: flex-start;
-    }
-    .el-input,
-    .el-select {
-      width: 100%;
+    // el-scrollbar__view
+    .drawerData {
+      position: relative;
+      box-sizing: border-box;
+      padding: 20px;
+      padding-bottom: 54px;
+      // height: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      align-content: flex-start;
+      > .el-col {
+        align-self: flex-start;
+        height: 40px;
+        line-height: 40px;
+        margin-bottom: 49px;
+        font-size: 18px;
+      }
+      .keycontent {
+        align-self: flex-start;
+      }
+      .el-input,
+      .el-select {
+        width: 100%;
+      }
     }
   }
 }

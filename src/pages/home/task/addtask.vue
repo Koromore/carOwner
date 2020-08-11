@@ -16,7 +16,7 @@
           <el-col :span="24" class="list">
             <div class="key">任务类型</div>
             <div class="val">
-              <el-radio-group v-model="taskType">
+              <el-radio-group v-model="taskType" :disabled="!disabledCaigou">
                 <el-radio :label="1">借车</el-radio>
                 <el-radio :label="2">素材</el-radio>
                 <el-radio :label="3">邀约</el-radio>
@@ -803,6 +803,8 @@ export default {
     position: relative;
     height: 100%;
     box-sizing: border-box;
+    border: 1px solid #e7e7e7;
+    border-radius: 8px 8px 0 0;
     padding: 36px;
     .list {
       display: flex;
