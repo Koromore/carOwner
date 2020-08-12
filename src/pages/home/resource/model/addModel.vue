@@ -68,7 +68,7 @@
             <div class="val">
               <el-input placeholder="请输入内容" v-model="introduce" clearable></el-input>
               <el-upload
-                class="upload-demo"
+                class="synopsisUpload"
                 drag
                 action="/ocarplay/file/upload"
                 multiple
@@ -90,7 +90,7 @@
             <div class="key">素颜照</div>
             <div class="val">
               <el-upload
-                class="upload-demo"
+                class="photoUpload"
                 drag
                 multiple
                 list-type="picture-card"
@@ -315,7 +315,7 @@ export default {
     },
     ///////// 接受页面传参 end /////////
 
-        ///////// 城市数据处理 start /////////
+    ///////// 城市数据处理 start /////////
     disCities() {
       // console.log(cities)
       let optionsCity = []
@@ -402,13 +402,13 @@ export default {
             this.tag = data.tag // 标签
             this.province = data.province
             this.city = data.city
-            this.district = [data.province,data.city]
+            this.district = [data.province, data.city]
             this.introduce = data.introduce // 模特介绍
             let synopsisFileList = []
             let photoFileList = []
             let introduceFileList = []
 
-            this.district_code = this.getValue(this.district,this.optionsCity)
+            this.district_code = this.getValue(this.district, this.optionsCity)
 
             data.modelIntroList.forEach((element) => {
               let pushData = {
@@ -655,20 +655,20 @@ export default {
 
     ///////// 新增模特 start //////////api/model/save
     saveBtn() {
-      // this.$confirm('是否提交模特信息?', '提示', {
-      //   confirmButtonText: '确定',
-      //   cancelButtonText: '取消',
-      //   type: 'warning',
-      // })
-      //   .then(() => {
-      this.saveModel()
-      // })
-      // .catch(() => {
-      //   this.$message({
-      //     type: 'info',
-      //     message: '已取消删除',
-      //   })
-      // })
+      this.$confirm('是否提交模特信息?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      })
+        .then(() => {
+          this.saveModel()
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消提交',
+          })
+        })
     },
     saveModel() {
       this.putLoading = true
@@ -691,7 +691,6 @@ export default {
       let synopsisAttachmentList = this.synopsisAttachmentList
       let photoAttachmentList = this.photoAttachmentList
       let introduceAttachmentList = this.introduceAttachmentList
-      
 
       // modelIntroList.push.apply(synopsisAttachmentList,photoAttachmentList,introduceAttachmentList);
       modelIntroList = modelIntroList.concat(
@@ -746,10 +745,10 @@ export default {
             this.putLoading = false
           }
         })
-        .catch((res) => {
-          this.$message.error('网络错误！')
-          this.putLoading = false
-        })
+        // .catch((res) => {
+        //   this.$message.error('网络错误！')
+        //   this.putLoading = false
+        // })
     },
     ///////// 新增模特 start /////////
   },
@@ -765,13 +764,15 @@ export default {
     height: 100%;
     box-sizing: border-box;
     padding: 36px;
+    border: 1px solid #e7e7e7;
+    border-radius: 8px 8px 0 0;
     .list {
       display: flex;
       flex-wrap: wrap;
       align-items: flex-start;
       margin: 16px 0;
       .key {
-        width: 96px;
+        width: 110px;
         height: 40px;
         line-height: 40px;
         margin-right: 13px;
@@ -785,6 +786,12 @@ export default {
       }
       .val {
         width: 420px;
+        .synopsisUpload {
+          margin-top: 13px;
+        }
+        .photoUpload {
+          margin-bottom: 13px;
+        }
         .el-cascader,
         .el-select,
         .el-date-editor,

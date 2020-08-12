@@ -14,7 +14,6 @@
           <!-- <el-col :span="12"> -->
           <!-- 类型选择 -->
           <el-col :span="6" :offset="12" class="tab">
-            <p>选择车主类型</p>
             <div class="butBox1">
               <div :class="[tabact==1?'but act':'but']" @click="tab(1)">支持型</div>
               <!-- <div :class="[tabact==2?'but act':'but']" @click="tab(2)">拍摄型</div> -->
@@ -383,7 +382,7 @@
               <el-col :span="24" class="list">
                 <el-col :span="7" class="key">开户行</el-col>
                 <el-col :span="14" class="val">
-                  <el-input placeholder="请输入内容" v-model="bankCard"></el-input>
+                  <el-input placeholder="请输入内容" v-model="bank"></el-input>
                 </el-col>
               </el-col>
               <el-col :span="24" class="list">
@@ -395,7 +394,7 @@
               <el-col :span="24" class="list">
                 <el-col :span="7" class="key">备注信息</el-col>
                 <el-col :span="14" class="val">
-                  <el-input placeholder="请输入内容" v-model="bankCard"></el-input>
+                  <el-input placeholder="请输入内容" v-model="remake" maxlength="50"></el-input>
                 </el-col>
               </el-col>
               <el-col :span="24" class="list">
@@ -528,6 +527,8 @@ export default {
       address: '', // 家庭住址
       deliAddress: '', // 收货地址
       bankCard: '',
+      bank: '',
+      remake: '',
       // 家属信息
       relationList: [
         {
@@ -797,6 +798,9 @@ export default {
             this.vin = data.vinno
             this.branch = data.buycarplace
             this.address = data.homeAddress
+            this.bankCard = data.bankCard
+            this.bank = data.bank
+            this.remake = data.remake
             // this.deliAddress = data.homeAddress
             let relationList = []
             data.relations.forEach((element) => {
@@ -841,7 +845,6 @@ export default {
               this.district0,
               this.optionsCity0
             )
-            this.bankCard = data.bankCard
             // console.log(this.district_code)
           }
           this.loading = false
@@ -1542,12 +1545,6 @@ export default {
         display: flex;
         justify-content: flex-end;
         align-items: center;
-        p {
-          font-size: 18px;
-          font-weight: 600;
-          color: #6a91e8;
-          margin-right: 16px;
-        }
         .butBox1 {
           width: 162px;
           height: 36px;

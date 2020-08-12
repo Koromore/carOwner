@@ -60,11 +60,11 @@
           </el-table-column>
           <el-table-column prop="prove" label="结算凭证" width="200" align="center">
             <template slot-scope="scope">
-              <template v-if="!scope.row.isCard&&!scope.row.prove">
+              <template v-if="scope.row.isCard&&!scope.row.prove">
                 <el-input placeholder="请输入单号" v-model="scope.row.prove0" clearable size="mini"></el-input>
               </template>
-              <template v-else-if="!scope.row.isCard&&scope.row.prove">{{scope.row.prove}}</template>
-              <template v-else-if="scope.row.isCard&&!scope.row.prove">
+              <template v-else-if="scope.row.isCard&&scope.row.prove">{{scope.row.prove}}</template>
+              <template v-else-if="!scope.row.isCard&&!scope.row.prove">
                 <el-upload
                   class="upload-demo"
                   action="/ocarplay/file/upload"
@@ -76,7 +76,7 @@
                   <el-button size="mini" type="primary" @click="uploadClick(scope.$index)">上传凭证</el-button>
                 </el-upload>
               </template>
-              <template v-else-if="scope.row.isCard&&scope.row.prove">
+              <template v-else-if="!scope.row.isCard&&scope.row.prove">
                 <!-- <el-button size="mini" type="success">查看凭证</el-button> -->
                 <el-image
                   src="static/images/ico/btn.jpg"

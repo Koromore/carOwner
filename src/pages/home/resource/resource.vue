@@ -135,6 +135,7 @@ $icoColor: #6a91e8;
             align-items: center;
             .el-imageBox {
               position: relative;
+              cursor: pointer;
               .sex {
                 width: 24px;
                 height: 24px;

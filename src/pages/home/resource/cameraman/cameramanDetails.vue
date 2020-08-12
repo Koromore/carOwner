@@ -737,7 +737,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-$icoColor: #6a91e8;
+$icoColor: #6a92e8;
 #cameraDetails {
   height: 100%;
   // background: white;
@@ -867,6 +867,7 @@ $icoColor: #6a91e8;
         line-height: 54px;
         padding-right: 18px;
         i {
+          line-height: 54px;
           cursor: pointer;
           color: $icoColor;
           font-size: 28px;

@@ -46,8 +46,8 @@
         <el-col :span="24" class="table_list">
           <el-col class="itemsBox" :span="6" v-for="(item,index) in cameraList" :key="index">
             <div class="items">
-              <div class="left" @click="toCameraDetails(item.personId)">
-                <div class="el-imageBox">
+              <div class="left">
+                <div class="el-imageBox" @click="toCameraDetails(item.personId)">
                   <div class="sex">
                     <template v-if="item.sex">
                       <i class="el-icon-female"></i>

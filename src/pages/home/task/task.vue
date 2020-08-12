@@ -244,14 +244,10 @@
           <el-table-column prop="endTime" label="预计时间" min-width="100" sortable>
             <template slot-scope="scope">{{$date(scope.row.endTime)}}</template>
           </el-table-column>
-          <el-table-column prop="delayReason" label="延期原因" min-width="100">
+          <el-table-column prop="delayReason" label="延期原因" min-width="100" show-overflow-tooltip>
             <template slot-scope="scope">
-              <template v-if="scope.row.status==3">
-                由于未按时提交任务而延期
-              </template>
-              <template v-else>
-                {{scope.row.delayReason}}
-              </template>
+              <template v-if="scope.row.status==3">由于未按时提交任务而延期</template>
+              <template v-else>{{scope.row.delayReason}}</template>
             </template>
           </el-table-column>
           <el-table-column
@@ -506,7 +502,13 @@
     <!-- 抽屉弹窗延期原因 end -->
 
     <!-- 抽屉弹窗提交任务 start -->
-    <el-drawer title="提交任务" :visible.sync="drawerPuttask" size="720px" v-loading="drawerLoading" :destroy-on-close="true">
+    <el-drawer
+      title="提交任务"
+      :visible.sync="drawerPuttask"
+      size="720px"
+      v-loading="drawerLoading"
+      :destroy-on-close="true"
+    >
       <el-scrollbar style="height:100%">
         <el-row class="drawerPuttask">
           <el-col :span="4">任务名称:</el-col>
@@ -524,14 +526,36 @@
             >
               <el-col :span="5">
                 <!-- <el-input placeholder="车主姓名" v-model="item.ownersName" clearable></el-input> -->
-                <el-cascader
-                  :options="options2"
-                  v-model="item.inviteData"
-                  clearable
-                  filterable
-                  :show-all-levels="false"
-                  size="medium"
-                ></el-cascader>
+                <template v-if="item.userType==0">
+                  <el-cascader
+                    :options="inviteDataList"
+                    v-model="item.inviteData"
+                    clearable
+                    filterable
+                    :show-all-levels="false"
+                    size="medium"
+                  ></el-cascader>
+                </template>
+                <template v-else-if="item.userType==1">
+                  <el-select v-model="item.ownerId" placeholder="摄影师">
+                    <el-option
+                      v-for="item in cammeramanList"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    ></el-option>
+                  </el-select>
+                </template>
+                <template v-else-if="item.userType==2">
+                  <el-select v-model="item.ownerId" placeholder="模特">
+                    <el-option
+                      v-for="item in modelList"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    ></el-option>
+                  </el-select>
+                </template>
               </el-col>
               <el-col :span="6">
                 <el-input placeholder="链接" size="medium" v-model="item.url" clearable></el-input>
@@ -588,7 +612,7 @@ export default {
       taskId: '', // 任务ID
       taskName: '', // 任务NAME
       taskDeptId: '', // 任务部门ID
-      taskDetail: {taskType:0},
+      taskDetail: { taskType: 0 },
       drawerLoading: false,
       detailList: [
         {
@@ -629,7 +653,8 @@ export default {
       carSeriesIdList: [],
       carSeriesId: '',
       // 筛选end
-      options: [],
+      cammeramanList: [],
+      modelList: [],
       value: '',
       // 表格数据
       loading: false,
@@ -658,7 +683,7 @@ export default {
       // 提交任务车主列表
       listInviteList: [],
       // 车主选择器列表
-      options2: [],
+      inviteDataList: [],
       listInviteData: [],
     }
   },
@@ -680,6 +705,10 @@ export default {
     this.getTaskListAjax()
     ///////// 获取车主列表 start /////////
     this.getOwnerList()
+    ///////// 获取摄影师列表 start /////////
+    this.getlistPhotoPerson()
+    ///////// 获取模特列表 start /////////
+    this.getlistModel()
   },
   // 方法
   methods: {
@@ -760,7 +789,7 @@ export default {
         //   initUserId: 266
         // }
       }
-      if (this.deptId==90) {
+      if (this.deptId == 90) {
         data.task.taskType = 4
       }
       this.$axios.post('/ocarplay/task/listAjax', data).then((res) => {
@@ -784,7 +813,7 @@ export default {
             }
             element.listInvite.forEach((element1) => {
               // console.log(element1)
-              if (element1.listOwnerType) {
+              if (element1.listOwnerType.length != 0) {
                 element.typeList.push(element1.listOwnerType[0].typeName)
                 element.ownerItemList.push(element1.listOwnerItem[0].itemName)
                 element.ownerName.push(element1.realName)
@@ -928,15 +957,79 @@ export default {
               })
             })
 
-            this.options2 = list
+            this.inviteDataList = list
             // console.log(list)
           }
         })
     },
     ///////// 获取车主列表 end /////////
 
+    ///////// 获取摄影师列表 start /////////
+    getlistPhotoPerson() {
+      if (this.cammeramanList.length == 0) {
+        this.listLoading = true
+        let data = {
+          pageNum: 1,
+          pageSize: 1000,
+        }
+        this.$axios
+          .post('/ocarplay/api/photoPerson/listAjax', data)
+          .then((res) => {
+            // console.log(res)
+            this.listLoading = false
+            if (res.status == 200) {
+              let data = res.data.items
+              let cammeramanList = []
+              data.forEach((element) => {
+                cammeramanList.push({
+                  value: element.personId,
+                  label: element.name,
+                })
+              })
+              this.cammeramanList = cammeramanList
+            }
+          })
+      }
+    },
+    ///////// 获取摄影师列表 end /////////
+
+    ///////// 获取模特列表 start /////////
+    getlistModel() {
+      if (this.modelList.length == 0) {
+        this.listLoading = true
+        let data = {
+          pageNum: 1,
+          pageSize: 1000,
+          // typeId: '',
+        }
+        this.$axios.post('/ocarplay/api/model/listAjax', data).then((res) => {
+          // console.log(res)
+          this.listLoading = false
+          if (res.status == 200) {
+            let data = res.data.items
+            let modelList = []
+            data.forEach((element) => {
+              modelList.push({
+                value: element.modelId,
+                label: element.name,
+              })
+            })
+            this.modelList = modelList
+          }
+        })
+      }
+    },
+    ///////// 获取模特列表 end /////////
+
     ///////// 提交任务 start /////////
     putTask(prm) {
+      console.log(prm)
+      let isCard = unll
+      if (prm.taskType == 4) {
+        isCard = true
+      }else{
+        isCard = false
+      }
       if (prm.taskType == 4) {
         if (prm.personId && prm.modelId && prm.placeId) {
           this.drawerLoading = true
@@ -951,7 +1044,11 @@ export default {
             if (res.status == 200) {
               let data = res.data.data
               let listInviteList = []
+              let pushIs = true
               data.listInvite.forEach((element) => {
+                if (element.userType) {
+                  pushIs = false
+                }
                 listInviteList.push({
                   inviteData: [element.typeId, element.itemId, element.ownerId],
                   typeId: element.typeId,
@@ -959,10 +1056,37 @@ export default {
                   ownerId: element.ownerId,
                   url: element.url,
                   money: element.money,
-                  isCard: element.isCard,
+                  isCard: isCard,
+                  userType: element.userType,
                 })
               })
+              if (pushIs) {
+                listInviteList.push({
+                  inviteData: [0, 0, 0],
+                  typeId: 0,
+                  itemId: 0,
+                  ownerId: prm.personId,
+                  name: prm.personName,
+                  url: null,
+                  money: '',
+                  isCard: true,
+                  userType: 1,
+                })
+                listInviteList.push({
+                  inviteData: [0, 0, 0],
+                  typeId: 0,
+                  itemId: 0,
+                  ownerId: prm.modelId,
+                  name: prm.modelName,
+                  url: null,
+                  money: '',
+                  isCard: true,
+                  userType: 2,
+                })
+              }
+
               this.listInviteList = listInviteList
+              console.log(listInviteList)
               this.taskDetail = data
               this.drawerLoading = false
             }
@@ -996,44 +1120,6 @@ export default {
             })
             this.listInviteList = listInviteList
             this.taskDetail = data
-            this.drawerLoading = false
-          }
-        })
-      }
-    },
-    putTaskif(prm) {
-      // console.log(prm)
-      if (prm.taskType == 3) {
-        if (prm) {
-        } else {
-          this.$message.error('无法提交，模特摄影师信息采购尚未填写')
-        }
-      } else {
-        this.drawerLoading = true
-        this.drawerPuttask = true
-        this.taskId = prm.taskId
-        this.taskDeptId = prm.deptId
-        this.taskName = prm.taskName
-        let data = {
-          taskId: prm.taskId,
-        }
-        this.$axios.post('/ocarplay/task/edit', data).then((res) => {
-          // console.log(res)
-          if (res.status == 200) {
-            let data = res.data.data
-            let listInviteList = []
-            data.listInvite.forEach((element) => {
-              listInviteList.push({
-                inviteData: [element.typeId, element.itemId, element.ownerId],
-                typeId: element.typeId,
-                itemId: element.itemId,
-                ownerId: element.ownerId,
-                url: element.url,
-                money: element.money,
-                isCard: element.isCard,
-              })
-            })
-            this.listInviteList = listInviteList
             this.drawerLoading = false
           }
         })
@@ -1078,9 +1164,12 @@ export default {
       let listInviteList = this.listInviteList
       listInviteList.forEach((element) => {
         element.taskId = this.taskId
-        element.typeId = element.inviteData[0]
-        element.itemId = element.inviteData[1]
-        element.ownerId = element.inviteData[2]
+        if (element.userType == 0) {
+          element.typeId = element.inviteData[0]
+          element.itemId = element.inviteData[1]
+          element.ownerId = element.inviteData[2]
+        }
+
         if (element.url && element.money) {
           element.isWrite = 1
         } else {
@@ -1102,13 +1191,16 @@ export default {
           flag = false
         }
       })
+      // flag = false
+      // console.log(data)
+      console.log(JSON.stringify(data))
       if (flag) {
         data.listInvite.forEach((element) => {
-          if (element.isCard) {
-            element.isCard = 1
-          } else {
-            element.isCard = 0
-          }
+          // if (element.isCard) {
+          //   element.isCard = 1
+          // } else {
+          element.isCard = 0
+          // }
         })
         // console.log(data)
         this.$axios

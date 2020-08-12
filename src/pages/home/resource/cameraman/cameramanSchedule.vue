@@ -30,14 +30,6 @@
             <div
               class="time"
             >{{ data.day.split('-').slice(1).join('-') }} {{ data.isSelected ? '✔️' : ''}}</div>
-
-            <!-- <div
-              
-              v-if="$date0(date) == $date0(new Date)"
-            >云图系统</div>-->
-
-            <!-- {{date}} -->
-
             <el-tooltip placement="top" effect="light">
               <div slot="content">
                 <div
@@ -518,7 +510,9 @@ $icoColor: rgb(106, 145, 232);
     width: 100%;
   }
   .top {
-    height: 88px;
+    height: 54px;
+    border: 1px solid #e7e7e7;
+    border-radius: 6px;
     // margin-bottom: 9px;
     background: #fff;
     display: flex;
@@ -560,7 +554,9 @@ $icoColor: rgb(106, 145, 232);
     }
   }
   .content {
-    height: calc(100% - 88px);
+    height: calc(100% - 63px);
+    border: 1px solid #e7e7e7;
+    border-radius: 8px 8px 0 0;
     background: #fff;
     overflow: hidden;
     .openAddBox {

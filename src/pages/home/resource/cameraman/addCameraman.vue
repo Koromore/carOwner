@@ -132,7 +132,7 @@
             <el-col :span="24" class="title">合作信息</el-col>
             <el-col :span="12" class="box1">
               <el-col :span="24" class="list">
-                <el-col :span="7" class="key" style="align-self: flex-start;">签约合同</el-col>
+                <el-col :span="7" class="key imp" style="align-self: flex-start;">签约合同</el-col>
                 <el-col :span="14" class="val">
                   <el-upload
                     class="pactUpload"
@@ -151,7 +151,7 @@
             </el-col>
             <el-col :span="12" class="box2">
               <el-col :span="24" class="list">
-                <el-col :span="7" class="key">合作期限</el-col>
+                <el-col :span="7" class="key imp">合作期限</el-col>
                 <el-col :span="14" class="val">
                   <el-date-picker
                     v-model="allottedTime"
@@ -160,12 +160,11 @@
                     start-placeholder="开始日期"
                     end-placeholder="结束日期"
                     @change="changeAllottedTime"
-                    :disabled="disabledAllottedTime"
                   ></el-date-picker>
                 </el-col>
               </el-col>
               <el-col :span="24" class="list">
-                <el-col :span="7" class="key">合作时长</el-col>
+                <el-col :span="7" class="key imp">合作时长</el-col>
                 <el-col :span="14" class="val">
                   <el-input placeholder="请输入内容" v-model="timeLimit" clearable :disabled="true"></el-input>
                 </el-col>
@@ -174,7 +173,7 @@
             <el-col :span="24" class="title title3">个人介绍</el-col>
             <el-col :span="24" class="box3">
               <el-col :span="24" class="list">
-                <el-col :span="3" class="key">摄影师履历</el-col>
+                <el-col :span="3" class="key imp">摄影师履历</el-col>
                 <el-col :span="19" class="val">
                   <el-input
                     type="textarea"
@@ -204,7 +203,7 @@
                 </el-col>
               </el-col>
               <el-col :span="24" class="list">
-                <el-col :span="3" class="key">个人作品</el-col>
+                <el-col :span="3" class="key imp">个人作品</el-col>
                 <el-col :span="19" class="val">
                   <el-upload
                     class="upload-demo"
@@ -285,7 +284,6 @@ export default {
       pactsuffix: null, // 合同文件后缀
       allottedTime: [], // 合作期限
       timeLimit: null, // 合作时长
-      disabledAllottedTime: true, // 合作期限禁用
 
       // 个人文档
       photoIntroList: [],
@@ -562,7 +560,6 @@ export default {
       this.pactName = data.fileName
       this.pactPath = data.localPath
       this.pactsuffix = data.suffix
-      this.disabledAllottedTime = false
     },
     pactExceed() {
       this.$message.warning('合同文档允许上传一个！')
@@ -571,7 +568,6 @@ export default {
       this.pactName = ''
       this.pactPath = ''
       this.pactsuffix = ''
-      this.disabledAllottedTime = true
     },
     ///////// 签约合同上传 end /////////
 
@@ -764,27 +760,33 @@ export default {
         ]
       }
       // console.log(data)
-      this.$axios
-        .post('/ocarplay/api/photoPerson/save', data)
-        .then((res) => {
-          // console.log(res)
-          if (res.status == 200 && res.data.errcode == 0) {
-            setTimeout(() => {
-              this.$router.push({ name: 'cameraman' })
+      if (name&&age&&sex!=null&&goodAt&&carTypeId&&province&&this.pactPath&&startTime&&introduce&&vitaeList.length!=0&&worksList.length!=0) {
+        // this.$axios
+        //   .post('/ocarplay/api/photoPerson/save', data)
+        //   .then((res) => {
+        //     // console.log(res)
+        //     if (res.status == 200 && res.data.errcode == 0) {
+        //       setTimeout(() => {
+        //         this.$router.push({ name: 'cameraman' })
+        //         this.loading = false
+        //       }, 1000)
+        //       this.$message.success(res.data.msg)
+        //     } else {
+        //       this.$message.error(res.data.msg)
               this.loading = false
-            }, 1000)
-            this.$message.success(res.data.msg)
-          } else {
-            this.$message.error(res.data.msg)
-            this.loading = false
-          }
-        })
-        .catch((res) => {
-          this.loading = false
-          if (res.status != 200) {
-            this.$message.error('网络错误' + res.status)
-          }
-        })
+        //     }
+        //   })
+        //   .catch((res) => {
+        //     this.loading = false
+        //     if (res.status != 200) {
+        //       this.$message.error('网络错误' + res.status)
+        //     }
+        //   })
+        this.$message.success('带*信息不为空！')
+      } else {
+        this.$message.error('带*信息不能为空！')
+        this.loading = false
+      }
     },
     ///////// 提交按钮 end /////////
   },
@@ -839,7 +841,7 @@ export default {
       }
       .val {
         // width: 420px;
-        .vitaeUpload{
+        .vitaeUpload {
           margin-top: 26px;
         }
         .el-cascader,
