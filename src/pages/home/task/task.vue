@@ -246,7 +246,7 @@
           </el-table-column>
           <el-table-column prop="delayReason" label="延期原因" min-width="100" show-overflow-tooltip>
             <template slot-scope="scope">
-              <template v-if="scope.row.status==3">由于未按时提交任务而延期</template>
+              <template v-if="scope.row.status==3">未按时提交</template>
               <template v-else>{{scope.row.delayReason}}</template>
             </template>
           </el-table-column>

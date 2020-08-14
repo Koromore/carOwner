@@ -1,6 +1,6 @@
 <template>
   <div class="test">
-    <el-button @click="resetDateFilter">清除日期过滤器</el-button>
+    <!-- <el-button @click="resetDateFilter">清除日期过滤器</el-button>
     <el-button @click="clearFilter">清除所有过滤器</el-button>
     <el-table ref="filterTable" :data="tableData" style="width: 100%">
       <el-table-column
@@ -29,28 +29,25 @@
           >{{scope.row.tag}}</el-tag>
         </template>
       </el-table-column>
-    </el-table>
+    </el-table> -->
 
     <!--  -->
-    <el-calendar>
-      <!-- 这里使用的是 2.5 slot 语法，对于新项目请使用 2.6 slot 语法-->
+    <!-- <el-calendar>
       <template slot="dateCell" slot-scope="{date, data}">
-        <!-- {{date}} -->
         <p
           :class="data.isSelected ? 'is-selected' : ''"
         >{{ data.day.split('-').slice(1).join('-') }} {{ data.isSelected ? '✔️' : ''}}</p>
 
-        <!-- {{data.isSelected}}
-        {{data.day}}-->
-        <!-- <div class="box">{{data}}</div> -->
+        {{data.isSelected}}
+        {{data.day}}
+        <div class="box">{{data}}</div>
         {{test(date)}}
       </template>
-      <!-- 123 -->
-    </el-calendar>
+    </el-calendar> -->
 
-    <div id="g2"></div>
+    <!-- <div id="g2"></div> -->
 
-    <div>
+    <!-- <div>
       <section class="swiper">
         <swiper :options="swiperOption">
           <swiper-slide
@@ -64,10 +61,11 @@
           <div class="swiper-pagination" slot="pagination"></div>
         </swiper>
       </section>
-    </div>
+    </div> -->
     <div>
-      <ve-calendar v-model="selectDateList"></ve-calendar>
+      <ve-calendar v-model="selectDateList" height="600px"></ve-calendar>
       <!-- <ve-year v-model="selectDateList"></ve-year> -->
+      {{selectDateList}}
     </div>
   </div>
 </template>
@@ -158,6 +156,7 @@ export default {
             'http://img1.qunarzz.com/piao/fusion/1806/5a/a7fc8e091190d602.jpg_750x200_e3aae50d.jpg',
         },
       ],
+      selectDateList: []
     }
   },
   // 侦听器

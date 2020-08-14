@@ -148,6 +148,7 @@
             </div>
           </el-col>
         </el-col>
+        <noDataList :noDatastyle="noDatastyle" v-if="modelList.length==0"></noDataList>
       </el-scrollbar>
       <el-col :span="24" class="paging">
         <el-pagination
@@ -175,12 +176,14 @@
 import cityList from '@/common/city.js' // 引入城市数据
 import camera from '@/components/camera'
 import cameraList from '@/components/cameraList'
+import noDataList from '@/components/noDataList' // 无数据页面
 
 export default {
   name: 'model',
   components: {
     camera,
     cameraList,
+    noDataList
   },
   data() {
     return {
@@ -191,6 +194,7 @@ export default {
       adminShow: this.$store.state.adminShow, // 超级管理员
       modelId: null,
       type: 1,
+      noDatastyle: 'margin-top: 108px;',
       // tab选项卡
       tabact: 2,
       options: [

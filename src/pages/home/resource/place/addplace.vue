@@ -405,7 +405,7 @@ export default {
       let address = this.address || ''
       let isCar = this.isCar
       let isPark = this.isPark
-      let money = this.money || ''
+      let money = this.money
       let remark = this.remark || ''
       let photoList = this.photoList
       let createTime = this.$time0(new Date())
@@ -454,7 +454,7 @@ export default {
         address == '' ||
         isCar === null ||
         isPark === null ||
-        money == '' ||
+        money === '' ||
         remark == '' ||
         photoList.length == 0
       ) {

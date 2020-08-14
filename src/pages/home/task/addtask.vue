@@ -89,7 +89,7 @@
                   filterable
                   collapse-tags
                   :disabled="disabledCaigou"
-                ></el-cascader> -->
+                ></el-cascader>-->
                 <el-select v-model="modelId" placeholder="请选择" :disabled="disabledCaigou">
                   <el-option
                     v-for="item in modelList"
@@ -110,7 +110,7 @@
                   filterable
                   collapse-tags
                   :disabled="disabledCaigou"
-                ></el-cascader> -->
+                ></el-cascader>-->
                 <el-select v-model="placeId" placeholder="请选择" :disabled="disabledCaigou">
                   <el-option
                     v-for="item in placeList"
@@ -532,44 +532,47 @@ export default {
           // console.log(res)
           if (res.status == 200) {
             let data = res.data
+            data.splice(1,1)
             let list = []
             data.forEach((element, i) => {
-              list.push({
-                value: element.typeId,
-                label: element.typeName,
-                children: [],
-              })
-              element.ownerItems.forEach((element1, j) => {
-                list[i].children.push({
-                  value: element1.itemId,
-                  label: element1.itemName,
+              // if (element.typeId != 2) {
+                list.push({
+                  value: element.typeId,
+                  label: element.typeName,
                   children: [],
                 })
-                element1.vehicleOwners.forEach((element2) => {
-                  if (
-                    element2.coopNum &&
-                    element2.alreadyCooperateNum &&
-                    element2.coopNum - element2.alreadyCooperateNum <= 0
-                  ) {
-                    // cosnole.log()
-                    list[i].children[j].children.push({
-                      value: element2.vehicleOwnerId,
-                      label: element2.name,
-                      disabled: true,
-                    })
-                  } else {
-                    list[i].children[j].children.push({
-                      value: element2.vehicleOwnerId,
-                      label: element2.name,
-                    })
-                  }
-                  // console.log(element2)
+                element.ownerItems.forEach((element1, j) => {
+                  list[i].children.push({
+                    value: element1.itemId,
+                    label: element1.itemName,
+                    children: [],
+                  })
+                  element1.vehicleOwners.forEach((element2) => {
+                    if (
+                      element2.coopNum &&
+                      element2.alreadyCooperateNum &&
+                      element2.coopNum - element2.alreadyCooperateNum <= 0
+                    ) {
+                      // cosnole.log()
+                      list[i].children[j].children.push({
+                        value: element2.vehicleOwnerId,
+                        label: element2.name,
+                        disabled: true,
+                      })
+                    } else {
+                      list[i].children[j].children.push({
+                        value: element2.vehicleOwnerId,
+                        label: element2.name,
+                      })
+                    }
+                    // console.log(element2)
+                  })
                 })
-              })
+              // }
             })
 
             this.options2 = list
-            // console.log(list)
+            console.log(list)
           }
         })
     },

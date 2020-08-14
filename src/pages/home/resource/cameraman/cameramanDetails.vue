@@ -433,15 +433,11 @@
     <!-- 内容列表 end -->
 
     <!-- 视频预览框 end -->
-    <el-dialog
-      title="视频"
-      :visible.sync="dialogVisibleVideo"
-      width="50%"
-    >
-      <video style="width:100%;height:100%" controls="" autoplay="true"><source :src="videoUrl" type="video/mp4"><embed style="width:100%;height:100%" :src="videoUrl" autoplay="true" hidden="no"></video>
+    <el-dialog title="视频" :visible.sync="dialogVisibleVideo" width="50%" @close="dialogVideo">
+      <div v-html="videoHtml"></div>
       <!-- <video id="v2" x-webkit-airplay="true" webkit-playsinline="true" playsinline="tvc&quot;true&quot;"
           type="video/mp4" preload="" :src="videoUrl" x5-video-player-type="h5"
-          x5-video-player-fullscreen="true" controls="controls"></video> -->
+      x5-video-player-fullscreen="true" controls="controls"></video>-->
     </el-dialog>
   </div>
 </template>
@@ -498,7 +494,7 @@ export default {
       timeLimit: null, // 合作时长
 
       dialogVisibleVideo: false,
-      videoUrl: '',
+      videoHtml: '',
       // 提交按钮开关
       submitFlag: true,
       fileList: [],
@@ -620,9 +616,20 @@ export default {
     previewVideo(obj) {
       console.log(123)
       this.dialogVisibleVideo = true
-      this.videoUrl = '/ocarplay/' + obj.localPath
+      this.videoHtml = `
+      <video style="width:100%;height:100%" controls autoplay="true">
+        <source src="/ocarplay/${obj.localPath}" type="video/mp4" />
+        <embed style="width:100%;height:100%" src="/ocarplay/${obj.localPath}" autoplay="true" hidden="no" />
+      </video>
+        `
     },
     ///////// 预览视频 end /////////
+
+    ///////// 视频弹窗关闭回调 end /////////
+    dialogVideo() {
+      this.videoHtml = ''
+    },
+    ///////// 视频弹窗关闭回调 end /////////
 
     ///////// 下载 start /////////
     download(row) {
@@ -704,6 +711,9 @@ $icoColor: #6a92e8;
           display: flex;
           flex-wrap: wrap;
           align-items: center;
+          >div{
+            margin-bottom: 6px;
+          }
           .el-image {
             margin-right: 6px;
             cursor: pointer;

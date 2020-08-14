@@ -1,5 +1,5 @@
 <template>
-  <div id="noDataList">
+  <div id="noDataList" :style="noDatastyle">
     <!-- <div class="content"> -->
       <img width="30%" src="/static/images/carow/empty.png" alt srcset />
       <p>很抱歉，还没有内容哦!</p>
@@ -11,10 +11,12 @@
 
 export default {
   name: 'noDataList',
-  props: {}, // 接受参数
+  props: {noDatastyle:String}, // 接受参数
   components: {}, // 注册组件
   data() {
-    return {}
+    return {
+      
+    }
   },
   // 侦听器
   watch: {},

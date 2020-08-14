@@ -452,8 +452,16 @@ const router = new Router({
       meta: {
         requireAuth: true,
       }
+    },
+    {
+      path: '/calendar',
+      name: 'calendar',
+      component: resolve => require(['@/pages/calendar'], resolve),
+      meta: {
+        requireAuth: true,
+      }
     }
-  ]//Test
+  ]//Testcalendar
 })
 // TaskDetail
 // 页面刷新时，重新赋值 更新vuex内部值

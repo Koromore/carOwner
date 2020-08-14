@@ -117,7 +117,7 @@ export default {
         // //  pagination: '.swiper-pagination',
         slidesPerView: 3,
         paginationClickable: true,
-        spaceBetween: 30,
+        spaceBetween: 20,
       },
       swiperList: [],
 
@@ -252,12 +252,12 @@ export default {
           // this.isshow = true
           this.$nextTick(() => {
             this.$refs.goodSwiper.swiper.init()
-            console.log("初始化")
-            console.log(this.swiperList)
-            console.log(this.swiperOption.centeredSlides)
+            // console.log("初始化")
+            // console.log(this.swiperList)
+            // console.log(this.swiperOption.centeredSlides)
           })
-          console.log(this.$refs.goodSwiper.swiper.init)
-          console.log(this.$refs.goodSwiper.swiper.updata)
+          // console.log(this.$refs.goodSwiper.swiper.init)
+          // console.log(this.$refs.goodSwiper.swiper.updata)
         }
       })
     },

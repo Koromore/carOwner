@@ -175,6 +175,7 @@
             </div>
           </el-col>
         </el-col>
+        <noDataList :noDatastyle="noDatastyle" v-if="cameraList.length==0"></noDataList>
       </el-scrollbar>
       <el-col :span="24" class="paging">
         <el-pagination
@@ -212,6 +213,7 @@ import cameraa from '@/components/camera' // 新增拍摄
 import cameraList from '@/components/cameraList' // 拍摄记录
 import comment from '@/components/comment' // 新增评分
 import commentList from '@/components/commentList' // 评分记录
+import noDataList from '@/components/noDataList' // 无数据页面
 
 export default {
   name: 'cameraman',
@@ -220,6 +222,7 @@ export default {
     cameraList,
     comment,
     commentList,
+    noDataList
   },
   data() {
     return {
@@ -231,6 +234,7 @@ export default {
       personId: null, // 摄影师ID
       type: 0,
       pgId: null, // 评论Id
+      noDatastyle: 'margin-top: 108px;',
       // tab选项卡
       tabact: 1,
       options: [
