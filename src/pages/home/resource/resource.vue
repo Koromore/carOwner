@@ -80,7 +80,7 @@ $icoColor: #6a91e8;
         width: 136px;
         margin-right: 9px;
       }
-      .add_place {
+      .add_place,.addModel,.addCameraman {
         button {
           width: 136px;
           background: $icoColor;
@@ -202,6 +202,12 @@ $icoColor: #6a91e8;
               justify-content: space-around;
               align-items: center;
             }
+            .city,.carType,.tag{
+              width: 110px;
+              overflow: hidden; // 超出隐藏
+              white-space: nowrap; // 不换行
+              text-overflow: ellipsis; // 显示省略号
+            }
             p {
               width: 100%;
               font-size: 14px;
@@ -241,7 +247,7 @@ $icoColor: #6a91e8;
             color: $icoColor;
             background: rgba(0, 0, 0, 0.4);
             i {
-              font-size: 24px;
+              font-size: 20px;
               color: white;
               line-height: 32px;
               cursor: pointer;

@@ -133,12 +133,13 @@ export default {
     //
     drawerDataClose() {
       this.$parent.cameraListShow = 0
+      this.remark = null
     },
     drawerDataOpen() {
       console.log(this.$parent.type)
       this.type = this.$parent.type
       if (this.type == 0) {
-        this.personId = this.personId
+        this.personId = this.$parent.personId
         this.getGradeList()
       } else if (this.type == 1) {
         this.personGradeShow()

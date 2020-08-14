@@ -35,7 +35,7 @@
             :value="item.value"
           ></el-option>
         </el-select>
-        <div class="add_task">
+        <div class="addModel">
           <el-button
             type="primary"
             icon="el-icon-circle-plus-outline"
@@ -84,7 +84,7 @@
                         d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"
                       />
                     </svg>
-                    &nbsp;{{item.carTypeName}}
+                    &nbsp;<span class="carType">{{item.carTypeName}}</span>
                   </p>
                   <p>
                     <svg
@@ -114,7 +114,8 @@
                         d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z"
                       />
                     </svg>
-                    &nbsp;{{item.tag}}
+                    <span class="tag" v-if="item.tag">&nbsp;{{item.tag}}</span>
+                    <span class="tag" v-else>&nbsp;暂无标签</span>
                   </p>
                   <p @click="toCameraList(item.modelId)">
                     <svg

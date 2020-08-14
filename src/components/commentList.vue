@@ -24,13 +24,13 @@
             </el-card>
           </el-timeline-item>
         </el-timeline>
-        <el-col v-if="personGradeList.length==0" class="noData">暂无{{drawerTitle}}...</el-col>
+        <noDataList v-if="personGradeList.length==0"></noDataList>
       </el-scrollbar>
     </el-drawer>
   </div>
 </template>
 <script>
-// import { matchType } from '@/utils/matchType' // 引入文件格式判断方法
+import noDataList from '@/components/noDataList' // 无数据组件
 
 export default {
   name: 'commentList',
@@ -38,7 +38,7 @@ export default {
   props: {
     commentListShow: Number,
   },
-  components: {},
+  components: { noDataList },
   data() {
     return {
       drawerData: false,
@@ -95,14 +95,13 @@ export default {
     ///////// 获取评论列表 end /////////
 
     ///////// 打开评论详情 start /////////
-    toCmmentDetails(id){
+    toCmmentDetails(id) {
       // console.log(this.$parent.commentShow)
       this.$parent.type = 1
       // console.log(this.$parent.type)
       this.$parent.pgId = id
       this.$parent.commentShow += 1
-      
-    }
+    },
     ///////// 打开评论详情 end /////////
   },
 }
@@ -122,7 +121,7 @@ $icoColor: #6a91e8;
       &:nth-last-of-type(1) {
         text-align: right;
       }
-      &:nth-last-of-type(1){
+      &:nth-last-of-type(1) {
         color: $icoColor;
         cursor: pointer;
       }

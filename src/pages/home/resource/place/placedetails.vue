@@ -20,7 +20,7 @@
              <img class="swp-img" :src="'/ocarplay/'+item.imgUrl" alt />
           </div>-->
           <!-- <section class="swiper"> -->
-          <swiper :options="swiperOption" ref="goodSwiper">
+          <swiper :options="swiperOption" ref="goodSwiper" id="bannerList" :style="bannerStyle">
             <swiper-slide
               class="swp-silde"
               v-for="(item, index) in swiperList"
@@ -104,6 +104,7 @@ export default {
       deptId: this.$store.state.user.deptId, // 90
       isshow: false,
       // 轮播数据
+      bannerStyle: '',
       swiperOption: {
         pagination: '.swiper-pagination',
         autoplay: {
@@ -235,7 +236,13 @@ export default {
           }
           // console.log(swiperList)
           if (swiperList.length==1) {
-            this.swiperOption.centeredSlides = true
+            // this.swiperOption.slidesPerView = 1
+            this.bannerStyle = 'position: relative;left: 33%;'
+          }else if (swiperList.length==2){
+            this.bannerStyle = 'position: relative;left: 17%;'
+            // this.swiperOption.centeredSlides = false
+          }else{
+             this.bannerStyle = ''
           }
           // console.log(this.swiperOption)
           this.swiperList = swiperList
@@ -244,9 +251,13 @@ export default {
           // console.log(this.$refs.goodSwiper.swiper)
           // this.isshow = true
           this.$nextTick(() => {
-            this.$refs.goodSwiper.swiper.update()
+            this.$refs.goodSwiper.swiper.init()
+            console.log("初始化")
+            console.log(this.swiperList)
+            console.log(this.swiperOption.centeredSlides)
           })
-          console.log(this.$refs.goodSwiper.swiper)
+          console.log(this.$refs.goodSwiper.swiper.init)
+          console.log(this.$refs.goodSwiper.swiper.updata)
         }
       })
     },

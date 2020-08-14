@@ -8,6 +8,7 @@
           返回
         </div>
       </el-col>
+      <el-col :span="8" :offset="5" class="center">场地信息</el-col>
     </el-row>
     <!-- 头部选项框 end -->
 
@@ -40,9 +41,18 @@
                 <el-col :span="6">
                   <i class="el-icon-delete" @click="deletePlaceBtn(item.placeId)"></i>
                 </el-col>
-              </div> -->
+              </div>-->
             </div>
           </el-col>
+          <el-col class="noData" v-if="placeList.length==0">
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            暂无场地信息...
+          </el-col>
+          <!-- <noDataList v-if="placeList.length==0"></noDataList> -->
         </el-col>
       </el-scrollbar>
       <el-col :span="24" class="paging">
@@ -61,10 +71,11 @@
 </template>
 <script>
 import cityList from '@/common/city.js' // 引入城市数据
+import noDataList from '@/components/noDataList' // 无数据组件
 
 export default {
   name: 'cameramanPlace',
-  components: {},
+  components: { noDataList },
   data() {
     return {
       userId: this.$store.state.user.userId, // 用户ID
@@ -183,61 +194,11 @@ $icoColor: #6a91e8;
       }
     }
     .center {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: center;
-      box-sizing: border-box;
-      .butBox {
-        // width: 220px;
-        // height: 46px;
-        overflow: hidden;
-        background: white;
-        border: 1px solid #f0f0f0;
-        color: #a0a0a0;
-        border-radius: 3px;
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        .but {
-          width: 81px;
-          height: 32px;
-          line-height: 32px;
-          font-size: 12px;
-          text-align: center;
-          cursor: pointer;
-          &:nth-of-type(1),
-          &:nth-of-type(2) {
-            box-sizing: border-box;
-            border-right: 1px solid #f0f0f0;
-          }
-        }
-        .but.act,
-        .but:hover {
-          background: $icoColor;
-          color: white;
-        }
-        .but:hover {
-          background: $icoColor;
-        }
-      }
-    }
-    .right {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: flex-end;
-      box-sizing: border-box;
-      .el-select {
-        width: 136px;
-        margin-right: 9px;
-      }
-      .add_place {
-        button {
-          width: 136px;
-          background: $icoColor;
-        }
-      }
+      font-size: 22px;
+      font-weight: 100;
+      text-align: center;
+      height: 37px;
+      line-height: 37px;
     }
   }
   .content {

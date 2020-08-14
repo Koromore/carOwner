@@ -30,6 +30,7 @@
             <div
               class="time"
             >{{ data.day.split('-').slice(1).join('-') }} {{ data.isSelected ? '✔️' : ''}}</div>
+
             <el-tooltip placement="top" effect="light">
               <div slot="content">
                 <div
@@ -51,6 +52,7 @@
                 >{{item.schName}}</div>
               </div>
             </el-tooltip>
+
             <!-- {{item.startGetTime}} -->
             <!-- {{item.endGetTime}} -->
             <!-- {{date.getTime()}} -->
@@ -487,7 +489,7 @@ $white: #fff;
 $isColor: #1989fa;
 $icoColor: rgb(106, 145, 232);
 .scheduleBox {
-  width: 172;
+  width: 172px;
   height: 30px;
   overflow: hidden;
 }

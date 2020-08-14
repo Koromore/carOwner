@@ -271,7 +271,7 @@ export default {
     align-items: center;
     justify-content: flex-end;
     .search {
-      width: 300px;
+      width: 280px;
       margin-right: 13px;
       .el-select {
         width: 72px;

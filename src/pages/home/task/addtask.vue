@@ -476,6 +476,9 @@ export default {
           let data = res.data.data
           this.taskName = data.taskName
           this.taskType = data.taskType
+          this.personId = data.personId
+          this.modelId = data.modelId
+          this.placeId = data.placeId
           let listInviteList = []
           data.listInvite.forEach((element) => {
             listInviteList.push([

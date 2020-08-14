@@ -37,51 +37,51 @@
               </el-dialog>
             </el-col>
             <el-col :span="24" class="list">
-              <el-col :span="6" class="key imp">姓名</el-col>
+              <el-col :span="7" class="key imp">姓名：</el-col>
               <el-col :span="15" class="val">
                 <el-input placeholder="请输入内容" v-model="name"></el-input>
               </el-col>
             </el-col>
             <el-col :span="24" class="list">
-              <el-col :span="6" class="key imp">年龄</el-col>
+              <el-col :span="7" class="key imp">年龄：</el-col>
               <el-col :span="15" class="val">
                 <el-input placeholder="请输入内容" v-model="age" type="number"></el-input>
                 <!-- {{eventData}} -->
               </el-col>
             </el-col>
             <el-col :span="24" class="list">
-              <el-col :span="6" class="key imp">车主性别</el-col>
+              <el-col :span="7" class="key imp">车主性别：</el-col>
               <el-col :span="15" class="val">
                 <el-radio v-model="sex" :label="0">男</el-radio>
                 <el-radio v-model="sex" :label="1">女</el-radio>
               </el-col>
             </el-col>
             <el-col :span="24" class="list">
-              <el-col :span="6" class="key">手机号</el-col>
+              <el-col :span="7" class="key">手机号：</el-col>
               <el-col :span="15" class="val">
                 <el-input placeholder="请输入内容" v-model="phone" clearable></el-input>
               </el-col>
             </el-col>
             <el-col :span="24" class="list">
-              <el-col :span="6" class="key">费用</el-col>
+              <el-col :span="7" class="key">费用：</el-col>
               <el-col :span="15" class="val">
                 <el-input placeholder="请输入内容" v-model="money" clearable type="number"></el-input>
               </el-col>
             </el-col>
             <el-col :span="24" class="list">
-              <el-col :span="6" class="key imp">擅长</el-col>
+              <el-col :span="7" class="key imp">擅长：</el-col>
               <el-col :span="15" class="val">
                 <el-input placeholder="请输入内容" v-model="goodAt" clearable></el-input>
               </el-col>
             </el-col>
             <el-col :span="24" class="list">
-              <el-col :span="6" class="key">客户</el-col>
+              <el-col :span="7" class="key">客户：</el-col>
               <el-col :span="15" class="val">
                 <el-input placeholder="请输入内容" v-model="custom" clearable></el-input>
               </el-col>
             </el-col>
             <el-col :span="24" class="list">
-              <el-col :span="6" class="key imp">合作车型</el-col>
+              <el-col :span="7" class="key imp">合作车型：</el-col>
               <el-col :span="15" class="val">
                 <el-select v-model="carTypeId" placeholder="请选择">
                   <el-option
@@ -94,7 +94,7 @@
               </el-col>
             </el-col>
             <el-col :span="24" class="list">
-              <el-col :span="6" class="key imp">所在区域</el-col>
+              <el-col :span="7" class="key imp">所在区域：</el-col>
               <el-col :span="15" class="val">
                 <el-cascader
                   :options="optionsCity"
@@ -108,13 +108,13 @@
               </el-col>
             </el-col>
             <el-col :span="24" class="list">
-              <el-col :span="6" class="key">标签</el-col>
+              <el-col :span="7" class="key">标签：</el-col>
               <el-col :span="15" class="val">
                 <el-input placeholder="请输入内容" v-model="tag" clearable></el-input>
               </el-col>
             </el-col>
             <el-col :span="24" class="list">
-              <el-col :span="6" class="key">会开车</el-col>
+              <el-col :span="7" class="key">会开车：</el-col>
               <el-col :span="15" class="val">
                 <el-radio-group v-model="isCar">
                   <el-radio :label="0">否</el-radio>
@@ -132,7 +132,7 @@
             <el-col :span="24" class="title">合作信息</el-col>
             <el-col :span="12" class="box1">
               <el-col :span="24" class="list">
-                <el-col :span="7" class="key imp" style="align-self: flex-start;">签约合同</el-col>
+                <el-col :span="7" class="key imp" style="align-self: flex-start;">签约合同：</el-col>
                 <el-col :span="14" class="val">
                   <el-upload
                     class="pactUpload"
@@ -151,7 +151,7 @@
             </el-col>
             <el-col :span="12" class="box2">
               <el-col :span="24" class="list">
-                <el-col :span="7" class="key imp">合作期限</el-col>
+                <el-col :span="7" class="key imp">合作期限：</el-col>
                 <el-col :span="14" class="val">
                   <el-date-picker
                     v-model="allottedTime"
@@ -164,7 +164,7 @@
                 </el-col>
               </el-col>
               <el-col :span="24" class="list">
-                <el-col :span="7" class="key imp">合作时长</el-col>
+                <el-col :span="7" class="key imp">合作时长：</el-col>
                 <el-col :span="14" class="val">
                   <el-input placeholder="请输入内容" v-model="timeLimit" clearable :disabled="true"></el-input>
                 </el-col>
@@ -173,7 +173,7 @@
             <el-col :span="24" class="title title3">个人介绍</el-col>
             <el-col :span="24" class="box3">
               <el-col :span="24" class="list">
-                <el-col :span="3" class="key imp">摄影师履历</el-col>
+                <el-col :span="4" class="key imp">摄影师履历：</el-col>
                 <el-col :span="19" class="val">
                   <el-input
                     type="textarea"
@@ -183,7 +183,7 @@
                     clearable
                   ></el-input>
                 </el-col>
-                <el-col :span="19" :offset="3" class="val">
+                <el-col :span="19" :offset="4" class="val">
                   <el-upload
                     class="vitaeUpload"
                     drag
@@ -203,7 +203,7 @@
                 </el-col>
               </el-col>
               <el-col :span="24" class="list">
-                <el-col :span="3" class="key imp">个人作品</el-col>
+                <el-col :span="4" class="key imp">个人作品：</el-col>
                 <el-col :span="19" class="val">
                   <el-upload
                     class="upload-demo"
@@ -213,12 +213,14 @@
                     :on-success="worksSuccess"
                     :on-remove="worksRemove"
                     :file-list="worksFileList"
+                    :accept="worksAccept"
+                    :before-upload="worksBeforeUpload"
                   >
                     <i class="el-icon-upload"></i>
                     <div class="el-upload__text">
                       将文件拖到此处，或
                       <em>点击上传</em>
-                      上传个人作品
+                      上传个人作品(只允许上传视频和图片)
                     </div>
                   </el-upload>
                 </el-col>
@@ -291,6 +293,7 @@ export default {
       vitaeFileList: [], // 履历文档回填
       worksList: [], // 作品文档
       worksFileList: [], // 作品文档回填
+      worksAccept: '.png,.jpg,.jpeg,.bmp,.gif,.mp4,.m2v,mkv', // 上传文档格式设置
 
       // 提交按钮开关
       submitFlag: true,
@@ -322,6 +325,7 @@ export default {
     }
     ///////// 获取车型列表 start /////////
     this.getCarSeriesLists()
+    // console.log(this.$matchType)
   },
   // 方法事件
   methods: {
@@ -637,6 +641,14 @@ export default {
     ///////// 个人履历上传 end /////////
 
     ///////// 个人作品上传 start /////////
+    worksBeforeUpload(file){
+      // console.log(file.type.indexOf('image'))
+      if (file.type.indexOf('image')==-1&&file.type.indexOf('video')==-1) {
+        this.$message.error('只允许上传视频和图片')
+        return false
+      }
+      // console.log(this.$matchType)
+    },
     worksSuccess(res, file, fileList) {
       let worksList = []
       // this.fileList = fileList.slice(-3)
@@ -761,28 +773,28 @@ export default {
       }
       // console.log(data)
       if (name&&age&&sex!=null&&goodAt&&carTypeId&&province&&this.pactPath&&startTime&&introduce&&vitaeList.length!=0&&worksList.length!=0) {
-        // this.$axios
-        //   .post('/ocarplay/api/photoPerson/save', data)
-        //   .then((res) => {
-        //     // console.log(res)
-        //     if (res.status == 200 && res.data.errcode == 0) {
-        //       setTimeout(() => {
-        //         this.$router.push({ name: 'cameraman' })
-        //         this.loading = false
-        //       }, 1000)
-        //       this.$message.success(res.data.msg)
-        //     } else {
-        //       this.$message.error(res.data.msg)
+        this.$axios
+          .post('/ocarplay/api/photoPerson/save', data)
+          .then((res) => {
+            // console.log(res)
+            if (res.status == 200 && res.data.errcode == 0) {
+              setTimeout(() => {
+                this.$router.push({ name: 'cameraman' })
+                this.loading = false
+              }, 1000)
+              this.$message.success(res.data.msg)
+            } else {
+              this.$message.error(res.data.msg)
               this.loading = false
-        //     }
-        //   })
-        //   .catch((res) => {
-        //     this.loading = false
-        //     if (res.status != 200) {
-        //       this.$message.error('网络错误' + res.status)
-        //     }
-        //   })
-        this.$message.success('带*信息不为空！')
+            }
+          })
+          .catch((res) => {
+            this.loading = false
+            if (res.status != 200) {
+              this.$message.error('网络错误' + res.status)
+            }
+          })
+        // this.$message.success('带*信息不为空！')
       } else {
         this.$message.error('带*信息不能为空！')
         this.loading = false

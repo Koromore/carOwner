@@ -37,7 +37,7 @@
             >云图系统</div>-->
 
             <!-- {{date}} -->
-            <div
+            <!-- <div
               class="schedule"
               @click="scheduleDetail(item.schId)"
               v-for="(item, index) in ownerScheduleListData"
@@ -45,9 +45,28 @@
               v-if="item.startGetTime<=date.getTime()&&item.endGetTime>=date.getTime()"
             >
               {{item.schName}}
-              <!-- {{item.startGetTime}} -->
-              <!-- {{item.endGetTime}} -->
-            </div>
+            </div> -->
+
+            <el-tooltip placement="top" effect="light">
+              <div slot="content">
+                <div
+                  class="schedule"
+                  @click="scheduleDetail(item.schId)"
+                  v-for="(item, index) in ownerScheduleListData"
+                  :key="index"
+                  v-show="item.startGetTime<=date.getTime()&&item.endGetTime>=date.getTime()"
+                >{{item.schName}}</div>
+              </div>
+              <div class="scheduleBox">
+                <div
+                  class="schedule"
+                  @click="scheduleDetail(item.schId)"
+                  v-for="(item, index) in ownerScheduleListData"
+                  :key="index"
+                  v-if="item.startGetTime<=date.getTime()&&item.endGetTime>=date.getTime()"
+                >{{item.schName}}</div>
+              </div>
+            </el-tooltip>
 
             <!-- {{date.getTime()}} -->
           </div>
@@ -570,7 +589,25 @@ export default {
 </script>
 <style lang="scss" scoped>
 $white: #fff;
+$isColor: #1989fa;
 $icoColor: rgb(106, 145, 232);
+.scheduleBox {
+  width: 172px;
+  height: 30px;
+  overflow: hidden;
+}
+.schedule {
+  margin: 0 auto;
+  width: 172px;
+  height: 30px;
+  line-height: 30px;
+  font-size: 13px;
+  text-align: center;
+  background: $isColor;
+  color: #fff;
+  cursor: pointer;
+  margin-bottom: 3px;
+}
 #ownersschedule {
   height: 100%;
   .el-select,
@@ -578,9 +615,11 @@ $icoColor: rgb(106, 145, 232);
     width: 100%;
   }
   .top {
-    height: 88px;
-    // margin-bottom: 9px;
+    height: 54px;
+    margin-bottom: 9px;
     background: #fff;
+    border: 1px solid #e7e7e7;
+    border-radius: 6px;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -621,7 +660,12 @@ $icoColor: rgb(106, 145, 232);
   }
   .content {
     $isColor: #1989fa;
-    height: calc(100% - 88px);
+    // height: calc(100% - 88px);
+    // background: #fff;
+    // overflow: hidden;
+        height: calc(100% - 63px);
+    border: 1px solid #e7e7e7;
+    border-radius: 8px 8px 0 0;
     background: #fff;
     overflow: hidden;
     .openAddBox {

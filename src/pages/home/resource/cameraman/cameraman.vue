@@ -1,5 +1,5 @@
 <template>
-  <div id="camera">
+  <div id="cameraman">
     <!-- 头部选项框 start -->
     <el-row class="top">
       <el-col :span="9" class="left">
@@ -20,7 +20,14 @@
           ></el-option>
         </el-select>
         <!-- 城市 -->
-        <el-select v-model="city" filterable clearable placeholder="城市" size="small" @change="cityChange">
+        <el-select
+          v-model="city"
+          filterable
+          clearable
+          placeholder="城市"
+          size="small"
+          @change="cityChange"
+        >
           <el-option
             v-for="item in cityList"
             :key="item.value"
@@ -28,7 +35,7 @@
             :value="item.value"
           ></el-option>
         </el-select>
-        <div class="add_task">
+        <div class="addCameraman">
           <el-button
             type="primary"
             icon="el-icon-circle-plus-outline"
@@ -57,7 +64,7 @@
                     </template>
                   </div>
                   <div class="el-image">
-                    <img :src="'/ocarplay/'+item.image" alt srcset />
+                    <img :src="item.image" alt srcset />
                     <div class="zhezhao">{{item.name}}</div>
                   </div>
                 </div>
@@ -77,7 +84,7 @@
                         d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z"
                       />
                     </svg>
-                    <span>&nbsp;{{item.province+item.city}}</span>
+                    <span class="city">&nbsp;{{item.province+item.city}}</span>
                   </p>
                   <p>
                     <svg
@@ -92,7 +99,9 @@
                         d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"
                       />
                     </svg>
-                    <span>&nbsp;<template v-if="item.isCar">会开车</template><template v-else>不会开车</template></span>
+                    <span>
+                      &nbsp;<template v-if="item.isCar">会开车</template><template v-else>不会开车</template>
+                    </span>
                   </p>
                   <p>
                     <svg
@@ -107,7 +116,8 @@
                         d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z"
                       />
                     </svg>
-                    <span>&nbsp;{{item.tag}}</span>
+                    <span class="tag" v-if="item.tag">&nbsp;{{item.tag}}</span>
+                    <span class="tag" v-else>&nbsp;暂无标签</span>
                   </p>
                   <p @click="toCameraList(item.personId,1)">
                     <svg
@@ -137,7 +147,11 @@
                         d="M908.1 353.1l-253.9-36.9L540.7 86.1c-3.1-6.3-8.2-11.4-14.5-14.5-15.8-7.8-35-1.3-42.9 14.5L369.8 316.2l-253.9 36.9c-7 1-13.4 4.3-18.3 9.3a32.05 32.05 0 0 0 .6 45.3l183.7 179.1-43.4 252.9a31.95 31.95 0 0 0 46.4 33.7L512 754l227.1 119.4c6.2 3.3 13.4 4.4 20.3 3.2 17.4-3 29.1-19.5 26.1-36.9l-43.4-252.9 183.7-179.1c5-4.9 8.3-11.3 9.3-18.3 2.7-17.5-9.5-33.7-27-36.3z"
                       />
                     </svg>
-                    <span>&nbsp;总体评分<span v-if="item.avgScore" class="num">{{item.avgScore}}</span><span v-else class="num">暂无</span></span>
+                    <span>
+                      &nbsp;总体评分
+                      <span v-if="item.avgScore" class="num">{{item.avgScore}}</span>
+                      <span v-else class="num">暂无</span>
+                    </span>
                   </p>
                 </div>
               </div>
@@ -146,7 +160,7 @@
                   <i class="el-icon-chat-dot-round" @click="addComment(item.personId)"></i>
                 </el-col>
                 <el-col :span="4">
-                  <i class="el-icon-map-location"  @click="toCameramanPlace(item.city)"></i>
+                  <i class="el-icon-map-location" @click="toCameramanPlace(item.city)"></i>
                 </el-col>
                 <el-col :span="4">
                   <i class="el-icon-date" @click="toCameramanSchedule(item.personId)"></i>
@@ -200,7 +214,7 @@ import comment from '@/components/comment' // 新增评分
 import commentList from '@/components/commentList' // 评分记录
 
 export default {
-  name: 'camera',
+  name: 'cameraman',
   components: {
     cameraa,
     cameraList,
@@ -280,10 +294,10 @@ export default {
     },
 
     ///////// 筛选摄影师列表 start /////////
-    isCarChange(){
+    isCarChange() {
       this.getlistPhotoPerson()
     },
-    cityChange(){
+    cityChange() {
       this.getlistPhotoPerson()
     },
     ///////// 筛选摄影师列表 end /////////
@@ -297,7 +311,7 @@ export default {
         photoPerson: {
           isCar: this.isCar,
           city: this.city,
-        }
+        },
       }
       this.$axios
         .post('/ocarplay/api/photoPerson/listAjax', data)
@@ -306,6 +320,13 @@ export default {
           this.listLoading = false
           if (res.status == 200) {
             let data = res.data
+            data.items.forEach((element) => {
+              if (element.image) {
+                element.image = '/ocarplay/'+element.image
+              }else{
+                element.image = '/static/images/carow/hander.png'
+              }
+            })
             this.cameraList = data.items
             this.total = data.totalRows
           }
@@ -343,7 +364,7 @@ export default {
       this.commentShow += 1
     },
     ///////// 新增评论 end /////////
-    
+
     ///////// 跳日程管理页面 start /////////
     toCameramanPlace(city) {
       // console.log(123)
@@ -425,7 +446,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 $icoColor: #6a91e8;
-#camera {
+#cameraman {
   height: 100%;
 }
 </style>

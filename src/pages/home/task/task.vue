@@ -74,7 +74,7 @@
               >{{scope.row.taskName}}</el-link>
             </template>
           </el-table-column>
-          <el-table-column prop label="任务类型" min-width="90" show-overflow-tooltip>
+          <el-table-column prop label="任务类型" min-width="80" show-overflow-tooltip>
             <template slot-scope="scope">
               <template v-if="scope.row.taskType==1">借车</template>
               <template v-else-if="scope.row.taskType==2">素材</template>
@@ -82,7 +82,7 @@
               <template v-else-if="scope.row.taskType==4">拍摄</template>
             </template>
           </el-table-column>
-          <el-table-column prop="ownerName" label="邀约对象" min-width="130" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="ownerName" label="邀约对象" min-width="90" show-overflow-tooltip></el-table-column>
           <!-- <el-table-column prop="ownerItemList" label="邀约事项" min-width="130" show-overflow-tooltip></el-table-column> -->
           <el-table-column prop="personName" label="摄影师" min-width="90" show-overflow-tooltip></el-table-column>
           <el-table-column prop="modelName" label="模特" min-width="90" show-overflow-tooltip></el-table-column>
@@ -201,7 +201,7 @@
               >{{scope.row.taskName}}</el-link>
             </template>
           </el-table-column>
-          <el-table-column prop label="任务类型" min-width="90" show-overflow-tooltip>
+          <el-table-column prop label="任务类型" min-width="80" show-overflow-tooltip>
             <template slot-scope="scope">
               <template v-if="scope.row.taskType==1">借车</template>
               <template v-else-if="scope.row.taskType==2">素材</template>
@@ -209,7 +209,7 @@
               <template v-else-if="scope.row.taskType==4">拍摄</template>
             </template>
           </el-table-column>
-          <el-table-column prop="ownerName" label="邀约对象" min-width="130" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="ownerName" label="邀约对象" min-width="90" show-overflow-tooltip></el-table-column>
           <!-- <el-table-column prop="ownerItemList" label="邀约事项" min-width="130" show-overflow-tooltip></el-table-column> -->
           <el-table-column prop="personName" label="摄影师" min-width="90" show-overflow-tooltip></el-table-column>
           <el-table-column prop="modelName" label="模特" min-width="90" show-overflow-tooltip></el-table-column>
@@ -317,7 +317,7 @@
               >{{scope.row.taskName}}</el-link>
             </template>
           </el-table-column>
-          <el-table-column prop label="任务类型" min-width="90" show-overflow-tooltip>
+          <el-table-column prop label="任务类型" min-width="80" show-overflow-tooltip>
             <template slot-scope="scope">
               <template v-if="scope.row.taskType==1">借车</template>
               <template v-else-if="scope.row.taskType==2">素材</template>
@@ -325,7 +325,7 @@
               <template v-else-if="scope.row.taskType==4">拍摄</template>
             </template>
           </el-table-column>
-          <el-table-column prop="ownerName" label="邀约对象" min-width="130" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="ownerName" label="邀约对象" min-width="90" show-overflow-tooltip></el-table-column>
           <!-- <el-table-column prop="ownerItemList" label="邀约事项" min-width="130" show-overflow-tooltip></el-table-column> -->
           <el-table-column prop label="摄影师" min-width="90" show-overflow-tooltip>摄影师</el-table-column>
           <el-table-column prop label="模特" min-width="90" show-overflow-tooltip>模特</el-table-column>
@@ -403,7 +403,7 @@
               >{{scope.row.taskName}}</el-link>
             </template>
           </el-table-column>
-          <el-table-column prop label="任务类型" min-width="90" show-overflow-tooltip>
+          <el-table-column prop label="任务类型" min-width="80" show-overflow-tooltip>
             <template slot-scope="scope">
               <template v-if="scope.row.taskType==1">借车</template>
               <template v-else-if="scope.row.taskType==2">素材</template>
@@ -411,7 +411,7 @@
               <template v-else-if="scope.row.taskType==4">拍摄</template>
             </template>
           </el-table-column>
-          <el-table-column prop="ownerName" label="邀约对象" min-width="130" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="ownerName" label="邀约对象" min-width="90" show-overflow-tooltip></el-table-column>
           <!-- <el-table-column prop="ownerItemList" label="邀约事项" min-width="130" show-overflow-tooltip></el-table-column> -->
           <el-table-column prop label="摄影师" min-width="90" show-overflow-tooltip>摄影师</el-table-column>
           <el-table-column prop label="模特" min-width="90" show-overflow-tooltip>模特</el-table-column>
@@ -568,9 +568,11 @@
                 <el-button type="primary" size="medium" v-else>油卡</el-button>
               </el-col>
               <el-col :span="4">
-                <i class="el-icon-document-copy" @click="copyDetailList(index)"></i>
-                <i class="el-icon-delete" @click="delDetailList(index)"></i>
-                <i class="el-icon-circle-plus-outline" @click="addDetailList"></i>
+                <template v-if="item.userType==0">
+                  <i class="el-icon-document-copy" @click="copyDetailList(index)"></i>
+                  <i class="el-icon-delete" @click="delDetailList(index)"></i>
+                  <i class="el-icon-circle-plus-outline" @click="addDetailList"></i>
+                </template>
               </el-col>
               <!-- {{item}}-{{index}} -->
             </el-col>
@@ -1024,10 +1026,10 @@ export default {
     ///////// 提交任务 start /////////
     putTask(prm) {
       console.log(prm)
-      let isCard = unll
+      let isCard = ''
       if (prm.taskType == 4) {
         isCard = true
-      }else{
+      } else {
         isCard = false
       }
       if (prm.taskType == 4) {
@@ -1187,13 +1189,20 @@ export default {
       }
       let flag = true
       data.listInvite.forEach((element) => {
-        if (!element.ownerId) {
-          flag = false
+        if (e == 0) {
+          if (!element.ownerId) {
+            flag = false
+          }
+        } else if (e == 1) {
+          if (!element.ownerId||!element.url) {
+            flag = false
+          }
         }
+          console.log(e)
       })
       // flag = false
-      // console.log(data)
-      console.log(JSON.stringify(data))
+      console.log(data)
+      // console.log(JSON.stringify(data))
       if (flag) {
         data.listInvite.forEach((element) => {
           // if (element.isCard) {
@@ -1228,7 +1237,7 @@ export default {
           })
       } else {
         this.drawerLoading = false
-        this.$message.error('请选择车主！')
+        this.$message.error('保存请选择车主！提交需填入链接！')
       }
     },
     ///////// 提交任务 end /////////

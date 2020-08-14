@@ -41,47 +41,47 @@
               </el-dialog>
             </el-col>
             <el-col :span="24" class="list">
-              <el-col :span="6" class="key">车主姓名</el-col>
+              <el-col :span="6" class="key">车主姓名：</el-col>
               <el-col :span="15" class="val">{{ownersName}}</el-col>
             </el-col>
             <el-col :span="24" class="list">
-              <el-col :span="6" class="key">合作事项</el-col>
+              <el-col :span="6" class="key">合作事项：</el-col>
               <el-col :span="15" class="val">{{eventData}}</el-col>
             </el-col>
             <el-col :span="24" class="list">
-              <el-col :span="6" class="key">车主性别</el-col>
+              <el-col :span="6" class="key">车主性别：</el-col>
               <el-col :span="15" class="val">
                 <span v-if="sex">女</span>
                 <span v-else>男</span>
               </el-col>
             </el-col>
             <el-col :span="24" class="list">
-              <el-col :span="6" class="key">车主职业</el-col>
+              <el-col :span="6" class="key">车主职业：</el-col>
               <el-col :span="15" class="val">{{work}}</el-col>
             </el-col>
             <el-col :span="24" class="list">
-              <el-col :span="6" class="key">出生日期</el-col>
+              <el-col :span="6" class="key">出生日期：</el-col>
               <el-col :span="15" class="val">{{birthDate}}</el-col>
             </el-col>
             <el-col :span="24" class="list">
-              <el-col :span="6" class="key">车主来源</el-col>
+              <el-col :span="6" class="key">车主来源：</el-col>
               <el-col :span="15" class="val">{{source}}</el-col>
             </el-col>
             <el-col :span="24" class="list">
-              <el-col :span="6" class="key">特长</el-col>
+              <el-col :span="6" class="key">特长：</el-col>
               <el-col :span="15" class="val">{{speciality}}</el-col>
             </el-col>
             <el-col :span="24" class="list">
-              <el-col :span="6" class="key">用车生活</el-col>
+              <el-col :span="6" class="key">用车生活：</el-col>
               <el-col :span="15" class="val">{{livelihood}}</el-col>
             </el-col>
 
             <el-col :span="24" class="list">
-              <el-col :span="6" :class="[tabact==1 ? 'key' : 'key']">认证车型</el-col>
+              <el-col :span="6" :class="[tabact==1 ? 'key' : 'key']">认证车型：</el-col>
               <el-col :span="15" class="val">{{carSeries}}</el-col>
             </el-col>
             <el-col :span="24" class="list">
-              <el-col :span="6" class="key">所在区域</el-col>
+              <el-col :span="6" class="key">所在区域：</el-col>
               <el-col :span="15" class="val">{{district}}</el-col>
             </el-col>
           </el-col>
@@ -91,10 +91,10 @@
         <!-- 右侧 start -->
         <el-col :span="16" class="right">
           <el-col :span="24" class="box">
-            <el-col :span="24" class="title">合作信息</el-col>
+            <el-col :span="24" class="title">合作信息：</el-col>
             <el-col :span="12" class="box1">
               <el-col :span="24" class="list">
-                <el-col :span="7" :class="[tabact!=1 ? 'key' : 'key']">签约合同</el-col>
+                <el-col :span="7" :class="[tabact!=1 ? 'key' : 'key']">签约合同：</el-col>
                 <el-col :span="14" class="val">
                   <template v-if="pactFileList.length!=0">
                     <el-col :span="3" class="icon">
@@ -242,17 +242,17 @@
                 </el-col>
               </el-col>
               <el-col :span="24" class="list">
-                <el-col :span="7" class="key">合作期限</el-col>
+                <el-col :span="7" class="key">合作期限：</el-col>
                 <el-col :span="14" class="val">{{timeLimit}}</el-col>
               </el-col>
               <el-col :span="24" class="list">
-                <el-col :span="7" class="key">合作时长</el-col>
+                <el-col :span="7" class="key">合作时长：</el-col>
                 <el-col :span="14" class="val">{{duration}}</el-col>
               </el-col>
             </el-col>
             <el-col :span="12" class="box2">
               <el-col :span="24" class="list" v-if="tabact == 1">
-                <el-col :span="8" class="key">合作概况</el-col>
+                <el-col :span="8" class="key">合作概况：</el-col>
                 <el-col :span="24" class="val situation">
                   <el-col :span="24" class="list" v-for="(item, index) in eventList" :key="index">
                     <el-col :span="5">{{item.itemName}}</el-col>
@@ -263,7 +263,7 @@
                 </el-col>
               </el-col>
               <el-col :span="24" class="list" v-else-if="tabact != 1">
-                <el-col :span="7" class="key">IP孵化打造</el-col>
+                <el-col :span="7" class="key">IP孵化打造：</el-col>
                 <el-col :span="24" class="val hatch">
                   <el-col :span="24" class="list" v-for="(item, index) in hatchList" :key="index">
                     <el-col :span="5">{{item.plat}}</el-col>
@@ -275,61 +275,61 @@
                 </el-col>
               </el-col>
             </el-col>
-            <el-col :span="24" class="title title3">详细信息</el-col>
+            <el-col :span="24" class="title title3">详细信息：</el-col>
             <el-col :span="12" class="box1">
               <el-col :span="24" class="list">
-                <el-col :span="7" class="key">手机号</el-col>
+                <el-col :span="7" class="key">手机号：</el-col>
                 <el-col :span="14" class="val">{{tel}}</el-col>
               </el-col>
               <el-col :span="24" class="list">
-                <el-col :span="7" class="key">微信号</el-col>
+                <el-col :span="7" class="key">微信号：</el-col>
                 <el-col :span="14" class="val">{{wx}}</el-col>
               </el-col>
               <el-col :span="24" class="list">
-                <el-col :span="7" class="key">QQ号</el-col>
+                <el-col :span="7" class="key">QQ号：</el-col>
                 <el-col :span="14" class="val">{{qq}}</el-col>
               </el-col>
               <el-col :span="24" class="list">
-                <el-col :span="7" class="key">汽车之家ID</el-col>
+                <el-col :span="7" class="key">汽车之家ID：</el-col>
                 <el-col :span="14" class="val">{{carId}}</el-col>
               </el-col>
               <el-col :span="24" class="list">
-                <el-col :span="7" class="key">汽车之家主页</el-col>
+                <el-col :span="7" class="key">汽车之家主页：</el-col>
                 <el-col :span="14" class="val">{{carHome}}</el-col>
               </el-col>
               <el-col :span="24" class="list">
-                <el-col :span="7" class="key">微博ID</el-col>
+                <el-col :span="7" class="key">微博ID：</el-col>
                 <el-col :span="14" class="val">{{microblog}}</el-col>
               </el-col>
               <el-col :span="24" class="list">
-                <el-col :span="7" class="key">抖音ID</el-col>
+                <el-col :span="7" class="key">抖音ID：</el-col>
                 <el-col :span="14" class="val">{{tikTokId}}</el-col>
               </el-col>
               <el-col :span="24" class="list">
-                <el-col :span="7" class="key">其他社交ID</el-col>
+                <el-col :span="7" class="key">其他社交ID：</el-col>
                 <el-col :span="14" class="val">{{socialId}}</el-col>
               </el-col>
               <el-col :span="24" class="list">
-                <el-col :span="7" class="key">车牌号</el-col>
+                <el-col :span="7" class="key">车牌号：</el-col>
                 <el-col :span="14" class="val">{{carNum}}</el-col>
               </el-col>
               <el-col :span="24" class="list">
-                <el-col :span="7" class="key">车架号</el-col>
+                <el-col :span="7" class="key">车架号：</el-col>
                 <el-col :span="14" class="val">{{vin}}</el-col>
               </el-col>
               <el-col :span="24" class="list">
-                <el-col :span="7" class="key">购车网点</el-col>
+                <el-col :span="7" class="key">购车网点：</el-col>
                 <el-col :span="14" class="val">{{branch}}</el-col>
               </el-col>
             </el-col>
             <!-- 左右分割线 -->
             <el-col :span="12" class="box2">
               <el-col :span="24" class="list">
-                <el-col :span="7" class="key">家庭住址</el-col>
+                <el-col :span="7" class="key">家庭住址：</el-col>
                 <el-col :span="14" class="val">{{address}}</el-col>
               </el-col>
               <el-col :span="24" class="list">
-                <el-col :span="7" class="key">收货地址</el-col>
+                <el-col :span="7" class="key">收货地址：</el-col>
                 <el-col :span="14" class="val">
                   <el-col :span="24">{{district0+deliAddress}}</el-col>
                 </el-col>
@@ -341,23 +341,23 @@
                 </el-col>
               </el-col> -->
               <el-col :span="24" class="list">
-                <el-col :span="7" class="key">开户行</el-col>
+                <el-col :span="7" class="key">开户行：</el-col>
                 <el-col :span="14" class="val">{{bank}}</el-col>
               </el-col>
               <el-col :span="24" class="list">
-                <el-col :span="7" class="key">银行卡号</el-col>
+                <el-col :span="7" class="key">银行卡号：</el-col>
                 <el-col :span="14" class="val">{{bankCard}}</el-col>
               </el-col>
               <el-col :span="24" class="list">
-                <el-col :span="7" class="key">备注信息</el-col>
+                <el-col :span="7" class="key">备注信息：</el-col>
                 <el-col :span="14" class="val">{{remake}}</el-col>
               </el-col>
               <el-col :span="24" class="list">
-                <el-col :span="7" class="key">车主邮箱</el-col>
+                <el-col :span="7" class="key">车主邮箱：</el-col>
                 <el-col :span="14" class="val">{{mail}}</el-col>
               </el-col>
               <el-col :span="24" class="list">
-                <el-col :span="7" class="key relation">家属信息</el-col>
+                <el-col :span="7" class="key relation">家属信息：</el-col>
                 <el-col :span="16" class="val">
                   <el-col
                     :spam="24"
@@ -560,6 +560,8 @@ export default {
               this.handerImg = data.image
               data.image = '/ocarplay/' + data.image
               this.fileList = [{ name: '', url: data.image }]
+            }else{
+              this.fileList = [{ name: '', url: '/static/images/carow/hander.png' }]
             }
 
             this.tabact = data.typeId
@@ -774,7 +776,7 @@ $icoColor: #6a91e8;
       }
       .val {
         // width: 420px;
-        // line-height: 40px;
+        line-height: 40px;
         .el-cascader,
         .el-select,
         .el-date-editor,

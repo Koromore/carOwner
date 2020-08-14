@@ -4,7 +4,7 @@
     <el-row class="top">
       <el-col :span="24" class="cont">
         <div class="butBox1">
-          <div :class="[tab1act==0?'but act':'but']" @click="tab1(0)">任务完成数</div>
+          <div :class="[tab1act==0?'but act':'but']" @click="tab1(0)">任务总数</div>
           <div :class="[tab1act==1?'but act':'but']" @click="tab1(1)">车主发展数</div>
           <div :class="[tab1act==2?'but act':'but']" @click="tab1(2)">累计支出</div>
           <div :class="[tab1act==3?'but act':'but']" @click="tab1(3)">累计合作</div>
@@ -68,7 +68,7 @@ export default {
         },
       ],
       // 图表数据
-      chartTitle: '任务完成数量',
+      chartTitle: '任务总数',
       chartNum: 0,
       chartKeyData: ['执行中', '结算中', '延期', '已完成'],
       chartvalData: [520, 360, 130, 240],
@@ -79,7 +79,7 @@ export default {
     tab1act: function (newData, oldData) {
       // console.log(newData)
       if (newData == 0) {
-        this.chartTitle = '任务完成数量'
+        this.chartTitle = '任务总数'
         this.tab2Items = [
           {
             id: 0,
@@ -226,7 +226,7 @@ export default {
       console.log(id)
     },
     getData() {
-      // webType 0-任务完成数量 1-车主发展数量 2-累计支出费用 3-累计合作次数
+      // webType 0-任务总数 1-车主发展数量 2-累计支出费用 3-累计合作次数
       // type 任务分心类型 0-状态 1-时间 2-对象 3-项目组
       let data = {
         webType: this.tab1act,

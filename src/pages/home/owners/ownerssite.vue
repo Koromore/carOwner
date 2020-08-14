@@ -2,62 +2,64 @@
   <div id="ownerssite">
     <!-- 头部选项框 start -->
     <el-row class="top">
-      <el-col :span="8" class="left cont">
+      <el-col :span="3" class="left">
         <div @click="previous">
           <i class="el-icon-arrow-left"></i>
           返回
         </div>
       </el-col>
-      <el-col :span="8" class="center cont">场地信息</el-col>
-      <el-col :span="8" class="right cont">
-        <!-- <div @click="submit">
-          <i class="el-icon-circle-check"></i>
-          <br />提交并完成
-        </div>-->
-      </el-col>
+      <el-col :span="8" :offset="5" class="center">场地信息</el-col>
     </el-row>
     <!-- 头部选项框 end -->
 
     <!-- 内容列表 start -->
-    <el-row class="content">
-      <div class="table_list">
-        <el-table
-          :data="ownerRelate"
-          style="width: 100%"
-          :header-row-style="{'height': '70px','background': 'rgb(242, 242, 242)'}"
-          :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
-          height="100%"
-        >
-          <el-table-column prop label="序号" width="81" align="center">
-            <template slot-scope="scope">0{{scope.$index+1}}</template>
-          </el-table-column>
-          <el-table-column prop="placeName" label="场地名称" min-width="100" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="placeTypeName" label="场地类型" width="180"></el-table-column>
-          <el-table-column prop="title" label="详细地址" min-width="320" show-overflow-tooltip>
-            <template slot-scope="scope">
-              {{scope.row.province}}{{scope.row.city}}{{scope.row.area}}{{scope.row.address}}
-            </template>
-          </el-table-column>
-          <el-table-column prop="address" label="环境图片" width="130">
-            <template slot-scope="scope">
-              <el-image
-                style="width: 20px;height: 20px;margin-left: 16px;"
-                fit="contain"
-                src="static/images/ico/eye.png"
-                :preview-src-list="['/ocarplay/'+scope.row.image]"
-              ></el-image>
-            </template>
-          </el-table-column>
-        </el-table>
-      </div>
+    <el-row class="content" v-loading="listLoading">
+      <el-scrollbar>
+        <el-col :span="24" class="table_list">
+          <el-col class="itemsBox" :span="6" v-for="(item,index) in placeList" :key="index">
+            <div class="items">
+              <div class="img" @click="toPlaceDetails(item.placeId)">
+                <el-image style="width: 100%; height: 100%" :src="item.image" fit="cover"></el-image>
+              </div>
+              <div class="text">
+                <p>
+                  <span>{{item.placeName}}</span>
+                  <span class="cost" v-if="item.money">￥{{item.money}}</span>
+                  <span class="free" v-else>免费</span>
+                </p>
+                <p>{{item.province+item.city}} · {{item.area+item.address}}</p>
+                <p>场地类型：{{item.placeTypeName}}</p>
+                <p @click="toCameraList(item.placeId,3)">拍摄次数：{{item.cameraNum}}次</p>
+              </div>
+              <!-- <div class="bottom">
+                <el-col :span="6" :offset="3">
+                  <i class="el-icon-user" @click="toPlaceMan(item.city)"></i>
+                </el-col>
+                <el-col :span="6">
+                  <i class="el-icon-camera" @click="addCamera()"></i>
+                </el-col>
+                <el-col :span="6">
+                  <i class="el-icon-delete" @click="deletePlaceBtn(item.placeId)"></i>
+                </el-col>
+              </div>-->
+            </div>
+          </el-col>
+          <el-col class="noData" v-if="placeList.length==0">
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />暂无场地信息...
+          </el-col>
+          <!-- <noDataList v-if="placeList.length==0"></noDataList> -->
+        </el-col>
+      </el-scrollbar>
       <el-col :span="24" class="paging">
         <el-pagination
-          @size-change="changeSize"
           @current-change="changePage"
           :current-page="1"
-          :page-sizes="[20, 30, 50]"
           :page-size="pageSize"
-          layout="total, prev, pager, next ,sizes"
+          layout="total, prev, pager, next"
           :total="total"
           background
         ></el-pagination>
@@ -67,37 +69,27 @@
   </div>
 </template>
 <script>
-// import { matchType } from '@/utils/matchType' // 引入文件格式判断方法
+import cityList from '@/common/city.js' // 引入城市数据
+import noDataList from '@/components/noDataList' // 无数据组件
 
 export default {
   name: 'ownerssite',
-  components: {},
+  components: { noDataList },
   data() {
     return {
-      // 表格数据
-      ownerRelate: [
-        {
-          time: '20-05-04',
-          addressee: '解雨臣',
-          matter: '文案约稿',
-          title: '我和我的XC60生活，此刻是美好的开端',
-          link: '',
-          tele: '15996325468',
-          site: '湖北省武汉市洪山区武大园路武大航宇一期',
-          type: '1',
-          trackNum: '7894561234561',
-          evidence: '7894561234561',
-          budget: 500
-        }
-      ],
-      input: '',
-      // 场地预览
-      urlImg: '',
-      srcList: [],
-      // 分页数据
+      userId: this.$store.state.user.userId, // 用户ID
+      deptId: this.$store.state.user.deptId, // 部门ID
+      postId: this.$store.state.user.postId, // 职位ID
+      subordinate: this.$store.state.user.subordinate, // 一级部门ID
+      adminShow: this.$store.state.adminShow, // 超级管理员
+      value2: '',
+      // 内容列表
+      listLoading: false,
+      placeList: [{ localPath: '' }],
+      // 分页
       total: 0,
       pageNum: 1,
-      pageSize: 30
+      pageSize: 12,
     }
   },
   // 侦听器
@@ -106,149 +98,186 @@ export default {
   beforeCreate() {},
   beforeMount() {},
   mounted() {
-    console.log(this.$route.query.ownerId)
-    // this.foreach()
-    ///////// 获取场地信息 start /////////
-    this.getOwnerRelatePlace()
+    ///////// 获取场地列表 start /////////
+    this.getPlaceList()
   },
   // 方法
   methods: {
-    ///////// 返回上一页 start /////////
-    previous() {
-      this.$router.push({
-        path: '/home/owners'
-      })
-    },
-    ///////// 返回上一页 end /////////
-
-    ///////// 获取场地信息 start /////////
-    getOwnerRelatePlace() {
+    ///////// 获取场地列表 start /////////
+    getPlaceList() {
+      this.listLoading = true
       let data = {
         pageNum: this.pageNum,
         pageSize: this.pageSize,
-        vehicleOwnerId: this.$route.query.ownerId
+        place: {
+          city: this.$route.query.city,
+        },
       }
-      this.$axios
-        .post('/ocarplay/api/vehicleOwner/getOwnerRelatePlace', data)
-        .then(res => {
-          // console.log(res)
-          if (res.status == 200) {
-            let data = res.data
-            this.ownerRelate = data.items
-            this.total = data.totalRows
-          }
-        })
-    },
-    ///////// 获取场地信息 end /////////
-
-    ///////// 确认 start /////////
-    submit() {
-      this.$confirm('确认提交任务吗?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
+      this.$axios.post('/ocarplay/api/place/listAjax', data).then((res) => {
+        // console.log(res)
+        this.listLoading = false
+        // this.drawerAdd = false
+        if (res.status == 200) {
+          let data = res.data
+          data.items.forEach((element) => {
+            if (element.photoList.length != 0) {
+              element.image = '/ocarplay/' + element.photoList[0].localPath
+            } else {
+              element.image = 'static/images/carow/handerimg.png'
+            }
+          })
+          this.placeList = data.items
+          // console.log(this.placeList)
+          this.total = data.totalRows
+        }
       })
-        .then(() => {
-          this.$message({
-            type: 'success',
-            message: '提交成功!'
-          })
-        })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消提交'
-          })
-        })
     },
-    ///////// 确认 end /////////
+    ///////// 获取场地列表 end /////////
+
+    ///////// 跳转场地详情 start /////////
+    toPlaceDetails(id) {
+      this.$router.push({
+        path: '/home/resource/placedetails',
+        query: { id: id },
+      })
+    },
+    ///////// 跳转场地详情 end /////////
 
     ///////// 分页 start /////////
     // 每页条数变化时触发事件
-    changeSize(pageSize) {
-      console.log(pageSize)
-      this.pageSize = pageSize
-      ///////// 获取场地信息 start /////////
-      this.getOwnerRelatePlace()
-    },
+    // changeSize(pageSize) {
+    //   console.log(pageSize)
+    // },
     // 页码变换时触发事件
     changePage(pageNum) {
-      console.log(pageNum)
       this.pageNum = pageNum
-      ///////// 获取场地信息 start /////////
-      this.getOwnerRelatePlace()
-    }
+      this.getPlaceList()
+    },
     ///////// 分页 end /////////
-  }
+
+    ///////// 返回上一页 start /////////
+    previous() {
+      this.$router.go(-1) //返回上一层
+    },
+    ///////// 返回上一页 end /////////
+  },
 }
 </script>
 <style lang="scss" scoped>
-$white: #fff;
-$icoColor: rgb(106, 145, 232);
+$icoColor: #6a91e8;
 #ownerssite {
   height: 100%;
+  box-sizing: border-box;
+  padding: 36px;
+  padding-bottom: 0;
+  background: white;
+  border-radius: 6px;
+  border: 1px solid #e7e7e7;
   .top {
-    height: 88px;
-    // margin-bottom: 9px;
-    background: #fff;
+    height: 45px;
+    margin-bottom: 9px;
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
-    .cont {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-    }
     .left {
-      justify-content: flex-start;
       font-size: 22px;
-      padding-left: 36px;
+      text-align: left;
+      // padding-left: 36px;
       div {
         cursor: pointer;
+        text-align: left;
+        font-weight: 100;
+        height: 37px;
+        line-height: 37px;
       }
       i {
         font-weight: bold;
       }
     }
     .center {
-      justify-content: center;
-      font-size: 24px;
-      font-weight: bold;
-    }
-    .right {
-      justify-content: flex-end;
-      padding-right: 36px;
-      color: $icoColor;
-      font-size: 13px;
-      div {
-        text-align: center;
-        cursor: pointer;
-      }
-      i {
-        font-size: 28px;
-      }
+      font-size: 22px;
+      font-weight: 100;
+      text-align: center;
+      height: 37px;
+      line-height: 37px;
     }
   }
   .content {
-    height: calc(100% - 88px);
-    background: #fff;
-    .table_list {
+    height: calc(100% - 54px);
+    .el-scrollbar {
       height: calc(100% - 64px);
-      .el-table {
-        .el-table__header {
-          th {
-            background: none;
+    }
+    .table_list {
+      .itemsBox {
+        padding: 13px;
+        height: 360px;
+        .items {
+          height: 100%;
+          min-height: 160px;
+          margin-bottom: 1%;
+          box-sizing: border-box;
+          overflow: hidden;
+          padding: 0;
+          border: 1px solid #e7e7e7;
+          border-radius: 6px;
+          background: white;
+          .img {
+            width: 100%;
+            height: 190px;
+            cursor: pointer;
+          }
+          .text {
+            width: 100%;
+            height: calc(51% - 32px);
+            box-sizing: border-box;
+            padding: 16px 24px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            align-content: space-between;
+            p {
+              width: 100%;
+              font-weight: 400;
+              font-size: 13px;
+              line-height: 24px;
+              &:nth-of-type(1) {
+                font-size: 16px;
+                font-weight: 700;
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                justify-content: space-between;
+              }
+              &:nth-of-type(2) {
+                overflow: hidden; // 超出隐藏
+                white-space: nowrap; // 不换行
+                text-overflow: ellipsis; // 显示省略号
+              }
+              &:nth-of-type(4) {
+                cursor: pointer;
+              }
+              .free {
+                color: #c73420;
+              }
+              .cost {
+                color: $icoColor;
+              }
+            }
+          }
+          .bottom {
+            width: 100%;
+            height: 32px;
+            line-height: 32px;
+            text-align: center;
+            color: $icoColor;
+            background: rgba(0, 0, 0, 0.4);
+            i {
+              font-size: 24px;
+              color: white;
+              line-height: 32px;
+              cursor: pointer;
+            }
           }
         }
-      }
-      i {
-        font-size: 24px;
-        color: $icoColor;
-        cursor: pointer;
-        margin-right: 13px;
-      }
-      img {
-        cursor: pointer;
       }
     }
     .paging {
@@ -256,6 +285,7 @@ $icoColor: rgb(106, 145, 232);
       box-sizing: border-box;
       padding: 16px;
       text-align: center;
+      background: none;
     }
   }
 }

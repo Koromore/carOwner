@@ -10,11 +10,9 @@
       </el-col>
       <el-col :span="8" class="center cont">《{{taskName}}》</el-col>
       <el-col :span="8" class="right cont">
-        <div @click="submitList">
-          <!-- <i class="el-icon-circle-check"></i>
-          <br />提交并完成 -->
+        <!-- <div @click="submitList">
           <el-button type="primary" icon="el-icon-circle-check" size="small">提交并完成</el-button>
-        </div>
+        </div> -->
       </el-col>
     </el-row>
     <!-- 头部选项框 end -->
@@ -243,6 +241,7 @@ export default {
         })
       } else {
         this.$message.error('请先上传或填写结算凭证')
+        this.listLoading = false
       }
     },
 
@@ -341,9 +340,9 @@ $icoColor: rgb(106, 145, 232);
       color: $icoColor;
       font-size: 13px;
       button {
-          width: 136px;
-          background: $icoColor;
-        }
+        width: 136px;
+        background: $icoColor;
+      }
       div {
         text-align: center;
         cursor: pointer;

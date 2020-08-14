@@ -24,13 +24,13 @@
             </el-card>
           </el-timeline-item>
         </el-timeline>
-        <el-col v-if="cameraList.length==0" class="noData">暂无{{drawerTitle}}...</el-col>
+        <noDataList v-if="cameraList.length==0"></noDataList>
       </el-scrollbar>
     </el-drawer>
   </div>
 </template>
 <script>
-// import { matchType } from '@/utils/matchType' // 引入文件格式判断方法
+import noDataList from '@/components/noDataList' // 无数据组件
 
 export default {
   name: 'cameraList',
@@ -38,7 +38,7 @@ export default {
   props: {
     cameraListShow: Number,
   },
-  components: {},
+  components: { noDataList },
   data() {
     return {
       drawerData: false,
@@ -75,7 +75,7 @@ export default {
         camera: {},
       }
       let type = this.$parent.$el.id
-      // console.log(this.$parent.$el.id)
+      console.log(this.$parent.$el.id)
       if (type == 'cameraman') {
         data.camera.personId = this.$parent.personId
       } else if (type == 'model') {

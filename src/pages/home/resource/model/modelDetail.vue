@@ -567,6 +567,7 @@ export default {
   height: 100%;
   background: white;
   border-radius: 8px 8px 0 0;
+  border: 1px solid #e7e7e7;
   .content {
     position: relative;
     height: 100%;

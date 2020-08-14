@@ -672,6 +672,7 @@ export default {
 
     ///////// 跳转场地信息 start /////////
     toOwnerssite(prm) {
+      console.log(prm)
       // 记录类型
       let tab1act = this.tab1act
       let tab2act = this.tab2act
@@ -679,7 +680,7 @@ export default {
       this.$router.push({
         path: '/home/ownerssite',
         query: {
-          ownerId: prm.ownerId||prm.vehicleOwnerId,
+          city: prm.city,
         },
       })
       // console.log(prm)

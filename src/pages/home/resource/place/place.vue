@@ -397,7 +397,7 @@ $icoColor: #6a91e8;
             color: $icoColor;
             background: rgba(0, 0, 0, 0.4);
             i {
-              font-size: 24px;
+              font-size: 20px;
               color: white;
               line-height: 32px;
               cursor: pointer;
