@@ -21,6 +21,7 @@
                 <el-radio :label="2">素材</el-radio>
                 <el-radio :label="3">邀约</el-radio>
                 <el-radio :label="4">拍摄</el-radio>
+                <el-radio :label="5">发布</el-radio>
               </el-radio-group>
             </div>
           </el-col>
@@ -82,14 +83,6 @@
             <el-col :span="24" class="list">
               <div class="key">模特</div>
               <div class="val">
-                <!-- <el-cascader
-                  :options="modelList"
-                  v-model="modelId"
-                  clearable
-                  filterable
-                  collapse-tags
-                  :disabled="disabledCaigou"
-                ></el-cascader>-->
                 <el-select v-model="modelId" placeholder="请选择" :disabled="disabledCaigou">
                   <el-option
                     v-for="item in modelList"
@@ -103,14 +96,6 @@
             <el-col :span="24" class="list">
               <div class="key">场地</div>
               <div class="val">
-                <!-- <el-cascader
-                  :options="placeList"
-                  v-model="placeId"
-                  clearable
-                  filterable
-                  collapse-tags
-                  :disabled="disabledCaigou"
-                ></el-cascader>-->
                 <el-select v-model="placeId" placeholder="请选择" :disabled="disabledCaigou">
                   <el-option
                     v-for="item in placeList"
@@ -425,7 +410,12 @@ export default {
         this.listLoading = false
         if (res.status == 200) {
           let data = res.data.items
-          let modelList = []
+          let modelList = [
+            {
+              value: 0,
+              label: '无模特',
+            }
+          ]
           data.forEach((element) => {
             modelList.push({
               value: element.modelId,
@@ -477,7 +467,11 @@ export default {
           this.taskName = data.taskName
           this.taskType = data.taskType
           this.personId = data.personId
+          if (this.modelId) {
           this.modelId = data.modelId
+          }else{
+          this.modelId = 0
+          }
           this.placeId = data.placeId
           let listInviteList = []
           data.listInvite.forEach((element) => {
@@ -697,6 +691,10 @@ export default {
       carSeriesId.forEach((element) => {
         listTaskOfCartype.push({ cartypeId: element[1] })
       })
+      let modelId = ''
+      if (this.modelId) {
+        modelId = this.modelId
+      }
       let data = {
         initUserId: this.userId,
         deptId: this.deptId,
@@ -710,7 +708,7 @@ export default {
         num: this.taskNum,
 
         personId: this.personId,
-        modelId: this.modelId,
+        modelId: modelId,
         placeId: this.placeId,
         // typeId: this.carSeriesId[0],
         // carTypeId: this.carSeriesId[1],

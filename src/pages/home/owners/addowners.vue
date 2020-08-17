@@ -1285,6 +1285,7 @@ export default {
       let tabact = this.tabact
       let judgeList = []
       let judge = true
+      // console.log(tabact)
       if (tabact == 1) {
         data.ownerCoops = this.eventList
         data.ownerCoops.forEach((element, i) => {
@@ -1321,12 +1322,15 @@ export default {
           judgeList.push(element.coopMoney)
           judgeList.push(element.period)
         })
+        // console.log(judgeList)
         for (let i = 0; i < judgeList.length; i++) {
           const element = judgeList[i]
+          // console.log(judge)
           if (element === '' || element === null) {
             judge = false
+            // console.log(judge)
+            break
           }
-          break
         }
       } else {
         if (
@@ -1369,7 +1373,7 @@ export default {
         })
         data.ipGrows = ipGrows
       }
-      console.log(data)
+      // console.log(data)
       // console.log(judgeList)
 
       let isEmail = this.$isEmail(data.email)

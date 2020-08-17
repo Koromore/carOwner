@@ -10,6 +10,9 @@
         </div>
       </el-col>
       <el-col :span="15" class="right">
+        <!-- 评分排序 -->
+        <div class="rank">拍摄排序<i class="el-icon-caret-bottom"></i></div>
+        <div class="rank">评分排序<i class="el-icon-caret-bottom"></i></div>
         <!-- 是否会开车 -->
         <el-select v-model="isCar" clearable placeholder="是否会开车" size="small" @change="isCarChange">
           <el-option
@@ -248,6 +251,8 @@ export default {
         },
       ],
       isCar: '',
+      orderType: 1,
+      orderType: 1,
       // 城市列表
       cityList: cityList, // 城市筛列表
       city: '',
@@ -316,6 +321,8 @@ export default {
           isCar: this.isCar,
           city: this.city,
         },
+        // orderType: 1,
+        // type: 1,
       }
       this.$axios
         .post('/ocarplay/api/photoPerson/listAjax', data)

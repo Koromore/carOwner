@@ -14,9 +14,15 @@
         </el-col>
         <el-col :span="12" class="left">
           <el-col :span="24" class="list">
-            <div class="key">姓名</div>
+            <div class="key imp">姓名</div>
             <div class="val">
               <el-input placeholder="请输入内容" v-model="name" clearable></el-input>
+            </div>
+          </el-col>
+          <el-col :span="24" class="list">
+            <div class="key">年龄</div>
+            <div class="val">
+              <el-input placeholder="请输入内容" v-model="age" clearable></el-input>
             </div>
           </el-col>
           <el-col :span="24" class="list">
@@ -39,7 +45,7 @@
             </div>
           </el-col>
           <el-col :span="24" class="list">
-            <div class="key">费用</div>
+            <div class="key imp">费用</div>
             <div class="val">
               <el-input placeholder="请输入内容" type="number" v-model="money" clearable></el-input>
             </div>
@@ -51,7 +57,7 @@
             </div>
           </el-col>
           <el-col :span="24" class="list">
-            <div class="key">性别</div>
+            <div class="key imp">性别</div>
             <div class="val">
               <el-select v-model="sex" placeholder="请选择">
                 <el-option
@@ -64,7 +70,7 @@
             </div>
           </el-col>
           <el-col :span="24" class="list">
-            <div class="key">模卡/资质/简介</div>
+            <div class="key imp">模卡/资质/简介</div>
             <div class="val">
               <el-input placeholder="请输入内容" v-model="introduce" clearable></el-input>
               <el-upload
@@ -87,7 +93,7 @@
             </div>
           </el-col>
           <el-col :span="24" class="list">
-            <div class="key">素颜照</div>
+            <div class="key imp">素颜照</div>
             <div class="val">
               <el-upload
                 class="photoUpload"
@@ -110,7 +116,7 @@
             </div>
           </el-col>
           <el-col :span="24" class="list">
-            <div class="key">自我介绍</div>
+            <div class="key imp">素颜视频</div>
             <div class="val">
               <el-upload
                 class="upload-demo"
@@ -159,13 +165,13 @@
             </div>
           </el-col>
           <el-col :span="24" class="list">
-            <div class="key">标签</div>
+            <div class="key imp">标签</div>
             <div class="val">
               <el-input placeholder="请输入内容" v-model="tag" clearable></el-input>
             </div>
           </el-col>
           <el-col :span="24" class="list">
-            <div class="key">所在区域</div>
+            <div class="key imp">所在区域</div>
             <div class="val">
               <el-cascader
                 :options="optionsCity"
@@ -176,6 +182,30 @@
                 @change="handleChangeCity"
                 placeholder="请选择所在区域"
               ></el-cascader>
+            </div>
+          </el-col>
+          <el-col :span="24" class="list">
+            <div class="key">身高</div>
+            <div class="val">
+              <el-input placeholder="请输入内容" v-model="height" clearable></el-input>
+            </div>
+          </el-col>
+          <el-col :span="24" class="list">
+            <div class="key">体重</div>
+            <div class="val">
+              <el-input placeholder="请输入内容" v-model="weight" clearable></el-input>
+            </div>
+          </el-col>
+          <el-col :span="24" class="list">
+            <div class="key">三围</div>
+            <div class="val">
+              <el-input placeholder="请输入内容" v-model="bwh" clearable></el-input>
+            </div>
+          </el-col>
+          <el-col :span="24" class="list">
+            <div class="key">特长</div>
+            <div class="val">
+              <el-input placeholder="请输入内容" v-model="speciality" clearable></el-input>
             </div>
           </el-col>
         </el-col>
@@ -210,6 +240,7 @@ export default {
       title: '新增模特',
       modelId: null,
       name: null, // 名字
+      age: null, // 年龄
       carTypeId: null, // 客户车型
       phone: null, // 电话
       money: null, // 费用
@@ -221,6 +252,10 @@ export default {
       tag: null, // 标签
       province: null,
       city: null,
+      height: null, // 身高
+      weight: null, // 体重
+      bwh: null, // 三围
+      speciality: null, // 特长
       introduce: null, // 模特介绍
       modelIntroList: [], // 模特附件
       synopsisFileList: [], // 简介文件列表
@@ -674,6 +709,7 @@ export default {
       this.putLoading = true
       let modelId = this.modelId // 模特Id
       let name = this.name // 名字
+      let age = this.age // 年龄
       let carTypeId = this.carTypeId // 客户车型
       let phone = this.phone // 电话
       let money = this.money // 费用
@@ -686,6 +722,10 @@ export default {
       let district = this.district
       let province = district[0]
       let city = district[1]
+      let height = this.height // 身高
+      let weight = this.weight // 体重
+      let bwh = this.bwh // 三围
+      let speciality = this.speciality // 特长
       let introduce = this.introduce // 模特介绍
       let modelIntroList = [] // 模特附件
       let synopsisAttachmentList = this.synopsisAttachmentList
@@ -702,6 +742,7 @@ export default {
       let data = {
         modelId, // 模特Id
         name, // 名字
+        age, // 年龄
         carTypeId, // 客户车型
         phone, // 电话
         money, // 费用
@@ -713,42 +754,44 @@ export default {
         tag, // 标签
         province,
         city,
+        height, // 身高
+        weight, // 体重
+        bwh, // 三围
+        speciality, // 特长
         introduce, // 模特介绍
         modelIntroList, // 模特附件
       }
       // console.log(this.$parent)
       // console.log(data)
-      this.$axios
-        .post('/ocarplay/api/model/save', data)
-        .then((res) => {
-          // console.log(res)
-          if (res.status == 200) {
-            let data = res.data
-            if (data.errcode == 0) {
-              if (modelId) {
-                this.$message.success(res.data.msg)
-              } else {
-                this.$message.success(res.data.msg)
-              }
-              setTimeout(() => {
-                this.$router.push({
-                  name: 'model',
-                })
-                this.putLoading = false
-              }, 1000)
+      this.$axios.post('/ocarplay/api/model/save', data).then((res) => {
+        // console.log(res)
+        if (res.status == 200) {
+          let data = res.data
+          if (data.errcode == 0) {
+            if (modelId) {
+              this.$message.success(res.data.msg)
             } else {
-              this.$message.error(res.data.msg)
-              this.putLoading = false
+              this.$message.success(res.data.msg)
             }
+            setTimeout(() => {
+              this.$router.push({
+                name: 'model',
+              })
+              this.putLoading = false
+            }, 1000)
           } else {
-            this.$message.error('网络错误！')
+            this.$message.error(res.data.msg)
             this.putLoading = false
           }
-        })
-        // .catch((res) => {
-        //   this.$message.error('网络错误！')
-        //   this.putLoading = false
-        // })
+        } else {
+          this.$message.error('网络错误！')
+          this.putLoading = false
+        }
+      })
+      // .catch((res) => {
+      //   this.$message.error('网络错误！')
+      //   this.putLoading = false
+      // })
     },
     ///////// 新增模特 start /////////
   },
@@ -772,10 +815,11 @@ export default {
       align-items: flex-start;
       margin: 16px 0;
       .key {
-        width: 110px;
+        width: 130px;
         height: 40px;
         line-height: 40px;
         margin-right: 13px;
+        padding: 0 9px;
         text-align: justify;
         box-sizing: border-box;
       }

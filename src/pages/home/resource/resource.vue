@@ -76,6 +76,16 @@ $icoColor: #6a91e8;
       align-items: center;
       justify-content: flex-end;
       box-sizing: border-box;
+      .rank{
+        width: 81px;
+        height: 32px;
+        line-height: 32px;
+        text-align: center;
+        margin-right: 9px;
+        font-size: 13px;
+        color: #7c7c7c;
+        cursor: pointer;
+      }
       .el-select {
         width: 136px;
         margin-right: 9px;

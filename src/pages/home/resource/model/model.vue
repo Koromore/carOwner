@@ -10,15 +10,8 @@
         </div>
       </el-col>
       <el-col :span="15" class="right">
-        <!-- 是否会开车 -->
-        <!-- <el-select v-model="value1" clearable placeholder="是否会开车" size="small">
-          <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          ></el-option>
-        </el-select>-->
+        <!-- 拍摄排序 -->
+        <div class="rank">拍摄排序<i class="el-icon-caret-bottom"></i></div>
         <!-- 城市 -->
         <el-select
           v-model="city"

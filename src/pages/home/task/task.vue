@@ -137,9 +137,16 @@
                   <i class="el-icon-timer" @click="delay(scope.row)"></i>
                 </el-tooltip>
 
-                <el-tooltip class="item" effect="dark" content="提交任务" placement="top">
-                  <i class="el-icon-circle-check" @click="putTask(scope.row)"></i>
-                </el-tooltip>
+                <template v-if="scope.row.personId && scope.row.placeId">
+                  <el-tooltip class="item" effect="dark" content="提交任务" placement="top">
+                    <i class="el-icon-circle-check" @click="putTask(scope.row)"></i>
+                  </el-tooltip>
+                </template>
+                <template v-else>
+                  <el-tooltip class="item" effect="dark" content="提交任务" placement="top">
+                    <i class="el-icon-circle-check" style="cursor: not-allowed;color:#aaa"></i>
+                  </el-tooltip>
+                </template>
 
                 <el-tooltip class="item" effect="dark" content="删除任务" placement="top">
                   <i
@@ -150,14 +157,18 @@
                 </el-tooltip>
               </template>
               <template v-else>
-                <template v-if="scope.row.personId&&scope.row.modelId&&scope.row.placeId">
+                <template v-if="scope.row.personId&&scope.row.placeId">
                   <el-tooltip class="item" effect="dark" content="编辑任务" placement="top">
                     <i class="el-icon-edit" @click="addTask(1, scope.row.taskId)"></i>
                   </el-tooltip>
                 </template>
                 <template v-else>
                   <el-tooltip class="item" effect="dark" content="完善任务" placement="top">
-                    <i class="el-icon-document-checked" @click="addTask(1, scope.row.taskId)"></i>
+                    <i
+                      class="el-icon-edit"
+                      style="color:#f56c6c"
+                      @click="addTask(1, scope.row.taskId)"
+                    ></i>
                   </el-tooltip>
                 </template>
               </template>
@@ -438,20 +449,21 @@
             </template>
           </el-table-column>
           <el-table-column prop="num" label="车主数量" min-width="80"></el-table-column>
-          <!-- <el-table-column prop="listInvite" label="车主数量" min-width="80">
-            <template slot-scope="scope">
-              {{scope.row.listInvite.length}}
-            </template>
-          </el-table-column>-->
           <el-table-column prop="endTime" label="完成时间" min-width="100" sortable>
             <template slot-scope="scope">{{$date(scope.row.endTime)}}</template>
           </el-table-column>
-          <el-table-column prop="invMoney" label="总费用" min-width="100"></el-table-column>
-          <el-table-column prop="address" label="结算清单" width="200">
+          <el-table-column prop="invMoney" label="总费用" min-width="80"></el-table-column>
+          <el-table-column prop="address" label="结算清单" min-width="100" show-overflow-tooltip>
             <template slot-scope="scope">
               <img src="static/images/document/excle.png" width="16" alt srcset />
               <el-link @click="exportInvite(scope.row)">{{scope.row.taskName}}</el-link>
             </template>
+          </el-table-column>
+          <el-table-column prop="address" label="评价" min-width="50" show-overflow-tooltip>
+            <!-- <template slot-scope="scope"> -->
+            <!-- {{scope.row.taskName}} -->
+            <i class="el-icon-chat-dot-round"></i>
+            <!-- </template> -->
           </el-table-column>
         </el-table>
       </div>
@@ -524,7 +536,7 @@
               v-for="(item, index) in listInviteList"
               :key="index"
             >
-              <el-col :span="5">
+              <el-col :span="4">
                 <!-- <el-input placeholder="车主姓名" v-model="item.ownersName" clearable></el-input> -->
                 <template v-if="item.userType==0">
                   <el-cascader
@@ -537,7 +549,7 @@
                   ></el-cascader>
                 </template>
                 <template v-else-if="item.userType==1">
-                  <el-select v-model="item.ownerId" placeholder="摄影师">
+                  <el-select v-model="item.ownerId" placeholder="摄影师" clearable filterable>
                     <el-option
                       v-for="item in cammeramanList"
                       :key="item.value"
@@ -547,7 +559,7 @@
                   </el-select>
                 </template>
                 <template v-else-if="item.userType==2">
-                  <el-select v-model="item.ownerId" placeholder="模特">
+                  <el-select v-model="item.ownerId" placeholder="模特" clearable filterable>
                     <el-option
                       v-for="item in modelList"
                       :key="item.value"
@@ -563,11 +575,20 @@
               <el-col :span="4">
                 <el-input placeholder="金额" size="medium" v-model="item.money" clearable></el-input>
               </el-col>
-              <el-col :span="3">
-                <el-button type="success" size="medium" v-if="taskDetail.taskType==4">现金</el-button>
-                <el-button type="primary" size="medium" v-else>油卡</el-button>
+              <el-col :span="6">
+                <!-- <el-button type="success" size="medium" v-if="taskDetail.taskType==4">现金</el-button>
+                <el-button type="primary" size="medium" v-else>油卡</el-button>-->
+                <el-switch
+                  style="display: block"
+                  v-model="item.isCard"
+                  active-color="#13ce66"
+                  inactive-color="#ff4949"
+                  active-text="现金"
+                  inactive-text="油卡"
+                ></el-switch>
+                <!-- {{item.isCard}} -->
               </el-col>
-              <el-col :span="4">
+              <el-col :span="3">
                 <template v-if="item.userType==0">
                   <i class="el-icon-document-copy" @click="copyDetailList(index)"></i>
                   <i class="el-icon-delete" @click="delDetailList(index)"></i>
@@ -1026,14 +1047,14 @@ export default {
     ///////// 提交任务 start /////////
     putTask(prm) {
       console.log(prm)
-      let isCard = ''
+      // let isCard = ''
+      // if (prm.taskType == 4) {
+      //   isCard = true
+      // } else {
+      //   isCard = false
+      // }
       if (prm.taskType == 4) {
-        isCard = true
-      } else {
-        isCard = false
-      }
-      if (prm.taskType == 4) {
-        if (prm.personId && prm.modelId && prm.placeId) {
+        if (prm.personId && prm.placeId) {
           this.drawerLoading = true
           this.drawerPuttask = true
           this.taskId = prm.taskId
@@ -1058,11 +1079,11 @@ export default {
                   ownerId: element.ownerId,
                   url: element.url,
                   money: element.money,
-                  isCard: isCard,
+                  isCard: element.isCard,
                   userType: element.userType,
                 })
               })
-              if (pushIs) {
+              if (prm.personId) {
                 listInviteList.push({
                   inviteData: [0, 0, 0],
                   typeId: 0,
@@ -1074,6 +1095,8 @@ export default {
                   isCard: true,
                   userType: 1,
                 })
+              }
+              if (prm.modelId) {
                 listInviteList.push({
                   inviteData: [0, 0, 0],
                   typeId: 0,
@@ -1088,7 +1111,7 @@ export default {
               }
 
               this.listInviteList = listInviteList
-              console.log(listInviteList)
+              // console.log(listInviteList)
               this.taskDetail = data
               this.drawerLoading = false
             }
@@ -1131,6 +1154,7 @@ export default {
     copyDetailList(index) {
       let listInviteList = this.listInviteList
       let data = {
+        userType: 0,
         inviteData: listInviteList[index].inviteData,
         typeId: '',
         itemId: '',
@@ -1144,6 +1168,7 @@ export default {
     // 添加明细
     addDetailList() {
       this.listInviteList.push({
+        userType: 0,
         inviteData: [],
         typeId: '',
         itemId: '',
@@ -1194,47 +1219,46 @@ export default {
             flag = false
           }
         } else if (e == 1) {
-          if (!element.ownerId||!element.url) {
+          if (!element.ownerId || !element.url) {
             flag = false
           }
         }
-          console.log(e)
+        console.log(e)
       })
       // flag = false
       console.log(data)
       // console.log(JSON.stringify(data))
       if (flag) {
         data.listInvite.forEach((element) => {
-          // if (element.isCard) {
-          //   element.isCard = 1
-          // } else {
-          element.isCard = 0
-          // }
+          if (element.isCard) {
+            element.isCard = 1
+          } else {
+            element.isCard = 0
+          }
         })
         // console.log(data)
-        this.$axios
-          .post('/ocarplay/task/save', data)
-          .then((res) => {
-            // console.log(res)
-            if (res.status == 200 && res.data == 1) {
-              if (e) {
-                this.$message.success('任务提交成功！')
-              } else {
-                this.$message.success('任务保存成功！')
-              }
-
-              this.drawerLoading = false
-              this.drawerPuttask = false
-              this.getTaskListAjax()
-            } else {
-              this.$message.error('任务提交失败！')
-              this.drawerLoading = false
-            }
-          })
-          .catch((res) => {
-            console.log(res)
-            // this.putLoading = false
-          })
+        // this.$axios
+        //   .post('/ocarplay/task/save', data)
+        //   .then((res) => {
+        //     // console.log(res)
+        //     if (res.status == 200 && res.data == 1) {
+        //       if (e) {
+        //         this.$message.success('任务提交成功！')
+        //       } else {
+        //         this.$message.success('任务保存成功！')
+        //       }
+        //       this.drawerLoading = false
+        //       this.drawerPuttask = false
+        //       this.getTaskListAjax()
+        //     } else {
+        //       this.$message.error('任务提交失败！')
+        //       this.drawerLoading = false
+        //     }
+        //   })
+        //   .catch((res) => {
+        //     console.log(res)
+        this.putLoading = false
+        //   })
       } else {
         this.drawerLoading = false
         this.$message.error('保存请选择车主！提交需填入链接！')

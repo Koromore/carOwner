@@ -50,7 +50,7 @@
               </el-col>
             </el-col>
             <el-col :span="24" class="list">
-              <el-col :span="7" class="key imp">车主性别：</el-col>
+              <el-col :span="7" class="key imp">性别：</el-col>
               <el-col :span="15" class="val">
                 <el-radio v-model="sex" :label="0">男</el-radio>
                 <el-radio v-model="sex" :label="1">女</el-radio>
@@ -132,7 +132,7 @@
             <el-col :span="24" class="title">合作信息</el-col>
             <el-col :span="12" class="box1">
               <el-col :span="24" class="list">
-                <el-col :span="7" class="key imp" style="align-self: flex-start;">签约合同：</el-col>
+                <el-col :span="7" class="key" style="align-self: flex-start;">签约合同：</el-col>
                 <el-col :span="14" class="val">
                   <el-upload
                     class="pactUpload"
@@ -151,7 +151,7 @@
             </el-col>
             <el-col :span="12" class="box2">
               <el-col :span="24" class="list">
-                <el-col :span="7" class="key imp">合作期限：</el-col>
+                <el-col :span="7" class="key">合作期限：</el-col>
                 <el-col :span="14" class="val">
                   <el-date-picker
                     v-model="allottedTime"
@@ -164,7 +164,7 @@
                 </el-col>
               </el-col>
               <el-col :span="24" class="list">
-                <el-col :span="7" class="key imp">合作时长：</el-col>
+                <el-col :span="7" class="key">合作时长：</el-col>
                 <el-col :span="14" class="val">
                   <el-input placeholder="请输入内容" v-model="timeLimit" clearable :disabled="true"></el-input>
                 </el-col>
@@ -772,7 +772,7 @@ export default {
         ]
       }
       // console.log(data)
-      if (name&&age&&sex!=null&&goodAt&&carTypeId&&province&&this.pactPath&&startTime&&introduce&&vitaeList.length!=0&&worksList.length!=0) {
+      if (name&&age&&sex!=null&&goodAt&&carTypeId&&province&&introduce&&vitaeList.length!=0&&worksList.length!=0) {
         this.$axios
           .post('/ocarplay/api/photoPerson/save', data)
           .then((res) => {

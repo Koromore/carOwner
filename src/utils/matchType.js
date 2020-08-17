@@ -81,7 +81,7 @@ export function matchType(fileName) {
     return result;
   };
   // 匹配 视频
-  var videolist = ['mp4', 'm2v', 'mkv'];
+  var videolist = ['mp4', 'MP4', 'm2v', 'M2V', 'mkv', 'MKV'];
   result = videolist.some(function (item) {
     return item == suffix;
   });
@@ -188,7 +188,7 @@ export function matchType0(fileName) {
     return result;
   };
   // 匹配 视频
-  var videolist = ['mp4', 'm2v', 'mkv'];
+  var videolist = ['mp4', 'MP4', 'm2v', 'mkv'];
   result = videolist.some(function (item) {
     return item == suffix;
   });

@@ -5,8 +5,8 @@
       <el-col :span="14" class="left">
         <div class="butBox1">
           <div :class="[tab1act==1?'but act':'but']" @click="tab1(1)">支持型</div>
-          <!-- <div :class="[tab1act==2?'but act':'but']" @click="tab1(2)">拍摄型</div> -->
           <div :class="[tab1act==3?'but act':'but']" @click="tab1(3)">资源型</div>
+          <div :class="[tab1act==4?'but act':'but']" @click="tab1(4)">非车主</div>
         </div>
 
         <div class="butBox2">
@@ -166,7 +166,7 @@
     <!-- 支持型车主列表 end -->
 
     <!-- 拍摄型车主列表 -->
-    <el-row class="content content2" v-show="tab1act==2">
+    <el-row class="content content2" v-show="tab1act==4">
       <div class="table_list">
         <el-table
           v-loading="listLoading"

@@ -36,7 +36,7 @@
               <el-col :span="15" class="val">{{age}}</el-col>
             </el-col>
             <el-col :span="24" class="list">
-              <el-col :span="7" class="key imp">车主性别：</el-col>
+              <el-col :span="7" class="key imp">性别：</el-col>
               <el-col :span="15" class="val">
                 <template v-if="sex">女</template>
                 <template v-else>男</template>
@@ -228,7 +228,9 @@
                       </svg>
                     </template>
                   </el-col>
-                  <el-link @click="download(pactFileList)">{{pactName}}</el-link>
+                  <el-col :span="21">
+                    <div @click="download(pactFileList)" class="clickDow">{{pactName}}</div>
+                  </el-col>
                 </el-col>
               </el-col>
             </el-col>
@@ -392,7 +394,7 @@
                       </template>
                     </el-col>
                     <el-col :span="19">
-                      <el-link @click="download(item)">{{item.fileName}}</el-link>
+                      <div @click="download(item)" class="clickDow">{{item.fileName}}</div>
                     </el-col>
                   </el-col>
                 </el-col>
@@ -415,11 +417,6 @@
                         @click="previewVideo(item)"
                       ></el-image>
                     </template>
-
-                    <!-- {{item}} -->
-                    <!-- <el-col :span="19">
-                      <el-link @click="download(item)">{{item.fileName}}</el-link>
-                    </el-col>-->
                   </div>
                 </el-col>
               </el-col>
@@ -589,6 +586,8 @@ export default {
             })
             this.vitaeList = vitaeList
             this.worksList = worksList
+            // console.log(vitaeList)
+            // console.log(worksList)
 
             this.district = data.province + data.city
             let photoCooperate = null
@@ -673,6 +672,7 @@ $icoColor: #6a92e8;
       display: flex;
       flex-wrap: wrap;
       align-items: center;
+      align-items: flex-start;
       margin: 13px 0;
       & >>> .el-checkbox {
         margin-right: 6px;
@@ -705,13 +705,13 @@ $icoColor: #6a92e8;
         padding-left: 100%;
       }
       .val {
-        height: 40px;
+        // height: 40px;
         line-height: 40px;
         &.worksList {
           display: flex;
           flex-wrap: wrap;
           align-items: center;
-          >div{
+          > div {
             margin-bottom: 6px;
           }
           .el-image {
@@ -721,6 +721,16 @@ $icoColor: #6a92e8;
         }
         .icon {
           line-height: 50px;
+        }
+        .clickDow {
+          cursor: pointer;
+          width: 100%;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          &:hover {
+            color: $icoColor;
+          }
         }
         .el-cascader,
         .el-select,

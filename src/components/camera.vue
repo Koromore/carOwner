@@ -9,6 +9,18 @@
       v-loading="loading"
     >
       <el-row class="drawerData">
+        <el-col :span="5" class="key imp">拍摄组</el-col>
+        <el-col :span="1">:</el-col>
+        <el-col :span="16" class="val">
+          <el-select v-model="deptId" placeholder="请选择">
+            <el-option
+              v-for="item in deptList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+        </el-col>
         <el-col :span="5" class="key imp">拍摄任务</el-col>
         <el-col :span="1">:</el-col>
         <el-col :span="16" class="val">
@@ -86,6 +98,21 @@ export default {
     return {
       drawerData: false,
       loading: false,
+      deptList:[
+        {
+          value: 105,
+          label: '沃尔沃'
+        },
+        {
+          value: 110,
+          label: '吉利'
+        },
+        {
+          value: 153,
+          label: '长城'
+        }
+      ],
+      deptId: null, // 项目组ID
       personList: [], // 摄影师列表
       modelList: [], // 模特列表
       placeList: [], // 场地列表
