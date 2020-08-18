@@ -468,7 +468,7 @@ const router = new Router({
 try {
   // if (window.sessionStorage.getItem('isLogin') == 'success') {
   // }
-
+  // v-if="postId!=231||adminShow"
   var user = JSON.parse(localStorage.getItem('user'));
   let token = localStorage.getItem('token');
   let userSign = localStorage.getItem('userSign');

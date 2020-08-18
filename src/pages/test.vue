@@ -29,7 +29,7 @@
           >{{scope.row.tag}}</el-tag>
         </template>
       </el-table-column>
-    </el-table> -->
+    </el-table>-->
 
     <!--  -->
     <!-- <el-calendar>
@@ -43,7 +43,7 @@
         <div class="box">{{data}}</div>
         {{test(date)}}
       </template>
-    </el-calendar> -->
+    </el-calendar>-->
 
     <!-- <div id="g2"></div> -->
 
@@ -61,7 +61,7 @@
           <div class="swiper-pagination" slot="pagination"></div>
         </swiper>
       </section>
-    </div> -->
+    </div>-->
     <div>
       <ve-calendar v-model="selectDateList" height="600px"></ve-calendar>
       <!-- <ve-year v-model="selectDateList"></ve-year> -->
@@ -156,7 +156,7 @@ export default {
             'http://img1.qunarzz.com/piao/fusion/1806/5a/a7fc8e091190d602.jpg_750x200_e3aae50d.jpg',
         },
       ],
-      selectDateList: []
+      selectDateList: [],
     }
   },
   // 侦听器
@@ -164,7 +164,17 @@ export default {
   // 钩子函数
   mounted() {
     // test(){
-    let data = {}
+    let data = {
+      deleteFlag: true,
+      deptName: 'string',
+      doUserId: 0,
+      personId: 0,
+      personScore: 0,
+      pgId: 0,
+      realName: 'string',
+      remark: 'string',
+      taskId: 'string',
+    }
     this.G2()
   },
   created() {

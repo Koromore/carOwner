@@ -41,6 +41,9 @@ require('echarts/lib/chart/pie')
 require('echarts/lib/component/tooltip')
 require('echarts/lib/component/title')
 require('echarts/lib/component/legend')
+require('echarts/lib/component/dataZoom')
+require('echarts/lib/component/dataZoomInside')
+require('echarts/lib/component/dataZoomSlider')
 
 export default {
   name: 'analysis',
@@ -72,6 +75,7 @@ export default {
       chartNum: 0,
       chartKeyData: ['执行中', '结算中', '延期', '已完成'],
       chartvalData: [520, 360, 130, 240],
+      percent: 0,
     }
   },
   // 侦听器
@@ -223,7 +227,7 @@ export default {
     },
     tab2(e, id) {
       this.tab2act = e
-      console.log(id)
+      // console.log(id)
     },
     getData() {
       // webType 0-任务总数 1-车主发展数量 2-累计支出费用 3-累计合作次数
@@ -403,11 +407,20 @@ export default {
                 })
                 this.chartKeyData = chartKeyData
                 this.chartvalData = chartvalData
+
                 // 图表生成
                 this.echartsBar(0)
                 this.echartsPie()
               }
             }
+            let percent = 0
+            if (chartKeyData.length <= 9) {
+              percent = 80
+            } else if (chartKeyData.length > 9) {
+              percent = (9 / chartKeyData.length) * 80
+            }
+            this.percent = percent
+            // console.log(percent)
           }
         })
     },
@@ -420,6 +433,15 @@ export default {
       let chartNum = this.chartNum
       let chartKeyData = this.chartKeyData
       let chartvalData = this.chartvalData
+      // let percent = this.percent
+      let percent = 0
+      if (chartKeyData.length <= 9) {
+        percent = 100
+      } else if (chartKeyData.length > 9) {
+        percent = (9 / chartKeyData.length) * 100
+      }
+      console.log(chartKeyData)
+      console.log(percent)
       myChart.setOption({
         title: {
           text: title,
@@ -445,6 +467,22 @@ export default {
               fontSize: 16,
               color: 'black',
             },
+          },
+        ],
+        dataZoom: [
+          {
+            show: true,
+            realtime: true,
+            zoomLock: true,
+            start: 0,
+            end: percent,
+          },
+          {
+            type: 'inside',
+            realtime: true,
+            zoomOnMouseWheel: false,
+            start: 0,
+            end: percent,
           },
         ],
       })

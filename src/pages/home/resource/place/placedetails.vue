@@ -11,7 +11,7 @@
             </div>
           </el-col>
           <el-col :span="12">{{title}}</el-col>
-          <el-col :span="6" class="redact">
+          <el-col :span="6" class="redact" v-if="postId!=231||adminShow">
             <i class="el-icon-edit" @click="redact"></i>
           </el-col>
         </el-col>
@@ -100,8 +100,11 @@ export default {
   components: {},
   data() {
     return {
-      userId: this.$store.state.user.userId,
-      deptId: this.$store.state.user.deptId, // 90
+      userId: this.$store.state.user.userId, // 用户ID
+      deptId: this.$store.state.user.deptId, // 部门ID
+      postId: this.$store.state.user.postId, // 职位ID
+      subordinate: this.$store.state.user.subordinate, // 一级部门ID
+      adminShow: this.$store.state.adminShow, // 超级管理员
       isshow: false,
       // 轮播数据
       bannerStyle: '',
@@ -336,7 +339,13 @@ $icoColor: #6a91e8;
       text-align: center;
       font-size: 28px;
       font-weight: bold;
-      margin-bottom: 13px;
+      height: 45px;
+      line-height: 45px;
+      margin-bottom: 9px;
+      >div{
+        height: 45px;
+      line-height: 45px;
+      }
       .previousBox {
         font-size: 22px;
         text-align: left;

@@ -16,8 +16,8 @@
           <el-col :span="6" :offset="12" class="tab">
             <div class="butBox1">
               <div :class="[tabact==1?'but act':'but']" @click="tab(1)">支持型</div>
-              <!-- <div :class="[tabact==2?'but act':'but']" @click="tab(2)">拍摄型</div> -->
               <div :class="[tabact==3?'but act':'but']" @click="tab(3)">资源型</div>
+              <div :class="[tabact==4?'but act':'but']" @click="tab(4)">非车主</div>
             </div>
           </el-col>
           <!-- </el-col> -->
@@ -136,7 +136,7 @@
             </el-col>
 
             <el-col :span="24" class="list">
-              <el-col :span="6" :class="[tabact==1 ? 'key imp' : 'key']">认证车型</el-col>
+              <el-col :span="6" class="key imp">认证车型</el-col>
               <el-col :span="15" class="val">
                 <el-cascader
                   v-model="carSeries"
@@ -208,7 +208,7 @@
               </el-col>
             </el-col>
             <el-col :span="12" class="box2">
-              <el-col :span="24" class="list" v-if="tabact == 1">
+              <el-col :span="24" class="list" v-if="tabact == 1||tabact == 4">
                 <el-col :span="8" class="key imp">合作概况</el-col>
                 <el-col :span="24" class="val situation">
                   <el-col :span="24" class="list" v-for="(item, index) in eventList" :key="index">
@@ -252,7 +252,7 @@
                   </el-col>
                 </el-col>
               </el-col>
-              <el-col :span="24" class="list" v-else-if="tabact != 1">
+              <el-col :span="24" class="list" v-else>
                 <el-col :span="7" class="key">IP孵化打造</el-col>
                 <el-col :span="24" class="val hatch">
                   <el-col :span="24" class="list" v-for="(item, index) in hatchList" :key="index">
@@ -1286,7 +1286,7 @@ export default {
       let judgeList = []
       let judge = true
       // console.log(tabact)
-      if (tabact == 1) {
+      if (tabact == 1||tabact == 4) {
         data.ownerCoops = this.eventList
         data.ownerCoops.forEach((element, i) => {
           element.timeLimit = this.duration
@@ -1341,7 +1341,8 @@ export default {
           data.sourceId.length === 0 ||
           data.cooperates[0].localPath === '' ||
           this.timeLimit.length === 0 ||
-          data.carUse === ''
+          data.carUse === ''||
+          data.ownerCarSeries.length === 0
         ) {
           judge = false
         }
@@ -1550,7 +1551,7 @@ export default {
         justify-content: flex-end;
         align-items: center;
         .butBox1 {
-          width: 162px;
+          width: 243px;
           height: 36px;
           overflow: hidden;
           display: flex;

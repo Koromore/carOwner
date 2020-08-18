@@ -11,8 +11,14 @@
       </el-col>
       <el-col :span="15" class="right">
         <!-- 评分排序 -->
-        <div class="rank">拍摄排序<i class="el-icon-caret-bottom"></i></div>
-        <div class="rank">评分排序<i class="el-icon-caret-bottom"></i></div>
+        <div class="rank" @click="orderTypeChange1">
+          拍摄排序
+          <i :class="[orderSort1==2?'el-icon-caret-bottom':'el-icon-caret-top']"></i>
+        </div>
+        <div class="rank" @click="orderTypeChange2">
+          评分排序
+          <i :class="[orderSort2==2?'el-icon-caret-bottom':'el-icon-caret-top']"></i>
+        </div>
         <!-- 是否会开车 -->
         <el-select v-model="isCar" clearable placeholder="是否会开车" size="small" @change="isCarChange">
           <el-option
@@ -38,7 +44,7 @@
             :value="item.value"
           ></el-option>
         </el-select>
-        <div class="addCameraman">
+        <div class="addCameraman" v-if="postId!=231||adminShow">
           <el-button
             type="primary"
             icon="el-icon-circle-plus-outline"
@@ -102,8 +108,7 @@
                         d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"
                       />
                     </svg>
-                    <span>
-                      &nbsp;<template v-if="item.isCar">会开车</template><template v-else>不会开车</template>
+                    <span>&nbsp;<template v-if="item.isCar">会开车</template><template v-else>不会开车</template>
                     </span>
                   </p>
                   <p>
@@ -159,21 +164,31 @@
                 </div>
               </div>
               <div class="bottom">
-                <el-col :span="4" :offset="2">
-                  <i class="el-icon-chat-dot-round" @click="addComment(item.personId)"></i>
-                </el-col>
-                <el-col :span="4">
-                  <i class="el-icon-map-location" @click="toCameramanPlace(item.city)"></i>
-                </el-col>
-                <el-col :span="4">
-                  <i class="el-icon-date" @click="toCameramanSchedule(item.personId)"></i>
-                </el-col>
-                <el-col :span="4">
-                  <i class="el-icon-camera" @click="addCameraa"></i>
-                </el-col>
-                <el-col :span="4">
-                  <i class="el-icon-delete" @click="deleteCameraBtn(item.personId)"></i>
-                </el-col>
+                <template v-if="postId!=231||adminShow">
+                  <el-col :span="5" :offset="2">
+                    <i class="el-icon-map-location" @click="toCameramanPlace(item.city)"></i>
+                  </el-col>
+                  <el-col :span="5">
+                    <i class="el-icon-date" @click="toCameramanSchedule(item.personId)"></i>
+                  </el-col>
+                  <el-col :span="5">
+                    <i class="el-icon-camera" @click="addCameraa"></i>
+                  </el-col>
+                  <el-col :span="5">
+                    <i class="el-icon-delete" @click="deleteCameraBtn(item.personId)"></i>
+                  </el-col>
+                </template>
+                <template v-else>
+                  <el-col :span="6" :offset="3">
+                    <i class="el-icon-map-location" @click="toCameramanPlace(item.city)"></i>
+                  </el-col>
+                  <el-col :span="6">
+                    <i class="el-icon-date" @click="toCameramanSchedule(item.personId)"></i>
+                  </el-col>
+                  <el-col :span="6">
+                    <i class="el-icon-camera" @click="addCameraa"></i>
+                  </el-col>
+                </template>
               </div>
             </div>
           </el-col>
@@ -225,7 +240,7 @@ export default {
     cameraList,
     comment,
     commentList,
-    noDataList
+    noDataList,
   },
   data() {
     return {
@@ -251,14 +266,15 @@ export default {
         },
       ],
       isCar: '',
-      orderType: 1,
-      orderType: 1,
       // 城市列表
       cityList: cityList, // 城市筛列表
       city: '',
       // 内容列表
       listLoading: false,
       cameraList: [],
+      orderType: 1, // 排序类型（1-拍摄排序,2-评分排序）
+      orderSort1: 2, // 排序类型（1-正序,2-倒序）
+      orderSort2: 2, // 排序类型（1-正序,2-倒序）
       // 拍摄记录
       cameraShow: 0,
       cameraListShow: 0,
@@ -302,6 +318,35 @@ export default {
       })
     },
 
+    ///////// 摄影师列表排序 start /////////
+    orderTypeChange1() {
+      this.orderType = 1
+      let orderSort1 = 0
+      if (this.orderSort1 == 1) {
+        orderSort1 = 2
+      } else {
+        orderSort1 = 1
+      }
+      this.orderSort1 = orderSort1
+      // 获取摄影师列表
+      this.getlistPhotoPerson()
+      // console.log(this.orderSort1)
+    },
+    orderTypeChange2() {
+      this.orderType = 2
+      let orderSort2 = 0
+      if (this.orderSort2 == 1) {
+        orderSort2 = 2
+      } else {
+        orderSort2 = 1
+      }
+      this.orderSort2 = orderSort2
+      // 获取摄影师列表
+      this.getlistPhotoPerson()
+      // console.log(this.orderSort2)
+    },
+    ///////// 摄影师列表排序 end /////////
+
     ///////// 筛选摄影师列表 start /////////
     isCarChange() {
       this.getlistPhotoPerson()
@@ -321,8 +366,13 @@ export default {
           isCar: this.isCar,
           city: this.city,
         },
-        // orderType: 1,
-        // type: 1,
+        orderType: this.orderType, // 排序类型（1-拍摄排序,2-评分排序）
+      }
+      // 排序类型（1-正序,2-倒序）
+      if (data.orderType == 1) {
+        data.type = this.orderSort1
+      } else if (data.orderType == 2) {
+        data.type = this.orderSort2
       }
       this.$axios
         .post('/ocarplay/api/photoPerson/listAjax', data)
@@ -333,9 +383,9 @@ export default {
             let data = res.data
             data.items.forEach((element) => {
               if (element.image) {
-                element.image = '/ocarplay/'+element.image
-              }else{
-                element.image = '/static/images/carow/hander.png'
+                element.image = '/ocarplay/' + element.image
+              } else {
+                element.image = 'static/images/carow/hander.png'
               }
             })
             this.cameraList = data.items

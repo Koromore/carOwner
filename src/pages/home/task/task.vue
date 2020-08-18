@@ -80,13 +80,30 @@
               <template v-else-if="scope.row.taskType==2">素材</template>
               <template v-else-if="scope.row.taskType==3">邀约</template>
               <template v-else-if="scope.row.taskType==4">拍摄</template>
+              <template v-else-if="scope.row.taskType==5">发布</template>
             </template>
           </el-table-column>
           <el-table-column prop="ownerName" label="邀约对象" min-width="90" show-overflow-tooltip></el-table-column>
           <!-- <el-table-column prop="ownerItemList" label="邀约事项" min-width="130" show-overflow-tooltip></el-table-column> -->
-          <el-table-column prop="personName" label="摄影师" min-width="90" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="modelName" label="模特" min-width="90" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="placeName" label="场地" min-width="90" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="personName" label="摄影师" min-width="90" show-overflow-tooltip>
+            <template slot-scope="scope">
+              <span v-if="scope.row.personName">{{scope.row.personName}}</span>
+              <span v-else>/</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="modelName" label="模特" min-width="90" show-overflow-tooltip>
+            <template slot-scope="scope">
+              <span v-if="scope.row.modelName">{{scope.row.modelName}}</span>
+              <span v-else-if="!scope.row.modelName&&scope.row.personName">无模特</span>
+              <span v-else-if="!scope.row.modelName&&!scope.row.personName">/</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="placeName" label="场地" min-width="90" show-overflow-tooltip>
+            <template slot-scope="scope">
+              <span v-if="scope.row.placeName">{{scope.row.placeName}}</span>
+              <span v-else>/</span>
+            </template>
+          </el-table-column>
           <el-table-column prop="carSeriesName" label="邀约车型" min-width="130" show-overflow-tooltip>
             <template slot-scope="scope">
               <template v-if="scope.row.carSeriesName">{{scope.row.carSeriesName}}</template>
@@ -108,7 +125,7 @@
               <div v-if="scope.row.status==4" class="statusColor4">人工延期</div>
             </template>
           </el-table-column>
-          <el-table-column prop="num" label="任务进度" min-width="80">
+          <el-table-column prop="num" label="任务进度" min-width="80" show-overflow-tooltip>
             <template slot-scope="scope">{{scope.row.inviteNumOver}}/{{scope.row.num}}</template>
           </el-table-column>
           <el-table-column prop="listInvite" label="车主数量" min-width="80">
@@ -137,17 +154,18 @@
                   <i class="el-icon-timer" @click="delay(scope.row)"></i>
                 </el-tooltip>
 
-                <template v-if="scope.row.personId && scope.row.placeId">
-                  <el-tooltip class="item" effect="dark" content="提交任务" placement="top">
-                    <i class="el-icon-circle-check" @click="putTask(scope.row)"></i>
-                  </el-tooltip>
-                </template>
-                <template v-else>
+                <template v-if="scope.row.taskType==4 && !scope.row.personId || !scope.row.placeId">
                   <el-tooltip class="item" effect="dark" content="提交任务" placement="top">
                     <i class="el-icon-circle-check" style="cursor: not-allowed;color:#aaa"></i>
                   </el-tooltip>
                 </template>
-
+                <template v-else>
+                  <el-tooltip class="item" effect="dark" content="提交任务" placement="top">
+                    <i class="el-icon-circle-check" @click="putTask(scope.row)"></i>
+                  </el-tooltip>
+                </template>
+                <!-- {{scope.row.personId}}
+                {{scope.row.placeId}} -->
                 <el-tooltip class="item" effect="dark" content="删除任务" placement="top">
                   <i
                     class="el-icon-circle-close"
@@ -218,13 +236,30 @@
               <template v-else-if="scope.row.taskType==2">素材</template>
               <template v-else-if="scope.row.taskType==3">邀约</template>
               <template v-else-if="scope.row.taskType==4">拍摄</template>
+              <template v-else-if="scope.row.taskType==5">发布</template>
             </template>
           </el-table-column>
           <el-table-column prop="ownerName" label="邀约对象" min-width="90" show-overflow-tooltip></el-table-column>
           <!-- <el-table-column prop="ownerItemList" label="邀约事项" min-width="130" show-overflow-tooltip></el-table-column> -->
-          <el-table-column prop="personName" label="摄影师" min-width="90" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="modelName" label="模特" min-width="90" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="placeName" label="场地" min-width="90" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="personName" label="摄影师" min-width="90" show-overflow-tooltip>
+            <template slot-scope="scope">
+              <span v-if="scope.row.personName">{{scope.row.personName}}</span>
+              <span v-else>/</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="modelName" label="模特" min-width="90" show-overflow-tooltip>
+            <template slot-scope="scope">
+              <span v-if="scope.row.modelName">{{scope.row.modelName}}</span>
+              <span v-else-if="!scope.row.modelName&&scope.row.personName">无模特</span>
+              <span v-else-if="!scope.row.modelName&&!scope.row.personName">/</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="placeName" label="场地" min-width="90" show-overflow-tooltip>
+            <template slot-scope="scope">
+              <span v-if="scope.row.placeName">{{scope.row.placeName}}</span>
+              <span v-else>/</span>
+            </template>
+          </el-table-column>
           <el-table-column prop="carSeriesName" label="邀约车型" min-width="130" show-overflow-tooltip>
             <template slot-scope="scope">
               <template v-if="scope.row.carSeriesName">{{scope.row.carSeriesName}}</template>
@@ -246,7 +281,7 @@
               <div v-if="scope.row.status==4" class="statusColor4">人工延期</div>
             </template>
           </el-table-column>
-          <el-table-column prop="num" label="任务进度" min-width="80">
+          <el-table-column prop="num" label="任务进度" min-width="80" show-overflow-tooltip>
             <template slot-scope="scope">{{scope.row.inviteNumOver}}/{{scope.row.num}}</template>
           </el-table-column>
           <el-table-column prop="listInvite" label="车主数量" min-width="80">
@@ -277,9 +312,16 @@
                 <i class="el-icon-timer" @click="delay(scope.row)"></i>
               </el-tooltip>
 
-              <el-tooltip class="item" effect="dark" content="提交任务" placement="top">
-                <i class="el-icon-circle-check" @click="putTask(scope.row)"></i>
-              </el-tooltip>
+              <template v-if="scope.row.taskType==4 && !scope.row.personId || !scope.row.placeId">
+                <el-tooltip class="item" effect="dark" content="提交任务" placement="top">
+                  <i class="el-icon-circle-check" style="cursor: not-allowed;color:#aaa"></i>
+                </el-tooltip>
+              </template>
+              <template v-else>
+                <el-tooltip class="item" effect="dark" content="提交任务" placement="top">
+                  <i class="el-icon-circle-check" @click="putTask(scope.row)"></i>
+                </el-tooltip>
+              </template>
 
               <el-tooltip class="item" effect="dark" content="删除任务" placement="top">
                 <i
@@ -334,13 +376,30 @@
               <template v-else-if="scope.row.taskType==2">素材</template>
               <template v-else-if="scope.row.taskType==3">邀约</template>
               <template v-else-if="scope.row.taskType==4">拍摄</template>
+              <template v-else-if="scope.row.taskType==5">发布</template>
             </template>
           </el-table-column>
           <el-table-column prop="ownerName" label="邀约对象" min-width="90" show-overflow-tooltip></el-table-column>
           <!-- <el-table-column prop="ownerItemList" label="邀约事项" min-width="130" show-overflow-tooltip></el-table-column> -->
-          <el-table-column prop label="摄影师" min-width="90" show-overflow-tooltip>摄影师</el-table-column>
-          <el-table-column prop label="模特" min-width="90" show-overflow-tooltip>模特</el-table-column>
-          <el-table-column prop label="场地" min-width="90" show-overflow-tooltip>场地</el-table-column>
+          <el-table-column prop="personName" label="摄影师" min-width="90" show-overflow-tooltip>
+            <template slot-scope="scope">
+              <span v-if="scope.row.personName">{{scope.row.personName}}</span>
+              <span v-else>/</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="modelName" label="模特" min-width="90" show-overflow-tooltip>
+            <template slot-scope="scope">
+              <span v-if="scope.row.modelName">{{scope.row.modelName}}</span>
+              <span v-else-if="!scope.row.modelName&&scope.row.personName">无模特</span>
+              <span v-else-if="!scope.row.modelName&&!scope.row.personName">/</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="placeName" label="场地" min-width="90" show-overflow-tooltip>
+            <template slot-scope="scope">
+              <span v-if="scope.row.placeName">{{scope.row.placeName}}</span>
+              <span v-else>/</span>
+            </template>
+          </el-table-column>
           <el-table-column prop="carSeriesName" label="邀约车型" min-width="130" show-overflow-tooltip>
             <template slot-scope="scope">
               <template v-if="scope.row.carSeriesName">{{scope.row.carSeriesName}}</template>
@@ -420,13 +479,30 @@
               <template v-else-if="scope.row.taskType==2">素材</template>
               <template v-else-if="scope.row.taskType==3">邀约</template>
               <template v-else-if="scope.row.taskType==4">拍摄</template>
+              <template v-else-if="scope.row.taskType==5">发布</template>
             </template>
           </el-table-column>
           <el-table-column prop="ownerName" label="邀约对象" min-width="90" show-overflow-tooltip></el-table-column>
           <!-- <el-table-column prop="ownerItemList" label="邀约事项" min-width="130" show-overflow-tooltip></el-table-column> -->
-          <el-table-column prop label="摄影师" min-width="90" show-overflow-tooltip>摄影师</el-table-column>
-          <el-table-column prop label="模特" min-width="90" show-overflow-tooltip>模特</el-table-column>
-          <el-table-column prop label="场地" min-width="90" show-overflow-tooltip>场地</el-table-column>
+          <el-table-column prop="personName" label="摄影师" min-width="90" show-overflow-tooltip>
+            <template slot-scope="scope">
+              <span v-if="scope.row.personName">{{scope.row.personName}}</span>
+              <span v-else>/</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="modelName" label="模特" min-width="90" show-overflow-tooltip>
+            <template slot-scope="scope">
+              <span v-if="scope.row.modelName">{{scope.row.modelName}}</span>
+              <span v-else-if="!scope.row.modelName&&scope.row.personName">无模特</span>
+              <span v-else-if="!scope.row.modelName&&!scope.row.personName">/</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="placeName" label="场地" min-width="90" show-overflow-tooltip>
+            <template slot-scope="scope">
+              <span v-if="scope.row.placeName">{{scope.row.placeName}}</span>
+              <span v-else>/</span>
+            </template>
+          </el-table-column>
           <el-table-column prop="carSeriesName" label="邀约车型" min-width="130" show-overflow-tooltip>
             <template slot-scope="scope">
               <template v-if="scope.row.carSeriesName">{{scope.row.carSeriesName}}</template>
@@ -460,10 +536,10 @@
             </template>
           </el-table-column>
           <el-table-column prop="address" label="评价" min-width="50" show-overflow-tooltip>
-            <!-- <template slot-scope="scope"> -->
-            <!-- {{scope.row.taskName}} -->
-            <i class="el-icon-chat-dot-round"></i>
-            <!-- </template> -->
+            <template slot-scope="scope">
+              <i class="el-icon-chat-dot-round" @click="addComment(scope.row)" v-if="scope.row.taskType==4&&!scope.row.ifPgOver"></i>
+              <i class="el-icon-chat-dot-round" style="cursor: not-allowed;color: rgb(170, 170, 170);" v-else-if="scope.row.taskType==4&&scope.row.ifPgOver"></i>
+            </template>
           </el-table-column>
         </el-table>
       </div>
@@ -538,6 +614,7 @@
             >
               <el-col :span="4">
                 <!-- <el-input placeholder="车主姓名" v-model="item.ownersName" clearable></el-input> -->
+                <!-- {{item}} -->
                 <template v-if="item.userType==0">
                   <el-cascader
                     :options="inviteDataList"
@@ -582,7 +659,7 @@
                   style="display: block"
                   v-model="item.isCard"
                   active-color="#13ce66"
-                  inactive-color="#ff4949"
+                  inactive-color="#66b1ff"
                   active-text="现金"
                   inactive-text="油卡"
                 ></el-switch>
@@ -613,17 +690,22 @@
       </el-col>
     </el-drawer>
     <!-- 抽屉弹窗提交任务 end -->
+
+    <!-- 新增评论 -->
+    <comment :commentShow="commentShow"></comment>
+    <!-- 新增评论 -->
   </div>
 </template>
 <script>
 // import { matchType } from '@/utils/matchType' // 引入文件格式判断方法
 import FileSaver from 'file-save'
 import { saveAs } from 'file-saver'
+import comment from '@/components/comment' // 新增评分
 
 export default {
   name: 'task',
   props: ['searchWordData'],
-  components: {},
+  components: { comment },
   data() {
     return {
       userId: this.$store.state.user.userId, // 用户ID
@@ -631,7 +713,9 @@ export default {
       postId: this.$store.state.user.postId, // 职位ID
       subordinate: this.$store.state.user.subordinate, // 一级部门ID
       adminShow: this.$store.state.adminShow, // 超级管理员
-
+      commentShow: 0,
+      type: 0,
+      personId: 0,
       taskId: '', // 任务ID
       taskName: '', // 任务NAME
       taskDeptId: '', // 任务部门ID
@@ -825,15 +909,15 @@ export default {
             element.ownerName = []
             element.invMoney = 0
             element.inviteNumOver = 0
-            if (element.personId == 0) {
-              element.personName = '/'
-            }
-            if (element.modelId == 0) {
-              element.modelName = '/'
-            }
-            if (element.placeId == 0) {
-              element.placeName = '/'
-            }
+            // if (element.personId == 0) {
+            //   element.personName = '/'
+            // }
+            // if (element.modelId == 0) {
+            //   element.modelName = '/'
+            // }
+            // if (element.placeId == 0) {
+            //   element.placeName = '/'
+            // }
             element.listInvite.forEach((element1) => {
               // console.log(element1)
               if (element1.listOwnerType.length != 0) {
@@ -994,6 +1078,8 @@ export default {
         let data = {
           pageNum: 1,
           pageSize: 1000,
+          orderType: 1,
+          type: 2,
         }
         this.$axios
           .post('/ocarplay/api/photoPerson/listAjax', data)
@@ -1023,7 +1109,8 @@ export default {
         let data = {
           pageNum: 1,
           pageSize: 1000,
-          // typeId: '',
+          orderType: 1,
+          type: 2,
         }
         this.$axios.post('/ocarplay/api/model/listAjax', data).then((res) => {
           // console.log(res)
@@ -1066,6 +1153,7 @@ export default {
           this.$axios.post('/ocarplay/task/edit', data).then((res) => {
             if (res.status == 200) {
               let data = res.data.data
+              console.log(data)
               let listInviteList = []
               let pushIs = true
               data.listInvite.forEach((element) => {
@@ -1083,7 +1171,7 @@ export default {
                   userType: element.userType,
                 })
               })
-              if (prm.personId) {
+              if (prm.personId&&pushIs) {
                 listInviteList.push({
                   inviteData: [0, 0, 0],
                   typeId: 0,
@@ -1096,7 +1184,7 @@ export default {
                   userType: 1,
                 })
               }
-              if (prm.modelId) {
+              if (prm.modelId&&pushIs) {
                 listInviteList.push({
                   inviteData: [0, 0, 0],
                   typeId: 0,
@@ -1141,6 +1229,7 @@ export default {
                 url: element.url,
                 money: element.money,
                 isCard: element.isCard,
+                userType: element.userType,
               })
             })
             this.listInviteList = listInviteList
@@ -1237,28 +1326,28 @@ export default {
           }
         })
         // console.log(data)
-        // this.$axios
-        //   .post('/ocarplay/task/save', data)
-        //   .then((res) => {
-        //     // console.log(res)
-        //     if (res.status == 200 && res.data == 1) {
-        //       if (e) {
-        //         this.$message.success('任务提交成功！')
-        //       } else {
-        //         this.$message.success('任务保存成功！')
-        //       }
-        //       this.drawerLoading = false
-        //       this.drawerPuttask = false
-        //       this.getTaskListAjax()
-        //     } else {
-        //       this.$message.error('任务提交失败！')
-        //       this.drawerLoading = false
-        //     }
-        //   })
-        //   .catch((res) => {
-        //     console.log(res)
-        this.putLoading = false
-        //   })
+        this.$axios
+          .post('/ocarplay/task/save', data)
+          .then((res) => {
+            // console.log(res)
+            if (res.status == 200 && res.data == 1) {
+              if (e) {
+                this.$message.success('任务提交成功！')
+              } else {
+                this.$message.success('任务保存成功！')
+              }
+              this.drawerLoading = false
+              this.drawerPuttask = false
+              this.getTaskListAjax()
+            } else {
+              this.$message.error('任务提交失败！')
+              this.drawerLoading = false
+            }
+          })
+          .catch((res) => {
+            console.log(res)
+            this.putLoading = false
+          })
       } else {
         this.drawerLoading = false
         this.$message.error('保存请选择车主！提交需填入链接！')
@@ -1404,6 +1493,26 @@ export default {
           // console.log('捕获错误')
         })
     },
+    ///////// 新增评论 start /////////
+    addComment(obj) {
+      this.personId = obj.personId
+      this.taskId = obj.taskId
+      // console.log(obj)
+      // this.commentShow += 1
+      let data = {
+        personId: obj.personId,
+        taskId: obj.taskId,
+      }
+      this.$axios.post('/ocarplay/api/personGrade/ifPgOver', data).then((res) => {
+        // console.log(res)
+        if (res.status == 200 && res.data == 1) {
+          this.$message.warning('该任务摄影师已评价！')
+        } else {
+          this.commentShow += 1
+        }
+      })
+    },
+    ///////// 新增评论 end /////////
   },
 }
 </script>

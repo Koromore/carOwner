@@ -18,7 +18,13 @@
             <div class="key">任务类型</div>
             <div>:</div>
             <!-- <div class="val">{{taskDetail.taskName}}</div> -->
-            <div class="val">拍摄</div>
+            <div class="val">
+              <template v-if="taskDetail.taskType==1">借车</template>
+              <template v-else-if="taskDetail.taskType==2">素材</template>
+              <template v-else-if="taskDetail.taskType==3">邀约</template>
+              <template v-else-if="taskDetail.taskType==4">拍摄</template>
+              <template v-else-if="taskDetail.taskType==5">发布</template>
+            </div>
           </el-col>
           <el-col :span="24" class="list">
             <div class="key">任务名称</div>
@@ -54,11 +60,11 @@
             <div>:</div>
             <div class="val" v-if="taskDetail.listInvite.length==1">
               <!-- <template v-if="taskDetail.listInvite.length!=0"> -->
-                <div v-for="(item, index) in taskDetail.listInvite" :key="index">
-                  <span
-                    v-if="item.listOwnerType"
-                  >{{item.listOwnerType[0].typeName}}—{{item.listOwnerItem[0].itemName}}—{{item.realName}}</span>
-                </div>
+              <div v-for="(item, index) in taskDetail.listInvite" :key="index">
+                <span
+                  v-if="item.listOwnerType"
+                >{{item.listOwnerType[0].typeName}}—{{item.listOwnerItem[0].itemName}}—{{item.realName}}</span>
+              </div>
               <!-- </template> -->
             </div>
             <div class="val" v-else>
@@ -68,7 +74,11 @@
                   name="1"
                 >
                   <template v-if="taskDetail.listInvite.length!=0">
-                    <div v-for="(item, index) in taskDetail.listInvite" :key="index" v-show="index!=0">
+                    <div
+                      v-for="(item, index) in taskDetail.listInvite"
+                      :key="index"
+                      v-show="index!=0"
+                    >
                       <span>{{item.listOwnerType[0].typeName}}—{{item.listOwnerItem[0].itemName}}—{{item.realName}}</span>
                     </div>
                   </template>
@@ -76,27 +86,29 @@
               </el-collapse>
             </div>
           </el-col>
-          <el-col :span="24" class="list">
-            <div class="key">摄影师</div>
-            <div>:</div>
-            <!-- <div class="val">{{taskDetail.num}}</div> -->
-            <div class="val" v-if="taskDetail.personName">{{taskDetail.personName}}</div>
-            <div class="val" v-else style="color: #F56C6C">未完善</div>
-          </el-col>
-          <el-col :span="24" class="list">
-            <div class="key">模特</div>
-            <div>:</div>
-            <!-- <div class="val">{{taskDetail.num}}</div> -->
-            <div class="val" v-if="taskDetail.modelName">{{taskDetail.modelName}}</div>
-            <div class="val" v-else style="color: #F56C6C">未完善</div>
-          </el-col>
-          <el-col :span="24" class="list">
-            <div class="key">场地</div>
-            <div>:</div>
-            <!-- <div class="val">{{taskDetail.num}}</div> -->
-            <div class="val" v-if="taskDetail.placeName">{{taskDetail.placeName}}</div>
-            <div class="val" v-else style="color: #F56C6C">未完善</div>
-          </el-col>
+          <template v-if="taskDetail.taskType==4">
+            <el-col :span="24" class="list">
+              <div class="key">摄影师</div>
+              <div>:</div>
+              <!-- <div class="val">{{taskDetail.num}}</div> -->
+              <div class="val" v-if="taskDetail.personName">{{taskDetail.personName}}</div>
+              <div class="val" v-else style="color: #F56C6C">未完善</div>
+            </el-col>
+            <el-col :span="24" class="list">
+              <div class="key">模特</div>
+              <div>:</div>
+              <!-- <div class="val">{{taskDetail.num}}</div> -->
+              <div class="val" v-if="taskDetail.modelName">{{taskDetail.modelName}}</div>
+              <div class="val" v-else style="color: #F56C6C">未完善</div>
+            </el-col>
+            <el-col :span="24" class="list">
+              <div class="key">场地</div>
+              <div>:</div>
+              <!-- <div class="val">{{taskDetail.num}}</div> -->
+              <div class="val" v-if="taskDetail.placeName">{{taskDetail.placeName}}</div>
+              <div class="val" v-else style="color: #F56C6C">未完善</div>
+            </el-col>
+          </template>
           <el-col :span="24" class="list">
             <div class="key">计划周期</div>
             <div>:</div>

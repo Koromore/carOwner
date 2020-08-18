@@ -36,7 +36,7 @@
               >
                 <i class="el-icon-plus"></i>
               </el-upload>
-              <el-dialog :visible.sync="dialogVisible">
+              <el-dialog :visible.sync="dialogVisible" width="36%">
                 <img width="100%" :src="dialogImageUrl" alt />
               </el-dialog>
             </el-col>
@@ -57,11 +57,13 @@
             </el-col>
             <el-col :span="24" class="list">
               <el-col :span="6" class="key">车主职业：</el-col>
-              <el-col :span="15" class="val">{{work}}</el-col>
+              <el-col :span="15" class="val" v-if="work">{{work}}</el-col>
+              <el-col :span="15" class="val" v-else>暂无信息</el-col>
             </el-col>
             <el-col :span="24" class="list">
               <el-col :span="6" class="key">出生日期：</el-col>
-              <el-col :span="15" class="val">{{birthDate}}</el-col>
+              <el-col :span="15" class="val" v-if="birthDate">{{$date0(birthDate)}}</el-col>
+              <el-col :span="15" class="val" v-else>暂无信息</el-col>
             </el-col>
             <el-col :span="24" class="list">
               <el-col :span="6" class="key">车主来源：</el-col>
@@ -69,7 +71,8 @@
             </el-col>
             <el-col :span="24" class="list">
               <el-col :span="6" class="key">特长：</el-col>
-              <el-col :span="15" class="val">{{speciality}}</el-col>
+              <el-col :span="15" class="val" v-if="speciality">{{speciality}}</el-col>
+              <el-col :span="15" class="val" v-else>暂无信息</el-col>
             </el-col>
             <el-col :span="24" class="list">
               <el-col :span="6" class="key">用车生活：</el-col>
@@ -239,15 +242,18 @@
                     <el-link @click="$download(pactFileList)">{{pactName}}</el-link>
                     <!-- {{pactFileList}} -->
                   </template>
+                  <template v-else>暂无信息</template>
                 </el-col>
               </el-col>
               <el-col :span="24" class="list">
                 <el-col :span="7" class="key">合作期限：</el-col>
-                <el-col :span="14" class="val">{{timeLimit}}</el-col>
+                <el-col :span="15" class="val" v-if="timeLimit">{{timeLimit}}</el-col>
+                <el-col :span="15" class="val" v-else>暂无信息</el-col>
               </el-col>
               <el-col :span="24" class="list">
                 <el-col :span="7" class="key">合作时长：</el-col>
-                <el-col :span="14" class="val">{{duration}}</el-col>
+                <el-col :span="15" class="val" v-if="duration">{{duration}}</el-col>
+                <el-col :span="15" class="val" v-else>暂无信息</el-col>
               </el-col>
             </el-col>
             <el-col :span="12" class="box2">
@@ -258,7 +264,11 @@
                     <el-col :span="5">{{item.itemName}}</el-col>
                     <el-col :span="6">{{item.coopNum}}</el-col>
                     <el-col :span="6">{{item.coopMoney}}</el-col>
-                    <el-col :span="6">{{item.period}}</el-col>
+                    <el-col :span="6">
+                      <span v-if="item.period==0">按月结算</span>
+                      <span v-if="item.period==1">按年结算</span>
+                      <span v-if="item.period==2">按季度结算</span>
+                    </el-col>
                   </el-col>
                 </el-col>
               </el-col>
@@ -279,59 +289,72 @@
             <el-col :span="12" class="box1">
               <el-col :span="24" class="list">
                 <el-col :span="7" class="key">手机号：</el-col>
-                <el-col :span="14" class="val">{{tel}}</el-col>
+                <el-col :span="15" class="val" v-if="tel">{{tel}}</el-col>
+                <el-col :span="15" class="val" v-else>暂无信息</el-col>
               </el-col>
               <el-col :span="24" class="list">
                 <el-col :span="7" class="key">微信号：</el-col>
-                <el-col :span="14" class="val">{{wx}}</el-col>
+                <el-col :span="15" class="val" v-if="wx">{{wx}}</el-col>
+                <el-col :span="15" class="val" v-else>暂无信息</el-col>
               </el-col>
               <el-col :span="24" class="list">
                 <el-col :span="7" class="key">QQ号：</el-col>
-                <el-col :span="14" class="val">{{qq}}</el-col>
+                <el-col :span="15" class="val" v-if="qq">{{qq}}</el-col>
+                <el-col :span="15" class="val" v-else>暂无信息</el-col>
               </el-col>
               <el-col :span="24" class="list">
                 <el-col :span="7" class="key">汽车之家ID：</el-col>
-                <el-col :span="14" class="val">{{carId}}</el-col>
+                <el-col :span="15" class="val" v-if="carId">{{carId}}</el-col>
+                <el-col :span="15" class="val" v-else>暂无信息</el-col>
               </el-col>
               <el-col :span="24" class="list">
                 <el-col :span="7" class="key">汽车之家主页：</el-col>
-                <el-col :span="14" class="val">{{carHome}}</el-col>
+                <el-col :span="15" class="val" v-if="carHome">{{carHome}}</el-col>
+                <el-col :span="15" class="val" v-else>暂无信息</el-col>
               </el-col>
               <el-col :span="24" class="list">
                 <el-col :span="7" class="key">微博ID：</el-col>
-                <el-col :span="14" class="val">{{microblog}}</el-col>
+                <el-col :span="15" class="val" v-if="microblog">{{microblog}}</el-col>
+                <el-col :span="15" class="val" v-else>暂无信息</el-col>
               </el-col>
               <el-col :span="24" class="list">
                 <el-col :span="7" class="key">抖音ID：</el-col>
-                <el-col :span="14" class="val">{{tikTokId}}</el-col>
+                <el-col :span="15" class="val" v-if="tikTokId">{{tikTokId}}</el-col>
+                <el-col :span="15" class="val" v-else>暂无信息</el-col>
               </el-col>
               <el-col :span="24" class="list">
                 <el-col :span="7" class="key">其他社交ID：</el-col>
-                <el-col :span="14" class="val">{{socialId}}</el-col>
+                <el-col :span="15" class="val" v-if="socialId">{{socialId}}</el-col>
+                <el-col :span="15" class="val" v-else>暂无信息</el-col>
               </el-col>
               <el-col :span="24" class="list">
                 <el-col :span="7" class="key">车牌号：</el-col>
-                <el-col :span="14" class="val">{{carNum}}</el-col>
+                <el-col :span="15" class="val" v-if="carNum">{{carNum}}</el-col>
+                <el-col :span="15" class="val" v-else>暂无信息</el-col>
               </el-col>
               <el-col :span="24" class="list">
                 <el-col :span="7" class="key">车架号：</el-col>
-                <el-col :span="14" class="val">{{vin}}</el-col>
+                <el-col :span="15" class="val" v-if="vin">{{vin}}</el-col>
+                <el-col :span="15" class="val" v-else>暂无信息</el-col>
               </el-col>
               <el-col :span="24" class="list">
                 <el-col :span="7" class="key">购车网点：</el-col>
-                <el-col :span="14" class="val">{{branch}}</el-col>
+                <el-col :span="15" class="val" v-if="branch">{{branch}}</el-col>
+                <el-col :span="15" class="val" v-else>暂无信息</el-col>
               </el-col>
             </el-col>
             <!-- 左右分割线 -->
             <el-col :span="12" class="box2">
               <el-col :span="24" class="list">
                 <el-col :span="7" class="key">家庭住址：</el-col>
-                <el-col :span="14" class="val">{{address}}</el-col>
+                <el-col :span="15" class="val" v-if="address">{{address}}</el-col>
+                <el-col :span="15" class="val" v-else>暂无信息</el-col>
               </el-col>
               <el-col :span="24" class="list">
                 <el-col :span="7" class="key">收货地址：</el-col>
                 <el-col :span="14" class="val">
-                  <el-col :span="24">{{district0+deliAddress}}</el-col>
+                  <el-col :span="15" class="val" v-if="district0">{{district0}}</el-col>
+                  <el-col :span="15" class="val" v-else>暂无信息</el-col>
                 </el-col>
               </el-col>
               <!-- <el-col :span="24" class="list">
@@ -339,26 +362,30 @@
                 <el-col :span="14" class="val">
                   <el-col :span="24">{{deliAddress}}</el-col>
                 </el-col>
-              </el-col> -->
+              </el-col>-->
               <el-col :span="24" class="list">
                 <el-col :span="7" class="key">开户行：</el-col>
-                <el-col :span="14" class="val">{{bank}}</el-col>
+                <el-col :span="15" class="val" v-if="bank">{{bank}}</el-col>
+                <el-col :span="15" class="val" v-else>暂无信息</el-col>
               </el-col>
               <el-col :span="24" class="list">
                 <el-col :span="7" class="key">银行卡号：</el-col>
-                <el-col :span="14" class="val">{{bankCard}}</el-col>
+                <el-col :span="15" class="val" v-if="bankCard">{{bankCard}}</el-col>
+                <el-col :span="15" class="val" v-else>暂无信息</el-col>
               </el-col>
               <el-col :span="24" class="list">
                 <el-col :span="7" class="key">备注信息：</el-col>
-                <el-col :span="14" class="val">{{remake}}</el-col>
+                <el-col :span="15" class="val" v-if="remake">{{remake}}</el-col>
+                <el-col :span="15" class="val" v-else>暂无信息</el-col>
               </el-col>
               <el-col :span="24" class="list">
                 <el-col :span="7" class="key">车主邮箱：</el-col>
-                <el-col :span="14" class="val">{{mail}}</el-col>
+                <el-col :span="15" class="val" v-if="mail">{{mail}}</el-col>
+                <el-col :span="15" class="val" v-else>暂无信息</el-col>
               </el-col>
               <el-col :span="24" class="list">
                 <el-col :span="7" class="key relation">家属信息：</el-col>
-                <el-col :span="16" class="val">
+                <el-col :span="16" class="val" v-if="relationList.length!=1">
                   <el-col
                     :spam="24"
                     class="relationList"
@@ -371,6 +398,7 @@
                     <el-col :span="3"></el-col>
                   </el-col>
                 </el-col>
+                <el-col :span="16" class="val" v-else>暂无信息</el-col>
               </el-col>
             </el-col>
           </el-col>
@@ -560,8 +588,10 @@ export default {
               this.handerImg = data.image
               data.image = '/ocarplay/' + data.image
               this.fileList = [{ name: '', url: data.image }]
-            }else{
-              this.fileList = [{ name: '', url: '/static/images/carow/hander.png' }]
+            } else {
+              this.fileList = [
+                { name: '', url: 'static/images/carow/hander.png' },
+              ]
             }
 
             this.tabact = data.typeId
@@ -692,7 +722,6 @@ export default {
               this.deliAddress = data.deliveryAddresses[0].address
             }
 
-            
             // console.log(this.district_code)
           }
           this.loading = false

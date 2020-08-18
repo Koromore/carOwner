@@ -11,7 +11,10 @@
       </el-col>
       <el-col :span="15" class="right">
         <!-- 拍摄排序 -->
-        <div class="rank">拍摄排序<i class="el-icon-caret-bottom"></i></div>
+        <div class="rank" @click="orderTypeChange">
+          拍摄排序
+          <i :class="[orderSort==2?'el-icon-caret-bottom':'el-icon-caret-top']"></i>
+        </div>
         <!-- 城市 -->
         <el-select
           v-model="city"
@@ -28,7 +31,7 @@
             :value="item.value"
           ></el-option>
         </el-select>
-        <div class="addModel">
+        <div class="addModel" v-if="postId!=231||adminShow">
           <el-button
             type="primary"
             icon="el-icon-circle-plus-outline"
@@ -77,7 +80,8 @@
                         d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"
                       />
                     </svg>
-                    &nbsp;<span class="carType">{{item.carTypeName}}</span>
+                    &nbsp;
+                    <span class="carType">{{item.carTypeName}}</span>
                   </p>
                   <p>
                     <svg
@@ -128,15 +132,28 @@
                 </div>
               </div>
               <div class="bottom">
-                <el-col :span="6" :offset="3">
-                  <i class="el-icon-edit-outline" @click="toModel(item.modelId)"></i>
-                </el-col>
-                <el-col :span="6">
-                  <i class="el-icon-camera" @click="addCamera(item.placeId)"></i>
-                </el-col>
-                <el-col :span="6">
-                  <i class="el-icon-delete" @click="deleteModelBtn(item.modelId)"></i>
-                </el-col>
+                <template v-if="postId!=231||adminShow">
+                  <el-col :span="6" :offset="3">
+                    <i class="el-icon-edit-outline" @click="toModel(item.modelId)"></i>
+                  </el-col>
+                  <el-col :span="6">
+                    <i class="el-icon-camera" @click="addCamera(item.placeId)"></i>
+                  </el-col>
+                  <el-col :span="6">
+                    <i class="el-icon-delete" @click="deleteModelBtn(item.modelId)"></i>
+                  </el-col>
+                </template>
+                <template v-else>
+                  <!-- <el-col :span="6" :offset="3">
+                    <i class="el-icon-edit-outline" @click="toModel(item.modelId)"></i>
+                  </el-col> -->
+                  <el-col :span="24">
+                    <i class="el-icon-camera" @click="addCamera(item.placeId)"></i>
+                  </el-col>
+                  <!-- <el-col :span="6">
+                    <i class="el-icon-delete" @click="deleteModelBtn(item.modelId)"></i>
+                  </el-col> -->
+                </template>
               </div>
             </div>
           </el-col>
@@ -176,7 +193,7 @@ export default {
   components: {
     camera,
     cameraList,
-    noDataList
+    noDataList,
   },
   data() {
     return {
@@ -207,6 +224,8 @@ export default {
       // 内容列表
       listLoading: false,
       modelList: [],
+      orderType: 1, // 排序类型（1-拍摄排序,2-评分排序）
+      orderSort: 2, // 排序类型（1-正序,2-倒序）
       // 拍摄记录
       cameraShow: 0,
       cameraListShow: 0,
@@ -250,6 +269,20 @@ export default {
     },
     ///////// 跳转新增模特界面 end /////////
 
+    ///////// 摄影师列表排序 start /////////
+    orderTypeChange() {
+      let orderSort = 0
+      if (this.orderSort == 1) {
+        orderSort = 2
+      } else {
+        orderSort = 1
+      }
+      this.orderSort = orderSort
+      // 获取摄影师列表
+      this.getlistModel()
+    },
+    ///////// 摄影师列表排序 end /////////
+
     ///////// 筛选模特列表 start /////////
     cityChange() {
       this.getlistModel()
@@ -265,7 +298,8 @@ export default {
         model: {
           city: this.city,
         },
-        // typeId: '',
+        orderType: this.orderType, // 排序类型（1-拍摄排序,2-评分排序）
+        type: this.orderSort, // 排序类型（1-正序,2-倒序）
       }
       this.$axios.post('/ocarplay/api/model/listAjax', data).then((res) => {
         // console.log(res)

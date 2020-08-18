@@ -17,9 +17,16 @@
             :key="index"
           >
             <el-card>
+              <p>
+                <span v-if="item.deptId==105">项目组：沃尔沃</span>
+                <span v-else-if="item.deptId==110">项目组：吉利</span>
+                <span v-else-if="item.deptId==153">项目组：长城</span>
+                <span v-else-if="item.deptId==106">项目组：东本</span>
+              </p>
               <p>拍摄任务：{{item.title}}</p>
               <p>摄影师：{{item.personName}}</p>
-              <p>模特：{{item.modelName}}</p>
+              <p v-if="item.modelName">模特：{{item.modelName}}</p>
+              <p v-else>模特：暂无信息</p>
               <p>场地：{{item.placeName}}</p>
             </el-card>
           </el-timeline-item>

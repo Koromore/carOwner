@@ -235,9 +235,9 @@
           </el-table-column>
           <el-table-column prop label="操作" min-width="160" v-if="subordinate==150||adminShow">
             <template slot-scope="scope">
-              <el-tooltip class="item" effect="dark" content="预约记录" placement="top">
+              <!-- <el-tooltip class="item" effect="dark" content="预约记录" placement="top">
                 <i class="el-icon-time" @click="toRecord(scope.row.ownerId)"></i>
-              </el-tooltip>
+              </el-tooltip> -->
               <!-- <el-tooltip class="item" effect="dark" content="车主信息" placement="top">
                 <i class="el-icon-view" @click="toDetail(scope.row)"></i>
               </el-tooltip> -->
@@ -343,9 +343,9 @@
           </el-table-column>
           <el-table-column prop label="操作" min-width="160" v-if="subordinate==150||adminShow">
             <template slot-scope="scope">
-              <el-tooltip class="item" effect="dark" content="预约记录" placement="top">
+              <!-- <el-tooltip class="item" effect="dark" content="预约记录" placement="top">
                 <i class="el-icon-time" @click="toRecord(scope.row.ownerId)"></i>
-              </el-tooltip>
+              </el-tooltip> -->
               <!-- <el-tooltip class="item" effect="dark" content="车主信息" placement="top">
                 <i class="el-icon-view" @click="toDetail(scope.row)"></i>
               </el-tooltip> -->

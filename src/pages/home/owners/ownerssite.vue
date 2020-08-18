@@ -178,6 +178,10 @@ $icoColor: #6a91e8;
     margin-bottom: 9px;
     display: flex;
     align-items: center;
+    >div{
+      height: 45px;
+      line-height: 45px;
+    }
     .left {
       font-size: 22px;
       text-align: left;
@@ -194,11 +198,9 @@ $icoColor: #6a91e8;
       }
     }
     .center {
-      font-size: 22px;
-      font-weight: 100;
+      font-size: 28px;
+      font-weight: bold;
       text-align: center;
-      height: 37px;
-      line-height: 37px;
     }
   }
   .content {

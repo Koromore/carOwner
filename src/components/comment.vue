@@ -3,7 +3,7 @@
     <el-drawer
       :title="drawerTitle"
       :visible.sync="drawerData"
-      size="640px"
+      size="720px"
       @close="drawerDataClose"
       @open="drawerDataOpen"
       v-loading="loading"
@@ -24,7 +24,7 @@
               <span>导</span>
             </el-col>
           </el-col>
-          <el-col :span="21" :offset="1" class="right">
+          <el-col :span="20" :offset="1" class="right">
             <template v-if="type==0">
               <el-col class="gradeList" v-for="(item,index) in gradeList" :key="index">
                 <span>{{item.secondGrade}}/</span>
@@ -104,7 +104,7 @@ export default {
   data() {
     return {
       drawerData: false,
-      drawerTitle: '摄影师品论',
+      drawerTitle: '摄影师评价',
       loading: false,
       type: 0,
       personId: null, // 摄影师Id
@@ -119,6 +119,7 @@ export default {
     commentShow: function (newData, oldData) {
       if (newData != 0) {
         this.drawerData = true
+        console.log(newData)
       }
     },
   },
@@ -208,6 +209,7 @@ export default {
       let personScore = 0
       let gradeList = this.gradeList
       let max = true
+      let taskId = this.$parent.taskId
       gradeList.forEach((element) => {
         gradeInfoList.push({
           gradeId: element.gradeId,
@@ -219,11 +221,12 @@ export default {
         personScore += element.score * 1
       })
       let data = {
-        doUserId,
-        gradeInfoList,
+        doUserId, // 评论人
+        taskId, // 任务Id
+        gradeInfoList, // 评分详情
         personId, // 摄影师Id
-        personScore,
-        remark,
+        personScore, // 总分
+        remark, // 备注
       }
       // console.log(data)
       if (max) {
@@ -251,7 +254,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 #comment {
-  .el-row{
+  .el-row {
     padding-top: 6px;
   }
   .el-input {
@@ -301,7 +304,7 @@ export default {
   }
   .bottom {
     margin: 13px 0;
-    div:nth-of-type(1){
+    div:nth-of-type(1) {
       margin-bottom: 6px;
     }
   }

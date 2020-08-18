@@ -14,7 +14,7 @@
         </el-col>
         <el-col :span="12" class="left">
           <el-col :span="24" class="list">
-            <div class="key">任务类型</div>
+            <div class="key imp">任务类型</div>
             <div class="val">
               <el-radio-group v-model="taskType" :disabled="!disabledCaigou">
                 <el-radio :label="1">借车</el-radio>
@@ -26,7 +26,7 @@
             </div>
           </el-col>
           <el-col :span="24" class="list">
-            <div class="key">任务名称</div>
+            <div class="key imp">任务名称</div>
             <div class="val">
               <el-input
                 placeholder="请输入内容"
@@ -37,7 +37,7 @@
             </div>
           </el-col>
           <el-col :span="24" class="list">
-            <div class="key">品牌车型</div>
+            <div class="key imp">品牌车型</div>
             <div class="val">
               <el-cascader
                 v-model="carSeriesId"
@@ -70,7 +70,8 @@
             <el-col :span="24" class="list">
               <div class="key">摄影师</div>
               <div class="val">
-                <el-select v-model="personId" placeholder="请选择" :disabled="disabledCaigou">
+                <el-select v-model="personId" placeholder="请选择" :disabled="disabledCaigou" clearable
+                filterable>
                   <el-option
                     v-for="item in cameraList"
                     :key="item.value"
@@ -83,7 +84,8 @@
             <el-col :span="24" class="list">
               <div class="key">模特</div>
               <div class="val">
-                <el-select v-model="modelId" placeholder="请选择" :disabled="disabledCaigou">
+                <el-select v-model="modelId" placeholder="请选择" :disabled="disabledCaigou" clearable
+                filterable>
                   <el-option
                     v-for="item in modelList"
                     :key="item.value"
@@ -96,7 +98,8 @@
             <el-col :span="24" class="list">
               <div class="key">场地</div>
               <div class="val">
-                <el-select v-model="placeId" placeholder="请选择" :disabled="disabledCaigou">
+                <el-select v-model="placeId" placeholder="请选择" clearable
+                filterable>
                   <el-option
                     v-for="item in placeList"
                     :key="item.value"
@@ -109,7 +112,7 @@
           </el-col>
           <!-- 摄影填写 end -->
           <el-col :span="24" class="list">
-            <div class="key">计划周期</div>
+            <div class="key imp">计划周期</div>
             <div class="val">
               <el-date-picker
                 v-model="periodTime"
@@ -122,7 +125,7 @@
             </div>
           </el-col>
           <el-col :span="24" class="list">
-            <div class="key">计划邀约量</div>
+            <div class="key imp">计划邀约量</div>
             <div class="val">
               <el-input placeholder="请输入内容" v-model="taskNum" clearable :disabled="!disabledCaigou"></el-input>
             </div>
@@ -377,6 +380,8 @@ export default {
       let data = {
         pageNum: 1,
         pageSize: 1000,
+        orderType: 1,
+        type: 2
       }
       this.$axios
         .post('/ocarplay/api/photoPerson/listAjax', data)
@@ -404,6 +409,8 @@ export default {
       let data = {
         pageNum: 1,
         pageSize: 1000,
+        orderType: 1,
+        type: 2
       }
       this.$axios.post('/ocarplay/api/model/listAjax', data).then((res) => {
         // console.log(res)
@@ -414,7 +421,7 @@ export default {
             {
               value: 0,
               label: '无模特',
-            }
+            },
           ]
           data.forEach((element) => {
             modelList.push({
@@ -467,10 +474,12 @@ export default {
           this.taskName = data.taskName
           this.taskType = data.taskType
           this.personId = data.personId
-          if (this.modelId) {
-          this.modelId = data.modelId
+          if (data.modelId) {
+            this.modelId = data.modelId
+          } else if (!data.modelId && data.personId) {
+            this.modelId = 0
           }else{
-          this.modelId = 0
+            this.modelId = null
           }
           this.placeId = data.placeId
           let listInviteList = []
@@ -526,42 +535,43 @@ export default {
           // console.log(res)
           if (res.status == 200) {
             let data = res.data
-            data.splice(1,1)
+            // data.splice(1, 1)
             let list = []
             data.forEach((element, i) => {
               // if (element.typeId != 2) {
-                list.push({
-                  value: element.typeId,
-                  label: element.typeName,
+              list.push({
+                value: element.typeId,
+                label: element.typeName,
+                children: [],
+              })
+              element.ownerItems.forEach((element1, j) => {
+                console.log(1)
+                list[i].children.push({
+                  value: element1.itemId,
+                  label: element1.itemName,
                   children: [],
                 })
-                element.ownerItems.forEach((element1, j) => {
-                  list[i].children.push({
-                    value: element1.itemId,
-                    label: element1.itemName,
-                    children: [],
-                  })
-                  element1.vehicleOwners.forEach((element2) => {
-                    if (
-                      element2.coopNum &&
-                      element2.alreadyCooperateNum &&
-                      element2.coopNum - element2.alreadyCooperateNum <= 0
-                    ) {
-                      // cosnole.log()
-                      list[i].children[j].children.push({
-                        value: element2.vehicleOwnerId,
-                        label: element2.name,
-                        disabled: true,
-                      })
-                    } else {
-                      list[i].children[j].children.push({
-                        value: element2.vehicleOwnerId,
-                        label: element2.name,
-                      })
-                    }
-                    // console.log(element2)
-                  })
+                element1.vehicleOwners.forEach((element2) => {
+                  if (
+                    element2.coopNum &&
+                    element2.alreadyCooperateNum &&
+                    element2.coopNum - element2.alreadyCooperateNum <= 0
+                  ) {
+                    // cosnole.log()
+                    list[i].children[j].children.push({
+                      value: element2.vehicleOwnerId,
+                      label: element2.name,
+                      disabled: true,
+                    })
+                  } else {
+                    list[i].children[j].children.push({
+                      value: element2.vehicleOwnerId,
+                      label: element2.name,
+                    })
+                  }
+                  // console.log(element2)
                 })
+              })
               // }
             })
 
@@ -729,11 +739,12 @@ export default {
       })
       let flag = true
       let list = [
+        data.taskType,
         data.taskName,
         data.startTime,
         data.num,
         data.listTaskOfCartype.length,
-        data.listInvite.length,
+        // data.listInvite.length,
       ]
 
       list.forEach((element) => {
@@ -816,8 +827,9 @@ export default {
       align-items: flex-start;
       margin: 16px 0;
       .key {
-        width: 96px;
+        width: 108px;
         height: 40px;
+        padding: 0 9px;
         line-height: 40px;
         margin-right: 13px;
         text-align: justify;

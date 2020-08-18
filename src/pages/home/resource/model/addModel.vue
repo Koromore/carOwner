@@ -70,6 +70,12 @@
             </div>
           </el-col>
           <el-col :span="24" class="list">
+            <div class="key">特长</div>
+            <div class="val">
+              <el-input placeholder="请输入内容" v-model="speciality" clearable></el-input>
+            </div>
+          </el-col>
+          <el-col :span="24" class="list">
             <div class="key imp">模卡/资质/简介</div>
             <div class="val">
               <el-input placeholder="请输入内容" v-model="introduce" clearable></el-input>
@@ -200,12 +206,6 @@
             <div class="key">三围</div>
             <div class="val">
               <el-input placeholder="请输入内容" v-model="bwh" clearable></el-input>
-            </div>
-          </el-col>
-          <el-col :span="24" class="list">
-            <div class="key">特长</div>
-            <div class="val">
-              <el-input placeholder="请输入内容" v-model="speciality" clearable></el-input>
             </div>
           </el-col>
         </el-col>

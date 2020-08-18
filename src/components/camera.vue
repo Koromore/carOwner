@@ -98,19 +98,19 @@ export default {
     return {
       drawerData: false,
       loading: false,
-      deptList:[
+      deptList: [
         {
           value: 105,
-          label: '沃尔沃'
+          label: '沃尔沃',
         },
         {
           value: 110,
-          label: '吉利'
+          label: '吉利',
         },
         {
           value: 153,
-          label: '长城'
-        }
+          label: '长城',
+        },
       ],
       deptId: null, // 项目组ID
       personList: [], // 摄影师列表
@@ -129,7 +129,6 @@ export default {
       if (newData) {
         this.drawerData = true
       }
-      
     },
   },
   // 钩子函数
@@ -140,7 +139,9 @@ export default {
   methods: {
     //
     drawerDataClose() {
-      this.$parent.cameraShow=0
+      this.$parent.cameraShow = 0
+
+      // this.$parent.getlistPhotoPerson()
     },
     drawerDataOpen() {
       this.getlistPhotoPerson()
@@ -154,6 +155,8 @@ export default {
         let data = {
           pageNum: 1,
           pageSize: 1000,
+          orderType: 1,
+          type: 1,
         }
         this.$axios
           .post('/ocarplay/api/photoPerson/listAjax', data)
@@ -182,6 +185,8 @@ export default {
         let data = {
           pageNum: 1,
           pageSize: 1000,
+          orderType: 1,
+          type: 1,
         }
         this.$axios.post('/ocarplay/api/model/listAjax', data).then((res) => {
           if (res.status == 200) {
@@ -257,6 +262,7 @@ export default {
     cameraShowSave() {
       this.loading = true
       let data = {
+        deptId: this.deptId, // 拍摄组
         personId: this.personId, // 摄影师Id
         modelId: this.modelId, // 模特Id
         placeId: this.placeId, // 场地Id
@@ -272,6 +278,17 @@ export default {
           if (data.errcode == 0) {
             this.$message.success(data.msg)
             this.drawerData = false
+            let nameId = this.$parent.$el.id
+            if (nameId == 'cameraman') {
+              ///////// 获取摄影师列表 start /////////
+              this.$parent.getlistPhotoPerson()
+            } else if (nameId == 'model') {
+              ///////// 获取模特列表 start /////////
+              this.$parent.getlistModel()
+            } else if (nameId == 'place') {
+              ///////// 获取场地列表 start /////////
+              this.$parent.getPlaceList()
+            }
           } else {
             this.$message.error(data.msg)
           }

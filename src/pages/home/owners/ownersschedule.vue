@@ -10,10 +10,7 @@
       </el-col>
       <el-col :span="8" class="center cont">日程管理</el-col>
       <el-col :span="8" class="right cont">
-        <!-- <div @click="submit">
-          <i class="el-icon-circle-check"></i>
-          <br />提交并完成
-        </div>-->
+        <el-button type="primary" size="mini" icon="el-icon-time" @click="toRecord">预约记录</el-button>
       </el-col>
     </el-row>
     <!-- 头部选项框 end -->
@@ -582,8 +579,19 @@ export default {
             // console.log(this.ownerScheduleListData)
           }
         })
-    }
+    },
     ///////// 打开日程详情 end /////////
+
+    ///////// 跳转预约记录页面 start /////////
+    toRecord() {
+      this.$router.push({
+        path: '/home/ownersrecord',
+        query: {
+          id: this.ownerId,
+        },
+      })
+    },
+    ///////// 跳转预约记录页面 end /////////
   }
 }
 </script>
@@ -654,7 +662,7 @@ $icoColor: rgb(106, 145, 232);
         cursor: pointer;
       }
       i {
-        font-size: 28px;
+        font-size: 24px;
       }
     }
   }

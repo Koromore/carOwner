@@ -35,7 +35,7 @@
             :value="item.value"
           ></el-option>
         </el-select>
-        <div class="add_place">
+        <div class="add_place" v-if="postId!=231||adminShow">
           <el-button
             type="primary"
             icon="el-icon-circle-plus-outline"
@@ -67,15 +67,25 @@
                 <p @click="toCameraList(item.placeId,3)">拍摄次数：{{item.cameraNum}}次</p>
               </div>
               <div class="bottom">
-                <el-col :span="6" :offset="3">
-                  <i class="el-icon-user" @click="toPlaceMan(item.city)"></i>
-                </el-col>
-                <el-col :span="6">
-                  <i class="el-icon-camera" @click="addCamera()"></i>
-                </el-col>
-                <el-col :span="6">
-                  <i class="el-icon-delete" @click="deletePlaceBtn(item.placeId)"></i>
-                </el-col>
+                <template v-if="postId!=231||adminShow">
+                  <el-col :span="6" :offset="3">
+                    <i class="el-icon-user" @click="toPlaceMan(item.city)"></i>
+                  </el-col>
+                  <el-col :span="6">
+                    <i class="el-icon-camera" @click="addCamera()"></i>
+                  </el-col>
+                  <el-col :span="6">
+                    <i class="el-icon-delete" @click="deletePlaceBtn(item.placeId)"></i>
+                  </el-col>
+                </template>
+                <template v-else>
+                  <el-col :span="8" :offset="4">
+                    <i class="el-icon-user" @click="toPlaceMan(item.city)"></i>
+                  </el-col>
+                  <el-col :span="8">
+                    <i class="el-icon-camera" @click="addCamera()"></i>
+                  </el-col>
+                </template>
               </div>
             </div>
           </el-col>
@@ -115,7 +125,7 @@ export default {
   components: {
     camera,
     cameraList,
-    noDataList
+    noDataList,
   },
   data() {
     return {
@@ -244,7 +254,7 @@ export default {
     ///////// 跳转场地详情 end /////////
 
     ///////// 打开拍摄记录 start /////////
-    toCameraList(id,type) {
+    toCameraList(id, type) {
       this.placeId = id
       this.cameraListShow += 1
     },

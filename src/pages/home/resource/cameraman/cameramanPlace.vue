@@ -194,8 +194,8 @@ $icoColor: #6a91e8;
       }
     }
     .center {
-      font-size: 22px;
-      font-weight: 100;
+      font-size: 28px;
+      font-weight: bold;
       text-align: center;
       height: 37px;
       line-height: 37px;

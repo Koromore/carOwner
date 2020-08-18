@@ -18,8 +18,8 @@
         <el-table
           :data="ownerScheduleListData"
           style="width: 100%"
-          :header-row-style="{'height': '70px','background': 'rgb(242, 242, 242)'}"
-          :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)'}"
+          :header-row-style="{'height': '54px'}"
+          :header-cell-style="{'color': '#000'}"
           height="100%"
         >
           <el-table-column prop label="序号" width="81" align="center">
@@ -109,9 +109,7 @@ export default {
 
     ///////// 返回上一页 start /////////
     previous() {
-      this.$router.push({
-        path: '/home/owners'
-      })
+      this.$router.go(-1) //返回上一层
     },
     ///////// 返回上一页 end /////////
 
@@ -120,8 +118,8 @@ export default {
       let data = {
         pageNum: this.pageNum,
         pageSize: this.pageSize,
-        vehicleOwnerId: this.$route.query.id,
-        isDo: true
+        vehicleOwnerId: this.$route.query.id*1,
+        // isDo: true
       }
       this.$axios
         .post('/ocarplay/api/vehicleOwner/ownerScheduleListAjax', data)
@@ -161,7 +159,10 @@ $icoColor: rgb(106, 145, 232);
 #ownersrecord {
   height: 100%;
   .top {
-    height: 88px;
+    height: 54px;
+    margin-bottom: 9px;
+    border: 1px solid #e7e7e7;
+    border-radius: 6px;
     background: #fff;
     display: flex;
     flex-wrap: wrap;
@@ -202,8 +203,10 @@ $icoColor: rgb(106, 145, 232);
     }
   }
   .content {
-    height: calc(100% - 88px);
-    background: #fff;
+    height: calc(100% - 63px);
+    border: 1px solid #e7e7e7;
+    border-radius: 8px 8px 0 0;
+    // background: #fff;
     .table_list {
       height: calc(100% - 64px);
       .el-table {

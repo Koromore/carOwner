@@ -502,6 +502,7 @@ export default {
     height: 100%;
     box-sizing: border-box;
     padding: 36px;
+    border: 1px solid #e7e7e7;
     .list {
       display: flex;
       flex-wrap: wrap;

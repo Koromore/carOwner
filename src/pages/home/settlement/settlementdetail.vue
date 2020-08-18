@@ -52,17 +52,17 @@
           <el-table-column prop="bankCard" label="银行卡号" min-width="110" show-overflow-tooltip></el-table-column>
           <el-table-column prop="isCard" label="油卡或现金" min-width="90" align="center">
             <template slot-scope="scope">
-              <template v-if="scope.row.taskType==4">现金</template>
+              <template v-if="scope.row.isCard">现金</template>
               <template v-else>油卡</template>
             </template>
           </el-table-column>
           <el-table-column prop="prove" label="结算凭证" width="200" align="center">
             <template slot-scope="scope">
-              <template v-if="scope.row.isCard&&!scope.row.prove">
+              <template v-if="!scope.row.isCard&&!scope.row.prove">
                 <el-input placeholder="请输入单号" v-model="scope.row.prove0" clearable size="mini"></el-input>
               </template>
-              <template v-else-if="scope.row.isCard&&scope.row.prove">{{scope.row.prove}}</template>
-              <template v-else-if="!scope.row.isCard&&!scope.row.prove">
+              <template v-else-if="!scope.row.isCard&&scope.row.prove">{{scope.row.prove}}</template>
+              <template v-else-if="scope.row.isCard&&!scope.row.prove">
                 <el-upload
                   class="upload-demo"
                   action="/ocarplay/file/upload"
@@ -74,7 +74,7 @@
                   <el-button size="mini" type="primary" @click="uploadClick(scope.$index)">上传凭证</el-button>
                 </el-upload>
               </template>
-              <template v-else-if="!scope.row.isCard&&scope.row.prove">
+              <template v-else-if="scope.row.isCard&&scope.row.prove">
                 <!-- <el-button size="mini" type="success">查看凭证</el-button> -->
                 <el-image
                   src="static/images/ico/btn.jpg"
@@ -240,7 +240,7 @@ export default {
           }
         })
       } else {
-        this.$message.error('请先上传或填写结算凭证')
+        this.$message.error('请先上传或填写结算凭证！')
         this.listLoading = false
       }
     },
