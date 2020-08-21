@@ -40,8 +40,11 @@
             <el-option label="任务" value="1"></el-option>
             <el-option label="结算" value="2" :disabled="selectDisabled"></el-option>
             <el-option label="车主" value="3"></el-option>
-            <el-option label="场地" value="4"></el-option>
+            <!-- <el-option label="场地" value="4"></el-option> -->
             <el-option label="文档" value="5"></el-option>
+            <el-option label="摄影师" value="6"></el-option>
+            <el-option label="场地" value="7"></el-option>
+            <el-option label="模特" value="8"></el-option>
           </el-select>
           <el-button slot="append" icon="el-icon-search" @click="searchStart"></el-button>
         </el-input>
@@ -173,6 +176,12 @@ export default {
         this.$router.push({ path: '/home/site' })
       } else if (select == 5 && routeName !== 'document') {
         this.$router.push({ path: '/home/document' })
+      } else if (select == 6 && routeName !== 'cameraman') {
+        this.$router.push({ path: '/home/resource/cameraman' })
+      } else if (select == 7 && routeName !== 'model') {
+        this.$router.push({ path: '/home/resource/model' })
+      } else if (select == 8 && routeName !== 'place') {
+        this.$router.push({ path: '/home/resource/place' })
       }
       this.$emit('sousuo', searchWord)
     },

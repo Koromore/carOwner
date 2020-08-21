@@ -184,66 +184,41 @@
           </el-table-column>
           <el-table-column prop="carSeriesName" label="车型" min-width="100" show-overflow-tooltip>
             <template slot-scope="scope">
-              <template v-if="scope.row.ownerCarSeries.length!=0">
-                <span v-for="(item, index) in scope.row.ownerCarSeries" :key="index">
-                  {{item.carSeriesName}}
-                  <template
-                    v-if="scope.row.ownerCarSeries.length>1&&index!=scope.row.ownerCarSeries.length-1"
-                  >,</template>
-                </span>
-              </template>
-              <template v-else>/</template>
+              <span v-for="(item, index) in scope.row.ownerCarSeries" :key="index">
+                {{item.carSeriesName}}
+                <template
+                  v-if="scope.row.ownerCarSeries.length>1&&index!=scope.row.ownerCarSeries.length-1"
+                >,</template>
+              </span>
             </template>
           </el-table-column>
-          <el-table-column prop="ownerArea" label="所在区域" min-width="81" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="skillName" label="特长" min-width="81">
-            <template slot-scope="scope">
-              <template v-if="scope.row.skillName">{{scope.row.skillName}}</template>
-              <template v-else>/</template>
-            </template>
-          </el-table-column>
-          <el-table-column prop="nickname" label="IP账号" min-width="81">
-            <template slot-scope="scope">
-              <template v-if="scope.row.ipGrows">
-                <template v-if="scope.row.ipGrows[0].nickname!=''">
-                  <span v-for="(item, index) in scope.row.ipGrows" :key="index">
-                    {{item.nickname}}
-                    <template
-                      v-if="scope.row.ipGrows.length>1&&index!=scope.row.ipGrows.length-1&&item.nickname!=''"
-                    >,</template>
-                  </span>
-                </template>
-                <template v-else>/</template>
-              </template>
-              <template v-else>/</template>
-            </template>
-          </el-table-column>
-          <el-table-column prop="timeLimit" label="合作时长" min-width="100">
+          <el-table-column prop="itemName" label="合作事项" min-width="81" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="timeLimit" label="合作时长" min-width="81">
             <template slot-scope="scope">{{$duration(scope.row.timeLimit)}}</template>
           </el-table-column>
+          <el-table-column prop="coopMoney" label="合作费用" min-width="81"></el-table-column>
+          <el-table-column prop="coopNum" label="固定合作总量" min-width="100"></el-table-column>
           <el-table-column prop="alreadyCooperateNum" label="已合作" min-width="100">
             <template slot-scope="scope">
               <template v-if="scope.row.alreadyCooperateNum">{{scope.row.alreadyCooperateNum}}</template>
               <template v-else>0</template>
             </template>
           </el-table-column>
-          <el-table-column prop="currMonthCooperateNum" label="本月合作次数" min-width="100">
+          <el-table-column prop="surplusnum" label="剩余合作" min-width="100">
+            <template slot-scope="scope">{{scope.row.coopNum-scope.row.alreadyCooperateNum}}</template>
+          </el-table-column>
+          <el-table-column prop="period" label="结算周期" min-width="100">
             <template slot-scope="scope">
-              <template v-if="scope.row.currMonthCooperateNum">{{scope.row.currMonthCooperateNum}}</template>
-              <template v-else>0</template>
+              <template v-if="scope.row.period == 0">按月结算</template>
+              <template v-if="scope.row.period == 1">按年结算</template>
+              <template v-if="scope.row.period == 2">按季度结算</template>
             </template>
           </el-table-column>
-          <el-table-column prop label="操作" min-width="160" v-if="subordinate==150||adminShow">
+          <el-table-column prop label="操作" min-width="81" v-if="subordinate==150||adminShow">
             <template slot-scope="scope">
-              <!-- <el-tooltip class="item" effect="dark" content="预约记录" placement="top">
-                <i class="el-icon-time" @click="toRecord(scope.row.ownerId)"></i>
-              </el-tooltip> -->
               <!-- <el-tooltip class="item" effect="dark" content="车主信息" placement="top">
                 <i class="el-icon-view" @click="toDetail(scope.row)"></i>
               </el-tooltip> -->
-              <el-tooltip class="item" effect="dark" content="日程管理" placement="top">
-                <i class="el-icon-date" @click="toOwnersschedule(scope.row.vehicleOwnerId)"></i>
-              </el-tooltip>
               <el-tooltip class="item" effect="dark" content="场地信息" placement="top">
                 <i class="el-icon-map-location" @click="toOwnerssite(scope.row)"></i>
               </el-tooltip>

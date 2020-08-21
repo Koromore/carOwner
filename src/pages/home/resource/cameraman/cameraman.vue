@@ -8,6 +8,7 @@
           <div :class="[tabact==2?'but act':'but']" @click="tab(2)">模特</div>
           <div :class="[tabact==3?'but act':'but']" @click="tab(3)">场地</div>
         </div>
+        {{this.$parent.searchWordData}}
       </el-col>
       <el-col :span="15" class="right">
         <!-- 评分排序 -->
@@ -249,6 +250,7 @@ export default {
       postId: this.$store.state.user.postId, // 职位ID
       subordinate: this.$store.state.user.subordinate, // 一级部门ID
       adminShow: this.$store.state.adminShow, // 超级管理员
+      searchWordData: this.$parent.searchWordData, // 搜索信息
       personId: null, // 摄影师ID
       type: 0,
       pgId: null, // 评论Id
@@ -295,6 +297,8 @@ export default {
   mounted() {
     ///////// 获取车主列表 start /////////
     this.getlistPhotoPerson()
+    console.log(this.$parent.searchWordData)
+    
   },
   // 方法
   methods: {

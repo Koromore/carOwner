@@ -8,6 +8,7 @@
 
 export default {
   name: 'resource',
+  props: ['searchWordData'],
   components: {},
   data() {
     return {}

@@ -154,10 +154,17 @@
                   <i class="el-icon-timer" @click="delay(scope.row)"></i>
                 </el-tooltip>
 
-                <template v-if="scope.row.taskType==4 && !scope.row.personId || !scope.row.placeId">
-                  <el-tooltip class="item" effect="dark" content="提交任务" placement="top">
+                <template v-if="scope.row.taskType==4">
+                  <template v-if="!scope.row.personId||!scope.row.placeId">
+                    <el-tooltip class="item" effect="dark" content="提交任务" placement="top">
                     <i class="el-icon-circle-check" style="cursor: not-allowed;color:#aaa"></i>
                   </el-tooltip>
+                  </template>
+                  <template v-else>
+                    <el-tooltip class="item" effect="dark" content="提交任务" placement="top">
+                    <i class="el-icon-circle-check" @click="putTask(scope.row)"></i>
+                  </el-tooltip>
+                  </template>
                 </template>
                 <template v-else>
                   <el-tooltip class="item" effect="dark" content="提交任务" placement="top">

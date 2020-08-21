@@ -36,6 +36,8 @@ export default {
     $route(to, from) {
       // console.log(to)
       this.routeName = this.$route.matched[1].name
+
+      console.log(this.$route)
     },
   },
   // 钩子函数

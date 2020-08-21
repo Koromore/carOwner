@@ -545,7 +545,7 @@ export default {
                 children: [],
               })
               element.ownerItems.forEach((element1, j) => {
-                console.log(1)
+                // console.log(1)
                 list[i].children.push({
                   value: element1.itemId,
                   label: element1.itemName,

@@ -74,7 +74,7 @@
               </el-col>
             </el-col>
             <el-col :span="24" class="list">
-              <el-col :span="6" class="key imp">车主性别</el-col>
+              <el-col :span="6" :class="[tabact!=4 ? 'key imp' : 'key']">车主性别</el-col>
               <el-col :span="15" class="val">
                 <el-radio v-model="sex" label="0">男</el-radio>
                 <el-radio v-model="sex" label="1">女</el-radio>
@@ -93,7 +93,7 @@
               </el-col>
             </el-col>
             <el-col :span="24" class="list">
-              <el-col :span="6" class="key imp">车主来源</el-col>
+              <el-col :span="6" :class="[tabact!=4 ? 'key imp' : 'key']">车主来源</el-col>
               <el-col :span="15" class="val">
                 <el-select v-model="source" clearable placeholder="请选择">
                   <el-option
@@ -120,7 +120,7 @@
               </el-col>
             </el-col>
             <el-col :span="24" class="list">
-              <el-col :span="6" class="key imp">用车生活</el-col>
+              <el-col :span="6" :class="[tabact!=4 ? 'key imp' : 'key']">用车生活</el-col>
               <el-col :span="15" class="val">
                 <el-col :span="18">
                   <el-checkbox-group v-model="livelihood" class="livelihood">
@@ -149,7 +149,7 @@
               </el-col>
             </el-col>
             <el-col :span="24" class="list">
-              <el-col :span="6" class="key imp">所在区域</el-col>
+              <el-col :span="6" :class="[tabact!=4 ? 'key imp' : 'key']">所在区域</el-col>
               <el-col :span="15" class="val">
                 <el-cascader
                   :options="optionsCity"
@@ -172,7 +172,7 @@
             <el-col :span="24" class="title">合作信息</el-col>
             <el-col :span="12" class="box1">
               <el-col :span="24" class="list">
-                <el-col :span="7" :class="[tabact!=1 ? 'key imp' : 'key']">签约合同</el-col>
+                <el-col :span="7" :class="[tabact==3 ? 'key imp' : 'key']">签约合同</el-col>
                 <el-col :span="14" class="val">
                   <el-upload
                     class="upload-demo"
@@ -1223,8 +1223,8 @@ export default {
         email: this.mail,
         skillId: this.speciality,
         ownerCarSeries: ownerCarSeries,
-        province: this.district[0],
-        city: this.district[1],
+        province: this.district[0] || null,
+        city: this.district[1] || null,
 
         phone: this.tel,
         homeAddress: this.address,
@@ -1286,7 +1286,7 @@ export default {
       let judgeList = []
       let judge = true
       // console.log(tabact)
-      if (tabact == 1||tabact == 4) {
+      if (tabact == 1) {
         data.ownerCoops = this.eventList
         data.ownerCoops.forEach((element, i) => {
           element.timeLimit = this.duration
@@ -1306,6 +1306,7 @@ export default {
         // ]
         // judgeList = []
         if (
+          data.name  == '' ||
           !data.province ||
           !data.city ||
           itemId === '' ||
@@ -1332,8 +1333,57 @@ export default {
             break
           }
         }
-      } else {
+      } else if (tabact == 4) {
+        data.ownerCoops = this.eventList
+        data.ownerCoops.forEach((element, i) => {
+          element.timeLimit = this.duration
+          if (i > 1) {
+            element.deleteFlag = true
+          }
+        })
+        // [
+        //   {
+        //     coopMoney: '固定合作总价',
+        //     coopNum: '固定合作总量',
+        //     itemId: '车主选择的合作事项ID',
+        //     period: '结算周期（0-按月结算，1-按年结算，2-按季度结算）',
+        //     timeLimit: this.duration,
+        //     typeId: this.tabact
+        //   }
+        // ]
+        // judgeList = []
         if (
+          data.name == ''||
+          // !data.province ||
+          // !data.city ||
+          itemId === '' ||
+          // data.sex === '' ||
+          // data.sourceId.length === 0 ||
+          data.ownerCarSeries.length === 0 ||
+          this.timeLimit.length === 0
+          // data.carUse === ''
+        ) {
+          judge = false
+        }
+        console.log(judge)
+        data.ownerCoops.forEach((element) => {
+          judgeList.push(element.coopNum)
+          judgeList.push(element.coopMoney)
+          judgeList.push(element.period)
+        })
+        // console.log(judgeList)
+        for (let i = 0; i < judgeList.length; i++) {
+          const element = judgeList[i]
+          // console.log(judge)
+          if (element === '' || element === null) {
+            judge = false
+            // console.log(judge)
+            break
+          }
+        }
+      } else if (tabact == 3) {
+        if (
+          data.name  == ''||
           !data.province ||
           !data.city ||
           itemId === '' ||
@@ -1374,7 +1424,7 @@ export default {
         })
         data.ipGrows = ipGrows
       }
-      // console.log(data)
+      console.log(data)
       // console.log(judgeList)
 
       let isEmail = this.$isEmail(data.email)
