@@ -15,6 +15,7 @@ import { download } from '@/utils/download'
 import VueAwesomeSwiper from 'vue-awesome-swiper'
 import 'swiper/dist/css/swiper.css'
 import { matchType, matchType0 } from '@/utils/matchType' // 引入文件格
+import elTableInfiniteScroll from 'el-table-infinite-scroll' // 表格滚动
 
 // import {Decrypt,Encrypt} from '@/utils/cryptoJS'
 
@@ -52,6 +53,7 @@ Vue.prototype.$download = download
 Vue.prototype.$matchType = matchType
 Vue.prototype.$matchType0 = matchType0
 
+Vue.use(elTableInfiniteScroll);
 
 Vue.use(VueAwesomeSwiper)
 // Vue.prototype.$Decrypt = Decrypt

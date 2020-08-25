@@ -70,8 +70,13 @@
             <el-col :span="24" class="list">
               <div class="key">摄影师</div>
               <div class="val">
-                <el-select v-model="personId" placeholder="请选择" :disabled="disabledCaigou" clearable
-                filterable>
+                <el-select
+                  v-model="personId"
+                  placeholder="请选择"
+                  :disabled="disabledCaigou"
+                  clearable
+                  filterable
+                >
                   <el-option
                     v-for="item in cameraList"
                     :key="item.value"
@@ -84,8 +89,13 @@
             <el-col :span="24" class="list">
               <div class="key">模特</div>
               <div class="val">
-                <el-select v-model="modelId" placeholder="请选择" :disabled="disabledCaigou" clearable
-                filterable>
+                <el-select
+                  v-model="modelId"
+                  placeholder="请选择"
+                  :disabled="disabledCaigou"
+                  clearable
+                  filterable
+                >
                   <el-option
                     v-for="item in modelList"
                     :key="item.value"
@@ -98,8 +108,7 @@
             <el-col :span="24" class="list">
               <div class="key">场地</div>
               <div class="val">
-                <el-select v-model="placeId" placeholder="请选择" clearable
-                filterable>
+                <el-select v-model="placeId" placeholder="请选择" clearable filterable>
                   <el-option
                     v-for="item in placeList"
                     :key="item.value"
@@ -202,7 +211,8 @@ export default {
       type: 0,
       title: '新建任务',
       // 任务名称
-      options2: [],
+      options2: [], // 任务对象（车主）
+      noOwner: null, // 非车主信息
       input: '',
       input1: '',
       // 任务对象选择数据
@@ -280,22 +290,26 @@ export default {
         this.getCarSeriesId()
       }
     },
-    carSeriesId: function (newData, oldData) {
-      if (newData != '') {
-        // console.log(res)
-        let data = []
-        newData.forEach((element) => {
-          data.push(element[1])
-        })
-        ///////// 获取车主列表 start /////////
-        this.getOwnerList(data)
-      }
-    },
+    // carSeriesId: function (newData, oldData) {
+    //   if (newData != '') {
+    //     // console.log(res)
+    //     let data = []
+    //     newData.forEach((element) => {
+    //       data.push(element[1])
+    //     })
+    //     ///////// 获取车主列表 start /////////
+    //     this.getOwnerList(data)
+    //   }
+    // },
   },
   // 钩子函数
   beforeCreate() {},
   beforeMount() {},
   mounted() {
+    // let list = [1, 2, 3]
+    // console.log(list)
+    // list.unshift(0)
+    // console.log(list)
     ///////// 接受页面传参 start /////////
     this.getQuery()
     ///////// 获取车型列表 start /////////
@@ -308,6 +322,7 @@ export default {
     this.getlistModel()
     ///////// 获取场地列表 start /////////
     this.getPlaceList()
+    this.getOwnerListNo()
   },
   // 方法事件
   methods: {
@@ -381,7 +396,7 @@ export default {
         pageNum: 1,
         pageSize: 1000,
         orderType: 1,
-        type: 2
+        type: 2,
       }
       this.$axios
         .post('/ocarplay/api/photoPerson/listAjax', data)
@@ -410,7 +425,7 @@ export default {
         pageNum: 1,
         pageSize: 1000,
         orderType: 1,
-        type: 2
+        type: 2,
       }
       this.$axios.post('/ocarplay/api/model/listAjax', data).then((res) => {
         // console.log(res)
@@ -478,7 +493,7 @@ export default {
             this.modelId = data.modelId
           } else if (!data.modelId && data.personId) {
             this.modelId = 0
-          }else{
+          } else {
             this.modelId = null
           }
           this.placeId = data.placeId
@@ -526,6 +541,44 @@ export default {
     ///////// 获取任务详情 end /////////
 
     ///////// 获取车主列表 start /////////
+    getOwnerListNo() {
+      let data = []
+      this.$axios
+        .post('/ocarplay/api/vehicleOwner/ownerTypeCoopItemOwners', data)
+        .then((res) => {
+          // console.log(res)
+          if (res.status == 200) {
+            let data = res.data
+            let noOwner = {}
+            data.forEach((element) => {
+              if (element.typeId == 4) {
+                noOwner = {
+                  value: element.typeId,
+                  label: element.typeName,
+                  children: [],
+                }
+                element.ownerItems.forEach((element1, j) => {
+                  // console.log(1)
+                  noOwner.children.push({
+                    value: element1.itemId,
+                    label: element1.itemName,
+                    children: [],
+                  })
+                  element1.vehicleOwners.forEach((element2) => {
+                    noOwner.children[j].children.push({
+                      value: element2.vehicleOwnerId,
+                      label: element2.name,
+                    })
+                  })
+                })
+              }
+            })
+            this.noOwner = noOwner
+            this.options2 = [noOwner]
+            // console.log(noOwner)
+          }
+        })
+    },
     getOwnerList(data) {
       // this.listLoading = true
       // let data = []
@@ -538,7 +591,7 @@ export default {
             // data.splice(1, 1)
             let list = []
             data.forEach((element, i) => {
-              // if (element.typeId != 2) {
+              if (element.typeId != 4) {
               list.push({
                 value: element.typeId,
                 label: element.typeName,
@@ -572,11 +625,11 @@ export default {
                   // console.log(element2)
                 })
               })
-              // }
+              }
             })
-
+            list.push(this.noOwner)
             this.options2 = list
-            console.log(list)
+            // console.log(list)
           }
         })
     },

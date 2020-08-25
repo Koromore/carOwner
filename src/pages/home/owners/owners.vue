@@ -35,7 +35,7 @@
             :label="item.label"
             :value="item.value"
           ></el-option>
-        </el-select> -->
+        </el-select>-->
         <!-- 车型 -->
         <el-select
           v-model="carSeriesId"
@@ -72,7 +72,7 @@
         <div @click="submit" class="add">
           <template v-if="subordinate==150||adminShow">
             <!-- <i class="el-icon-circle-plus-outline"></i>
-            <br />添加车主 -->
+            <br />添加车主-->
             <el-button type="primary" icon="el-icon-circle-plus-outline" size="small">添加车主</el-button>
           </template>
         </div>
@@ -92,6 +92,7 @@
           :header-row-style="{'height': '54px'}"
           :header-cell-style="{'color': '#000'}"
           height="100%"
+          v-el-table-infinite-scroll="load"
         >
           <el-table-column prop label="序号" width="81" align="center" type="index"></el-table-column>
           <el-table-column prop="ownerName" label="姓名" min-width="81" show-overflow-tooltip>
@@ -135,7 +136,7 @@
             <template slot-scope="scope">
               <!-- <el-tooltip class="item" effect="dark" content="车主信息" placement="top">
                 <i class="el-icon-view" @click="toDetail(scope.row)"></i>
-              </el-tooltip> -->
+              </el-tooltip>-->
               <el-tooltip class="item" effect="dark" content="场地信息" placement="top">
                 <i class="el-icon-map-location" @click="toOwnerssite(scope.row)"></i>
               </el-tooltip>
@@ -148,6 +149,15 @@
               </el-tooltip>
             </template>
           </el-table-column>
+          <el-alert
+            v-if="isflag"
+            title="正在努力加载中..."
+            type="success"
+            center
+            :closable="false"
+            show-icon
+          ></el-alert>
+          <el-alert v-if="isMore" title="没有更多啦！" type="warning" center show-icon></el-alert>
         </el-table>
       </div>
       <el-col :span="24" class="paging">
@@ -218,7 +228,7 @@
             <template slot-scope="scope">
               <!-- <el-tooltip class="item" effect="dark" content="车主信息" placement="top">
                 <i class="el-icon-view" @click="toDetail(scope.row)"></i>
-              </el-tooltip> -->
+              </el-tooltip>-->
               <el-tooltip class="item" effect="dark" content="场地信息" placement="top">
                 <i class="el-icon-map-location" @click="toOwnerssite(scope.row)"></i>
               </el-tooltip>
@@ -320,10 +330,10 @@
             <template slot-scope="scope">
               <!-- <el-tooltip class="item" effect="dark" content="预约记录" placement="top">
                 <i class="el-icon-time" @click="toRecord(scope.row.ownerId)"></i>
-              </el-tooltip> -->
+              </el-tooltip>-->
               <!-- <el-tooltip class="item" effect="dark" content="车主信息" placement="top">
                 <i class="el-icon-view" @click="toDetail(scope.row)"></i>
-              </el-tooltip> -->
+              </el-tooltip>-->
               <el-tooltip class="item" effect="dark" content="日程管理" placement="top">
                 <i class="el-icon-date" @click="toOwnersschedule(scope.row.vehicleOwnerId)"></i>
               </el-tooltip>
@@ -361,10 +371,13 @@
 </template>
 <script>
 import cityList from '@/common/city.js' // 引入城市数据
+import InfiniteLoading from 'vue-infinite-loading' // 监听滚动插件
 export default {
   name: 'owners',
   props: ['searchWordData'],
-  components: {},
+  components: {
+    InfiniteLoading, //直接在组件中声明
+  },
   data() {
     return {
       userId: this.$store.state.user.userId, // 用户ID
@@ -440,6 +453,8 @@ export default {
       pageNum: 1,
       pageSize: 30,
       total: 0,
+      isMore: false,
+      isflag: true,
     }
   },
   // 侦听器
@@ -451,7 +466,7 @@ export default {
     searchWordData: function (newData, oldData) {
       // console.log(newData)
       this.getVehicleOwnerList()
-    }
+    },
   },
   // 钩子函数
   beforeCreate() {},
@@ -465,6 +480,20 @@ export default {
   },
   // 方法
   methods: {
+    load() {
+      this.isMore = false
+      // this.isflag = true
+      if (this.isflag) {
+        // this.getDevices()
+        this.isflag = false
+        this.getVehicleOwnerList()
+        this.pageNum++
+        console.log('触底了')
+      }
+
+      // console.log("触底了")
+    },
+
     ///////// 循环 start /////////
     // foreach() {
     //   for (let i = 0; i < 30; i++) {
@@ -588,7 +617,7 @@ export default {
         vehicleOwner: {
           typeId: this.tab1act,
           itemId: this.tab2act,
-          name: this.searchWordData.value
+          name: this.searchWordData.value,
         },
         pageNum: this.pageNum,
         pageSize: this.pageSize,
@@ -611,6 +640,7 @@ export default {
             this.ownerListData = data.items
             this.total = data.totalRows
             this.listLoading = false
+            this.isflag = true
           }
         })
     },
@@ -718,7 +748,7 @@ export default {
         // coopId: par.coopId,
         // typeId: par.typeId,
         typeId: par.typeId,
-        vehicleOwnerId: par.ownerId||par.vehicleOwnerId,
+        vehicleOwnerId: par.ownerId || par.vehicleOwnerId,
         itemId: this.tab2act,
       }
       // console.log(data)
@@ -876,7 +906,7 @@ $icoColor: rgb(106, 145, 232);
         // margin-left: 13px;
         // text-align: center;
         cursor: pointer;
-        button{
+        button {
           width: 136px;
           background: $icoColor;
         }

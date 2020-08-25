@@ -62,6 +62,7 @@
           :header-cell-style="{'color': '#000'}"
           height="100%"
           v-loading="loading"
+          ref="table"
         >
           <el-table-column prop label width="24" show-overflow-tooltip></el-table-column>
           <el-table-column prop="taskName" label="任务名称" min-width="130" show-overflow-tooltip>
@@ -117,7 +118,6 @@
           </el-table-column>
           <el-table-column prop="status" label="状态" min-width="80">
             <template slot-scope="scope">
-              <!-- {{scope.row.status}} -->
               <div v-if="scope.row.status==0" class="statusColor0">执行中</div>
               <div v-if="scope.row.status==1" class="statusColor1">结算中</div>
               <div v-if="scope.row.status==2" class="statusColor2">完成</div>
@@ -125,16 +125,20 @@
               <div v-if="scope.row.status==4" class="statusColor4">人工延期</div>
             </template>
           </el-table-column>
-          <el-table-column prop="num" label="任务进度" min-width="80" show-overflow-tooltip>
-            <template slot-scope="scope">{{scope.row.inviteNumOver}}/{{scope.row.num}}</template>
-          </el-table-column>
-          <el-table-column prop="listInvite" label="车主数量" min-width="80">
+
+          <el-table-column label="提交" min-width="80" sortable>
             <template slot-scope="scope">
-              <!-- <div> -->
-              {{scope.row.listInvite.length}}
-              <!-- </div> -->
+              <span v-if="scope.row.isSubmit">&nbsp;&nbsp;&nbsp;Y</span>
+              <span v-else>&nbsp;&nbsp;&nbsp;N</span>
             </template>
           </el-table-column>
+          <el-table-column label="结算" min-width="80" sortable>
+            <template slot-scope="scope">
+              <span v-if="scope.row.isClearing">&nbsp;&nbsp;&nbsp;Y</span>
+              <span v-else>&nbsp;&nbsp;&nbsp;N</span>
+            </template>
+          </el-table-column>
+
           <el-table-column prop="endTime" label="预计时间" min-width="100" sortable>
             <template slot-scope="scope">{{$date(scope.row.endTime)}}</template>
           </el-table-column>
@@ -157,13 +161,13 @@
                 <template v-if="scope.row.taskType==4">
                   <template v-if="!scope.row.personId||!scope.row.placeId">
                     <el-tooltip class="item" effect="dark" content="提交任务" placement="top">
-                    <i class="el-icon-circle-check" style="cursor: not-allowed;color:#aaa"></i>
-                  </el-tooltip>
+                      <i class="el-icon-circle-check" style="cursor: not-allowed;color:#aaa"></i>
+                    </el-tooltip>
                   </template>
                   <template v-else>
                     <el-tooltip class="item" effect="dark" content="提交任务" placement="top">
-                    <i class="el-icon-circle-check" @click="putTask(scope.row)"></i>
-                  </el-tooltip>
+                      <i class="el-icon-circle-check" @click="putTask(scope.row)"></i>
+                    </el-tooltip>
                   </template>
                 </template>
                 <template v-else>
@@ -172,7 +176,7 @@
                   </el-tooltip>
                 </template>
                 <!-- {{scope.row.personId}}
-                {{scope.row.placeId}} -->
+                {{scope.row.placeId}}-->
                 <el-tooltip class="item" effect="dark" content="删除任务" placement="top">
                   <i
                     class="el-icon-circle-close"
@@ -544,8 +548,16 @@
           </el-table-column>
           <el-table-column prop="address" label="评价" min-width="50" show-overflow-tooltip>
             <template slot-scope="scope">
-              <i class="el-icon-chat-dot-round" @click="addComment(scope.row)" v-if="scope.row.taskType==4&&!scope.row.ifPgOver"></i>
-              <i class="el-icon-chat-dot-round" style="cursor: not-allowed;color: rgb(170, 170, 170);" v-else-if="scope.row.taskType==4&&scope.row.ifPgOver"></i>
+              <i
+                class="el-icon-chat-dot-round"
+                @click="addComment(scope.row)"
+                v-if="scope.row.taskType==4&&!scope.row.ifPgOver"
+              ></i>
+              <i
+                class="el-icon-chat-dot-round"
+                style="cursor: not-allowed;color: rgb(170, 170, 170);"
+                v-else-if="scope.row.taskType==4&&scope.row.ifPgOver"
+              ></i>
             </template>
           </el-table-column>
         </el-table>
@@ -597,13 +609,8 @@
     <!-- 抽屉弹窗延期原因 end -->
 
     <!-- 抽屉弹窗提交任务 start -->
-    <el-drawer
-      title="提交任务"
-      :visible.sync="drawerPuttask"
-      size="720px"
-      v-loading="drawerLoading"
-      :destroy-on-close="true"
-    >
+    <el-dialog title="提交任务" :visible.sync="drawerPuttask" width="70%" class="taskDialog" v-loading="drawerLoading">
+      <!-- <span>这是一段信息</span> -->
       <el-scrollbar style="height:100%">
         <el-row class="drawerPuttask">
           <el-col :span="4">任务名称:</el-col>
@@ -620,8 +627,6 @@
               :key="index"
             >
               <el-col :span="4">
-                <!-- <el-input placeholder="车主姓名" v-model="item.ownersName" clearable></el-input> -->
-                <!-- {{item}} -->
                 <template v-if="item.userType==0">
                   <el-cascader
                     :options="inviteDataList"
@@ -653,24 +658,16 @@
                   </el-select>
                 </template>
               </el-col>
-              <el-col :span="6">
-                <el-input placeholder="链接" size="medium" v-model="item.url" clearable></el-input>
-              </el-col>
-              <el-col :span="4">
-                <el-input placeholder="金额" size="medium" v-model="item.money" clearable></el-input>
-              </el-col>
-              <el-col :span="6">
-                <!-- <el-button type="success" size="medium" v-if="taskDetail.taskType==4">现金</el-button>
-                <el-button type="primary" size="medium" v-else>油卡</el-button>-->
-                <el-switch
-                  style="display: block"
-                  v-model="item.isCard"
-                  active-color="#13ce66"
-                  inactive-color="#66b1ff"
-                  active-text="现金"
-                  inactive-text="油卡"
-                ></el-switch>
-                <!-- {{item.isCard}} -->
+              <el-col :span="15">
+                <template v-if="item.userType==0">
+                  <el-input placeholder="车主链接" size="medium" v-model="item.url" clearable></el-input>
+                </template>
+                <template v-if="item.userType==1">
+                  <el-input placeholder="摄影师链接" size="medium" v-model="item.url" clearable></el-input>
+                </template>
+                <template v-if="item.userType==2">
+                  <el-input placeholder="模特链接" size="medium" v-model="item.url" clearable></el-input>
+                </template>
               </el-col>
               <el-col :span="3">
                 <template v-if="item.userType==0">
@@ -678,6 +675,12 @@
                   <i class="el-icon-delete" @click="delDetailList(index)"></i>
                   <i class="el-icon-circle-plus-outline" @click="addDetailList"></i>
                 </template>
+                <!-- <template v-if="item.userType==1">
+                  摄影师
+                </template>
+                <template v-if="item.userType==2">
+                  模特
+                </template> -->
               </el-col>
               <!-- {{item}}-{{index}} -->
             </el-col>
@@ -685,17 +688,20 @@
           </el-col>
         </el-row>
       </el-scrollbar>
-
       <!-- 底部按钮 -->
       <el-col :span="24" class="btn">
-        <el-col :span="6" :offset="5">
+        <el-col :span="4" :offset="6">
           <el-button type="info" @click="submitBtn(1)">提交</el-button>
         </el-col>
-        <el-col :span="6" :offset="2">
+        <el-col :span="4" :offset="3">
           <el-button type="primary" @click="submitBtn(0)">保存</el-button>
         </el-col>
       </el-col>
-    </el-drawer>
+      <!-- <span slot="footer" class="dialog-footer">
+        <el-button @click="drawerPuttask = false">取 消</el-button>
+        <el-button type="primary" @click="drawerPuttask = false">确 定</el-button>
+      </span>-->
+    </el-dialog>
     <!-- 抽屉弹窗提交任务 end -->
 
     <!-- 新增评论 -->
@@ -813,6 +819,7 @@ export default {
   beforeMount() {},
   mounted() {
     // this.foreach()
+    // console.log(this.$refs.table)
     ///////// 获取车系列表 start /////////
     this.getCarSeriesLists()
     ///////// 获取任务列表 /////////
@@ -914,7 +921,7 @@ export default {
             element.typeList = []
             element.ownerItemList = []
             element.ownerName = []
-            element.invMoney = 0
+            // element.invMoney = 0
             element.inviteNumOver = 0
             // if (element.personId == 0) {
             //   element.personName = '/'
@@ -932,7 +939,7 @@ export default {
                 element.ownerItemList.push(element1.listOwnerItem[0].itemName)
                 element.ownerName.push(element1.realName)
               }
-              element.invMoney += element1.money
+              // element.invMoney += element1.money
               if (element1.isWrite == 1) {
                 element.inviteNumOver += 1
               }
@@ -1160,7 +1167,7 @@ export default {
           this.$axios.post('/ocarplay/task/edit', data).then((res) => {
             if (res.status == 200) {
               let data = res.data.data
-              console.log(data)
+              // console.log(data)
               let listInviteList = []
               let pushIs = true
               data.listInvite.forEach((element) => {
@@ -1173,12 +1180,12 @@ export default {
                   itemId: element.itemId,
                   ownerId: element.ownerId,
                   url: element.url,
-                  money: element.money,
-                  isCard: element.isCard,
+                  // money: element.money,
+                  // isCard: element.isCard,
                   userType: element.userType,
                 })
               })
-              if (prm.personId&&pushIs) {
+              if (prm.personId && pushIs) {
                 listInviteList.push({
                   inviteData: [0, 0, 0],
                   typeId: 0,
@@ -1186,12 +1193,12 @@ export default {
                   ownerId: prm.personId,
                   name: prm.personName,
                   url: null,
-                  money: '',
-                  isCard: true,
+                  // money: '',
+                  // isCard: true,
                   userType: 1,
                 })
               }
-              if (prm.modelId&&pushIs) {
+              if (prm.modelId && pushIs) {
                 listInviteList.push({
                   inviteData: [0, 0, 0],
                   typeId: 0,
@@ -1199,8 +1206,8 @@ export default {
                   ownerId: prm.modelId,
                   name: prm.modelName,
                   url: null,
-                  money: '',
-                  isCard: true,
+                  // money: '',
+                  // isCard: true,
                   userType: 2,
                 })
               }
@@ -1234,8 +1241,8 @@ export default {
                 itemId: element.itemId,
                 ownerId: element.ownerId,
                 url: element.url,
-                money: element.money,
-                isCard: element.isCard,
+                // money: element.money,
+                // isCard: element.isCard,
                 userType: element.userType,
               })
             })
@@ -1256,8 +1263,8 @@ export default {
         itemId: '',
         ownerId: '',
         url: '',
-        money: '',
-        isCard: false,
+        // money: '',
+        // isCard: false,
       }
       this.listInviteList.splice(index + 1, 0, data)
     },
@@ -1270,8 +1277,8 @@ export default {
         itemId: '',
         ownerId: '',
         url: '',
-        money: '',
-        isCard: false,
+        // money: '',
+        // isCard: false,
       })
     },
     // 删除明细
@@ -1293,11 +1300,11 @@ export default {
           element.ownerId = element.inviteData[2]
         }
 
-        if (element.url && element.money) {
-          element.isWrite = 1
-        } else {
-          element.isWrite = 0
-        }
+        // if (element.url && element.money) {
+        //   element.isWrite = 1
+        // } else {
+        //   element.isWrite = 0
+        // }
       })
       let data = {
         taskId: this.taskId,
@@ -1307,6 +1314,7 @@ export default {
         listInvite: listInviteList,
         nowUserId: this.userId,
         nowUserDeptId: this.deptId,
+        initUserId: this.userId
       }
       let flag = true
       data.listInvite.forEach((element) => {
@@ -1325,13 +1333,13 @@ export default {
       console.log(data)
       // console.log(JSON.stringify(data))
       if (flag) {
-        data.listInvite.forEach((element) => {
-          if (element.isCard) {
-            element.isCard = 1
-          } else {
-            element.isCard = 0
-          }
-        })
+        // data.listInvite.forEach((element) => {
+        //   if (element.isCard) {
+        //     element.isCard = 1
+        //   } else {
+        //     element.isCard = 0
+        //   }
+        // })
         // console.log(data)
         this.$axios
           .post('/ocarplay/task/save', data)
@@ -1510,14 +1518,16 @@ export default {
         personId: obj.personId,
         taskId: obj.taskId,
       }
-      this.$axios.post('/ocarplay/api/personGrade/ifPgOver', data).then((res) => {
-        // console.log(res)
-        if (res.status == 200 && res.data == 1) {
-          this.$message.warning('该任务摄影师已评价！')
-        } else {
-          this.commentShow += 1
-        }
-      })
+      this.$axios
+        .post('/ocarplay/api/personGrade/ifPgOver', data)
+        .then((res) => {
+          // console.log(res)
+          if (res.status == 200 && res.data == 1) {
+            this.$message.warning('该任务摄影师已评价！')
+          } else {
+            this.commentShow += 1
+          }
+        })
     },
     ///////// 新增评论 end /////////
   },
@@ -1685,6 +1695,18 @@ $statusColor4: #ea8a85;
         width: 100%;
       }
     }
+  }
+}
+</style>
+<style lang="scss">
+.taskDialog {
+  // height: ;
+  .el-dialog {
+    height: 80vh;
+    margin: 10vh auto !important;
+  }
+  .el-dialog__body {
+    height: calc(100% - 114px);
   }
 }
 </style>

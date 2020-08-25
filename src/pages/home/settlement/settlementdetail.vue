@@ -12,7 +12,7 @@
       <el-col :span="8" class="right cont">
         <!-- <div @click="submitList">
           <el-button type="primary" icon="el-icon-circle-check" size="small">提交并完成</el-button>
-        </div> -->
+        </div>-->
       </el-col>
     </el-row>
     <!-- 头部选项框 end -->
@@ -48,12 +48,25 @@
             </template>
           </el-table-column>
           <el-table-column prop="phone" label="电话" min-width="110"></el-table-column>
-          <el-table-column prop="homeAddress" label="地址" min-width="180" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="homeAddress" label="地址" min-width="130" show-overflow-tooltip></el-table-column>
           <el-table-column prop="bankCard" label="银行卡号" min-width="110" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="isCard" label="油卡或现金" min-width="90" align="center">
+          <el-table-column prop="isCard" label="油卡或现金" min-width="130" align="center">
             <template slot-scope="scope">
-              <template v-if="scope.row.isCard">现金</template>
-              <template v-else>油卡</template>
+              <template v-if="scope.row.isOver">
+                <span v-if="scope.row.isCard">现金</span>
+                <span v-else>油卡</span>
+              </template>
+              <template v-else>
+                <el-switch
+                  style="display: block"
+                  v-model="scope.row.isCard"
+                  active-color="#13ce66"
+                  inactive-color="#409eff"
+                  active-text="现金"
+                  inactive-text="油卡"
+                  size="mini"
+                ></el-switch>
+              </template>
             </template>
           </el-table-column>
           <el-table-column prop="prove" label="结算凭证" width="200" align="center">
@@ -83,7 +96,19 @@
               </template>
             </template>
           </el-table-column>
-          <el-table-column prop="money" label="预算" min-width="60" align="center"></el-table-column>
+          <el-table-column prop="money" label="预算" min-width="90" align="center">
+            <template slot-scope="scope">
+              <!-- <div> -->
+                <template  v-if="!scope.row.isOver">
+                    <el-input placeholder="预算" v-model="scope.row.money" clearable size="mini"></el-input>
+                </template>
+                <template v-else>
+                  {{scope.row.money}}
+                </template>
+                
+              <!-- </div> -->
+            </template>
+          </el-table-column>
           <el-table-column prop="address" label="操作" width="64" align="center">
             <template slot-scope="scope" v-if="!scope.row.isOver">
               <i class="el-icon-circle-check" @click="submit(scope.row)"></i>
@@ -124,7 +149,7 @@ export default {
       listLoading: false,
       uploadIndex: '',
       total: 0,
-      pageSize: 10,
+      pageSize: 30,
       pageNum: 1,
       tableData: [],
       prove: '',
@@ -218,6 +243,8 @@ export default {
       this.listLoading = true
       let data = {
         inviteId: prm.inviteId,
+        isCard: prm.isCard,
+        money: prm.money,
         prove: prm.prove,
         isOver: 1,
         userId: this.userId,

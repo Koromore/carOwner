@@ -57,7 +57,7 @@
               </el-tooltip>
             </template>
           </el-table-column>
-          <el-table-column prop="address" label="操作" width="130" align="center">
+          <!-- <el-table-column prop="address" label="操作" width="130" align="center">
             <template slot-scope="scope">
               <el-tooltip class="item" effect="dark" content="驳回" placement="top">
                 <img
@@ -69,7 +69,7 @@
                 />
               </el-tooltip>
             </template>
-          </el-table-column>
+          </el-table-column> -->
         </el-table>
       </div>
       <el-col :span="24" class="paging">
@@ -220,7 +220,7 @@ export default {
       }
       let tabact = this.tabact
       if (tabact == 1) {
-        data.task.status = 1
+        data.task.status = 0
         this.$axios
           .post('/ocarplay/api/invite/getTaskOfInviteList', data)
           .then((res) => {
@@ -267,45 +267,45 @@ export default {
     ///////// 分页 end /////////
 
     ///////// 驳回操作 start /////////
-    reject(id) {
-      this.$confirm('确认要驳回该任务吗?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
-      })
-        .then(() => {
-          this.repulseInvite(id)
-        })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消驳回',
-          })
-        })
-    },
-    // 驳回任务请求
-    repulseInvite(id) {
-      let data = {
-        taskId: id,
-        status: 0,
-      }
-      this.$axios
-        .post('/ocarplay/api/invite/repulseInvite', data)
-        .then((res) => {
-          // console.log(res)
-          if (res.status == 200 && res.data.errcode == 0) {
-            this.$message.success(res.data.msg)
-            // this.drawerLoading = false
-            // this.drawerPuttask = false
-            // this.getTaskListAjax()
-            ///////// 获取结算列表 start /////////
-            this.getInviteList(this.memuValue)
-          } else {
-            // this.$message.error("任务提交失败！")
-            // this.drawerLoading = false
-          }
-        })
-    },
+    // reject(id) {
+    //   this.$confirm('确认要驳回该任务吗?', '提示', {
+    //     confirmButtonText: '确定',
+    //     cancelButtonText: '取消',
+    //     type: 'warning',
+    //   })
+    //     .then(() => {
+    //       this.repulseInvite(id)
+    //     })
+    //     .catch(() => {
+    //       this.$message({
+    //         type: 'info',
+    //         message: '已取消驳回',
+    //       })
+    //     })
+    // },
+    // // 驳回任务请求
+    // repulseInvite(id) {
+    //   let data = {
+    //     taskId: id,
+    //     status: 0,
+    //   }
+    //   this.$axios
+    //     .post('/ocarplay/api/invite/repulseInvite', data)
+    //     .then((res) => {
+    //       // console.log(res)
+    //       if (res.status == 200 && res.data.errcode == 0) {
+    //         this.$message.success(res.data.msg)
+    //         // this.drawerLoading = false
+    //         // this.drawerPuttask = false
+    //         // this.getTaskListAjax()
+    //         ///////// 获取结算列表 start /////////
+    //         this.getInviteList(this.memuValue)
+    //       } else {
+    //         // this.$message.error("任务提交失败！")
+    //         // this.drawerLoading = false
+    //       }
+    //     })
+    // },
     ///////// 驳回操作 end /////////
 
     ///////// 结算清单 start /////////
