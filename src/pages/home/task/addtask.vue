@@ -250,7 +250,9 @@ export default {
       modelList: [], // 模特列表
       placeList: [], // 场地列表
       personId: [],
+      personIdList: [],
       modelId: [],
+      modelIdList: [],
       placeId: null,
       disabledCaigou: false,
       // 品牌车型
@@ -266,6 +268,9 @@ export default {
       taskType: '',
       taskName: '',
       listInviteList: [],
+      listInviteOwners: [],
+      listInvitePerson: [],
+      listInviteModel: [],
       carSeriesList: [],
       carSeriesId: [],
       seriesId: [],
@@ -331,11 +336,11 @@ export default {
   methods: {
     ///////// 接受页面传参 start /////////
     isDeptId() {
-      if (this.deptId == 90) {
-        this.disabledCaigou = false
-      } else {
-        this.disabledCaigou = true
-      }
+      // if (this.deptId == 90) {
+      //   this.disabledCaigou = false
+      // } else {
+      //   this.disabledCaigou = true
+      // }
     },
     ///////// 接受页面传参 end /////////
 
@@ -491,6 +496,58 @@ export default {
           let data = res.data.data
           this.taskName = data.taskName
           this.taskType = data.taskType
+          this.placeId = data.placeId
+          let listInviteList = []
+          let listInviteOwners = []
+          let listInvitePerson = []
+          let listInviteModel = []
+          data.listInvite.forEach((element) => {
+            if (element.userType == 0) {
+              listInviteList.push([
+                element.listOwnerType[0].typeId,
+                element.listOwnerItem[0].itemId,
+                element.ownerId,
+              ])
+              listInviteOwners.push({
+                inviteId: element.inviteId,
+                ownerId: element.ownerId,
+                userType: element.userType,
+              })
+            } else if (element.userType == 1) {
+              listInvitePerson.push({
+                inviteId: element.inviteId,
+                ownerId: element.ownerId,
+                userType: element.userType,
+              })
+            } else if (element.userType == 2) {
+              listInviteModel.push({
+                inviteId: element.inviteId,
+                ownerId: element.ownerId,
+                userType: element.userType,
+              })
+            }
+          })
+          this.listInviteOwners = listInviteOwners // 车主结算列表
+          this.listInvitePerson = listInvitePerson // 摄影师结算列表
+          this.listInviteModel = listInviteModel // 模特结算列表
+
+          this.listInviteList = listInviteList
+
+          let personId = []
+          let personIdList = data.taskToPersonList
+          let modelId = []
+          let modelIdList = data.taskToModelList
+          personIdList.forEach((element) => {
+            personId.push(element.personId)
+          })
+          modelIdList.forEach((element) => {
+            modelId.push(element.modelId)
+          })
+          this.personId = personId
+          this.personIdList = personIdList
+          this.modelId = modelId
+          this.modelIdList = modelIdList
+
           this.personId = data.taskToPersonList
           if (data.taskToModelList) {
             this.modelId = data.taskToModelList
@@ -499,19 +556,6 @@ export default {
           } else {
             this.modelId = null
           }
-          this.placeId = data.placeId
-          let listInviteList = []
-          data.listInvite.forEach((element) => {
-            if (element.userType == 0) {
-              listInviteList.push([
-                element.listOwnerType[0].typeId,
-                element.listOwnerItem[0].itemId,
-                element.ownerId,
-              ])
-            }
-          })
-
-          this.listInviteList = listInviteList
           // this.carSeriesId = [null,null,data.carSeriesId]
           data.listTaskOfCartype.forEach((element) => {
             this.seriesId.push(element.cartypeId)
@@ -753,7 +797,6 @@ export default {
       }
       // let taskDesc = this.taskDesc
       // let taskDesc0 = `${taskDesc.input1}${taskDesc.input2}${taskDesc.input3}${taskDesc.input4}${taskDesc.input5}${taskDesc.input6}`
-      let listInviteList = this.listInviteList
       let carSeriesId = this.carSeriesId
       let listTaskOfCartype = []
       carSeriesId.forEach((element) => {
@@ -790,6 +833,42 @@ export default {
         listInvite: [],
         listTaskFile: this.taskFileList,
       }
+      let listInviteList = this.listInviteList // 邀约对象
+      let listInviteOwners = this.listInviteOwners // 车主结算列表
+      let arr1 = [
+        { ID: 1, Name: 1, desc: 'Number' },
+        { ID: 2, Name: 2, desc: 'Number' },
+        { ID: 3, Name: 3, desc: 'Number' },
+        { ID: 4, Name: 4, desc: 'Number' },
+        { ID: 5, Name: 5, desc: 'Number' },
+        
+      ]
+      let arr2 = [
+        { ID: 5, Name: 5, desc: 'Number' },
+        { ID: 6, Name: 6, desc: 'Number' },
+        { ID: 7, Name: 7, desc: 'Number' },
+        { ID: 8, Name: 8, desc: 'Number' },
+        { ID: 9, Name: 9, desc: 'Number' },
+      ]
+
+      // 差集
+      let diff = [...arr1]
+      for (let i = 0, len = arr1.length; i < len; i++) {
+        let flag = false
+        for (let j = 0, length = arr2.length; j < length; j++) {
+          if (arr1[i].ID === arr2[j].ID) {
+            flag = true
+          }
+        }
+        if (flag) {
+          diff.splice(
+            diff.findIndex((item) => item.ID === arr1[i].ID),
+            1
+          )
+        }
+      }
+      console.log('差集', diff)
+
       listInviteList.forEach((element) => {
         data.listInvite.push({
           typeId: element[0],
@@ -837,31 +916,33 @@ export default {
 
       // console.log(data)
       if (flag) {
-        this.putLoading = true
-        this.$axios
-          .post('/ocarplay/task/save', data)
-          .then((res) => {
-            // console.log(res)
-            if (res.status == 200 && res.data == 1) {
-              if (this.taskId) {
-                this.$message.success('任务更新成功！')
-              } else {
-                this.$message.success('任务新建成功！')
-              }
-              setTimeout(() => {
-                this.$router.push({
-                  name: 'task',
-                })
-              }, 1000)
-            } else {
-              this.$message.error('任务新建失败！')
-              this.putLoading = false
-            }
-          })
-          .catch((res) => {
-            // console.log(res)
-            this.putLoading = false
-          })
+        // this.putLoading = true
+        // this.$axios
+        //   .post('/ocarplay/task/save', data)
+        //   .then((res) => {
+        //     // console.log(res)
+        //     if (res.status == 200 && res.data == 1) {
+        //       if (this.taskId) {
+        //         this.$message.success('任务更新成功！')
+        //       } else {
+        //         this.$message.success('任务新建成功！')
+        //       }
+        //       setTimeout(() => {
+        //         this.$router.push({
+        //           name: 'task',
+        //         })
+        //       }, 1000)
+        //     } else {
+        //       this.$message.error('任务新建失败！')
+        //       this.putLoading = false
+        //     }
+        //   })
+        //   .catch((res) => {
+        //     // console.log(res)
+        //     this.putLoading = false
+        //   })
+        this.$message.error('点击提交')
+
       } else {
         this.$message.error('请检查信息是否填写完整！')
       }

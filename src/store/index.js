@@ -57,7 +57,7 @@ export default new Vuex.Store({
     // user: { userId: 768, deptId:45, realName: '张航' }, //员工信息
     // user: { userId: 572, deptId:118, realName: '赵颖慧' }, //员工信息
     // user: { userId: 193, deptId:57, realName: '唐婷' }, //员工信息
-    user: { userId: 3790, deptId:57, realName: '薛云' }, //员工信息
+    // user: { userId: 3790, deptId:57, realName: '薛云' }, //员工信息
     token: '', // 登录令牌
     userSign: '', // 用户信息带参
     // isLogin: 'error', //error/success, // 是否登陆
