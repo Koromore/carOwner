@@ -6,7 +6,7 @@
         <el-button-group v-if="deptId!=90">
           <el-button type="success" size="small" @click="statusChange(0)">执行中</el-button>
           <el-button type="danger" size="small" @click="statusChange(3)">延期</el-button>
-          <el-button type="warning" size="small" @click="statusChange(1)">结算中</el-button>
+          <!-- <el-button type="warning" size="small" @click="statusChange(1)">结算中</el-button> -->
           <el-button type="info" size="small" @click="statusChange(2)">已完成</el-button>
         </el-button-group>
       </el-col>
@@ -158,11 +158,18 @@
                   <i class="el-icon-timer" @click="delay(scope.row)"></i>
                 </el-tooltip>
 
-                <template v-if="scope.row.taskType==4">
-                  <template v-if="!scope.row.personId||!scope.row.placeId">
-                    <el-tooltip class="item" effect="dark" content="提交任务" placement="top">
-                      <i class="el-icon-circle-check" style="cursor: not-allowed;color:#aaa"></i>
-                    </el-tooltip>
+                <template v-if="!scope.row.isSubmit">
+                  <template v-if="scope.row.taskType==4">
+                    <template v-if="!scope.row.personId||!scope.row.placeId">
+                      <el-tooltip class="item" effect="dark" content="提交任务" placement="top">
+                        <i class="el-icon-circle-check" style="color:#ff0000" @click="noTaskPut"></i>
+                      </el-tooltip>
+                    </template>
+                    <template v-else>
+                      <el-tooltip class="item" effect="dark" content="提交任务" placement="top">
+                        <i class="el-icon-circle-check" @click="putTask(scope.row)"></i>
+                      </el-tooltip>
+                    </template>
                   </template>
                   <template v-else>
                     <el-tooltip class="item" effect="dark" content="提交任务" placement="top">
@@ -172,9 +179,10 @@
                 </template>
                 <template v-else>
                   <el-tooltip class="item" effect="dark" content="提交任务" placement="top">
-                    <i class="el-icon-circle-check" @click="putTask(scope.row)"></i>
+                    <i class="el-icon-circle-check" style="cursor: not-allowed;color: #aaa"></i>
                   </el-tooltip>
                 </template>
+
                 <!-- {{scope.row.personId}}
                 {{scope.row.placeId}}-->
                 <el-tooltip class="item" effect="dark" content="删除任务" placement="top">
@@ -292,11 +300,17 @@
               <div v-if="scope.row.status==4" class="statusColor4">人工延期</div>
             </template>
           </el-table-column>
-          <el-table-column prop="num" label="任务进度" min-width="80" show-overflow-tooltip>
-            <template slot-scope="scope">{{scope.row.inviteNumOver}}/{{scope.row.num}}</template>
+          <el-table-column label="提交" min-width="80" sortable>
+            <template slot-scope="scope">
+              <span v-if="scope.row.isSubmit">&nbsp;&nbsp;&nbsp;Y</span>
+              <span v-else>&nbsp;&nbsp;&nbsp;N</span>
+            </template>
           </el-table-column>
-          <el-table-column prop="listInvite" label="车主数量" min-width="80">
-            <template slot-scope="scope">{{scope.row.listInvite.length}}</template>
+          <el-table-column label="结算" min-width="80" sortable>
+            <template slot-scope="scope">
+              <span v-if="scope.row.isClearing">&nbsp;&nbsp;&nbsp;Y</span>
+              <span v-else>&nbsp;&nbsp;&nbsp;N</span>
+            </template>
           </el-table-column>
           <el-table-column prop="endTime" label="预计时间" min-width="100" sortable>
             <template slot-scope="scope">{{$date(scope.row.endTime)}}</template>
@@ -323,14 +337,28 @@
                 <i class="el-icon-timer" @click="delay(scope.row)"></i>
               </el-tooltip>
 
-              <template v-if="scope.row.taskType==4 && !scope.row.personId || !scope.row.placeId">
-                <el-tooltip class="item" effect="dark" content="提交任务" placement="top">
-                  <i class="el-icon-circle-check" style="cursor: not-allowed;color:#aaa"></i>
-                </el-tooltip>
+              <template v-if="!scope.row.isSubmit">
+                <template v-if="scope.row.taskType==4">
+                  <template v-if="!scope.row.personId||!scope.row.placeId">
+                    <el-tooltip class="item" effect="dark" content="提交任务" placement="top">
+                      <i class="el-icon-circle-check" style="color:#ff0000" @click="noTaskPut"></i>
+                    </el-tooltip>
+                  </template>
+                  <template v-else>
+                    <el-tooltip class="item" effect="dark" content="提交任务" placement="top">
+                      <i class="el-icon-circle-check" @click="putTask(scope.row)"></i>
+                    </el-tooltip>
+                  </template>
+                </template>
+                <template v-else>
+                  <el-tooltip class="item" effect="dark" content="提交任务" placement="top">
+                    <i class="el-icon-circle-check" @click="putTask(scope.row)"></i>
+                  </el-tooltip>
+                </template>
               </template>
               <template v-else>
                 <el-tooltip class="item" effect="dark" content="提交任务" placement="top">
-                  <i class="el-icon-circle-check" @click="putTask(scope.row)"></i>
+                  <i class="el-icon-circle-check" style="cursor: not-allowed;color: #aaa"></i>
                 </el-tooltip>
               </template>
 
@@ -609,14 +637,20 @@
     <!-- 抽屉弹窗延期原因 end -->
 
     <!-- 抽屉弹窗提交任务 start -->
-    <el-dialog title="提交任务" :visible.sync="drawerPuttask" width="70%" class="taskDialog" v-loading="drawerLoading">
+    <el-dialog
+      title="提交任务"
+      :visible.sync="drawerPuttask"
+      width="70%"
+      class="taskDialog"
+      v-loading="drawerLoading"
+    >
       <!-- <span>这是一段信息</span> -->
       <el-scrollbar style="height:100%">
         <el-row class="drawerPuttask">
-          <el-col :span="4">任务名称:</el-col>
-          <el-col :span="20">{{taskName}}</el-col>
-          <el-col :span="4" class="keycontent">结算明细:</el-col>
-          <el-col :span="20">
+          <el-col :span="3">任务名称:</el-col>
+          <el-col :span="21">{{taskName}}</el-col>
+          <el-col :span="3" class="keycontent">结算明细:</el-col>
+          <el-col :span="21">
             <!-- <el-col :span="20">
               <el-input placeholder="搜索车主" suffix-icon="el-icon-search" v-model="input"></el-input>
             </el-col>-->
@@ -635,10 +669,11 @@
                     filterable
                     :show-all-levels="false"
                     size="medium"
-                  ></el-cascader>
+                  >
+                   <i slot="prefix" class="el-input__icon el-icon-search"></i></el-cascader>
                 </template>
                 <template v-else-if="item.userType==1">
-                  <el-select v-model="item.ownerId" placeholder="摄影师" clearable filterable>
+                  <el-select v-model="item.ownerId" placeholder="摄影师" clearable filterable class="userType1">
                     <el-option
                       v-for="item in cammeramanList"
                       :key="item.value"
@@ -648,7 +683,7 @@
                   </el-select>
                 </template>
                 <template v-else-if="item.userType==2">
-                  <el-select v-model="item.ownerId" placeholder="模特" clearable filterable>
+                  <el-select v-model="item.ownerId" placeholder="模特" clearable filterable class="userType2">
                     <el-option
                       v-for="item in modelList"
                       :key="item.value"
@@ -658,29 +693,29 @@
                   </el-select>
                 </template>
               </el-col>
-              <el-col :span="15">
+              <el-col :span="16">
                 <template v-if="item.userType==0">
                   <el-input placeholder="车主链接" size="medium" v-model="item.url" clearable></el-input>
                 </template>
                 <template v-if="item.userType==1">
-                  <el-input placeholder="摄影师链接" size="medium" v-model="item.url" clearable></el-input>
+                  <el-input placeholder="摄影师链接" size="medium" v-model="item.url" clearable class="userType1"></el-input>
                 </template>
                 <template v-if="item.userType==2">
-                  <el-input placeholder="模特链接" size="medium" v-model="item.url" clearable></el-input>
+                  <el-input placeholder="模特链接" size="medium" v-model="item.url" clearable class="userType2"></el-input>
                 </template>
               </el-col>
               <el-col :span="3">
-                <template v-if="item.userType==0">
-                  <i class="el-icon-document-copy" @click="copyDetailList(index)"></i>
+                <!-- <template v-if="item.userType==0"> -->
+                  <i class="el-icon-document-copy" @click="copyDetailList(index,item)"></i>
                   <i class="el-icon-delete" @click="delDetailList(index)"></i>
-                  <i class="el-icon-circle-plus-outline" @click="addDetailList"></i>
-                </template>
+                  <i class="el-icon-circle-plus-outline" @click="addDetailList(index,item)"></i>
+                <!-- </template> -->
                 <!-- <template v-if="item.userType==1">
                   摄影师
                 </template>
                 <template v-if="item.userType==2">
                   模特
-                </template> -->
+                </template>-->
               </el-col>
               <!-- {{item}}-{{index}} -->
             </el-col>
@@ -690,10 +725,10 @@
       </el-scrollbar>
       <!-- 底部按钮 -->
       <el-col :span="24" class="btn">
-        <el-col :span="4" :offset="6">
+        <el-col :span="3" :offset="8">
           <el-button type="info" @click="submitBtn(1)">提交</el-button>
         </el-col>
-        <el-col :span="4" :offset="3">
+        <el-col :span="3" :offset="2">
           <el-button type="primary" @click="submitBtn(0)">保存</el-button>
         </el-col>
       </el-col>
@@ -934,7 +969,7 @@ export default {
             // }
             element.listInvite.forEach((element1) => {
               // console.log(element1)
-              if (element1.listOwnerType.length != 0) {
+              if (element1.listOwnerType&&element1.listOwnerType.length != 0) {
                 element.typeList.push(element1.listOwnerType[0].typeName)
                 element.ownerItemList.push(element1.listOwnerItem[0].itemName)
                 element.ownerName.push(element1.realName)
@@ -1146,6 +1181,9 @@ export default {
     ///////// 获取模特列表 end /////////
 
     ///////// 提交任务 start /////////
+    noTaskPut() {
+      this.$message.error('无法提交，摄影师模特信息采购尚未填写！')
+    },
     putTask(prm) {
       console.log(prm)
       // let isCard = ''
@@ -1253,12 +1291,32 @@ export default {
         })
       }
     },
-    // 添加明细
-    copyDetailList(index) {
+    // 复制明细
+    copyDetailList(index,obj) {
       let listInviteList = this.listInviteList
       let data = {
-        userType: 0,
-        inviteData: listInviteList[index].inviteData,
+        userType: obj.userType,
+        inviteData: [],
+        typeId: '',
+        itemId: '',
+        ownerId: '',
+        url: '',
+        // money: '',
+        // isCard: false,
+      }
+      if (obj.userType==0) {
+        data.inviteData = obj.inviteData
+      }else{
+        data.inviteData = []
+        data.ownerId = obj.ownerId
+      }
+      this.listInviteList.splice(index + 1, 0, data)
+    },
+    // 添加明细
+    addDetailList(index,obj) {
+      let data = {
+        userType: obj.userType,
+        inviteData: [],
         typeId: '',
         itemId: '',
         ownerId: '',
@@ -1267,19 +1325,6 @@ export default {
         // isCard: false,
       }
       this.listInviteList.splice(index + 1, 0, data)
-    },
-    // 添加明细
-    addDetailList() {
-      this.listInviteList.push({
-        userType: 0,
-        inviteData: [],
-        typeId: '',
-        itemId: '',
-        ownerId: '',
-        url: '',
-        // money: '',
-        // isCard: false,
-      })
     },
     // 删除明细
     delDetailList(index) {
@@ -1314,7 +1359,7 @@ export default {
         listInvite: listInviteList,
         nowUserId: this.userId,
         nowUserDeptId: this.deptId,
-        initUserId: this.userId
+        initUserId: this.userId,
       }
       let flag = true
       data.listInvite.forEach((element) => {
@@ -1674,6 +1719,16 @@ $statusColor4: #ea8a85;
       align-items: center;
       justify-content: space-between;
       margin-bottom: 18px;
+      .userType1{
+        & >>> .el-input__inner{
+          border-color: #67c23a;
+        }
+      }
+      .userType2{
+        & >>> .el-input__inner{
+          border-color: #0000ff50;
+        }
+      }
     }
     .keycontent {
       align-self: flex-start;
@@ -1700,13 +1755,21 @@ $statusColor4: #ea8a85;
 </style>
 <style lang="scss">
 .taskDialog {
-  // height: ;
+  .el-dialog__header{
+    text-align: center;
+  }
+  .el-dialog__title {
+    color: #000;
+    font-size: 24px;
+    font-weight: 700;
+  }
   .el-dialog {
     height: 80vh;
     margin: 10vh auto !important;
   }
   .el-dialog__body {
     height: calc(100% - 114px);
+    padding: 10px 20px;
   }
 }
 </style>

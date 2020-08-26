@@ -76,6 +76,7 @@
                   :disabled="disabledCaigou"
                   clearable
                   filterable
+                  multiple
                 >
                   <el-option
                     v-for="item in cameraList"
@@ -84,6 +85,7 @@
                     :value="item.value"
                   ></el-option>
                 </el-select>
+                <!-- {{personId}} -->
               </div>
             </el-col>
             <el-col :span="24" class="list">
@@ -95,6 +97,7 @@
                   :disabled="disabledCaigou"
                   clearable
                   filterable
+                  multiple
                 >
                   <el-option
                     v-for="item in modelList"
@@ -246,8 +249,8 @@ export default {
       cameraList: [], // 摄影师列表
       modelList: [], // 模特列表
       placeList: [], // 场地列表
-      personId: null,
-      modelId: null,
+      personId: [],
+      modelId: [],
       placeId: null,
       disabledCaigou: false,
       // 品牌车型
@@ -488,9 +491,9 @@ export default {
           let data = res.data.data
           this.taskName = data.taskName
           this.taskType = data.taskType
-          this.personId = data.personId
-          if (data.modelId) {
-            this.modelId = data.modelId
+          this.personId = data.taskToPersonList
+          if (data.taskToModelList) {
+            this.modelId = data.taskToModelList
           } else if (!data.modelId && data.personId) {
             this.modelId = 0
           } else {
@@ -499,11 +502,13 @@ export default {
           this.placeId = data.placeId
           let listInviteList = []
           data.listInvite.forEach((element) => {
-            listInviteList.push([
-              element.listOwnerType[0].typeId,
-              element.listOwnerItem[0].itemId,
-              element.ownerId,
-            ])
+            if (element.userType == 0) {
+              listInviteList.push([
+                element.listOwnerType[0].typeId,
+                element.listOwnerItem[0].itemId,
+                element.ownerId,
+              ])
+            }
           })
 
           this.listInviteList = listInviteList
@@ -592,39 +597,39 @@ export default {
             let list = []
             data.forEach((element, i) => {
               if (element.typeId != 4) {
-              list.push({
-                value: element.typeId,
-                label: element.typeName,
-                children: [],
-              })
-              element.ownerItems.forEach((element1, j) => {
-                // console.log(1)
-                list[i].children.push({
-                  value: element1.itemId,
-                  label: element1.itemName,
+                list.push({
+                  value: element.typeId,
+                  label: element.typeName,
                   children: [],
                 })
-                element1.vehicleOwners.forEach((element2) => {
-                  if (
-                    element2.coopNum &&
-                    element2.alreadyCooperateNum &&
-                    element2.coopNum - element2.alreadyCooperateNum <= 0
-                  ) {
-                    // cosnole.log()
-                    list[i].children[j].children.push({
-                      value: element2.vehicleOwnerId,
-                      label: element2.name,
-                      disabled: true,
-                    })
-                  } else {
-                    list[i].children[j].children.push({
-                      value: element2.vehicleOwnerId,
-                      label: element2.name,
-                    })
-                  }
-                  // console.log(element2)
+                element.ownerItems.forEach((element1, j) => {
+                  // console.log(1)
+                  list[i].children.push({
+                    value: element1.itemId,
+                    label: element1.itemName,
+                    children: [],
+                  })
+                  element1.vehicleOwners.forEach((element2) => {
+                    if (
+                      element2.coopNum &&
+                      element2.alreadyCooperateNum &&
+                      element2.coopNum - element2.alreadyCooperateNum <= 0
+                    ) {
+                      // cosnole.log()
+                      list[i].children[j].children.push({
+                        value: element2.vehicleOwnerId,
+                        label: element2.name,
+                        disabled: true,
+                      })
+                    } else {
+                      list[i].children[j].children.push({
+                        value: element2.vehicleOwnerId,
+                        label: element2.name,
+                      })
+                    }
+                    // console.log(element2)
+                  })
                 })
-              })
               }
             })
             list.push(this.noOwner)
@@ -754,10 +759,11 @@ export default {
       carSeriesId.forEach((element) => {
         listTaskOfCartype.push({ cartypeId: element[1] })
       })
-      let modelId = ''
-      if (this.modelId) {
-        modelId = this.modelId
-      }
+      // let modelId = ''
+      // if (this.modelId) {
+      //   modelId = this.modelId
+      // }
+
       let data = {
         initUserId: this.userId,
         deptId: this.deptId,
@@ -770,8 +776,10 @@ export default {
         endTime: endTime,
         num: this.taskNum,
 
-        personId: this.personId,
-        modelId: modelId,
+        // personId: this.personId,
+        // modelId: modelId,
+        taskToPersonList: [], // 摄影师列表
+        taskToModelList: [], // 模特列表
         placeId: this.placeId,
         // typeId: this.carSeriesId[0],
         // carTypeId: this.carSeriesId[1],
@@ -782,14 +790,35 @@ export default {
         listInvite: [],
         listTaskFile: this.taskFileList,
       }
-
       listInviteList.forEach((element) => {
         data.listInvite.push({
           typeId: element[0],
           itemId: element[1],
           ownerId: element[2],
+          userType: 0,
         })
       })
+      // let taskToPersonList = [] // 摄影师列表
+      // let taskToModelList = [] // 模特列表
+      this.personId.forEach((element) => {
+        data.taskToPersonList.push({
+          personId: element,
+        })
+        data.listInvite.push({
+          ownerId: element,
+          userType: 1,
+        })
+      })
+      this.modelId.forEach((element) => {
+        data.taskToModelList.push({
+          modelId: element,
+        })
+        data.listInvite.push({
+          ownerId: element,
+          userType: 2,
+        })
+      })
+
       let flag = true
       let list = [
         data.taskType,

@@ -13,7 +13,7 @@
           </el-col>
           <!-- <el-col :span="12"> -->
           <!-- 类型选择 -->
-          <el-col :span="6" :offset="12" class="redact">
+          <el-col :span="6" :offset="12" class="redact" v-if="subordinate==150||adminShow||userId==193||userId==32||userId==3790">
             <i class="el-icon-edit" @click="redact"></i>
           </el-col>
           <!-- </el-col> -->
@@ -452,6 +452,12 @@ export default {
   components: {},
   data() {
     return {
+      userId: this.$store.state.user.userId, // 用户ID
+      deptId: this.$store.state.user.deptId, // 部门ID
+      postId: this.$store.state.user.postId, // 职位ID
+      subordinate: this.$store.state.user.subordinate, // 一级部门ID
+      adminShow: this.$store.state.adminShow, // 一级部门ID
+      
       loading: false, // 上传loading
       checked: false,
       itemDisabled: false,

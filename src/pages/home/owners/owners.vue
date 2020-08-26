@@ -70,7 +70,7 @@
         </el-select>
         <!-- {{cityName}} -->
         <div @click="submit" class="add">
-          <template v-if="subordinate==150||adminShow">
+          <template v-if="subordinate==150||adminShow||userId==193||userId==32||userId==3790">
             <!-- <i class="el-icon-circle-plus-outline"></i>
             <br />添加车主-->
             <el-button type="primary" icon="el-icon-circle-plus-outline" size="small">添加车主</el-button>
@@ -387,6 +387,7 @@ export default {
       adminShow: this.$store.state.adminShow, // 一级部门ID
 
       listLoading: false, // 列表Loading控制
+      slideLoadingFlag: true, // 滑动加载开关
       ownerListData: [],
       tab1act: this.$store.state.ownersTypeNum,
       tab2act: 1,
@@ -587,6 +588,7 @@ export default {
     cityNameChange() {
       this.pageNum = 1
       ///////// 车主列表获取 start /////////
+      this.ownerListData = []
       this.getVehicleOwnerList()
     },
     ///////// 城市选择 end /////////
@@ -595,6 +597,7 @@ export default {
     carSeriesIdChange() {
       this.pageNum = 1
       ///////// 车主列表获取 start /////////
+      this.ownerListData = []
       this.getVehicleOwnerList()
     },
     ///////// 车型选择 end /////////
@@ -603,56 +606,67 @@ export default {
     leisureOwnersChange() {
       this.pageNum = 1
       ///////// 车主列表获取 start /////////
+      this.ownerListData = []
       this.getVehicleOwnerList()
     },
     ///////// 档期选择 end /////////
 
     ///////// 车主列表获取 start /////////
     getVehicleOwnerList() {
-      this.listLoading = true
-      let data = {
-        city: '',
-        seriesId: this.carSeriesId,
-        futurePeriodType: this.leisureOwners,
-        vehicleOwner: {
-          typeId: this.tab1act,
-          itemId: this.tab2act,
-          name: this.searchWordData.value,
-        },
-        pageNum: this.pageNum,
-        pageSize: this.pageSize,
+      if (this.slideLoadingFlag) {
+        console.log('获取车主！')
+        this.listLoading = true
+        let data = {
+          city: '',
+          seriesId: this.carSeriesId,
+          futurePeriodType: this.leisureOwners,
+          vehicleOwner: {
+            typeId: this.tab1act,
+            itemId: this.tab2act,
+            name: this.searchWordData.value,
+          },
+          pageNum: this.pageNum,
+          pageSize: this.pageSize,
+        }
+        if (this.cityName) {
+          data.city = this.cityName + '市'
+        } else {
+          data.city = ''
+        }
+        this.$axios
+          .post('/ocarplay/api/vehicleOwner/listAjax', data)
+          .then((res) => {
+            // console.log(res)
+            // this.drawerLoading = false
+            // this.drawerAdd = false
+            if (res.status == 200) {
+              // this.ownerListData(res.data.msg)
+              // this.getPlaceList()
+              let data = res.data
+              this.ownerListData = this.ownerListData.concat(data.items)
+              this.total = data.totalRows
+              this.listLoading = false
+              this.isflag = true
+              if (data.pageRows < 30) {
+                this.slideLoadingFlag = false
+              }
+            }
+          })
       }
-      if (this.cityName) {
-        data.city = this.cityName + '市'
-      } else {
-        data.city = ''
-      }
-      this.$axios
-        .post('/ocarplay/api/vehicleOwner/listAjax', data)
-        .then((res) => {
-          // console.log(res)
-          // this.drawerLoading = false
-          // this.drawerAdd = false
-          if (res.status == 200) {
-            // this.ownerListData(res.data.msg)
-            // this.getPlaceList()
-            let data = res.data
-            this.ownerListData = data.items
-            this.total = data.totalRows
-            this.listLoading = false
-            this.isflag = true
-          }
-        })
     },
     ///////// 车主列表获取 end /////////
 
     tab1(e) {
       this.tab1act = e
       this.pageNum = 1
+      this.ownerListData = []
+      this.slideLoadingFlag = true
       // this.getVehicleOwnerList()
     },
     tab2(id) {
       this.tab2act = id
+      this.ownerListData = []
+      this.slideLoadingFlag = true
       this.getVehicleOwnerList()
       // console.log(id)
     },
