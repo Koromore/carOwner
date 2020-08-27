@@ -88,13 +88,23 @@
           <!-- <el-table-column prop="ownerItemList" label="邀约事项" min-width="130" show-overflow-tooltip></el-table-column> -->
           <el-table-column prop="personName" label="摄影师" min-width="90" show-overflow-tooltip>
             <template slot-scope="scope">
-              <span v-if="scope.row.personName">{{scope.row.personName}}</span>
+              <span v-if="scope.row.taskToPersonList.length">
+                <span
+                  v-for="(item,index) in scope.row.taskToPersonList"
+                  :key="index"
+                >{{item.realName}}</span>
+              </span>
               <span v-else>/</span>
             </template>
           </el-table-column>
           <el-table-column prop="modelName" label="模特" min-width="90" show-overflow-tooltip>
             <template slot-scope="scope">
-              <span v-if="scope.row.modelName">{{scope.row.modelName}}</span>
+              <span v-if="scope.row.taskToModelList.length">
+                <span
+                  v-for="(item,index) in scope.row.taskToModelList"
+                  :key="index"
+                >{{item.realName}}</span>
+              </span>
               <span v-else-if="!scope.row.modelName&&scope.row.personName">无模特</span>
               <span v-else-if="!scope.row.modelName&&!scope.row.personName">/</span>
             </template>
@@ -160,7 +170,9 @@
 
                 <template v-if="!scope.row.isSubmit">
                   <template v-if="scope.row.taskType==4">
-                    <template v-if="!scope.row.personId||!scope.row.placeId">
+                    <template
+                      v-if="!scope.row.taskToPersonList.length||!scope.row.taskToModelList.length"
+                    >
                       <el-tooltip class="item" effect="dark" content="提交任务" placement="top">
                         <i class="el-icon-circle-check" style="color:#ff0000" @click="noTaskPut"></i>
                       </el-tooltip>
@@ -194,7 +206,9 @@
                 </el-tooltip>
               </template>
               <template v-else>
-                <template v-if="scope.row.personId&&scope.row.placeId">
+                <template
+                  v-if="scope.row.taskToPersonList.length&&scope.row.taskToModelList.length"
+                >
                   <el-tooltip class="item" effect="dark" content="编辑任务" placement="top">
                     <i class="el-icon-edit" @click="addTask(1, scope.row.taskId)"></i>
                   </el-tooltip>
@@ -576,7 +590,7 @@
           </el-table-column>
           <el-table-column prop="address" label="评价" min-width="50" show-overflow-tooltip>
             <template slot-scope="scope">
-              <i
+              <!-- <i
                 class="el-icon-chat-dot-round"
                 @click="addComment(scope.row)"
                 v-if="scope.row.taskType==4&&!scope.row.ifPgOver"
@@ -585,7 +599,28 @@
                 class="el-icon-chat-dot-round"
                 style="cursor: not-allowed;color: rgb(170, 170, 170);"
                 v-else-if="scope.row.taskType==4&&scope.row.ifPgOver"
-              ></i>
+              ></i>-->
+
+              <el-popover
+                placement="top"
+                width="60"
+                trigger="manual"
+                v-model="evaluatePersonVisible"
+              >
+                <p
+                  v-for="(item,index) in scope.row.taskToPersonList"
+                  :key="index"
+                  class="evaluatePerson"
+                  @click="addComment(item)"
+                  v-show="!item.ifPgOver"
+                >{{item.realName}}</p>
+
+                <i
+                  class="el-icon-chat-dot-round"
+                  slot="reference"
+                  @click="evaluatePersonVisibleShow(scope.row.taskToPersonList)"
+                ></i>
+              </el-popover>
             </template>
           </el-table-column>
         </el-table>
@@ -648,7 +683,23 @@
       <el-scrollbar style="height:100%">
         <el-row class="drawerPuttask">
           <el-col :span="3">任务名称:</el-col>
-          <el-col :span="21">{{taskName}}</el-col>
+          <el-col :span="21">
+            <el-col :span="20">{{taskName}}</el-col>
+            <el-col :span="4" class="import">
+              <el-tooltip class="item" effect="dark" content="导出" placement="top">
+                <i class="el-icon-upload2" @click="exportFile(taskDetail)"></i>
+              </el-tooltip>
+              <el-tooltip class="item" effect="dark" content="导入" placement="top">
+                <el-upload
+                  class="upload-demo"
+                  action="ocarplay/api/invite/uploadExcle"
+                  :on-success="importFileSuccess"
+                >
+                  <i class="el-icon-download"></i>
+                </el-upload>
+              </el-tooltip>
+            </el-col>
+          </el-col>
           <el-col :span="3" class="keycontent">结算明细:</el-col>
           <el-col :span="21">
             <!-- <el-col :span="20">
@@ -660,6 +711,11 @@
               v-for="(item, index) in listInviteList"
               :key="index"
             >
+              <el-col :span="1" style="text-align: center;">
+                <!-- {{item.isOver}} -->
+                <i class="el-icon-success" v-if="item.isOver" style="color: #85ce61"></i>
+                <i class="el-icon-remove" style="color: #a6a9ad" v-else></i>
+              </el-col>
               <el-col :span="4">
                 <template v-if="item.userType==0">
                   <el-cascader
@@ -670,10 +726,17 @@
                     :show-all-levels="false"
                     size="medium"
                   >
-                   <i slot="prefix" class="el-input__icon el-icon-search"></i></el-cascader>
+                    <i slot="prefix" class="el-input__icon el-icon-search"></i>
+                  </el-cascader>
                 </template>
                 <template v-else-if="item.userType==1">
-                  <el-select v-model="item.ownerId" placeholder="摄影师" clearable filterable class="userType1">
+                  <el-select
+                    v-model="item.ownerId"
+                    placeholder="摄影师"
+                    clearable
+                    filterable
+                    class="userType1"
+                  >
                     <el-option
                       v-for="item in cammeramanList"
                       :key="item.value"
@@ -683,7 +746,13 @@
                   </el-select>
                 </template>
                 <template v-else-if="item.userType==2">
-                  <el-select v-model="item.ownerId" placeholder="模特" clearable filterable class="userType2">
+                  <el-select
+                    v-model="item.ownerId"
+                    placeholder="模特"
+                    clearable
+                    filterable
+                    class="userType2"
+                  >
                     <el-option
                       v-for="item in modelList"
                       :key="item.value"
@@ -693,22 +762,34 @@
                   </el-select>
                 </template>
               </el-col>
-              <el-col :span="16">
+              <el-col :span="15">
                 <template v-if="item.userType==0">
                   <el-input placeholder="车主链接" size="medium" v-model="item.url" clearable></el-input>
                 </template>
                 <template v-if="item.userType==1">
-                  <el-input placeholder="摄影师链接" size="medium" v-model="item.url" clearable class="userType1"></el-input>
+                  <el-input
+                    placeholder="摄影师链接"
+                    size="medium"
+                    v-model="item.url"
+                    clearable
+                    class="userType1"
+                  ></el-input>
                 </template>
                 <template v-if="item.userType==2">
-                  <el-input placeholder="模特链接" size="medium" v-model="item.url" clearable class="userType2"></el-input>
+                  <el-input
+                    placeholder="模特链接"
+                    size="medium"
+                    v-model="item.url"
+                    clearable
+                    class="userType2"
+                  ></el-input>
                 </template>
               </el-col>
               <el-col :span="3">
                 <!-- <template v-if="item.userType==0"> -->
-                  <i class="el-icon-document-copy" @click="copyDetailList(index,item)"></i>
-                  <i class="el-icon-delete" @click="delDetailList(index)"></i>
-                  <i class="el-icon-circle-plus-outline" @click="addDetailList(index,item)"></i>
+                <i class="el-icon-document-copy" @click="copyDetailList(index,item)"></i>
+                <i class="el-icon-delete" @click="delDetailList(index)"></i>
+                <i class="el-icon-circle-plus-outline" @click="addDetailList(index,item)"></i>
                 <!-- </template> -->
                 <!-- <template v-if="item.userType==1">
                   摄影师
@@ -725,10 +806,10 @@
       </el-scrollbar>
       <!-- 底部按钮 -->
       <el-col :span="24" class="btn">
-        <el-col :span="3" :offset="8">
+        <el-col :span="4" :offset="7">
           <el-button type="info" @click="submitBtn(1)">提交</el-button>
         </el-col>
-        <el-col :span="3" :offset="2">
+        <el-col :span="4" :offset="2">
           <el-button type="primary" @click="submitBtn(0)">保存</el-button>
         </el-col>
       </el-col>
@@ -837,9 +918,12 @@ export default {
       },
       // 提交任务车主列表
       listInviteList: [],
+      delListInviteList: [],
       // 车主选择器列表
       inviteDataList: [],
       listInviteData: [],
+      // 评价
+      evaluatePersonVisible: false,
     }
   },
   // 侦听器
@@ -865,6 +949,10 @@ export default {
     this.getlistPhotoPerson()
     ///////// 获取模特列表 start /////////
     this.getlistModel()
+
+    // let list = [1,2,3,4,5,6]
+    // console.log(list.splice(0,1))
+    // console.log(list)
   },
   // 方法
   methods: {
@@ -969,7 +1057,10 @@ export default {
             // }
             element.listInvite.forEach((element1) => {
               // console.log(element1)
-              if (element1.listOwnerType&&element1.listOwnerType.length != 0) {
+              if (
+                element1.listOwnerType &&
+                element1.listOwnerType.length != 0
+              ) {
                 element.typeList.push(element1.listOwnerType[0].typeName)
                 element.ownerItemList.push(element1.listOwnerItem[0].itemName)
                 element.ownerName.push(element1.realName)
@@ -1185,7 +1276,7 @@ export default {
       this.$message.error('无法提交，摄影师模特信息采购尚未填写！')
     },
     putTask(prm) {
-      console.log(prm)
+      // console.log(prm)
       // let isCard = ''
       // if (prm.taskType == 4) {
       //   isCard = true
@@ -1193,7 +1284,7 @@ export default {
       //   isCard = false
       // }
       if (prm.taskType == 4) {
-        if (prm.personId && prm.placeId) {
+        if (prm.taskToPersonList.length && prm.placeId) {
           this.drawerLoading = true
           this.drawerPuttask = true
           this.taskId = prm.taskId
@@ -1213,7 +1304,9 @@ export default {
                   pushIs = false
                 }
                 listInviteList.push({
+                  inviteId: element.inviteId,
                   inviteData: [element.typeId, element.itemId, element.ownerId],
+                  isOver: element.isOver,
                   typeId: element.typeId,
                   itemId: element.itemId,
                   ownerId: element.ownerId,
@@ -1223,32 +1316,32 @@ export default {
                   userType: element.userType,
                 })
               })
-              if (prm.personId && pushIs) {
-                listInviteList.push({
-                  inviteData: [0, 0, 0],
-                  typeId: 0,
-                  itemId: 0,
-                  ownerId: prm.personId,
-                  name: prm.personName,
-                  url: null,
-                  // money: '',
-                  // isCard: true,
-                  userType: 1,
-                })
-              }
-              if (prm.modelId && pushIs) {
-                listInviteList.push({
-                  inviteData: [0, 0, 0],
-                  typeId: 0,
-                  itemId: 0,
-                  ownerId: prm.modelId,
-                  name: prm.modelName,
-                  url: null,
-                  // money: '',
-                  // isCard: true,
-                  userType: 2,
-                })
-              }
+              // if (prm.personId && pushIs) {
+              //   listInviteList.push({
+              //     inviteData: [0, 0, 0],
+              //     typeId: 0,
+              //     itemId: 0,
+              //     ownerId: prm.personId,
+              //     name: prm.personName,
+              //     url: null,
+              //     // money: '',
+              //     // isCard: true,
+              //     userType: 1,
+              //   })
+              // }
+              // if (prm.modelId && pushIs) {
+              //   listInviteList.push({
+              //     inviteData: [0, 0, 0],
+              //     typeId: 0,
+              //     itemId: 0,
+              //     ownerId: prm.modelId,
+              //     name: prm.modelName,
+              //     url: null,
+              //     // money: '',
+              //     // isCard: true,
+              //     userType: 2,
+              //   })
+              // }
 
               this.listInviteList = listInviteList
               // console.log(listInviteList)
@@ -1271,10 +1364,13 @@ export default {
         this.$axios.post('/ocarplay/task/edit', data).then((res) => {
           if (res.status == 200) {
             let data = res.data.data
+            // console.log(data)
             let listInviteList = []
             data.listInvite.forEach((element) => {
               listInviteList.push({
+                inviteId: element.inviteId,
                 inviteData: [element.typeId, element.itemId, element.ownerId],
+                isOver: element.isOver,
                 typeId: element.typeId,
                 itemId: element.itemId,
                 ownerId: element.ownerId,
@@ -1290,9 +1386,10 @@ export default {
           }
         })
       }
+      // console.log(this.listInviteList)
     },
     // 复制明细
-    copyDetailList(index,obj) {
+    copyDetailList(index, obj) {
       let listInviteList = this.listInviteList
       let data = {
         userType: obj.userType,
@@ -1304,16 +1401,16 @@ export default {
         // money: '',
         // isCard: false,
       }
-      if (obj.userType==0) {
+      if (obj.userType == 0) {
         data.inviteData = obj.inviteData
-      }else{
+      } else {
         data.inviteData = []
         data.ownerId = obj.ownerId
       }
       this.listInviteList.splice(index + 1, 0, data)
     },
     // 添加明细
-    addDetailList(index,obj) {
+    addDetailList(index, obj) {
       let data = {
         userType: obj.userType,
         inviteData: [],
@@ -1330,7 +1427,7 @@ export default {
     delDetailList(index) {
       let listInviteList = this.listInviteList
       if (listInviteList.length > 1) {
-        this.listInviteList.splice(index, 1)
+        this.delListInviteList = this.listInviteList.splice(index, 1)
       }
     },
     // 提交按钮
@@ -1351,6 +1448,11 @@ export default {
         //   element.isWrite = 0
         // }
       })
+      let delListInviteList = this.delListInviteList
+      delListInviteList.forEach((element) => {
+        element.deleteFlag = true
+      })
+      listInviteList = listInviteList.concat(delListInviteList)
       let data = {
         taskId: this.taskId,
         deptId: this.taskDeptId,
@@ -1372,20 +1474,21 @@ export default {
             flag = false
           }
         }
-        console.log(e)
+        // console.log(e)
       })
       // flag = false
-      console.log(data)
+      // console.log(data)
+      // console.log(data.listInvite)
       // console.log(JSON.stringify(data))
       if (flag) {
-        // data.listInvite.forEach((element) => {
-        //   if (element.isCard) {
-        //     element.isCard = 1
-        //   } else {
-        //     element.isCard = 0
-        //   }
-        // })
-        // console.log(data)
+        data.listInvite.forEach((element) => {
+          if (element.isCard) {
+            element.isCard = 1
+          } else {
+            element.isCard = 0
+          }
+        })
+        console.log(data)
         this.$axios
           .post('/ocarplay/task/save', data)
           .then((res) => {
@@ -1406,7 +1509,7 @@ export default {
           })
           .catch((res) => {
             console.log(res)
-            this.putLoading = false
+            this.drawerLoading = false
           })
       } else {
         this.drawerLoading = false
@@ -1555,6 +1658,7 @@ export default {
     },
     ///////// 新增评论 start /////////
     addComment(obj) {
+      console.log(obj)
       this.personId = obj.personId
       this.taskId = obj.taskId
       // console.log(obj)
@@ -1575,6 +1679,50 @@ export default {
         })
     },
     ///////// 新增评论 end /////////
+
+    ///////// 导出结算列表 start /////////
+    exportFile(obj) {
+      // console.log(id)
+      let data = { taskId: obj.taskId }
+      this.$axios
+        .post('/ocarplay/api/invite/exportInviteByTaskId', data, {
+          responseType: 'blob', //--设置请求数据格式
+        })
+        .then((res) => {
+          // console.log(res.data)
+          var blob = new Blob([res.data], { type: 'text/plain;charset=utf-8' })
+          saveAs(blob, obj.taskName + '结算清单.xls')
+        })
+        .catch(() => {
+          // console.log('捕获错误')
+        })
+    },
+    ///////// 导出结算列表 start /////////
+
+    ///////// 导入结算列表 start /////////
+    importFile(id) {
+      console.log(id)
+    },
+    importFileSuccess(){
+      this.$message.success('导入成功')
+    },
+    ///////// 导入结算列表 start /////////
+
+    ///////// 导出结算列表 start /////////
+    evaluatePersonVisibleShow(obj) {
+      console.log(obj)
+      for (let i = 0; i < obj.length; i++) {
+        const element = obj[i]
+        if (!element.ifPgOver) {
+          this.evaluatePersonVisible = true
+          break
+        }
+      }
+      if (!this.evaluatePersonVisible) {
+        this.$message.warning('已评价完成！')
+      }
+    },
+    ///////// 导出结算列表 start /////////
   },
 }
 </script>
@@ -1708,6 +1856,22 @@ $statusColor4: #ea8a85;
       font-size: 18px;
       min-height: 40px;
       // line-height: 40px;
+      &:nth-of-type(2n + 1) {
+        text-align: right;
+        padding-right: 13px;
+      }
+    }
+    .import {
+      text-align: center;
+      i {
+        font-size: 24px;
+        &:nth-of-type(2) {
+          margin-left: 9px;
+        }
+      }
+      .upload-demo{
+        display: inline-block;
+      }
     }
     i {
       color: $icoColor;
@@ -1719,26 +1883,29 @@ $statusColor4: #ea8a85;
       align-items: center;
       justify-content: space-between;
       margin-bottom: 18px;
-      .userType1{
-        & >>> .el-input__inner{
+      .userType1 {
+        & >>> .el-input__inner {
           border-color: #67c23a;
         }
       }
-      .userType2{
-        & >>> .el-input__inner{
+      .userType2 {
+        & >>> .el-input__inner {
           border-color: #0000ff50;
         }
       }
     }
     .keycontent {
       align-self: flex-start;
+      // text-align: justify;
+      // text-align: right;
+      // padding-right: 13px;
     }
     .el-input {
       width: 100%;
     }
   }
   .btn {
-    height: 54px;
+    height: 72px;
     background: white;
     position: absolute;
     left: 0;
@@ -1752,11 +1919,18 @@ $statusColor4: #ea8a85;
     }
   }
 }
+.evaluatePerson {
+  height: 24px;
+  line-height: 24px;
+  text-align: center;
+  cursor: pointer;
+}
 </style>
 <style lang="scss">
 .taskDialog {
-  .el-dialog__header{
+  .el-dialog__header {
     text-align: center;
+    padding-top: 36px;
   }
   .el-dialog__title {
     color: #000;
@@ -1772,4 +1946,9 @@ $statusColor4: #ea8a85;
     padding: 10px 20px;
   }
 }
+// #task {
+.el-popover {
+  min-width: 0;
+}
+// }
 </style>

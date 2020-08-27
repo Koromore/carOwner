@@ -79,7 +79,9 @@
                       :key="index"
                       v-show="index!=0"
                     >
+                      <div v-if="item.userType==0">
                       <span>{{item.listOwnerType[0].typeName}}—{{item.listOwnerItem[0].itemName}}—{{item.realName}}</span>
+                      </div>
                     </div>
                   </template>
                 </el-collapse-item>
@@ -91,14 +93,23 @@
               <div class="key">摄影师</div>
               <div>:</div>
               <!-- <div class="val">{{taskDetail.num}}</div> -->
-              <div class="val" v-if="taskDetail.personName">{{taskDetail.personName}}</div>
+              <div class="val" v-if="taskDetail.taskToPersonList.length">
+                <span v-for="(item,index) in taskDetail.taskToPersonList" :key="index">
+                  {{item.realName}}
+                </span>
+                <!-- {{taskDetail.personName}} -->
+              </div>
               <div class="val" v-else style="color: #F56C6C">未完善</div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">模特</div>
               <div>:</div>
               <!-- <div class="val">{{taskDetail.num}}</div> -->
-              <div class="val" v-if="taskDetail.modelName">{{taskDetail.modelName}}</div>
+              <div class="val" v-if="taskDetail.taskToModelList.length">
+                <span v-for="(item,index) in taskDetail.taskToModelList" :key="index">
+                  {{item.realName}}
+                </span>
+              </div>
               <div class="val" v-else style="color: #F56C6C">未完善</div>
             </el-col>
             <el-col :span="24" class="list">

@@ -331,16 +331,22 @@ export default {
     ///////// 获取场地列表 start /////////
     this.getPlaceList()
     this.getOwnerListNo()
+
+    // var a = [1,2,3];
+    // var b = [4,5,6];
+    // var c = [7,8,9];
+    // var d = a.concat(b,c); //c=[1,2,3,4,5,6];
+    // console.log(d)
   },
   // 方法事件
   methods: {
     ///////// 接受页面传参 start /////////
     isDeptId() {
-      // if (this.deptId == 90) {
-      //   this.disabledCaigou = false
-      // } else {
-      //   this.disabledCaigou = true
-      // }
+      if (this.deptId == 90) {
+        this.disabledCaigou = false
+      } else {
+        this.disabledCaigou = true
+      }
     },
     ///////// 接受页面传参 end /////////
 
@@ -544,18 +550,19 @@ export default {
             modelId.push(element.modelId)
           })
           this.personId = personId
+          // console.log(personId)
           this.personIdList = personIdList
           this.modelId = modelId
           this.modelIdList = modelIdList
 
-          this.personId = data.taskToPersonList
-          if (data.taskToModelList) {
-            this.modelId = data.taskToModelList
-          } else if (!data.modelId && data.personId) {
-            this.modelId = 0
-          } else {
-            this.modelId = null
-          }
+          // this.personId = data.taskToPersonList
+          // if (data.taskToModelList) {
+          //   this.modelId = data.taskToModelList
+          // } else if (!data.modelId && data.personId) {
+          //   this.modelId = 0
+          // } else {
+          //   this.modelId = null
+          // }
           // this.carSeriesId = [null,null,data.carSeriesId]
           data.listTaskOfCartype.forEach((element) => {
             this.seriesId.push(element.cartypeId)
@@ -785,6 +792,28 @@ export default {
 
     ///////// 文件上传 end /////////
 
+    difference(arr1,arr2,key){
+      // arr1相对于arr2的差集
+      // 差集
+      let diff = [...arr1]
+      for (let i = 0, len = arr1.length; i < len; i++) {
+        let flag = false
+        for (let j = 0, length = arr2.length; j < length; j++) {
+          if (arr1[i][key] === arr2[j][key]) {
+            flag = true
+          }
+        }
+        if (flag) {
+          diff.splice(
+            diff.findIndex((item) => item[key] === arr1[i][key]),
+            1
+          )
+        }
+      }
+      return diff
+      console.log('差集', diff)
+    },
+
     ///////// 新增任务 start /////////
     // （0-进行中，1-结算中，2-完成，3-延期，4-人工延期
     saveTask() {
@@ -795,17 +824,11 @@ export default {
         startTime = this.$date0(periodTime[0])
         endTime = this.$date0(periodTime[1])
       }
-      // let taskDesc = this.taskDesc
-      // let taskDesc0 = `${taskDesc.input1}${taskDesc.input2}${taskDesc.input3}${taskDesc.input4}${taskDesc.input5}${taskDesc.input6}`
       let carSeriesId = this.carSeriesId
       let listTaskOfCartype = []
       carSeriesId.forEach((element) => {
         listTaskOfCartype.push({ cartypeId: element[1] })
       })
-      // let modelId = ''
-      // if (this.modelId) {
-      //   modelId = this.modelId
-      // }
 
       let data = {
         initUserId: this.userId,
@@ -819,85 +842,110 @@ export default {
         endTime: endTime,
         num: this.taskNum,
 
-        // personId: this.personId,
-        // modelId: modelId,
         taskToPersonList: [], // 摄影师列表
         taskToModelList: [], // 模特列表
         placeId: this.placeId,
-        // typeId: this.carSeriesId[0],
-        // carTypeId: this.carSeriesId[1],
-        // carSeriesId: this.carSeriesId[2],
         listTaskOfCartype: listTaskOfCartype,
         taskDesc: this.taskDesc,
         remark: this.remark,
         listInvite: [],
         listTaskFile: this.taskFileList,
       }
-      let listInviteList = this.listInviteList // 邀约对象
-      let listInviteOwners = this.listInviteOwners // 车主结算列表
-      let arr1 = [
-        { ID: 1, Name: 1, desc: 'Number' },
-        { ID: 2, Name: 2, desc: 'Number' },
-        { ID: 3, Name: 3, desc: 'Number' },
-        { ID: 4, Name: 4, desc: 'Number' },
-        { ID: 5, Name: 5, desc: 'Number' },
-        
-      ]
-      let arr2 = [
-        { ID: 5, Name: 5, desc: 'Number' },
-        { ID: 6, Name: 6, desc: 'Number' },
-        { ID: 7, Name: 7, desc: 'Number' },
-        { ID: 8, Name: 8, desc: 'Number' },
-        { ID: 9, Name: 9, desc: 'Number' },
-      ]
-
-      // 差集
-      let diff = [...arr1]
-      for (let i = 0, len = arr1.length; i < len; i++) {
-        let flag = false
-        for (let j = 0, length = arr2.length; j < length; j++) {
-          if (arr1[i].ID === arr2[j].ID) {
-            flag = true
-          }
-        }
-        if (flag) {
-          diff.splice(
-            diff.findIndex((item) => item.ID === arr1[i].ID),
-            1
-          )
-        }
-      }
-      console.log('差集', diff)
-
-      listInviteList.forEach((element) => {
-        data.listInvite.push({
+      let listInvite = []
+      let listInviteList = [] // 邀约对象
+      this.listInviteList.forEach(element => {
+        listInviteList.push({
           typeId: element[0],
           itemId: element[1],
           ownerId: element[2],
-          userType: 0,
         })
-      })
-      // let taskToPersonList = [] // 摄影师列表
-      // let taskToModelList = [] // 模特列表
-      this.personId.forEach((element) => {
-        data.taskToPersonList.push({
+      });
+      let listInviteOwners = this.listInviteOwners // 车主结算列表
+      let newListInviteOwners = [] // 新车主结算列表
+      this.difference(listInviteList,listInviteOwners,'ownerId').forEach(element => {
+        newListInviteOwners.push({
+          typeId: element.typeId,
+          itemId: element.itemId,
+          ownerId: element.ownerId,
+          userType: 0
+        })
+      });
+      this.difference(listInviteOwners,listInviteList,'ownerId').forEach(element => {
+        newListInviteOwners.push({
+          inviteId: element.inviteId,
+          deleteFlag: true,
+          typeId: element.typeId,
+          itemId: element.itemId,
+          ownerId: element.ownerId,
+          userType: 0
+        })
+      });
+
+      let taskToPersonList = [] // 摄影师列表
+      let personId = this.personId
+      let personIdList = this.personIdList // 旧摄影师列表
+      let newTaskToPersonList = [] // 新摄影师列表
+      let listInvitePerson = this.listInvitePerson // 摄影师结算列表
+      let listInvitePerson0 = [] // 选择摄影师结算列表
+      let newListInvitePerson = [] // 新摄影师结算列表
+
+      personId.forEach((element) => {
+        taskToPersonList.push({
           personId: element,
         })
-        data.listInvite.push({
+        listInvitePerson0.push({
           ownerId: element,
           userType: 1,
         })
       })
-      this.modelId.forEach((element) => {
-        data.taskToModelList.push({
+      // 新增的摄影师
+      this.difference(taskToPersonList,personIdList,'personId').forEach(element => {
+        newTaskToPersonList.push(element)
+      });
+      // 删除的摄影师
+      this.difference(personIdList,taskToPersonList,'personId').forEach(element => {
+        element.deleteFlag = true
+        newTaskToPersonList.push(element)
+      });
+      // 新增的摄影师结算
+      this.difference(listInvitePerson0,listInvitePerson,'personId').forEach(element => {
+        newListInvitePerson.push(element)
+      });
+      data.taskToPersonList = newTaskToPersonList
+
+      let taskToModelIdList = [] // 模特列表
+      let modelId = this.modelId
+      let modelIdList = this.modelIdList // 旧模特列表
+      let newTaskToModelList = [] // 新模特师列表
+      let listInviteMode = this.listInviteModel // 模特结算列表
+      let listInviteMode0 = [] // 选择模特结算列表
+      let newListInviteMode = [] // 新模特结算列表
+
+      modelId.forEach((element) => {
+        taskToModelIdList.push({
           modelId: element,
         })
-        data.listInvite.push({
+        listInviteMode0.push({
           ownerId: element,
           userType: 2,
         })
       })
-
+      // 新增的模特
+      this.difference(taskToModelIdList,modelIdList,'modelId').forEach(element => {
+        newTaskToModelList.push(element)
+      });
+      // 删除的模特
+      this.difference(modelIdList,taskToModelIdList,'modelId').forEach(element => {
+        element.deleteFlag = true
+        newTaskToModelList.push(element)
+      });
+      // 新增的模特结算
+      this.difference(listInviteMode0,listInviteMode,'modelId').forEach(element => {
+        newListInvitePerson.push(element)
+      });
+      data.taskToModelList = newTaskToModelList
+      data.listInvite = newListInviteOwners.concat(newListInvitePerson,newListInviteMode)
+      
       let flag = true
       let list = [
         data.taskType,
@@ -914,34 +962,34 @@ export default {
         }
       })
 
-      // console.log(data)
+      console.log(data)
       if (flag) {
-        // this.putLoading = true
-        // this.$axios
-        //   .post('/ocarplay/task/save', data)
-        //   .then((res) => {
-        //     // console.log(res)
-        //     if (res.status == 200 && res.data == 1) {
-        //       if (this.taskId) {
-        //         this.$message.success('任务更新成功！')
-        //       } else {
-        //         this.$message.success('任务新建成功！')
-        //       }
-        //       setTimeout(() => {
-        //         this.$router.push({
-        //           name: 'task',
-        //         })
-        //       }, 1000)
-        //     } else {
-        //       this.$message.error('任务新建失败！')
-        //       this.putLoading = false
-        //     }
-        //   })
-        //   .catch((res) => {
-        //     // console.log(res)
-        //     this.putLoading = false
-        //   })
-        this.$message.error('点击提交')
+        this.putLoading = true
+        this.$axios
+          .post('/ocarplay/task/save', data)
+          .then((res) => {
+            // console.log(res)
+            if (res.status == 200 && res.data == 1) {
+              if (this.taskId) {
+                this.$message.success('任务更新成功！')
+              } else {
+                this.$message.success('任务新建成功！')
+              }
+              setTimeout(() => {
+                this.$router.push({
+                  name: 'task',
+                })
+              }, 1000)
+            } else {
+              this.$message.error('任务新建失败！')
+              this.putLoading = false
+            }
+          })
+          .catch((res) => {
+            // console.log(res)
+            this.putLoading = false
+          })
+        // this.$message.error('点击提交')
 
       } else {
         this.$message.error('请检查信息是否填写完整！')

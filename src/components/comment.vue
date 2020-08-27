@@ -7,6 +7,8 @@
       @close="drawerDataClose"
       @open="drawerDataOpen"
       v-loading="loading"
+      :close-on-press-escape="false"
+      :wrapperClosable="false"
     >
       <el-scrollbar style="height:100%">
         <el-row>
