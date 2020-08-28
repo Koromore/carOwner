@@ -45,7 +45,7 @@
             :value="item.value"
           ></el-option>
         </el-select>
-        <div class="addCameraman" v-if="postId!=231||adminShow">
+        <div class="addCameraman" v-if="subordinate!=150||adminShow">
           <el-button
             type="primary"
             icon="el-icon-circle-plus-outline"
@@ -165,7 +165,7 @@
                 </div>
               </div>
               <div class="bottom">
-                <template v-if="postId!=231||adminShow">
+                <template v-if="subordinate!=150||adminShow">
                   <el-col :span="5" :offset="2">
                     <i class="el-icon-map-location" @click="toCameramanPlace(item.city)"></i>
                   </el-col>
@@ -430,7 +430,7 @@ export default {
     },
     ///////// 新增评论 end /////////
 
-    ///////// 跳日程管理页面 start /////////
+    ///////// 跳场地页面 start /////////
     toCameramanPlace(city) {
       // console.log(123)
       this.$router.push({
@@ -440,7 +440,7 @@ export default {
         },
       })
     },
-    ///////// 跳日程管理页面 end /////////
+    ///////// 跳场地页面 end /////////
 
     ///////// 跳日程管理页面 start /////////
     toCameramanSchedule(id) {

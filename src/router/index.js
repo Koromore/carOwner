@@ -39,6 +39,9 @@ axios.interceptors.request.use(
     // config.headers['Content-Type'] = "application/json;charset=UTF-8";
     // }
     // console.log(config)
+    // if (config.url.indexOf('/pmbs/') != -1) {
+      // config.url = config.url.replace('/ocarplay/', '/');
+    // }
     return config;
   },
   error => {
@@ -344,7 +347,7 @@ const router = new Router({
           meta: {
             requireAuth: true,
           },
-          children:[
+          children: [
             {
               path: '/home/resource/cameraman',
               name: 'cameraman',

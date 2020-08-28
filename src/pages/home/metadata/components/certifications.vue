@@ -172,6 +172,12 @@ export default {
                 deptName: '长城',
                 carType: []
               }
+              ,
+              {
+                deptId: 106,
+                deptName: '东本',
+                carType: []
+              }
             ]
             // console.log(data)
             data.forEach(element => {
@@ -197,6 +203,14 @@ export default {
                 })
               } else if (element.deptId == 153) {
                 carSeriesListData[2].carType.push({
+                  carTypeId: element.carTypeId,
+                  carTypeName: element.carTypeName,
+                  carSeriesIds: carSeriesIds,
+                  carSeriesName: carSeriesName
+                })
+              }
+               else if (element.deptId == 106) {
+                carSeriesListData[3].carType.push({
                   carTypeId: element.carTypeId,
                   carTypeName: element.carTypeName,
                   carSeriesIds: carSeriesIds,

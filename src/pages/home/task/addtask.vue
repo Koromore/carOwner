@@ -45,10 +45,10 @@
                 :options="carSeriesList"
                 clearable
                 filterable
-                collapse-tags
                 @change="carSeriesChange"
                 :disabled="!disabledCaigou"
               ></el-cascader>
+              <!-- collapse-tags -->
             </div>
           </el-col>
           <el-col :span="24" class="list">
@@ -60,9 +60,9 @@
                 v-model="listInviteList"
                 clearable
                 filterable
-                collapse-tags
                 :disabled="!disabledCaigou"
               ></el-cascader>
+              <!-- collapse-tags -->
             </div>
           </el-col>
           <!-- 摄影填写 start -->

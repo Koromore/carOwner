@@ -35,7 +35,7 @@
             :value="item.value"
           ></el-option>
         </el-select>
-        <div class="add_place" v-if="postId!=231||adminShow">
+        <div class="add_place" v-if="subordinate!=150||adminShow">
           <el-button
             type="primary"
             icon="el-icon-circle-plus-outline"
@@ -67,7 +67,7 @@
                 <p @click="toCameraList(item.placeId,3)">拍摄次数：{{item.cameraNum}}次</p>
               </div>
               <div class="bottom">
-                <template v-if="postId!=231||adminShow">
+                <template v-if="subordinate!=150||adminShow">
                   <el-col :span="6" :offset="3">
                     <i class="el-icon-user" @click="toPlaceMan(item.city)"></i>
                   </el-col>

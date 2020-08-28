@@ -11,7 +11,7 @@
             </div>
           </el-col>
           <el-col :span="12">{{title}}</el-col>
-          <el-col :span="6" class="redact" v-if="postId!=231||adminShow">
+          <el-col :span="6" class="redact" v-if="subordinate!=150||adminShow">
             <i class="el-icon-edit" @click="redact"></i>
           </el-col>
         </el-col>

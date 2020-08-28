@@ -12,7 +12,7 @@
             </div>
           </el-col>
           <el-col :span="6" :offset="12" class="redact">
-            <i class="el-icon-edit" @click="redact" v-if="postId!=231||adminShow"></i>
+            <i class="el-icon-edit" @click="redact" v-if="subordinate!=150||adminShow"></i>
           </el-col>
         </el-col>
         <!-- 标题 end -->

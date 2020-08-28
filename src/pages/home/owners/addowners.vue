@@ -209,7 +209,7 @@
             </el-col>
             <el-col :span="12" class="box2">
               <el-col :span="24" class="list" v-if="tabact == 1||tabact == 4">
-                <el-col :span="8" class="key imp">合作概况</el-col>
+                <el-col :span="8" class="key">合作概况</el-col>
                 <el-col :span="24" class="val situation">
                   <el-col :span="24" class="list" v-for="(item, index) in eventList" :key="index">
                     <el-col :span="5">
@@ -1211,7 +1211,7 @@ export default {
         image: this.handerImg,
         typeId: this.tabact,
 
-        itemId: itemId,
+        // itemId: itemId,
         name: this.ownersName,
         sex: this.sex,
         carUse: carUse,
@@ -1318,11 +1318,11 @@ export default {
         ) {
           judge = false
         }
-        data.ownerCoops.forEach((element) => {
-          judgeList.push(element.coopNum)
-          judgeList.push(element.coopMoney)
-          judgeList.push(element.period)
-        })
+        // data.ownerCoops.forEach((element) => {
+        //   judgeList.push(element.coopNum)
+        //   judgeList.push(element.coopMoney)
+        //   judgeList.push(element.period)
+        // })
         // console.log(judgeList)
         for (let i = 0; i < judgeList.length; i++) {
           const element = judgeList[i]

@@ -32,7 +32,7 @@
           <el-table-column prop="createTime" label="时间" width="81">
             <template slot-scope="scope">{{$date(scope.row.createTime)}}</template>
           </el-table-column>
-          <el-table-column prop="name" label="收件人" min-width="70" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="realName" label="收件人" min-width="70" show-overflow-tooltip></el-table-column>
           <el-table-column prop label="任务类型" min-width="80" show-overflow-tooltip>
             <template slot-scope="scope">
               <template v-if="scope.row.taskType==1">借车</template>

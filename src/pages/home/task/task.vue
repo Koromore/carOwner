@@ -222,6 +222,9 @@
                     ></i>
                   </el-tooltip>
                 </template>
+                <el-tooltip class="item" effect="dark" content="结算" placement="top">
+                  <i class="el-icon-circle-check" @click="toSettlementDetail(scope.row)"></i>
+                </el-tooltip>
               </template>
             </template>
           </el-table-column>
@@ -605,7 +608,7 @@
                 placement="top"
                 width="60"
                 trigger="manual"
-                v-model="evaluatePersonVisible"
+                v-model="scope.row.evaluatePersonVisible"
               >
                 <p
                   v-for="(item,index) in scope.row.taskToPersonList"
@@ -618,7 +621,7 @@
                 <i
                   class="el-icon-chat-dot-round"
                   slot="reference"
-                  @click="evaluatePersonVisibleShow(scope.row.taskToPersonList)"
+                  @click="evaluatePersonVisibleShow(scope.row.taskToPersonList,scope.$index)"
                 ></i>
               </el-popover>
             </template>
@@ -692,8 +695,10 @@
               <el-tooltip class="item" effect="dark" content="导入" placement="top">
                 <el-upload
                   class="upload-demo"
-                  action="ocarplay/api/invite/uploadExcle"
+                  :action="uploadExcle"
                   :on-success="importFileSuccess"
+                  name="excelFile"
+                  :show-file-list="false"
                 >
                   <i class="el-icon-download"></i>
                 </el-upload>
@@ -923,7 +928,8 @@ export default {
       inviteDataList: [],
       listInviteData: [],
       // 评价
-      evaluatePersonVisible: false,
+      // evaluatePersonVisible: false,
+      uploadExcle: null,
     }
   },
   // 侦听器
@@ -953,6 +959,7 @@ export default {
     // let list = [1,2,3,4,5,6]
     // console.log(list.splice(0,1))
     // console.log(list)
+    this.uploadExcle = 'ocarplay/api/invite/uploadExcle?deptId=' + this.deptId
   },
   // 方法
   methods: {
@@ -1041,6 +1048,7 @@ export default {
         if (res.status == 200 && data) {
           let data = res.data.data
           data.items.forEach((element) => {
+            element.evaluatePersonVisible = false
             element.typeList = []
             element.ownerItemList = []
             element.ownerName = []
@@ -1071,13 +1079,16 @@ export default {
               }
             })
             // Array.form(new Set(arr))
+            console.log(element.ownerName)
             element.typeList = [...new Set(element.typeList)]
             element.ownerItemList = [...new Set(element.ownerItemList)]
             element.ownerName = [...new Set(element.ownerName)]
+            // console.log(element.ownerName)
             // console.log(element.typeList)
             element.typeList = element.typeList.join(',')
             element.ownerItemList = element.ownerItemList.join(',')
             element.ownerName = element.ownerName.join(',')
+            // console.log(element.ownerName)
           })
           this.taskListData = data.items
           this.total = data.totalRows
@@ -1270,6 +1281,22 @@ export default {
       }
     },
     ///////// 获取模特列表 end /////////
+
+    toSettlementDetail(prm) {
+      this.$router.push({
+        // name: 'settlementDetail',
+
+        // params: {
+        //   id: prm.taskId,
+        //   name: prm.taskName
+        // },
+        path: '/home/settlementDetail',
+        query: {
+          id: prm.taskId,
+          name: prm.taskName,
+        },
+      })
+    },
 
     ///////// 提交任务 start /////////
     noTaskPut() {
@@ -1703,23 +1730,28 @@ export default {
     importFile(id) {
       console.log(id)
     },
-    importFileSuccess(){
+    importFileSuccess() {
       this.$message.success('导入成功')
+      this.putTask(this.taskDetail)
     },
     ///////// 导入结算列表 start /////////
 
     ///////// 导出结算列表 start /////////
-    evaluatePersonVisibleShow(obj) {
-      console.log(obj)
-      for (let i = 0; i < obj.length; i++) {
-        const element = obj[i]
-        if (!element.ifPgOver) {
-          this.evaluatePersonVisible = true
-          break
+    evaluatePersonVisibleShow(obj, index) {
+      if (this.taskListData[index].evaluatePersonVisible) {
+        this.taskListData[index].evaluatePersonVisible = false
+      } else {
+        console.log(index)
+        for (let i = 0; i < obj.length; i++) {
+          const element = obj[i]
+          if (element.ifPgOver==0) {
+            this.taskListData[index].evaluatePersonVisible = true
+            break
+          }
         }
-      }
-      if (!this.evaluatePersonVisible) {
-        this.$message.warning('已评价完成！')
+        if (!this.evaluatePersonVisible) {
+          this.$message.warning('已评价完成！')
+        }
       }
     },
     ///////// 导出结算列表 start /////////
@@ -1869,7 +1901,7 @@ $statusColor4: #ea8a85;
           margin-left: 9px;
         }
       }
-      .upload-demo{
+      .upload-demo {
         display: inline-block;
       }
     }

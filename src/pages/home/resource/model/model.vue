@@ -31,7 +31,7 @@
             :value="item.value"
           ></el-option>
         </el-select>
-        <div class="addModel" v-if="postId!=231||adminShow">
+        <div class="addModel" v-if="subordinate!=150||adminShow">
           <el-button
             type="primary"
             icon="el-icon-circle-plus-outline"
@@ -132,7 +132,7 @@
                 </div>
               </div>
               <div class="bottom">
-                <template v-if="postId!=231||adminShow">
+                <template v-if="subordinate!=150||adminShow">
                   <el-col :span="6" :offset="3">
                     <i class="el-icon-edit-outline" @click="toModel(item.modelId)"></i>
                   </el-col>

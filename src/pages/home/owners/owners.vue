@@ -114,8 +114,26 @@
           <el-table-column prop="timeLimit" label="合作时长" min-width="81">
             <template slot-scope="scope">{{$duration(scope.row.timeLimit)}}</template>
           </el-table-column>
-          <el-table-column prop="coopMoney" label="合作费用" min-width="81"></el-table-column>
-          <el-table-column prop="coopNum" label="固定合作总量" min-width="100"></el-table-column>
+          <el-table-column prop="coopMoney" label="合作费用" min-width="81">
+            <template slot-scope="scope">
+              <span v-if="scope.row.coopMoney">
+                {{scope.row.coopMoney}}
+              </span>
+              <span v-else>
+                /
+              </span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="coopNum" label="固定合作总量" min-width="100">
+            <template slot-scope="scope">
+              <span v-if="scope.row.coopNum">
+                {{scope.row.coopNum}}
+              </span>
+              <span v-else>
+                /
+              </span>
+            </template>
+          </el-table-column>
           <el-table-column prop="alreadyCooperateNum" label="已合作" min-width="100">
             <template slot-scope="scope">
               <template v-if="scope.row.alreadyCooperateNum">{{scope.row.alreadyCooperateNum}}</template>
@@ -128,8 +146,9 @@
           <el-table-column prop="period" label="结算周期" min-width="100">
             <template slot-scope="scope">
               <template v-if="scope.row.period == 0">按月结算</template>
-              <template v-if="scope.row.period == 1">按年结算</template>
-              <template v-if="scope.row.period == 2">按季度结算</template>
+              <template v-else-if="scope.row.period == 1">按年结算</template>
+              <template v-else-if="scope.row.period == 2">按季度结算</template>
+              <template v-else>/</template>
             </template>
           </el-table-column>
           <el-table-column prop label="操作" min-width="81" v-if="subordinate==150||adminShow">
@@ -484,13 +503,13 @@ export default {
     load() {
       this.isMore = false
       // this.isflag = true
-      if (this.isflag) {
-        // this.getDevices()
+      // if (this.isflag) {
+      //   // this.getDevices()
         this.isflag = false
-        this.getVehicleOwnerList()
-        this.pageNum++
-        console.log('触底了')
-      }
+      //   this.getVehicleOwnerList()
+      //   this.pageNum++
+      //   console.log('触底了')
+      // }
 
       // console.log("触底了")
     },
@@ -643,13 +662,14 @@ export default {
               // this.ownerListData(res.data.msg)
               // this.getPlaceList()
               let data = res.data
-              this.ownerListData = this.ownerListData.concat(data.items)
+              // this.ownerListData = this.ownerListData.concat(data.items)
+              this.ownerListData = data.items
               this.total = data.totalRows
               this.listLoading = false
-              this.isflag = true
-              if (data.pageRows < 30) {
-                this.slideLoadingFlag = false
-              }
+              // this.isflag = true
+              // if (data.pageRows < 30) {
+              //   this.slideLoadingFlag = false
+              // }
             }
           })
       }
@@ -665,6 +685,7 @@ export default {
     },
     tab2(id) {
       this.tab2act = id
+      this.pageNum = 1
       this.ownerListData = []
       this.slideLoadingFlag = true
       this.getVehicleOwnerList()

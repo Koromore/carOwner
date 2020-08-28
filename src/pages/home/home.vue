@@ -164,7 +164,6 @@ export default {
   background: rgb(241, 241, 241);
   #content {
     min-width: 1300px;
-    box-sizing: border-box;
     height: calc(100vh - 60px);
     padding-top: 9px;
     padding-bottom: 0;
