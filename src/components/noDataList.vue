@@ -1,7 +1,7 @@
 <template>
   <div id="noDataList" :style="noDatastyle">
     <!-- <div class="content"> -->
-      <img width="30%" src="/static/images/carow/empty.png" alt srcset />
+      <img width="30%" src="static/images/carow/empty.png" alt srcset />
       <p>很抱歉，还没有内容哦!</p>
     <!-- </div> -->
   </div>

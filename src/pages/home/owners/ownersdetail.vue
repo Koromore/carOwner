@@ -576,8 +576,8 @@ export default {
       this.loading = true
       let query = this.$route.query
       let data = {
-        typeId: query.typeId,
-        vehicleOwnerId: query.vehicleOwnerId,
+        typeId: query.typeId*1,
+        vehicleOwnerId: query.vehicleOwnerId*1,
       }
       // console.log(data)
       this.$axios

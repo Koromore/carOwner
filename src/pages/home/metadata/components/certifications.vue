@@ -171,8 +171,7 @@ export default {
                 deptId: 153,
                 deptName: '长城',
                 carType: []
-              }
-              ,
+              },
               {
                 deptId: 106,
                 deptName: '东本',
@@ -208,8 +207,7 @@ export default {
                   carSeriesIds: carSeriesIds,
                   carSeriesName: carSeriesName
                 })
-              }
-               else if (element.deptId == 106) {
+              } else if (element.deptId == 106) {
                 carSeriesListData[3].carType.push({
                   carTypeId: element.carTypeId,
                   carTypeName: element.carTypeName,

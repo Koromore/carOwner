@@ -187,7 +187,7 @@
           <el-col :span="24" class="list">
             <div class="key">备注</div>
             <div class="val">
-              <el-input placeholder="请输入内容" v-model="remark" clearable :disabled="!disabledCaigou"></el-input>
+              <el-input placeholder="请输入内容" v-model="remark" clearable :disabled="!disabledCaigou" maxlength="500"></el-input>
             </div>
           </el-col>
         </el-col>
@@ -723,6 +723,11 @@ export default {
                 label: '长城',
                 children: [],
               },
+              {
+                deptId: 106,
+                label: '东本',
+                children: []
+              }
             ]
             data.forEach((element) => {
               let children = {
@@ -743,6 +748,8 @@ export default {
                 carSeriesList[1].children.push(children)
               } else if (element.deptId == 153) {
                 carSeriesList[2].children.push(children)
+              } else if (element.deptId == 106) {
+                carSeriesList[3].children.push(children)
               }
             })
             this.carSeriesList = carSeriesList

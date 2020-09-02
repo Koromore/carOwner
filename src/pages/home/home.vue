@@ -93,6 +93,11 @@ export default {
                 label: '长城',
                 children: [],
               },
+              {
+                deptId: 106,
+                label: '东本',
+                children: []
+              }
             ]
             data.forEach((element) => {
               let children = {
@@ -105,6 +110,8 @@ export default {
                 carSeriesList[1].children.push(children)
               } else if (element.deptId == 153) {
                 carSeriesList[2].children.push(children)
+              } else if (element.deptId == 106) {
+                carSeriesList[3].children.push(children)
               }
             })
             this.carSeriesList = carSeriesList

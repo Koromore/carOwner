@@ -121,7 +121,7 @@ export default {
     commentShow: function (newData, oldData) {
       if (newData != 0) {
         this.drawerData = true
-        console.log(newData)
+        // console.log(newData)
       }
     },
   },

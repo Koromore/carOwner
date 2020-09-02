@@ -690,8 +690,8 @@ export default {
       this.loading = true
       let query = this.$route.query
       let data = {
-        typeId: query.typeId,
-        vehicleOwnerId: query.vehicleOwnerId,
+        typeId: query.typeId*1,
+        vehicleOwnerId: query.vehicleOwnerId*1,
       }
       // console.log(data)
       this.$axios
@@ -711,7 +711,7 @@ export default {
             }
 
             this.tabact = data.typeId
-            if (data.typeId == 1) {
+            if (data.typeId == 1 || data.typeId == 4) {
               let eventData = []
               data.ownerCoops.forEach((element) => {
                 eventData.push(element.itemId)
@@ -1002,6 +1002,11 @@ export default {
                 label: '长城',
                 children: [],
               },
+              {
+                deptId: 106,
+                label: '东本',
+                children: []
+              }
             ]
             data.forEach((element) => {
               let children = {
@@ -1022,6 +1027,8 @@ export default {
                 carSeriesList[1].children.push(children)
               } else if (element.deptId == 153) {
                 carSeriesList[2].children.push(children)
+              } else if (element.deptId == 106) {
+                carSeriesList[3].children.push(children)
               }
             })
             this.carSeriesList = carSeriesList
@@ -1372,15 +1379,15 @@ export default {
           judgeList.push(element.period)
         })
         // console.log(judgeList)
-        for (let i = 0; i < judgeList.length; i++) {
-          const element = judgeList[i]
-          // console.log(judge)
-          if (element === '' || element === null) {
-            judge = false
-            // console.log(judge)
-            break
-          }
-        }
+        // for (let i = 0; i < judgeList.length; i++) {
+        //   const element = judgeList[i]
+        //   // console.log(judge)
+        //   if (element === '' || element === null) {
+        //     judge = false
+        //     // console.log(judge)
+        //     break
+        //   }
+        // }
       } else if (tabact == 3) {
         if (
           data.name  == ''||
