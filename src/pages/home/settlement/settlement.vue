@@ -47,9 +47,9 @@
           <!-- <el-table-column prop="serNum" label="采购编号" min-width="180"></el-table-column> -->
           <el-table-column prop="deptName" label="项目组" min-width="130"></el-table-column>
           <el-table-column prop="taskName" label="任务名称" min-width="360"></el-table-column>
-          <el-table-column prop="updateTime" label="提交时间" min-width="160">
+          <!-- <el-table-column prop="updateTime" label="提交时间" min-width="160">
             <template slot-scope="scope">{{$date(scope.row.updateTime)}}</template>
-          </el-table-column>
+          </el-table-column> -->
           <el-table-column prop="account" label="结算清单" width="130" align="center">
             <template slot-scope="scope">
               <el-tooltip class="item" effect="dark" content="清单" placement="top">

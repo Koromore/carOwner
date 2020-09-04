@@ -2,7 +2,6 @@
   <div id="tasksettlement">
     <!-- 头部选项框 start -->
     <el-row class="top">
-      <!-- <el-row class="top"> -->
       <el-col :span="8" class="left cont">
         <div @click="previous">
           <i class="el-icon-arrow-left"></i>

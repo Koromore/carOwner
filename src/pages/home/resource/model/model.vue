@@ -396,7 +396,7 @@ export default {
     // 页码变换时触发事件
     changePage(pageNum) {
       this.pageNum = pageNum
-      this.getlistOwnerByCity()
+      this.getlistModel()
     },
     ///////// 分页 end /////////
   },

@@ -1744,7 +1744,7 @@ export default {
         console.log(index)
         for (let i = 0; i < obj.length; i++) {
           const element = obj[i]
-          if (element.ifPgOver==0) {
+          if (element.ifPgOver == 0) {
             this.taskListData[index].evaluatePersonVisible = true
             break
           }

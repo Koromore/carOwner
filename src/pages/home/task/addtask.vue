@@ -169,6 +169,8 @@
                 placeholder="请输入内容"
                 v-model="taskDesc"
                 :disabled="!disabledCaigou"
+                maxlength="500"
+                show-word-limit
               ></el-input>
               <!-- <div class="miKey">邀约目的:</div>
             <el-input placeholder="请输入内容" v-model="taskDesc.input1"></el-input>
