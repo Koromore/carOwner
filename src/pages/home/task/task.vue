@@ -126,7 +126,7 @@
               </template>
             </template>
           </el-table-column>
-          <el-table-column prop="status" label="状态" min-width="80">
+          <el-table-column prop="status" label="状态" min-width="60">
             <template slot-scope="scope">
               <div v-if="scope.row.status==0" class="statusColor0">执行中</div>
               <div v-if="scope.row.status==1" class="statusColor1">结算中</div>
@@ -136,26 +136,27 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="提交" min-width="80" sortable>
+          <el-table-column label="提交" min-width="70" sortable>
             <template slot-scope="scope">
               <span v-if="scope.row.isSubmit">&nbsp;&nbsp;&nbsp;Y</span>
               <span v-else>&nbsp;&nbsp;&nbsp;N</span>
             </template>
           </el-table-column>
-          <el-table-column label="结算" min-width="80" sortable>
+          <el-table-column label="结算" min-width="70" sortable>
             <template slot-scope="scope">
               <span v-if="scope.row.isClearing">&nbsp;&nbsp;&nbsp;Y</span>
               <span v-else>&nbsp;&nbsp;&nbsp;N</span>
             </template>
           </el-table-column>
 
-          <el-table-column prop="endTime" label="预计时间" min-width="100" sortable>
-            <template slot-scope="scope">{{$date(scope.row.endTime)}}</template>
+          <el-table-column prop="endTime" label="下达时间" min-width="100" sortable>
+            <template slot-scope="scope">{{$date(scope.row.createTime)}}</template>
+            <!-- <template slot-scope="scope">{{$date(scope.row.endTime)}}</template> -->
           </el-table-column>
           <el-table-column
             prop="address"
             label="操作"
-            min-width="140"
+            min-width="150"
             v-if="subordinate==150||deptId==90||adminShow"
           >
             <template slot-scope="scope">

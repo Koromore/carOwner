@@ -69,22 +69,27 @@
             </div>
             <div class="val" v-else>
               <el-collapse v-model="activeNames">
-                <el-collapse-item
-                  :title="taskDetail.listInvite[0].listOwnerType[0].typeName+'-'+taskDetail.listInvite[0].realName+'-'+taskDetail.listInvite[0].listOwnerItem[0].itemName"
-                  name="1"
-                >
-                  <template v-if="taskDetail.listInvite.length!=0">
-                    <div
-                      v-for="(item, index) in taskDetail.listInvite"
-                      :key="index"
-                      v-show="index!=0"
-                    >
-                      <div v-if="item.userType==0">
-                      <span>{{item.listOwnerType[0].typeName}}—{{item.listOwnerItem[0].itemName}}—{{item.realName}}</span>
+                <template v-if="taskDetail.listInvite.length">
+                  <el-collapse-item
+                    :title="taskDetail.listInvite[0].listOwnerType[0].typeName+'-'+taskDetail.listInvite[0].realName+'-'+taskDetail.listInvite[0].listOwnerItem[0].itemName"
+                    name="1"
+                  >
+                    <template v-if="taskDetail.listInvite.length!=0">
+                      <div
+                        v-for="(item, index) in taskDetail.listInvite"
+                        :key="index"
+                        v-show="index!=0"
+                      >
+                        <div v-if="item.userType==0">
+                        <span>{{item.listOwnerType[0].typeName}}—{{item.listOwnerItem[0].itemName}}—{{item.realName}}</span>
+                        </div>
                       </div>
-                    </div>
-                  </template>
-                </el-collapse-item>
+                    </template>
+                  </el-collapse-item>
+                </template>
+                <template v-else>
+                  暂无
+                </template>
               </el-collapse>
             </div>
           </el-col>

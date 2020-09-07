@@ -401,15 +401,23 @@ export default {
                   url: photoCooperate.localPath,
                 },
               ]
+              this.pactName = photoCooperate.fileName
+              this.pactPath = photoCooperate.localPath
+              this.pactsuffix = photoCooperate.suffix
+              this.allottedTime = [
+                photoCooperate.startTime,
+                photoCooperate.endTime,
+              ]
+              this.timeLimit = photoCooperate.timeLimit
             }
 
-            this.pactName = photoCooperate.fileName
-            this.pactPath = photoCooperate.localPath
-            this.pactsuffix = photoCooperate.suffix
-            this.allottedTime = [
-              photoCooperate.startTime,
-              photoCooperate.endTime,
-            ]
+            // this.pactName = photoCooperate.fileName
+            // this.pactPath = photoCooperate.localPath
+            // this.pactsuffix = photoCooperate.suffix
+            // this.allottedTime = [
+            //   photoCooperate.startTime,
+            //   photoCooperate.endTime,
+            // ]
 
             let photoIntroList = data.photoIntroList // 摄影师文档
             let vitaeList = [] // 履历文档
@@ -462,8 +470,6 @@ export default {
             // let vitaeFileList = []
             // let worksList = [] // 作品文档
             // let worksFileList = []
-
-            this.timeLimit = photoCooperate.timeLimit
           }
         }
         this.loading = false
@@ -641,9 +647,12 @@ export default {
     ///////// 个人履历上传 end /////////
 
     ///////// 个人作品上传 start /////////
-    worksBeforeUpload(file){
+    worksBeforeUpload(file) {
       // console.log(file.type.indexOf('image'))
-      if (file.type.indexOf('image')==-1&&file.type.indexOf('video')==-1) {
+      if (
+        file.type.indexOf('image') == -1 &&
+        file.type.indexOf('video') == -1
+      ) {
         this.$message.error('只允许上传视频和图片')
         return false
       }
@@ -772,7 +781,17 @@ export default {
         ]
       }
       // console.log(data)
-      if (name&&age&&sex!=null&&goodAt&&carTypeId&&province&&introduce&&vitaeList.length!=0&&worksList.length!=0) {
+      if (
+        name &&
+        age &&
+        sex != null &&
+        goodAt &&
+        carTypeId &&
+        province &&
+        introduce &&
+        vitaeList.length != 0 &&
+        worksList.length != 0
+      ) {
         this.$axios
           .post('/ocarplay/api/photoPerson/save', data)
           .then((res) => {

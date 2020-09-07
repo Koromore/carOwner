@@ -111,6 +111,10 @@ export default {
           value: 153,
           label: '长城',
         },
+        {
+          value: 106,
+          label: '东本',
+        },
       ],
       deptId: null, // 项目组ID
       personList: [], // 摄影师列表

@@ -45,7 +45,7 @@
           <el-col :span="24" class="list">
             <div class="key">场地类型</div>
             <div class="symbol">：</div>
-            <div class="val">{{placeTypeId}}</div>
+            <div class="val">{{placeTypeName}}</div>
           </el-col>
           <el-col :span="24" class="list">
             <div class="key">所在区域</div>

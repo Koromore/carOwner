@@ -95,7 +95,7 @@
           <el-col :span="24" class="list">
             <div class="key">费用</div>
             <div class="val">
-              <el-input placeholder="请输入内容" v-model="money" clearable></el-input>
+              <el-input placeholder="请输入内容" v-model="money" type="number" clearable></el-input>
             </div>
           </el-col>
           <el-col :span="24" class="list">
@@ -298,7 +298,7 @@ export default {
         pageNum: 1,
         pageSize: 30,
       }
-      this.$axios.post('ocarplay/api/placeType/listAjaxUnPage').then((res) => {
+      this.$axios.post('/ocarplay/api/placeType/listAjaxUnPage').then((res) => {
         // console.log(res)
         // this.listLoading = false
         if (res.status == 200) {
