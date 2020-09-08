@@ -19,10 +19,16 @@
               <el-input placeholder="请输入内容" v-model="name" clearable></el-input>
             </div>
           </el-col>
-          <el-col :span="24" class="list">
+          <!-- <el-col :span="24" class="list">
             <div class="key">年龄</div>
             <div class="val">
               <el-input placeholder="请输入内容" v-model="age" clearable></el-input>
+            </div>
+          </el-col> -->
+          <el-col :span="24" class="list">
+            <div class="key">出生日期：</div>
+            <div class="val">
+              <el-date-picker v-model="birthday" type="date" placeholder="选择日期" value-format="yyyy-MM-dd"></el-date-picker>
             </div>
           </el-col>
           <el-col :span="24" class="list">
@@ -241,6 +247,7 @@ export default {
       modelId: null,
       name: null, // 名字
       age: null, // 年龄
+      birthday: null, // 出生日期
       carTypeId: null, // 客户车型
       phone: null, // 电话
       money: null, // 费用
@@ -431,6 +438,7 @@ export default {
             this.money = data.money // 费用
             this.agent = data.agent // 经纪人
             this.sex = data.sex // 性别
+            this.birthday = data.birthday // 出生年月
             this.identity = data.identity // 身份证号
             this.qq = data.qq
             this.isCoop = data.isCoop // 是否合作
@@ -710,6 +718,7 @@ export default {
       let modelId = this.modelId // 模特Id
       let name = this.name // 名字
       let age = this.age // 年龄
+      let birthday = this.birthday // 出生日期
       let carTypeId = this.carTypeId // 客户车型
       let phone = this.phone // 电话
       let money = this.money // 费用

@@ -49,8 +49,8 @@
               <el-col :span="15" class="val">{{name}}</el-col>
             </el-col>
             <el-col :span="24" class="list">
-              <el-col :span="7" class="key imp">年龄：</el-col>
-              <el-col :span="15" class="val">{{age}}</el-col>
+              <el-col :span="7" class="key imp">出生日期：</el-col>
+              <el-col :span="15" class="val">{{$date0(birthday)}}</el-col>
             </el-col>
             <el-col :span="24" class="list">
               <el-col :span="7" class="key imp">性别：</el-col>
@@ -499,6 +499,7 @@ export default {
       handerImg: 'static/images/carow/hander.png', // 头像
       name: null, // 摄影师名字
       age: null, // 年龄
+      birthday: null, // 出生日期
       sex: null, // 摄影师性别
       phone: null, // 手机号
       money: null, // 费用
@@ -599,7 +600,8 @@ export default {
               ]
             }
             this.name = data.name // 摄影师名字
-            this.age = data.age // 年龄
+            // this.age = data.age // 年龄
+            this.birthday = data.birthday // 出生日期
             this.sex = data.sex // 摄影师性别
             this.phone = data.phone // 手机号
             this.money = data.money // 费用

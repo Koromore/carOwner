@@ -221,6 +221,7 @@ export default {
         place: {
           isCar: this.isCar,
           city: this.city,
+          placeName: this.$parent.searchWordData.value
         },
       }
       this.$axios.post('/ocarplay/api/place/listAjax', data).then((res) => {

@@ -297,6 +297,7 @@ export default {
         pageSize: this.pageSize,
         model: {
           city: this.city,
+          name: this.$parent.searchWordData.value
         },
         orderType: this.orderType, // 排序类型（1-拍摄排序,2-评分排序）
         type: this.orderSort, // 排序类型（1-正序,2-倒序）

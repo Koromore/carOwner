@@ -8,7 +8,6 @@
           <div :class="[tabact==2?'but act':'but']" @click="tab(2)">模特</div>
           <div :class="[tabact==3?'but act':'but']" @click="tab(3)">场地</div>
         </div>
-        {{this.$parent.searchWordData}}
       </el-col>
       <el-col :span="15" class="right">
         <!-- 评分排序 -->
@@ -297,7 +296,6 @@ export default {
   mounted() {
     ///////// 获取车主列表 start /////////
     this.getlistPhotoPerson()
-    console.log(this.$parent.searchWordData)
     
   },
   // 方法
@@ -369,6 +367,7 @@ export default {
         photoPerson: {
           isCar: this.isCar,
           city: this.city,
+          name: this.$parent.searchWordData.value
         },
         orderType: this.orderType, // 排序类型（1-拍摄排序,2-评分排序）
       }

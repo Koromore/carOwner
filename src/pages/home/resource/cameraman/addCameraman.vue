@@ -42,11 +42,16 @@
                 <el-input placeholder="请输入内容" v-model="name"></el-input>
               </el-col>
             </el-col>
-            <el-col :span="24" class="list">
+            <!-- <el-col :span="24" class="list">
               <el-col :span="7" class="key imp">年龄：</el-col>
               <el-col :span="15" class="val">
                 <el-input placeholder="请输入内容" v-model="age" type="number"></el-input>
-                <!-- {{eventData}} -->
+              </el-col>
+            </el-col> -->
+            <el-col :span="24" class="list">
+              <el-col :span="7" class="key imp">出生日期：</el-col>
+              <el-col :span="15" class="val">
+                <el-date-picker v-model="birthday" type="date" placeholder="选择日期" value-format="yyyy-MM-dd"></el-date-picker>
               </el-col>
             </el-col>
             <el-col :span="24" class="list">
@@ -264,6 +269,7 @@ export default {
       handerImg: null, // 头像
       name: null, // 摄影师名字
       age: null, // 年龄
+      birthday: null, // 出生日期
       sex: null, // 摄影师性别
       phone: null, // 手机号
       money: null, // 费用
@@ -372,7 +378,8 @@ export default {
             this.personId = data.personId // 摄影师Id
             this.handerImg = data.image // 头像
             this.name = data.name // 摄影师名字
-            this.age = data.age // 年龄
+            // this.age = data.age // 年龄
+            this.birthday = data.birthday // 年龄
             this.sex = data.sex // 摄影师性别
             this.phone = data.phone // 手机号
             this.money = data.money // 费用
@@ -731,7 +738,9 @@ export default {
       let personId = this.personId // 摄影师Id
       let image = this.handerImg // 头像
       let name = this.name // 摄影师名字
-      let age = this.age * 1 // 年龄
+      // let age = this.age * 1 // 年龄
+      let birthday = this.birthday // 出生日期
+      
       let sex = this.sex // 摄影师性别
       let phone = this.phone // 手机号
       let money = this.money * 1 // 费用
@@ -753,7 +762,8 @@ export default {
         personId, // 摄影师Id
         image, // 头像
         name, // 摄影师名字
-        age, // 年龄
+        // age, // 年龄
+        birthday, // 出生日期
         sex, // 摄影师性别
         phone, // 手机号
         money, // 费用
@@ -783,13 +793,13 @@ export default {
       // console.log(data)
       if (
         name &&
-        age &&
+        birthday &&
         sex != null &&
         goodAt &&
         carTypeId &&
         province &&
         introduce &&
-        vitaeList.length != 0 &&
+        // vitaeList.length != 0 &&
         worksList.length != 0
       ) {
         this.$axios
