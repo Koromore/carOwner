@@ -653,9 +653,9 @@ export default {
               this.hatchList = ipGrows
             }
             if (data.sex) {
-              this.sex = '1'
+              this.sex = 1
             } else {
-              this.sex = '0'
+              this.sex = 0
             }
             // console.log(this.sex)
             this.work = data.work

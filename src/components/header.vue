@@ -49,7 +49,7 @@
           <el-button slot="append" icon="el-icon-search" @click="searchStart"></el-button>
         </el-input>
         <!-- 搜索框 end -->
-
+        <i class="el-icon-document-copy" style="color: #fff;font-size: 20px;margin-right: 9px;"></i>
         <!-- 用户信息 start -->
         <div class="admin">
           <!-- <i class="el-icon-bell"></i> -->

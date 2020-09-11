@@ -47,11 +47,16 @@
               <el-col :span="15" class="val">
                 <el-input placeholder="请输入内容" v-model="age" type="number"></el-input>
               </el-col>
-            </el-col> -->
+            </el-col>-->
             <el-col :span="24" class="list">
               <el-col :span="7" class="key imp">出生日期：</el-col>
               <el-col :span="15" class="val">
-                <el-date-picker v-model="birthday" type="date" placeholder="选择日期" value-format="yyyy-MM-dd"></el-date-picker>
+                <el-date-picker
+                  v-model="birthday"
+                  type="date"
+                  placeholder="选择日期"
+                  value-format="yyyy-MM-dd"
+                ></el-date-picker>
               </el-col>
             </el-col>
             <el-col :span="24" class="list">
@@ -189,45 +194,70 @@
                   ></el-input>
                 </el-col>
                 <el-col :span="19" :offset="4" class="val">
-                  <el-upload
-                    class="vitaeUpload"
-                    drag
-                    multiple
-                    action="/ocarplay/file/upload"
-                    :on-success="vitaeSuccess"
-                    :on-remove="vitaeRemove"
-                    :file-list="vitaeFileList"
-                  >
-                    <i class="el-icon-upload"></i>
-                    <div class="el-upload__text">
-                      将文件拖到此处，或
-                      <em>点击上传</em>
-                      上传履历附件
-                    </div>
-                  </el-upload>
+                  <el-scrollbar style="height:260px">
+                    <el-upload
+                      class="vitaeUpload"
+                      drag
+                      multiple
+                      action="/ocarplay/file/upload"
+                      :on-success="vitaeSuccess"
+                      :on-remove="vitaeRemove"
+                      :file-list="vitaeFileList"
+                    >
+                      <i class="el-icon-upload"></i>
+                      <div class="el-upload__text">
+                        将文件拖到此处，或
+                        <em>点击上传</em>
+                        上传履历附件
+                      </div>
+                    </el-upload>
+                  </el-scrollbar>
                 </el-col>
               </el-col>
               <el-col :span="24" class="list">
-                <el-col :span="4" class="key imp">个人作品：</el-col>
+                <el-col :span="4" class="key imp" style="align-self: flex-start;">个人作品：</el-col>
                 <el-col :span="19" class="val">
-                  <el-upload
-                    class="upload-demo"
-                    drag
-                    multiple
-                    action="/ocarplay/file/upload"
-                    :on-success="worksSuccess"
-                    :on-remove="worksRemove"
-                    :file-list="worksFileList"
-                    :accept="worksAccept"
-                    :before-upload="worksBeforeUpload"
-                  >
-                    <i class="el-icon-upload"></i>
-                    <div class="el-upload__text">
-                      将文件拖到此处，或
-                      <em>点击上传</em>
-                      上传个人作品(只允许上传视频和图片)
-                    </div>
-                  </el-upload>
+                  <el-scrollbar style="height:240px">
+                    <el-upload
+                      class="upload-demo"
+                      drag
+                      multiple
+                      action="/ocarplay/file/upload"
+                      :on-success="worksSuccess"
+                      :on-remove="worksRemove"
+                      :file-list="worksFileList"
+                      :accept="worksAccept"
+                      :before-upload="worksBeforeUpload"
+                    >
+                      <i class="el-icon-upload"></i>
+                      <div class="el-upload__text">
+                        将文件拖到此处，或
+                        <em>点击上传</em>
+                        上传个人作品(只允许上传视频和图片)
+                      </div>
+                    </el-upload>
+                  </el-scrollbar>
+                </el-col>
+                <el-col :span="19" :offset="4" class="val url">作品链接</el-col>
+                <el-col :span="19" :offset="4">
+                  <el-scrollbar style="height:124px">
+                    <el-col
+                      :span="24"
+                      class="val url"
+                      v-for="(item, index) in photoPersonWorkList"
+                      :key="index"
+                      v-show="!item.deleteFlag"
+                    >
+                      <!-- photoPersonWorkList -->
+                      <el-col :span="16">
+                        <el-input placeholder="请输入内容" v-model="item.url" clearable></el-input>
+                      </el-col>
+                      <el-col :span="6" class="btn">
+                        <i class="el-icon-delete" @click="delWorkList(index, item)"></i>
+                        <i class="el-icon-circle-plus-outline" @click="addWorkList"></i>
+                      </el-col>
+                    </el-col>
+                  </el-scrollbar>
                 </el-col>
               </el-col>
             </el-col>
@@ -300,7 +330,14 @@ export default {
       worksList: [], // 作品文档
       worksFileList: [], // 作品文档回填
       worksAccept: '.png,.jpg,.jpeg,.bmp,.gif,.mp4,.m2v,mkv', // 上传文档格式设置
-
+      photoPersonWorkList: [
+        {
+          woekId: '',
+          userId: '',
+          url: '',
+          deleteFlag: false,
+        },
+      ], // 作品链接
       // 提交按钮开关
       submitFlag: true,
       fileList: [],
@@ -473,6 +510,20 @@ export default {
             this.vitaeFileList = vitaeFileList
             this.worksList = worksList
             this.worksFileList = worksFileList
+
+            if (data.photoPersonWorkList.length == 0) {
+              this.photoPersonWorkList = [
+                {
+                  workId: '',
+                  userId: this.personId,
+                  url: '',
+                  deleteFlag: false,
+                },
+              ]
+            } else {
+              this.photoPersonWorkList = data.photoPersonWorkList
+            }
+
             // let vitaeList = [] // 履历文档
             // let vitaeFileList = []
             // let worksList = [] // 作品文档
@@ -721,7 +772,35 @@ export default {
       })
       this.worksList = worksList
     },
-    ///////// 个人作品上传 end /////////
+    ///////// 作品链接 start /////////
+    // 新增作品地址
+    addWorkList() {
+      this.photoPersonWorkList.push({
+        workId: '',
+        userId: this.personId,
+        url: '',
+        deleteFlag: false,
+      })
+    },
+    // 删除作品地址
+    delWorkList(index, params) {
+      let num = 0
+      this.photoPersonWorkList.forEach((element) => {
+        if (!element.deleteFlag) {
+          num++
+        }
+      })
+      if (num > 1) {
+        if (params.workId) {
+          this.photoPersonWorkList[index].deleteFlag = true
+        } else {
+          this.photoPersonWorkList.splice(index, 1)
+        }
+      } else {
+        this.$message.warning('已达到最小值！')
+      }
+    },
+    ///////// 作品链接 end /////////
 
     ///////// 提交按钮 start /////////
     saveCamera() {
@@ -740,7 +819,7 @@ export default {
       let name = this.name // 摄影师名字
       // let age = this.age * 1 // 年龄
       let birthday = this.birthday // 出生日期
-      
+
       let sex = this.sex // 摄影师性别
       let phone = this.phone // 手机号
       let money = this.money * 1 // 费用
@@ -757,6 +836,7 @@ export default {
       let vitaeList = this.vitaeList // 履历文档
       let worksList = this.worksList // 作品文档
       photoIntroList = photoIntroList.concat(vitaeList, worksList)
+      let photoPersonWorkList = this.photoPersonWorkList // 作品链接
       let data = {
         // 摄影师基础信息
         personId, // 摄影师Id
@@ -776,6 +856,7 @@ export default {
         isCar, // 会开车
         introduce, // 摄影师履历
         photoIntroList, // 摄影师文档
+        photoPersonWorkList, // 作品链接
       }
       if (this.pactPath) {
         data.photoCooperateList = [
@@ -850,6 +931,19 @@ export default {
       flex-wrap: wrap;
       align-items: center;
       margin: 13px 0;
+      .url {
+        margin-top: 9px;
+        .btn {
+          height: 40px;
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+          i {
+            font-size: 18px;
+            margin-left: 6px;
+          }
+        }
+      }
       & >>> .el-checkbox {
         margin-right: 6px;
       }

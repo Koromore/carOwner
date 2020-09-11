@@ -37,7 +37,7 @@ export default {
       // console.log(to)
       this.routeName = this.$route.matched[1].name
 
-      console.log(this.$route)
+      // console.log(this.$route)
     },
   },
   // 钩子函数
@@ -97,7 +97,12 @@ export default {
                 deptId: 106,
                 label: '东本',
                 children: []
-              }
+              },
+              {
+                deptId: 117,
+                deptName: '内容一组',
+                carType: [],
+              },
             ]
             data.forEach((element) => {
               let children = {
@@ -112,6 +117,8 @@ export default {
                 carSeriesList[2].children.push(children)
               } else if (element.deptId == 106) {
                 carSeriesList[3].children.push(children)
+              } else if (element.deptId == 117) {
+                carSeriesList[4].children.push(children)
               }
             })
             this.carSeriesList = carSeriesList

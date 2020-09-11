@@ -27,7 +27,7 @@
           <el-col :span="24" class="list">
             <div class="key">客户-车型</div>
             <div class="colon">:</div>
-            <div class="val" v-if="carTypeId">{{carTypeId}}</div>
+            <div class="val" v-if="carTypeId">{{carTypeName}}</div>
             <div class="val" v-else>暂无数据</div>
           </el-col>
           <el-col :span="24" class="list">
@@ -206,6 +206,15 @@
                 </template>
               </el-col>
               <el-link @click="download(item)">{{item.fileName}}</el-link>
+              <!-- <img
+                :src="item.url"
+                alt
+                srcset
+                v-for="(item,index) in synopsisFileList"
+                :key="index"
+                @click="previewImg(item.url)"
+                style="width:auto;height:169px;margin-top: 9px;"
+              /> -->
             </div>
             <!-- {{synopsisFileList}} -->
           </el-col>
@@ -223,7 +232,7 @@
                 srcset
                 @click="previewImg(item.url)"
               />
-              <el-dialog :visible.sync="dialogVisibleImg" width="36%">
+              <el-dialog :visible.sync="dialogVisibleImg" width="49%">
                 <img width="100%" :src="dialogImageUrl" alt />
               </el-dialog>
             </div>
@@ -239,7 +248,7 @@
                 height:150px"
                 v-for="(item,index) in introduceFileList"
                 :key="index"
-                :src="'/ocarplay/'+item.localPath"
+                src="static/images/carow/video.png"
                 alt
                 srcset
                 @click="previewVideo(item.localPath)"
@@ -395,7 +404,7 @@ export default {
         modelId: id,
       }
       this.$axios.post('/ocarplay/api/model/show', data).then((res) => {
-        console.log(res)
+        // console.log(res)
         if (res.status == 200) {
           let data = res.data
           if (data.errcode != -1) {
@@ -403,6 +412,7 @@ export default {
             this.name = data.name // 名字
             this.age = data.age // 年龄
             this.carTypeId = data.carTypeId * 1 // 客户车型
+            this.carTypeName = data.carTypeName // 客户车型
             this.phone = data.phone // 电话
             this.money = data.money // 费用
             this.agent = data.agent // 经纪人
@@ -433,6 +443,7 @@ export default {
                 introId: element.introId,
               }
               if (element.type == 0) {
+                pushData.url = '/ocarplay/' + element.localPath
                 synopsisFileList.push(pushData)
               } else if (element.type == 1) {
                 pushData.url = '/ocarplay/' + element.localPath

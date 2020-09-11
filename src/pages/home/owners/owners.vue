@@ -633,7 +633,7 @@ export default {
     ///////// 车主列表获取 start /////////
     getVehicleOwnerList() {
       if (this.slideLoadingFlag) {
-        console.log('获取车主！')
+        // console.log('获取车主！')
         this.listLoading = true
         let data = {
           city: '',
@@ -817,7 +817,7 @@ export default {
 
     ///////// 跳转车主信息页面 start /////////
     toDetail(prm) {
-      console.log(prm)
+      // console.log(prm)
       // 记录类型
       let tab1act = this.tab1act
       let tab2act = this.tab2act

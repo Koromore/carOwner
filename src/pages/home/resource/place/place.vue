@@ -234,7 +234,7 @@ export default {
             if (element.photoList.length != 0) {
               element.image = '/ocarplay/' + element.photoList[0].localPath
             } else {
-              element.image = 'static/images/carow/handerimg.png'
+              element.image = 'static/images/carow/placeimg.jpg'
             }
           })
           this.placeList = data.items

@@ -59,7 +59,6 @@
                   v-model="eventData"
                   multiple
                   clearable
-                  :disabled="itemDisabled"
                   placeholder="请选择"
                   @change="changeEvent"
                 >
@@ -211,7 +210,7 @@
               <el-col :span="24" class="list" v-if="tabact == 1||tabact == 4">
                 <el-col :span="8" class="key">合作概况</el-col>
                 <el-col :span="24" class="val situation">
-                  <el-col :span="24" class="list" v-for="(item, index) in eventList" :key="index">
+                  <el-col :span="24" class="list" v-for="(item, index) in eventList" :key="index" v-show="item.deleteFlag!=1">
                     <el-col :span="5">
                       <el-input
                         placeholder="请输入"
@@ -219,19 +218,6 @@
                         clearable
                         :disabled="true"
                       ></el-input>
-                      <!-- <el-select
-                      v-model="item.name"
-                      multiple
-                      clearable
-                      placeholder="请选择"
-                    >
-                      <el-option
-                        v-for="items in eventDataList"
-                        :key="items.value"
-                        :label="items.label"
-                        :value="items.value"
-                      ></el-option>
-                      </el-select>-->
                     </el-col>
                     <el-col :span="6">
                       <el-input placeholder="合作总量" v-model="item.coopNum" clearable></el-input>
@@ -690,8 +676,8 @@ export default {
       this.loading = true
       let query = this.$route.query
       let data = {
-        typeId: query.typeId*1,
-        vehicleOwnerId: query.vehicleOwnerId*1,
+        typeId: query.typeId * 1,
+        vehicleOwnerId: query.vehicleOwnerId * 1,
       }
       // console.log(data)
       this.$axios
@@ -853,32 +839,43 @@ export default {
 
     ///////// 合作事项 start /////////
     changeEvent(data) {
-      // console.log(data)
-      // console.log('changeEvent')
+
       let eventDataList = this.eventDataList
-      // console.log(eventDataList)
-      let itemName = []
+      let list = []
       data.forEach((element) => {
-        eventDataList.forEach((element_) => {
-          if (element_.value == element) {
-            itemName.push(element_.label)
+        eventDataList.forEach((element1) => {
+          if (element1.value == element) {
+            list.push({
+              itemId: element,
+              itemName: element1.label,
+            })
           }
         })
       })
-
-      // console.log(itemName)
+      let inv = this.$intersection(this.eventList, list, 'itemId') // 不变
+      let add = this.$diff(list, this.eventList, 'itemId') // 新增
+      let del = this.$diff(this.eventList, list, 'itemId') // 删除
       let eventList = []
-      data.forEach((element, i) => {
+      inv.forEach((element) => {
+        element.deleteFlag = 0
+        eventList.push(element)
+      })
+      add.forEach((element) => {
         eventList.push({
-          name: element,
-          itemId: element, // 车主选择的合作事项ID
-          itemName: itemName[i], // 车主选择的合作事项Name
+          itemId: element.itemId, // 车主选择的合作事项ID
+          itemName: element.itemName, // 车主选择的合作事项Name
           coopNum: '', // 固定合作总量
           coopMoney: '', // 固定合作总价
           period: '', // 结算周期
           timeLimit: this.duration,
           typeId: this.tabact,
         })
+      })
+      del.forEach((element) => {
+        if (element.coopId) {
+          element.deleteFlag = 1
+          eventList.push(element)
+        }
       })
       this.eventList = eventList
       // console.log(eventList)
@@ -1005,8 +1002,13 @@ export default {
               {
                 deptId: 106,
                 label: '东本',
-                children: []
-              }
+                children: [],
+              },
+              {
+                deptId: 117,
+                deptName: '内容一组',
+                carType: [],
+              },
             ]
             data.forEach((element) => {
               let children = {
@@ -1029,6 +1031,8 @@ export default {
                 carSeriesList[2].children.push(children)
               } else if (element.deptId == 106) {
                 carSeriesList[3].children.push(children)
+              } else if (element.deptId == 117) {
+                carSeriesList[4].children.push(children)
               }
             })
             this.carSeriesList = carSeriesList
@@ -1297,6 +1301,8 @@ export default {
         data.ownerCoops = this.eventList
         data.ownerCoops.forEach((element, i) => {
           element.timeLimit = this.duration
+          element.coopMoney = element.coopMoney*1
+          element.coopNum = element.coopNum*1
           if (i > 1) {
             element.deleteFlag = true
           }
@@ -1313,7 +1319,7 @@ export default {
         // ]
         // judgeList = []
         if (
-          data.name  == '' ||
+          data.name == '' ||
           !data.province ||
           !data.city ||
           itemId === '' ||
@@ -1344,6 +1350,8 @@ export default {
         data.ownerCoops = this.eventList
         data.ownerCoops.forEach((element, i) => {
           element.timeLimit = this.duration
+          element.coopMoney = element.coopMoney*1
+          element.coopNum = element.coopNum*1
           if (i > 1) {
             element.deleteFlag = true
           }
@@ -1360,7 +1368,7 @@ export default {
         // ]
         // judgeList = []
         if (
-          data.name == ''||
+          data.name == '' ||
           // !data.province ||
           // !data.city ||
           itemId === '' ||
@@ -1372,7 +1380,7 @@ export default {
         ) {
           judge = false
         }
-        console.log(judge)
+        // console.log(judge)
         data.ownerCoops.forEach((element) => {
           judgeList.push(element.coopNum)
           judgeList.push(element.coopMoney)
@@ -1390,7 +1398,7 @@ export default {
         // }
       } else if (tabact == 3) {
         if (
-          data.name  == ''||
+          data.name == '' ||
           !data.province ||
           !data.city ||
           itemId === '' ||
@@ -1398,7 +1406,7 @@ export default {
           data.sourceId.length === 0 ||
           data.cooperates[0].localPath === '' ||
           this.timeLimit.length === 0 ||
-          data.carUse === ''||
+          data.carUse === '' ||
           data.ownerCarSeries.length === 0
         ) {
           judge = false
@@ -1432,6 +1440,7 @@ export default {
         data.ipGrows = ipGrows
       }
       console.log(data)
+      console.log(JSON.stringify(data))
       // console.log(judgeList)
 
       let isEmail = this.$isEmail(data.email)
@@ -1455,6 +1464,7 @@ export default {
                 this.loading = false
               }, 1000)
             } else {
+              this.loading = false
               this.messageError(res.data.msg)
             }
           })
@@ -1514,7 +1524,7 @@ export default {
       & >>> .el-checkbox {
         margin-right: 6px;
       }
-      & >>> .el-checkbox__label{
+      & >>> .el-checkbox__label {
         padding-left: 6px;
       }
       .relation {
@@ -1685,7 +1695,7 @@ export default {
         .title3 {
           margin-top: 24px;
         }
-        .box1{
+        .box1 {
           padding-right: 18px;
         }
         .box2 {

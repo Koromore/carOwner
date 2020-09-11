@@ -39,8 +39,8 @@ axios.interceptors.request.use(
     // config.headers['Content-Type'] = "application/json;charset=UTF-8";
     // }
     // console.log(config)
-    // if (config.url.indexOf('/pmbs/') != -1) {
-      // config.url = config.url.replace('/ocarplay/', '/');
+    // if (config.url.indexOf('/ocarplay/') != -1) {
+    //   config.url = config.url.replace('/ocarplay/', '');
     // }
     return config;
   },

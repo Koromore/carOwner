@@ -26,7 +26,7 @@
             </div>
           </el-col> -->
           <el-col :span="24" class="list">
-            <div class="key">出生日期：</div>
+            <div class="key">出生日期</div>
             <div class="val">
               <el-date-picker v-model="birthday" type="date" placeholder="选择日期" value-format="yyyy-MM-dd"></el-date-picker>
             </div>
@@ -532,6 +532,7 @@ export default {
             fileName: element.response.data.fileName,
             localPath: element.response.data.localPath,
             suffix: element.response.data.suffix,
+            modelId: this.modelId,
             type: 0,
           })
         } else {
@@ -540,6 +541,7 @@ export default {
             fileName: element.name,
             localPath: element.url,
             suffix: element.suffix,
+            modelId: this.modelId,
             type: 0,
           })
         }
@@ -561,6 +563,7 @@ export default {
             fileName: element.response.data.fileName,
             localPath: element.response.data.localPath,
             suffix: element.response.data.suffix,
+            modelId: this.modelId,
             type: 0,
           })
         } else {
@@ -569,6 +572,7 @@ export default {
             fileName: element.name,
             localPath: element.url,
             suffix: element.suffix,
+            modelId: this.modelId,
             type: 0,
           })
         }
@@ -591,6 +595,7 @@ export default {
             fileName: element.response.data.fileName,
             localPath: element.response.data.localPath,
             suffix: element.response.data.suffix,
+            modelId: this.modelId,
             type: 1,
           })
         } else {
@@ -599,6 +604,7 @@ export default {
             fileName: element.name,
             localPath: element.url.replace('/ocarplay/', ''),
             suffix: element.suffix,
+            modelId: this.modelId,
             type: 1,
           })
         }
@@ -620,6 +626,7 @@ export default {
             fileName: element.response.data.fileName,
             localPath: element.response.data.localPath,
             suffix: element.response.data.suffix,
+            modelId: this.modelId,
             type: 1,
           })
         } else {
@@ -628,6 +635,7 @@ export default {
             fileName: element.name,
             localPath: element.url.replace('/ocarplay/', ''),
             suffix: element.suffix,
+            modelId: this.modelId,
             type: 1,
           })
         }
@@ -650,6 +658,7 @@ export default {
             fileName: element.response.data.fileName,
             localPath: element.response.data.localPath,
             suffix: element.response.data.suffix,
+            modelId: this.modelId,
             type: 2,
           })
         } else {
@@ -658,6 +667,7 @@ export default {
             fileName: element.name,
             localPath: element.url,
             suffix: element.suffix,
+            modelId: this.modelId,
             type: 2,
           })
         }
@@ -678,6 +688,7 @@ export default {
             fileName: element.response.data.fileName,
             localPath: element.response.data.localPath,
             suffix: element.response.data.suffix,
+            modelId: this.modelId,
             type: 0,
           })
         } else {
@@ -686,6 +697,7 @@ export default {
             fileName: element.name,
             localPath: element.url,
             suffix: element.suffix,
+            modelId: this.modelId,
             type: 0,
           })
         }

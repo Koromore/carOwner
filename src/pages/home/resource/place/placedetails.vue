@@ -128,6 +128,7 @@ export default {
       placeId: '', // 场地ID
       placeName: '', // 场地名称
       placeTypeId: '', // 场地类型
+      placeTypeName: '', // 场地类型
       district_code: [], // 城市选择器代码
       district: [], // 城市选择器名称
       address: '', // 详细地址
@@ -213,6 +214,7 @@ export default {
           this.placeId = data.placeId // 场地ID
           this.placeName = data.placeName // 场地名称
           this.placeTypeId = data.placeTypeId // 场地类型
+          this.placeTypeName = data.placeTypeName // 场地类型
           this.district_code = data.district_code // 城市选择器代码
           this.district = data.province + data.city + data.area // 城市选择器名称
           this.address = data.address // 详细地址

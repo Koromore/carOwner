@@ -115,6 +115,9 @@ export default new Vuex.Store({
     },
     //登录
     login(state, data) {
+      if (!data.token) {
+        window.location.replace('http://guoxin.insun-china.com/hrm');
+      }
       // 将获取到的user，token和微信标识存在vuex内
       state.user = data.user;
       state.token = data.token;

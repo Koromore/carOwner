@@ -42,31 +42,31 @@ export default {
           siteName: '张家古楼',
           type: '热门网红场地',
           city: '东北三省',
-          add: '东北三省'
-        }
+          add: '东北三省',
+        },
       ],
       // 二级表格数据
       tableData: [
         {
           date: '2016-05-02',
           name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
+          address: '上海市普陀区金沙江路 1518 弄',
         },
         {
           date: '2016-05-04',
           name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
+          address: '上海市普陀区金沙江路 1517 弄',
         },
         {
           date: '2016-05-01',
           name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
+          address: '上海市普陀区金沙江路 1519 弄',
         },
         {
           date: '2016-05-03',
           name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }
+          address: '上海市普陀区金沙江路 1516 弄',
+        },
       ],
       // 弹窗开关
       drawerData: false,
@@ -75,16 +75,16 @@ export default {
       deptIdList: [
         {
           value: 110,
-          label: '吉利'
+          label: '吉利',
         },
         {
           value: 105,
-          label: '沃尔沃'
+          label: '沃尔沃',
         },
         {
           value: 153,
-          label: '长城'
-        }
+          label: '长城',
+        },
       ],
       deptId: '',
       // 车型名称
@@ -92,13 +92,13 @@ export default {
       carType: '',
       subCarType: [
         {
-          name: ''
-        }
+          name: '',
+        },
       ],
       // 分页数据
       total: 0,
       pageNum: 1,
-      pageSize: 10
+      pageSize: 10,
     }
   },
   // 侦听器
@@ -117,20 +117,20 @@ export default {
     getCarTypes(id) {
       // this.loading = true
       let data = {
-        deptId: id
+        deptId: id,
       }
       this.$axios
         .post('/ocarplay/api/carType/getCarTypeList', data)
-        .then(res => {
+        .then((res) => {
           // console.log(res)
 
           if (res.status == 200) {
             let data = res.data
             let carTypesList = []
-            data.forEach(element => {
+            data.forEach((element) => {
               let carTypesListData = {
                 value: element.carTypeId,
-                label: element.carTypeName
+                label: element.carTypeName,
               }
               carTypesList.push(carTypesListData)
             })
@@ -150,7 +150,7 @@ export default {
       }
       this.$axios
         .post('/ocarplay/api/carSeries/getCarSeriesLists', data)
-        .then(res => {
+        .then((res) => {
           // console.log(res)
           this.listLoading = false
           if (res.status == 200) {
@@ -160,60 +160,53 @@ export default {
               {
                 deptId: 105,
                 deptName: '沃尔沃',
-                carType: []
+                carType: [],
               },
               {
                 deptId: 110,
                 deptName: '吉利',
-                carType: []
+                carType: [],
               },
               {
                 deptId: 153,
                 deptName: '长城',
-                carType: []
+                carType: [],
               },
               {
                 deptId: 106,
                 deptName: '东本',
-                carType: []
-              }
+                carType: [],
+              },
+              {
+                deptId: 117,
+                deptName: '内容一组',
+                carType: [],
+              },
             ]
             // console.log(data)
-            data.forEach(element => {
+            data.forEach((element) => {
               let carSeriesIds = []
               let carSeriesName = []
-              element.carSeries.forEach(element_ => {
-                carSeriesIds.push(element_.carSeriesId+'/')
-                carSeriesName.push(element_.carSeriesName+'/')
+              element.carSeries.forEach((element_) => {
+                carSeriesIds.push(element_.carSeriesId + '/')
+                carSeriesName.push(element_.carSeriesName + '/')
               })
+              let pushData = {
+                carTypeId: element.carTypeId,
+                carTypeName: element.carTypeName,
+                carSeriesIds: carSeriesIds,
+                carSeriesName: carSeriesName,
+              }
               if (element.deptId == 105) {
-                carSeriesListData[0].carType.push({
-                  carTypeId: element.carTypeId,
-                  carTypeName: element.carTypeName,
-                  carSeriesIds: carSeriesIds,
-                  carSeriesName: carSeriesName
-                })
+                carSeriesListData[0].carType.push(pushData)
               } else if (element.deptId == 110) {
-                carSeriesListData[1].carType.push({
-                  carTypeId: element.carTypeId,
-                  carTypeName: element.carTypeName,
-                  carSeriesIds: carSeriesIds,
-                  carSeriesName: carSeriesName
-                })
+                carSeriesListData[1].carType.push(pushData)
               } else if (element.deptId == 153) {
-                carSeriesListData[2].carType.push({
-                  carTypeId: element.carTypeId,
-                  carTypeName: element.carTypeName,
-                  carSeriesIds: carSeriesIds,
-                  carSeriesName: carSeriesName
-                })
+                carSeriesListData[2].carType.push(pushData)
               } else if (element.deptId == 106) {
-                carSeriesListData[3].carType.push({
-                  carTypeId: element.carTypeId,
-                  carTypeName: element.carTypeName,
-                  carSeriesIds: carSeriesIds,
-                  carSeriesName: carSeriesName
-                })
+                carSeriesListData[3].carType.push(pushData)
+              } else if (element.deptId == 117) {
+                carSeriesListData[4].carType.push(pushData)
               }
             })
             this.carSeriesListData = carSeriesListData
@@ -227,17 +220,17 @@ export default {
     saveSubmit() {
       let data = []
       let subCarType = this.subCarType
-      subCarType.forEach(element => {
+      subCarType.forEach((element) => {
         data.push({
           carTypeId: this.carType,
           carSeriesName: element.name,
-          deleteFlag: false
+          deleteFlag: false,
         })
       })
       console.log(data)
       this.$axios
         .post('/ocarplay/api/carSeries/saveCarSeriess', data)
-        .then(res => {
+        .then((res) => {
           if (res.status == 200 && res.data.errcode == 0) {
             this.messageWin(res.data.msg)
             this.getCarSeriesLists()
@@ -254,22 +247,22 @@ export default {
       // 成功提示
       this.$message({
         message: message,
-        type: 'success'
+        type: 'success',
       })
     },
     messageWarning(message) {
       // 警告提示
       this.$message({
         message: message,
-        type: 'warning'
+        type: 'warning',
       })
     },
     messageError(message) {
       // 错误提示
       this.$message.error(message)
-    }
+    },
     ///////// 消息提示 end /////////
-  }
+  },
 }
 </script>
 <style lang="scss" scoped>

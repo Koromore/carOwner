@@ -65,7 +65,7 @@
           ref="table"
         >
           <el-table-column prop label width="24" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="taskName" label="任务名称" min-width="130" show-overflow-tooltip>
+          <el-table-column prop="taskName" label="任务名称" min-width="180" show-overflow-tooltip>
             <template slot-scope="scope">
               <el-link
                 target="_blank"
@@ -84,7 +84,7 @@
               <template v-else-if="scope.row.taskType==5">发布</template>
             </template>
           </el-table-column>
-          <el-table-column prop="ownerName" label="邀约对象" min-width="90" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="ownerName" label="邀约对象" min-width="90" show-overflow-tooltip v-if="deptId!=90"></el-table-column>
           <!-- <el-table-column prop="ownerItemList" label="邀约事项" min-width="130" show-overflow-tooltip></el-table-column> -->
           <el-table-column prop="personName" label="摄影师" min-width="90" show-overflow-tooltip>
             <template slot-scope="scope">
@@ -115,7 +115,7 @@
               <span v-else>/</span>
             </template>
           </el-table-column>
-          <el-table-column prop="carSeriesName" label="邀约车型" min-width="130" show-overflow-tooltip>
+          <el-table-column prop="carSeriesName" label="邀约车型" min-width="130" show-overflow-tooltip v-if="deptId!=90">
             <template slot-scope="scope">
               <template v-if="scope.row.carSeriesName">{{scope.row.carSeriesName}}</template>
               <template v-else>
@@ -126,7 +126,7 @@
               </template>
             </template>
           </el-table-column>
-          <el-table-column prop="status" label="状态" min-width="60">
+          <el-table-column prop="status" label="状态" min-width="60" v-if="deptId!=90">
             <template slot-scope="scope">
               <div v-if="scope.row.status==0" class="statusColor0">执行中</div>
               <div v-if="scope.row.status==1" class="statusColor1">结算中</div>
@@ -153,6 +153,7 @@
             <template slot-scope="scope">{{$date(scope.row.createTime)}}</template>
             <!-- <template slot-scope="scope">{{$date(scope.row.endTime)}}</template> -->
           </el-table-column>
+          <el-table-column prop="initUserRealName" label="下达人" min-width="100" v-if="deptId==90"></el-table-column>
           <el-table-column
             prop="address"
             label="操作"
@@ -1080,7 +1081,7 @@ export default {
               }
             })
             // Array.form(new Set(arr))
-            console.log(element.ownerName)
+            // console.log(element.ownerName)
             element.typeList = [...new Set(element.typeList)]
             element.ownerItemList = [...new Set(element.ownerItemList)]
             element.ownerName = [...new Set(element.ownerName)]
@@ -1591,7 +1592,7 @@ export default {
     delTask(id) {
       let data = { taskId: id, deleteFlag: 1 }
       this.$axios.post('/ocarplay/task/delTask', data).then((res) => {
-        console.log(res)
+        // console.log(res)
         if (res.status == 200 && res.data == 1) {
           this.$message.success('删除任务成功！')
           ///////// 获取任务列表 start /////////
@@ -1618,7 +1619,7 @@ export default {
           responseType: 'blob', //--设置请求数据格式
         })
         .then((res) => {
-          console.log(res)
+          // console.log(res)
           if (res.status == 200) {
             // this.$message.success('删除任务成功！')
             // ///////// 获取任务列表 start /////////

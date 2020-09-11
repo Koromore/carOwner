@@ -60,7 +60,8 @@
                     </template>
                   </div>
                   <div class="el-image">
-                    <img :src="'/ocarplay/'+item.localPath" alt srcset />
+                    <img :src="'/ocarplay/'+item.localPath" alt srcset v-if="item.localPath"/>
+                    <img src="static/images/carow/hander.png" alt srcset v-else/>
                     <div class="zhezhao">{{item.name}}</div>
                   </div>
                 </div>
@@ -81,7 +82,8 @@
                       />
                     </svg>
                     &nbsp;
-                    <span class="carType">{{item.carTypeName}}</span>
+                    <span class="carType" v-if="item.carTypeName">{{item.carTypeName}}</span>
+                    <span class="carType" v-else>暂无车型</span>
                   </p>
                   <p>
                     <svg

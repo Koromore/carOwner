@@ -217,7 +217,6 @@ export default {
           this.loading = false
           if (res.status == 200) {
             let data = res.data
-            data.items[1].deptName = '吉利'
             this.carTypeListData = data.items
             this.total = data.totalRows
           }
