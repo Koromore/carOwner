@@ -291,7 +291,8 @@
           <el-col :span="24" class="list">
             <div class="key">标签</div>
             <div class="colon">:</div>
-            <div class="val">{{tag}}</div>
+            <div class="val" v-if="tag">{{tag}}</div>
+            <div class="val" v-else>暂无数据</div>
           </el-col>
           <el-col :span="24" class="list">
             <div class="key">所在区域</div>

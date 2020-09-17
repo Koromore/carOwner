@@ -1006,8 +1006,8 @@ export default {
               },
               {
                 deptId: 117,
-                deptName: '内容一组',
-                carType: [],
+                label: '内容一组',
+                children: [],
               },
             ]
             data.forEach((element) => {

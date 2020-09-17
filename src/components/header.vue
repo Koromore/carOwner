@@ -26,6 +26,9 @@
       </el-col>
 
       <el-col :span="7" class="header_right">
+        <div class="doc" @click="doc"><i class="el-icon-document-copy"></i><br><span>帮助</span>
+        </div>
+        
         <!-- 搜索框 start -->
         <el-input
           placeholder="请输入内容"
@@ -49,7 +52,6 @@
           <el-button slot="append" icon="el-icon-search" @click="searchStart"></el-button>
         </el-input>
         <!-- 搜索框 end -->
-        <i class="el-icon-document-copy" style="color: #fff;font-size: 20px;margin-right: 9px;"></i>
         <!-- 用户信息 start -->
         <div class="admin">
           <!-- <i class="el-icon-bell"></i> -->
@@ -221,6 +223,13 @@ export default {
         this.selectDisabled = true
       }
     },
+    doc(){
+    // let localPath = row.localPath
+      let a = document.createElement('a')
+      a.download = '车主邀约系统操作手册(项目部版).doc'
+      a.setAttribute('href', 'http://223.75.59.219:8082/doc/车主邀约系统操作手册(项目部版).doc')
+      a.click()
+    }
   },
 }
 </script>
@@ -240,6 +249,8 @@ export default {
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
+    height: 60px;
+    line-height: 60px;
     .logo {
       width: 128px;
     }
@@ -279,11 +290,26 @@ export default {
     flex-wrap: wrap;
     align-items: center;
     justify-content: flex-end;
+    height: 60px;
+    // line-height: 60px;
     .search {
-      width: 280px;
+      width: 224px;
       margin-right: 13px;
+      & >>> .el-input-group__prepend{
+        padding: 0 13px;
+      }
       .el-select {
         width: 72px;
+      }
+    }
+    .doc{
+      cursor: pointer;
+      text-align: center;
+      color: #fff;
+      font-size: 13px;
+      margin-right: 6px;
+      i{
+        font-size: 20px;
       }
     }
     .admin {

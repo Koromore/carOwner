@@ -216,6 +216,7 @@ export default {
       type: 0,
       title: '新建任务',
       // 任务名称
+      taskDetail: null,
       options2: [], // 任务对象（车主）
       noOwner: null, // 非车主信息
       input: '',
@@ -502,6 +503,7 @@ export default {
         // console.log(res)
         if (res.status == 200) {
           let data = res.data.data
+          this.taskDetail = data
           this.taskName = data.taskName
           this.taskType = data.taskType
           this.placeId = data.placeId
@@ -732,8 +734,8 @@ export default {
               },
               {
                 deptId: 117,
-                deptName: '内容一组',
-                carType: [],
+                label: '内容一组',
+                children: [],
               },
             ]
             data.forEach((element) => {
@@ -845,10 +847,15 @@ export default {
       carSeriesId.forEach((element) => {
         listTaskOfCartype.push({ cartypeId: element[1] })
       })
-
+      let initUserId = this.userId
+      let deptId = this.deptId
+      if (this.taskId) {
+        initUserId = this.taskDetail.initUserId
+        deptId = this.taskDetail.deptId
+      }
       let data = {
-        initUserId: this.userId,
-        deptId: this.deptId,
+        initUserId: initUserId,
+        deptId: deptId,
         createTime: this.$time0(new Date()),
         taskType: this.taskType,
         taskId: this.taskId,
@@ -857,11 +864,12 @@ export default {
         startTime: startTime,
         endTime: endTime,
         num: this.taskNum,
+        // carSeriesId: carSeriesId, // 品牌车型
 
         taskToPersonList: [], // 摄影师列表
         taskToModelList: [], // 模特列表
         placeId: this.placeId,
-        listTaskOfCartype: listTaskOfCartype,
+        listTaskOfCartype: listTaskOfCartype, // 品牌车型
         taskDesc: this.taskDesc,
         remark: this.remark,
         listInvite: [],
@@ -978,7 +986,7 @@ export default {
         }
       })
 
-      console.log(data)
+      // console.log(data)
       if (flag) {
         this.putLoading = true
         this.$axios

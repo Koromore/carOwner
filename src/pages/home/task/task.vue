@@ -96,17 +96,24 @@
               </span>
               <span v-else>/</span>
             </template>
-          </el-table-column>
+          </el-table-column>   
           <el-table-column prop="modelName" label="模特" min-width="90" show-overflow-tooltip>
             <template slot-scope="scope">
               <span v-if="scope.row.taskToModelList.length">
                 <span
                   v-for="(item,index) in scope.row.taskToModelList"
                   :key="index"
-                >{{item.realName}}</span>
+                >
+                <template v-if="item.modelId">
+                  {{item.realName}}
+                </template>
+                <template v-else>
+                  无模特
+                </template>
+                </span>
               </span>
-              <span v-else-if="!scope.row.modelName&&scope.row.personName">无模特</span>
-              <span v-else-if="!scope.row.modelName&&!scope.row.personName">/</span>
+              <!-- <span v-else-if="!scope.row.modelName&&scope.row.personName">无模特</span> -->
+              <span v-else>/</span>
             </template>
           </el-table-column>
           <el-table-column prop="placeName" label="场地" min-width="90" show-overflow-tooltip>
@@ -1080,6 +1087,9 @@ export default {
                 element.inviteNumOver += 1
               }
             })
+            if (!element.ownerName.length) {
+              element.ownerName = '/'
+            }
             // Array.form(new Set(arr))
             // console.log(element.ownerName)
             element.typeList = [...new Set(element.typeList)]
