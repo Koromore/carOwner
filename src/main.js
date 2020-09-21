@@ -17,6 +17,7 @@ import 'swiper/dist/css/swiper.css'
 import { matchType, matchType0 } from '@/utils/matchType' // 引入文件格
 import { intersection, union, complement, diff } from '@/utils/gather' // json集合计算
 import elTableInfiniteScroll from 'el-table-infinite-scroll' // 表格滚动
+import '@/utils/vueOverall'
 
 // import {Decrypt,Encrypt} from '@/utils/cryptoJS'
 

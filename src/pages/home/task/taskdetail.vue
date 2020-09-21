@@ -12,6 +12,9 @@
             </div>
           </el-col>
           <el-col :span="12">任务详情</el-col>
+          <el-col :span="6" class="redact">
+            <i class="el-icon-edit" @click="addTask"></i>
+          </el-col>
         </el-col>
         <el-col :span="12" class="left">
           <el-col :span="24" class="list">
@@ -68,28 +71,27 @@
               <!-- </template> -->
             </div>
             <div class="val" v-else>
+              <!-- {{taskDetail.listInvite}} -->
               <el-collapse v-model="activeNames">
-                <template v-if="taskDetail.listInvite.length">
+                <template v-if="taskDetail.ownersList.length">
                   <el-collapse-item
-                    :title="taskDetail.listInvite[0].listOwnerType[0].typeName+'-'+taskDetail.listInvite[0].realName+'-'+taskDetail.listInvite[0].listOwnerItem[0].itemName"
+                    :title="taskDetail.ownersList[0].listOwnerType[0].typeName+'-'+taskDetail.ownersList[0].realName+'-'+taskDetail.ownersList[0].listOwnerItem[0].itemName"
                     name="1"
                   >
-                    <template v-if="taskDetail.listInvite.length!=0">
+                    <template v-if="taskDetail.ownersList.length!=0">
                       <div
-                        v-for="(item, index) in taskDetail.listInvite"
+                        v-for="(item, index) in taskDetail.ownersList"
                         :key="index"
                         v-show="index!=0"
                       >
                         <div v-if="item.userType==0">
-                        <span>{{item.listOwnerType[0].typeName}}—{{item.listOwnerItem[0].itemName}}—{{item.realName}}</span>
+                          <span>{{item.listOwnerType[0].typeName}}—{{item.listOwnerItem[0].itemName}}—{{item.realName}}</span>
                         </div>
                       </div>
                     </template>
                   </el-collapse-item>
                 </template>
-                <template v-else>
-                  暂无
-                </template>
+                <template v-else>暂无</template>
               </el-collapse>
             </div>
           </el-col>
@@ -99,9 +101,10 @@
               <div>:</div>
               <!-- <div class="val">{{taskDetail.num}}</div> -->
               <div class="val" v-if="taskDetail.taskToPersonList.length">
-                <span v-for="(item,index) in taskDetail.taskToPersonList" :key="index">
-                  {{item.realName}}
-                </span>
+                <span
+                  v-for="(item,index) in taskDetail.taskToPersonList"
+                  :key="index"
+                >{{item.realName}}</span>
                 <!-- {{taskDetail.personName}} -->
               </div>
               <div class="val" v-else style="color: #F56C6C">未完善</div>
@@ -111,9 +114,10 @@
               <div>:</div>
               <!-- <div class="val">{{taskDetail.num}}</div> -->
               <div class="val" v-if="taskDetail.taskToModelList.length">
-                <span v-for="(item,index) in taskDetail.taskToModelList" :key="index">
-                  {{item.realName}}
-                </span>
+                <span
+                  v-for="(item,index) in taskDetail.taskToModelList"
+                  :key="index"
+                >{{item.realName}}</span>
               </div>
               <div class="val" v-else style="color: #F56C6C">未完善</div>
             </el-col>
@@ -263,7 +267,7 @@ export default {
   data() {
     return {
       // 任务ID
-      taskId: 1,
+      taskId: 0,
       taskDetail: {
         listTaskFile: [],
         listInvite: [
@@ -326,13 +330,19 @@ export default {
           //   data.ownerItemList = element.ownerItemList.join(',')
           //   data.ownerName = element.ownerName.join(',')
           // console.log(data)
+          let ownersList = []
           data.inviteNum = data.listInvite.length
           data.inviteNumOver = 0
           data.listInvite.forEach((element) => {
             if (element.isWrite == 1) {
               data.inviteNumOver += 1
             }
+            if (element.userType == 0) {
+              ownersList.push(element)
+            }
           })
+
+          data.ownersList = ownersList
           this.taskDetail = data
           // console.log(data)
           this.loading = false
@@ -428,6 +438,16 @@ export default {
         })
     },
     ///////// 完成详情列表下载 end /////////
+
+    ///////// 修改任务 start /////////
+    addTask() {
+      // this.$store.commit('taskStatus', this.status)
+      this.$router.push({
+        path: '/home/addtask',
+        query: { type: 1, id: this.taskId },
+      })
+    },
+    ///////// 修改任务 end /////////
   },
 }
 </script>
@@ -498,6 +518,16 @@ export default {
         }
         i {
           font-weight: bold;
+        }
+      }
+      .redact {
+        text-align: right;
+        padding-right: 18px;
+        i {
+          line-height: 54px;
+          cursor: pointer;
+          color: #6a92e8;
+          font-size: 28px;
         }
       }
     }

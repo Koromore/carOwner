@@ -63,8 +63,13 @@
           height="100%"
           v-loading="loading"
           ref="table"
+          @sort-change="sortableChange"
         >
           <el-table-column prop label width="24" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="photoTime" label="拍摄时间" min-width="100" sortable="custom">
+            <template slot-scope="scope">{{$date(scope.row.photoTime)}}</template>
+            <!-- <template slot-scope="scope">{{scope.row.photoTime | date}}</template> -->
+          </el-table-column>
           <el-table-column prop="taskName" label="任务名称" min-width="180" show-overflow-tooltip>
             <template slot-scope="scope">
               <el-link
@@ -75,7 +80,7 @@
               >{{scope.row.taskName}}</el-link>
             </template>
           </el-table-column>
-          <el-table-column prop label="任务类型" min-width="80" show-overflow-tooltip>
+          <el-table-column prop label="任务类型" min-width="80" show-overflow-tooltip v-if="deptId!=90">
             <template slot-scope="scope">
               <template v-if="scope.row.taskType==1">借车</template>
               <template v-else-if="scope.row.taskType==2">素材</template>
@@ -84,7 +89,13 @@
               <template v-else-if="scope.row.taskType==5">发布</template>
             </template>
           </el-table-column>
-          <el-table-column prop="ownerName" label="邀约对象" min-width="90" show-overflow-tooltip v-if="deptId!=90"></el-table-column>
+          <el-table-column
+            prop="ownerName"
+            label="邀约对象"
+            min-width="90"
+            show-overflow-tooltip
+            v-if="deptId!=90"
+          ></el-table-column>
           <!-- <el-table-column prop="ownerItemList" label="邀约事项" min-width="130" show-overflow-tooltip></el-table-column> -->
           <el-table-column prop="personName" label="摄影师" min-width="90" show-overflow-tooltip>
             <template slot-scope="scope">
@@ -96,20 +107,13 @@
               </span>
               <span v-else>/</span>
             </template>
-          </el-table-column>   
+          </el-table-column>
           <el-table-column prop="modelName" label="模特" min-width="90" show-overflow-tooltip>
             <template slot-scope="scope">
               <span v-if="scope.row.taskToModelList.length">
-                <span
-                  v-for="(item,index) in scope.row.taskToModelList"
-                  :key="index"
-                >
-                <template v-if="item.modelId">
-                  {{item.realName}}
-                </template>
-                <template v-else>
-                  无模特
-                </template>
+                <span v-for="(item,index) in scope.row.taskToModelList" :key="index">
+                  <template v-if="item.modelId">{{item.realName}}</template>
+                  <template v-else>无模特</template>
                 </span>
               </span>
               <!-- <span v-else-if="!scope.row.modelName&&scope.row.personName">无模特</span> -->
@@ -122,7 +126,13 @@
               <span v-else>/</span>
             </template>
           </el-table-column>
-          <el-table-column prop="carSeriesName" label="邀约车型" min-width="130" show-overflow-tooltip v-if="deptId!=90">
+          <el-table-column
+            prop="carSeriesName"
+            label="邀约车型"
+            min-width="130"
+            show-overflow-tooltip
+            v-if="deptId!=90"
+          >
             <template slot-scope="scope">
               <template v-if="scope.row.carSeriesName">{{scope.row.carSeriesName}}</template>
               <template v-else>
@@ -133,7 +143,7 @@
               </template>
             </template>
           </el-table-column>
-          <el-table-column prop="status" label="状态" min-width="60" v-if="deptId!=90">
+          <el-table-column prop="status" label="状态" min-width="60" v-if="deptId==90">
             <template slot-scope="scope">
               <div v-if="scope.row.status==0" class="statusColor0">执行中</div>
               <div v-if="scope.row.status==1" class="statusColor1">结算中</div>
@@ -143,22 +153,21 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="提交" min-width="70" sortable>
+          <el-table-column label="提交" min-width="70">
             <template slot-scope="scope">
               <span v-if="scope.row.isSubmit">&nbsp;&nbsp;&nbsp;Y</span>
               <span v-else>&nbsp;&nbsp;&nbsp;N</span>
             </template>
           </el-table-column>
-          <el-table-column label="结算" min-width="70" sortable>
+          <el-table-column label="结算" min-width="70">
             <template slot-scope="scope">
               <span v-if="scope.row.isClearing">&nbsp;&nbsp;&nbsp;Y</span>
               <span v-else>&nbsp;&nbsp;&nbsp;N</span>
             </template>
           </el-table-column>
 
-          <el-table-column prop="endTime" label="下达时间" min-width="100" sortable>
+          <el-table-column prop="createTime" label="下达时间" min-width="100" sortable="custom">
             <template slot-scope="scope">{{$date(scope.row.createTime)}}</template>
-            <!-- <template slot-scope="scope">{{$date(scope.row.endTime)}}</template> -->
           </el-table-column>
           <el-table-column prop="initUserRealName" label="下达人" min-width="100" v-if="deptId==90"></el-table-column>
           <el-table-column
@@ -265,6 +274,9 @@
           v-loading="loading"
         >
           <el-table-column prop label width="24" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="photoTime" label="下达时间" min-width="100" sortable>
+            <template slot-scope="scope">{{$date(scope.row.createTime)}}</template>
+          </el-table-column>
           <el-table-column prop="taskName" label="任务名称" min-width="130" show-overflow-tooltip>
             <template slot-scope="scope">
               <el-link
@@ -318,7 +330,6 @@
           </el-table-column>
           <el-table-column prop="status" label="状态" min-width="80">
             <template slot-scope="scope">
-              <!-- {{scope.row.status}} -->
               <div v-if="scope.row.status==0" class="statusColor0">执行中</div>
               <div v-if="scope.row.status==1" class="statusColor1">结算中</div>
               <div v-if="scope.row.status==2" class="statusColor2">完成</div>
@@ -326,13 +337,13 @@
               <div v-if="scope.row.status==4" class="statusColor4">人工延期</div>
             </template>
           </el-table-column>
-          <el-table-column label="提交" min-width="80" sortable>
+          <el-table-column label="提交" min-width="80">
             <template slot-scope="scope">
               <span v-if="scope.row.isSubmit">&nbsp;&nbsp;&nbsp;Y</span>
               <span v-else>&nbsp;&nbsp;&nbsp;N</span>
             </template>
           </el-table-column>
-          <el-table-column label="结算" min-width="80" sortable>
+          <el-table-column label="结算" min-width="80">
             <template slot-scope="scope">
               <span v-if="scope.row.isClearing">&nbsp;&nbsp;&nbsp;Y</span>
               <span v-else>&nbsp;&nbsp;&nbsp;N</span>
@@ -414,7 +425,7 @@
     </el-row>
 
     <!-- 内容列表3 -->
-    <el-row class="content content3" v-show="status==1">
+    <!-- <el-row class="content content3" v-show="status==1">
       <div class="table_list">
         <el-table
           :data="taskListData"
@@ -445,7 +456,7 @@
             </template>
           </el-table-column>
           <el-table-column prop="ownerName" label="邀约对象" min-width="90" show-overflow-tooltip></el-table-column>
-          <!-- <el-table-column prop="ownerItemList" label="邀约事项" min-width="130" show-overflow-tooltip></el-table-column> -->
+          <el-table-column prop="ownerItemList" label="邀约事项" min-width="130" show-overflow-tooltip></el-table-column>
           <el-table-column prop="personName" label="摄影师" min-width="90" show-overflow-tooltip>
             <template slot-scope="scope">
               <span v-if="scope.row.personName">{{scope.row.personName}}</span>
@@ -478,7 +489,6 @@
           </el-table-column>
           <el-table-column prop="status" label="状态" min-width="80">
             <template slot-scope="scope">
-              <!-- {{scope.row.status}} -->
               <div v-if="scope.row.status==0" class="statusColor0">执行中</div>
               <div v-if="scope.row.status==1" class="statusColor1">结算中</div>
               <div v-if="scope.row.status==2" class="statusColor2">完成</div>
@@ -514,7 +524,7 @@
           background
         ></el-pagination>
       </el-col>
-    </el-row>
+    </el-row>-->
 
     <!-- 内容列表4 -->
     <el-row class="content content4" v-show="status==2">
@@ -548,7 +558,7 @@
             </template>
           </el-table-column>
           <el-table-column prop="ownerName" label="邀约对象" min-width="90" show-overflow-tooltip></el-table-column>
-          <!-- <el-table-column prop="ownerItemList" label="邀约事项" min-width="130" show-overflow-tooltip></el-table-column> -->
+          <el-table-column prop="ownerItemList" label="邀约事项" min-width="130" show-overflow-tooltip></el-table-column>
           <el-table-column prop="personName" label="摄影师" min-width="90" show-overflow-tooltip>
             <template slot-scope="scope">
               <span v-if="scope.row.personName">{{scope.row.personName}}</span>
@@ -581,7 +591,6 @@
           </el-table-column>
           <el-table-column prop="status" label="状态" min-width="80">
             <template slot-scope="scope">
-              <!-- {{scope.row.status}} -->
               <div v-if="scope.row.status==0" class="statusColor0">执行中</div>
               <div v-if="scope.row.status==1" class="statusColor1">结算中</div>
               <div v-if="scope.row.status==2" class="statusColor2">完成</div>
@@ -602,7 +611,7 @@
           </el-table-column>
           <el-table-column prop="address" label="评价" min-width="50" show-overflow-tooltip>
             <template slot-scope="scope">
-              <!-- <i
+              <i
                 class="el-icon-chat-dot-round"
                 @click="addComment(scope.row)"
                 v-if="scope.row.taskType==4&&!scope.row.ifPgOver"
@@ -611,7 +620,7 @@
                 class="el-icon-chat-dot-round"
                 style="cursor: not-allowed;color: rgb(170, 170, 170);"
                 v-else-if="scope.row.taskType==4&&scope.row.ifPgOver"
-              ></i>-->
+              ></i>
 
               <el-popover
                 placement="top"
@@ -778,11 +787,18 @@
               </el-col>
               <el-col :span="15">
                 <template v-if="item.userType==0">
-                  <el-input placeholder="车主链接" size="medium" v-model="item.url" clearable></el-input>
+                  <el-input
+                    placeholder="车主链接"
+                    @change="urlChange"
+                    size="medium"
+                    v-model="item.url"
+                    clearable
+                  ></el-input>
                 </template>
                 <template v-if="item.userType==1">
                   <el-input
                     placeholder="摄影师链接"
+                    @change="urlChange"
                     size="medium"
                     v-model="item.url"
                     clearable
@@ -792,6 +808,7 @@
                 <template v-if="item.userType==2">
                   <el-input
                     placeholder="模特链接"
+                    @change="urlChange"
                     size="medium"
                     v-model="item.url"
                     clearable
@@ -910,6 +927,8 @@ export default {
       loading: false,
       status: this.$store.state.taskStatusNum,
       taskListData: [],
+      orderType: 1, // 1-升序，2-降序
+      orderField: 1, // 1-拍摄时间，2-下达时间
       // 分页信息
       pageNum: 1,
       pageSize: 30,
@@ -940,6 +959,36 @@ export default {
       // evaluatePersonVisible: false,
       uploadExcle: null,
     }
+  },
+  // 过滤器
+  filters: {
+    // data: function (value) {
+    //   if (value) {
+    //     let date = ''
+    //     if (typeof data == 'string') {
+    //       date = new Date(value.replace(/-/g, '/'))
+    //     } else {
+    //       date = new Date(value)
+    //     }
+    //     // let date = new Date(data.replace(/-/g,'/'))
+    //     let year = date.getYear()
+    //     let month = date.getMonth() + 1
+    //     let strDate = date.getDate()
+    //     year = year - 100
+    //     if (year >= 1 && year <= 9) {
+    //       year = '0' + year
+    //     }
+    //     if (month >= 1 && month <= 9) {
+    //       month = '0' + month
+    //     }
+    //     if (strDate >= 0 && strDate <= 9) {
+    //       strDate = '0' + strDate
+    //     }
+    //     return `${year}-${month}-${strDate}`
+    //   } else {
+    //     return ''
+    //   }
+    // },
   },
   // 侦听器
   watch: {
@@ -1043,7 +1092,10 @@ export default {
           // itemId: this.itemId,
           carSeriesId: this.carSeriesId,
           taskName: this.searchWordData.value,
+          // deptId: this.deptId
         },
+        orderField: this.orderField, // 1-拍摄时间，2-下达时间
+        orderType: this.orderType, // 1-升序，2-降序
 
         // task: {
         //   initUserId: 266
@@ -1051,6 +1103,8 @@ export default {
       }
       if (this.deptId == 90) {
         data.task.taskType = 4
+        data.task.status = null
+        data.task.deptId = null
       }
       this.$axios.post('/ocarplay/task/listAjax', data).then((res) => {
         // console.log(res)
@@ -1322,6 +1376,7 @@ export default {
       // } else {
       //   isCard = false
       // }
+
       if (prm.taskType == 4) {
         if (prm.taskToPersonList.length && prm.placeId) {
           this.drawerLoading = true
@@ -1333,6 +1388,8 @@ export default {
             taskId: prm.taskId,
           }
           this.$axios.post('/ocarplay/task/edit', data).then((res) => {
+            var starttime = new Date().getTime()
+
             if (res.status == 200) {
               let data = res.data.data
               // console.log(data)
@@ -1381,7 +1438,9 @@ export default {
               //     userType: 2,
               //   })
               // }
-
+              var endtime = new Date().getTime()
+              var second = parseInt(endtime - starttime)
+              console.log(second)
               this.listInviteList = listInviteList
               // console.log(listInviteList)
               this.taskDetail = data
@@ -1401,6 +1460,8 @@ export default {
           taskId: prm.taskId,
         }
         this.$axios.post('/ocarplay/task/edit', data).then((res) => {
+          var starttime = new Date().getTime()
+
           if (res.status == 200) {
             let data = res.data.data
             // console.log(data)
@@ -1422,6 +1483,9 @@ export default {
             this.listInviteList = listInviteList
             this.taskDetail = data
             this.drawerLoading = false
+            var endtime = new Date().getTime()
+            var second = parseInt(endtime - starttime)
+            console.log(second)
           }
         })
       }
@@ -1527,7 +1591,7 @@ export default {
             element.isCard = 0
           }
         })
-        console.log(data)
+        // console.log(data)
         this.$axios
           .post('/ocarplay/task/save', data)
           .then((res) => {
@@ -1697,7 +1761,7 @@ export default {
     },
     ///////// 新增评论 start /////////
     addComment(obj) {
-      console.log(obj)
+      // console.log(obj)
       this.personId = obj.personId
       this.taskId = obj.taskId
       // console.log(obj)
@@ -1767,6 +1831,47 @@ export default {
       }
     },
     ///////// 导出结算列表 start /////////
+
+    ///////// 链接改变验证 start /////////
+    urlChange(val) {
+      // console.log(val)
+      let num = 0
+      let list = []
+      this.listInviteList.forEach((element, i) => {
+        // console.log(element.url)
+        if (element.url == val) {
+          num++
+          list.push(i)
+        }
+      })
+      // console.log(list)
+      if (num > 1) {
+        this.$message.error('重复！')
+      }
+      // let data = this.countJson(this.listInviteList, 'url')
+      // console.log(data)
+    },
+    ///////// 链接改变验证 end /////////
+
+    ///////// 排序 start /////////
+    sortableChange(column) {
+      let prop = column.prop
+      let order = column.order
+      if (prop == 'photoTime') {
+        this.orderField = 1
+      } else if (prop == 'createTime') {
+        this.orderField = 2
+      }
+
+      if (order == 'descending') {
+        this.orderType = 2
+      } else if (order == 'ascending') {
+        this.orderType = 1
+      }
+      ///////// 获取任务列表 start /////////
+      this.getTaskListAjax()
+    },
+    ///////// 排序 end /////////
   },
 }
 </script>

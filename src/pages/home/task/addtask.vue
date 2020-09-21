@@ -137,6 +137,12 @@
             </div>
           </el-col>
           <el-col :span="24" class="list">
+            <div class="key imp">拍摄时间</div>
+            <div class="val">
+              <el-date-picker v-model="photoTime" type="date" placeholder="选择日期" :disabled="!disabledCaigou" value-format="yyyy-MM-dd HH:mm:ss"></el-date-picker>
+            </div>
+          </el-col>
+          <el-col :span="24" class="list">
             <div class="key imp">计划邀约量</div>
             <div class="val">
               <el-input placeholder="请输入内容" v-model="taskNum" clearable :disabled="!disabledCaigou"></el-input>
@@ -189,7 +195,13 @@
           <el-col :span="24" class="list">
             <div class="key">备注</div>
             <div class="val">
-              <el-input placeholder="请输入内容" v-model="remark" clearable :disabled="!disabledCaigou" maxlength="500"></el-input>
+              <el-input
+                placeholder="请输入内容"
+                v-model="remark"
+                clearable
+                :disabled="!disabledCaigou"
+                maxlength="500"
+              ></el-input>
             </div>
           </el-col>
         </el-col>
@@ -278,6 +290,7 @@ export default {
       carSeriesId: [],
       seriesId: [],
       periodTime: [],
+      photoTime: null,
       taskNum: '',
       listTaskFile: [],
       taskDesc: '',
@@ -576,6 +589,7 @@ export default {
             new Date(data.startTime.replace(/-/g, '/')),
             new Date(data.endTime.replace(/-/g, '/')),
           ]
+          this.photoTime = data.photoTime
           this.taskNum = data.num
           this.taskDesc = data.taskDesc
           this.remark = data.remark
@@ -730,7 +744,7 @@ export default {
               {
                 deptId: 106,
                 label: '东本',
-                children: []
+                children: [],
               },
               {
                 deptId: 117,
@@ -772,9 +786,7 @@ export default {
 
     ///////// 返回上一页 start /////////
     previous() {
-      this.$router.push({
-        path: '/home/task',
-      })
+      this.$router.go(-1) //返回上一层
     },
     ///////// 返回上一页 end /////////
 
@@ -810,7 +822,7 @@ export default {
 
     ///////// 文件上传 end /////////
 
-    difference(arr1,arr2,key){
+    difference(arr1, arr2, key) {
       // arr1相对于arr2的差集
       // 差集
       let diff = [...arr1]
@@ -863,6 +875,7 @@ export default {
         status: 0,
         startTime: startTime,
         endTime: endTime,
+        photoTime: this.photoTime, // 拍摄时间
         num: this.taskNum,
         // carSeriesId: carSeriesId, // 品牌车型
 
@@ -877,33 +890,37 @@ export default {
       }
       let listInvite = []
       let listInviteList = [] // 邀约对象
-      this.listInviteList.forEach(element => {
+      this.listInviteList.forEach((element) => {
         listInviteList.push({
           typeId: element[0],
           itemId: element[1],
           ownerId: element[2],
         })
-      });
+      })
       let listInviteOwners = this.listInviteOwners // 车主结算列表
       let newListInviteOwners = [] // 新车主结算列表
-      this.difference(listInviteList,listInviteOwners,'ownerId').forEach(element => {
-        newListInviteOwners.push({
-          typeId: element.typeId,
-          itemId: element.itemId,
-          ownerId: element.ownerId,
-          userType: 0
-        })
-      });
-      this.difference(listInviteOwners,listInviteList,'ownerId').forEach(element => {
-        newListInviteOwners.push({
-          inviteId: element.inviteId,
-          deleteFlag: true,
-          typeId: element.typeId,
-          itemId: element.itemId,
-          ownerId: element.ownerId,
-          userType: 0
-        })
-      });
+      this.difference(listInviteList, listInviteOwners, 'ownerId').forEach(
+        (element) => {
+          newListInviteOwners.push({
+            typeId: element.typeId,
+            itemId: element.itemId,
+            ownerId: element.ownerId,
+            userType: 0,
+          })
+        }
+      )
+      this.difference(listInviteOwners, listInviteList, 'ownerId').forEach(
+        (element) => {
+          newListInviteOwners.push({
+            inviteId: element.inviteId,
+            deleteFlag: true,
+            typeId: element.typeId,
+            itemId: element.itemId,
+            ownerId: element.ownerId,
+            userType: 0,
+          })
+        }
+      )
 
       let taskToPersonList = [] // 摄影师列表
       let personId = this.personId
@@ -923,18 +940,24 @@ export default {
         })
       })
       // 新增的摄影师
-      this.difference(taskToPersonList,personIdList,'personId').forEach(element => {
-        newTaskToPersonList.push(element)
-      });
+      this.difference(taskToPersonList, personIdList, 'personId').forEach(
+        (element) => {
+          newTaskToPersonList.push(element)
+        }
+      )
       // 删除的摄影师
-      this.difference(personIdList,taskToPersonList,'personId').forEach(element => {
-        element.deleteFlag = true
-        newTaskToPersonList.push(element)
-      });
+      this.difference(personIdList, taskToPersonList, 'personId').forEach(
+        (element) => {
+          element.deleteFlag = true
+          newTaskToPersonList.push(element)
+        }
+      )
       // 新增的摄影师结算
-      this.difference(listInvitePerson0,listInvitePerson,'personId').forEach(element => {
-        newListInvitePerson.push(element)
-      });
+      this.difference(listInvitePerson0, listInvitePerson, 'personId').forEach(
+        (element) => {
+          newListInvitePerson.push(element)
+        }
+      )
       data.taskToPersonList = newTaskToPersonList
 
       let taskToModelIdList = [] // 模特列表
@@ -955,21 +978,30 @@ export default {
         })
       })
       // 新增的模特
-      this.difference(taskToModelIdList,modelIdList,'modelId').forEach(element => {
-        newTaskToModelList.push(element)
-      });
+      this.difference(taskToModelIdList, modelIdList, 'modelId').forEach(
+        (element) => {
+          newTaskToModelList.push(element)
+        }
+      )
       // 删除的模特
-      this.difference(modelIdList,taskToModelIdList,'modelId').forEach(element => {
-        element.deleteFlag = true
-        newTaskToModelList.push(element)
-      });
+      this.difference(modelIdList, taskToModelIdList, 'modelId').forEach(
+        (element) => {
+          element.deleteFlag = true
+          newTaskToModelList.push(element)
+        }
+      )
       // 新增的模特结算
-      this.difference(listInviteMode0,listInviteMode,'modelId').forEach(element => {
-        newListInvitePerson.push(element)
-      });
+      this.difference(listInviteMode0, listInviteMode, 'modelId').forEach(
+        (element) => {
+          newListInvitePerson.push(element)
+        }
+      )
       data.taskToModelList = newTaskToModelList
-      data.listInvite = newListInviteOwners.concat(newListInvitePerson,newListInviteMode)
-      
+      data.listInvite = newListInviteOwners.concat(
+        newListInvitePerson,
+        newListInviteMode
+      )
+
       let flag = true
       let list = [
         data.taskType,
@@ -1014,7 +1046,6 @@ export default {
             this.putLoading = false
           })
         // this.$message.error('点击提交')
-
       } else {
         this.$message.error('请检查信息是否填写完整！')
       }
