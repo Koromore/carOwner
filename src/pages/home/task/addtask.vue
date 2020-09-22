@@ -132,11 +132,11 @@
                 range-separator="至"
                 start-placeholder="开始日期"
                 end-placeholder="结束日期"
-                :disabled="!disabledCaigou"
+                :disabled="taskId ? true : false"
               ></el-date-picker>
             </div>
           </el-col>
-          <el-col :span="24" class="list">
+          <el-col :span="24" class="list" v-show="taskType==4">
             <div class="key imp">拍摄时间</div>
             <div class="val">
               <el-date-picker v-model="photoTime" type="date" placeholder="选择日期" :disabled="!disabledCaigou" value-format="yyyy-MM-dd HH:mm:ss"></el-date-picker>
@@ -1017,6 +1017,10 @@ export default {
           flag = false
         }
       })
+
+      if (data.taskType==4&&!data.photoTime) {
+        flag = false
+      }
 
       // console.log(data)
       if (flag) {

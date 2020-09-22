@@ -72,6 +72,11 @@ export default {
           title: '场地类型',
           name: 'sitetype',
         },
+        {
+          id: 8,
+          title: '经纪人',
+          name: 'agent',
+        },
       ],
       // 图表数据
       chartTitle: '任务完成数量',

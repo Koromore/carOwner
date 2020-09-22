@@ -328,6 +328,14 @@ const router = new Router({
               meta: {
                 requireAuth: true,
               }
+            },
+            {
+              path: '/home/metadata/agent',
+              name: 'agent',
+              component: resolve => require(['@/pages/home/metadata/components/agent'], resolve),
+              meta: {
+                requireAuth: true,
+              }
             }
           ]
         },

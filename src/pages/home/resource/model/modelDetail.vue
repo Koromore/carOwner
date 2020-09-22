@@ -12,42 +12,80 @@
           </el-col>
           <el-col :span="12">模特详情</el-col>
         </el-col>
-        <el-col :span="12" class="left">
-          <el-col :span="24" class="list">
+        <!-- <el-col :span="12" class="left"> -->
+          <el-col :span="12" class="list">
             <div class="key">姓名</div>
             <div class="colon">:</div>
             <div class="val">{{name}}</div>
           </el-col>
-          <el-col :span="24" class="list">
+          <el-col :span="12" class="list">
+            <div class="key">身份证</div>
+            <div class="colon">:</div>
+            <div class="val" v-if="identity">{{identity}}</div>
+            <div class="val" v-else>暂无数据</div>
+          </el-col>
+          <el-col :span="12" class="list">
             <div class="key">年龄</div>
             <div class="colon">:</div>
             <div class="val" v-if="age">{{age}}</div>
             <div class="val" v-else>暂无数据</div>
           </el-col>
-          <el-col :span="24" class="list">
+          <el-col :span="12" class="list">
+            <div class="key">微信QQ</div>
+            <div class="colon">:</div>
+            <div class="val" v-if="qq">{{qq}}</div>
+            <div class="val" v-else>暂无数据</div>
+          </el-col>
+          <el-col :span="12" class="list">
             <div class="key">客户-车型</div>
             <div class="colon">:</div>
             <div class="val" v-if="carTypeId">{{carTypeName}}</div>
             <div class="val" v-else>暂无数据</div>
           </el-col>
-          <el-col :span="24" class="list">
+          <el-col :span="12" class="list">
+            <div class="key">是否合作</div>
+            <div class="colon">:</div>
+            <div class="val">
+              <span v-if="isCoop">是</span>
+              <span v-else>否</span>
+            </div>
+          </el-col>
+          <el-col :span="12" class="list">
             <div class="key">手机号</div>
             <div class="colon">:</div>
             <div class="val" v-if="phone">{{phone}}</div>
             <div class="val" v-else>暂无数据</div>
           </el-col>
-          <el-col :span="24" class="list">
+          <el-col :span="12" class="list">
+            <div class="key">标签</div>
+            <div class="colon">:</div>
+            <div class="val" v-if="tag">{{tag}}</div>
+            <div class="val" v-else>暂无数据</div>
+          </el-col>
+          <el-col :span="12" class="list">
             <div class="key">费用</div>
             <div class="colon">:</div>
             <div class="val">{{money}}</div>
           </el-col>
-          <el-col :span="24" class="list">
+          <el-col :span="12" class="list">
+            <div class="key">所在区域</div>
+            <div class="colon">:</div>
+            <div class="val">{{district}}</div>
+          </el-col>
+          <el-col :span="12" class="list">
             <div class="key">经纪人</div>
             <div class="colon">:</div>
-            <div class="val" v-if="agent">{{agent}}</div>
+            <!-- <div class="val" v-if="agent">{{agent}}</div> -->
+            <div class="val" v-if="agentName">{{agentName}}</div>
             <div class="val" v-else>暂无数据</div>
           </el-col>
-          <el-col :span="24" class="list">
+          <el-col :span="12" class="list">
+            <div class="key">身高</div>
+            <div class="colon">:</div>
+            <div class="val" v-if="height">{{height}}</div>
+            <div class="val" v-else>暂无数据</div>
+          </el-col>
+          <el-col :span="12" class="list">
             <div class="key">性别</div>
             <div class="colon">:</div>
             <div class="val">
@@ -55,25 +93,37 @@
               <span v-else>男</span>
             </div>
           </el-col>
-          <el-col :span="24" class="list">
+          <el-col :span="12" class="list">
+            <div class="key">体重</div>
+            <div class="colon">:</div>
+            <div class="val" v-if="weight">{{weight}}</div>
+            <div class="val" v-else>暂无数据</div>
+          </el-col>
+          <el-col :span="12" class="list">
             <div class="key">特长</div>
             <div class="colon">:</div>
             <div class="val" v-if="speciality">{{speciality}}</div>
             <div class="val" v-else>暂无数据</div>
           </el-col>
+          <el-col :span="12" class="list">
+            <div class="key">三围</div>
+            <div class="colon">:</div>
+            <div class="val" v-if="bwh">{{bwh}}</div>
+            <div class="val" v-else>暂无数据</div>
+          </el-col>
           <el-col :span="24" class="list">
             <div class="key">模卡/资质/简介</div>
             <div class="colon">:</div>
-            <div class="val" v-for="(item,index) in synopsisFileList" :key="index">
-              <img
-                :src="item.url"
-                alt
-                srcset
-                v-for="(item,index) in synopsisFileList"
-                :key="index"
-                @click="previewImg(item.url)"
-                style="width:auto;height:169px;margin-top: 9px;"
-              />
+            <div class="val">
+                <img
+                  :src="item.url"
+                  alt
+                  srcset
+                  v-for="(item,index) in synopsisFileList"
+                  :key="index"
+                  @click="previewImg(item.url)"
+                  style="width:auto;height:169px;margin-top: 9px;"
+                />
             </div>
             <!-- {{synopsisFileList}} -->
           </el-col>
@@ -97,7 +147,7 @@
             </div>
           </el-col>
           <el-col :span="24" class="list">
-            <div class="key">素颜视频</div>
+            <div class="key">自我介绍</div>
             <!-- <div class="val">{{introduceFileList}}</div> -->
             <div class="colon">:</div>
             <div class="val">
@@ -107,10 +157,10 @@
                 height:150px"
                 v-for="(item,index) in introduceFileList"
                 :key="index"
-                src="static/images/carow/video.png"
+                :src="[item.suffix == 'mp4' ? 'static/images/carow/video.png' : '/ocarplay/'+item.localPath]"
                 alt
                 srcset
-                @click="previewVideo(item.localPath)"
+                @click="previewVideo(item.localPath, item.suffix)"
               />
               <el-dialog
                 title="视频"
@@ -125,58 +175,17 @@
               </el-dialog>
             </div>
           </el-col>
-        </el-col>
-        <el-col :span="12" class="right">
-          <el-col :span="24" class="list">
-            <div class="key">身份证</div>
-            <div class="colon">:</div>
-            <div class="val" v-if="identity">{{identity}}</div>
-            <div class="val" v-else>暂无数据</div>
-          </el-col>
-          <el-col :span="24" class="list">
-            <div class="key">微信QQ</div>
-            <div class="colon">:</div>
-            <div class="val" v-if="qq">{{qq}}</div>
-            <div class="val" v-else>暂无数据</div>
-          </el-col>
-          <el-col :span="24" class="list">
-            <div class="key">是否合作</div>
-            <div class="colon">:</div>
-            <div class="val">
-              <span v-if="isCoop">是</span>
-              <span v-else>否</span>
-            </div>
-          </el-col>
-          <el-col :span="24" class="list">
-            <div class="key">标签</div>
-            <div class="colon">:</div>
-            <div class="val" v-if="tag">{{tag}}</div>
-            <div class="val" v-else>暂无数据</div>
-          </el-col>
-          <el-col :span="24" class="list">
-            <div class="key">所在区域</div>
-            <div class="colon">:</div>
-            <div class="val">{{district}}</div>
-          </el-col>
-          <el-col :span="24" class="list">
-            <div class="key">身高</div>
-            <div class="colon">:</div>
-            <div class="val" v-if="height">{{height}}</div>
-            <div class="val" v-else>暂无数据</div>
-          </el-col>
-          <el-col :span="24" class="list">
-            <div class="key">体重</div>
-            <div class="colon">:</div>
-            <div class="val" v-if="weight">{{weight}}</div>
-            <div class="val" v-else>暂无数据</div>
-          </el-col>
-          <el-col :span="24" class="list">
-            <div class="key">三围</div>
-            <div class="colon">:</div>
-            <div class="val" v-if="bwh">{{bwh}}</div>
-            <div class="val" v-else>暂无数据</div>
-          </el-col>
-        </el-col>
+        <!-- </el-col> -->
+        <!-- <el-col :span="12" class="right"> -->
+          
+          
+          
+          
+          
+          
+          
+          
+        <!-- </el-col> -->
         <el-col :span="24" class="center"></el-col>
       </el-scrollbar>
     </el-row>
@@ -207,7 +216,8 @@ export default {
       carTypeId: null, // 客户车型
       phone: null, // 电话
       money: null, // 费用
-      agent: null, // 经纪人
+      // agent: null, // 经纪人
+      agentName: null, // 经纪人
       sex: null, // 性别
       identity: null, // 身份证好
       qq: null,
@@ -276,6 +286,7 @@ export default {
             this.phone = data.phone // 电话
             this.money = data.money // 费用
             this.agent = data.agent // 经纪人
+            this.agentName = data.agentName // 经纪人
             this.sex = data.sex // 性别
             this.identity = data.identity // 身份证号
             this.qq = data.qq
@@ -360,17 +371,30 @@ export default {
     },
     ///////// 预览素颜照 end /////////
 
-    ///////// 预览素颜视频 start /////////
-    previewVideo(url) {
-      this.dialogVidoeUrl = `
-      <video style="width:100%;height:100%" controls autoplay="true">
-        <source src="/ocarplay/${url}" type="video/mp4" />
-        <embed style="width:100%;height:100%" src="/ocarplay/${url}" autoplay="true" hidden="no" />
-      </video>
-      `
+    ///////// 预览自我介绍 start /////////
+    previewVideo(url, suffix) {
+      let dialogVidoeUrl = ''
+      if (this.$matchType(suffix) == 'video') {
+        this.dialogVidoeUrl = `
+        <video style="width:100%;height:100%" controls autoplay="true">
+          <source src="/ocarplay/${url}" type="video/mp4" />
+          <embed style="width:100%;height:100%" src="/ocarplay/${url}" autoplay="true" hidden="no" />
+        </video>
+        `
+      }else if (this.$matchType(suffix) == 'image') {
+        this.dialogVidoeUrl = `
+        <img src="/ocarplay/${url}" width="100%">
+        `
+      }
+      // this.dialogVidoeUrl = `
+      // <video style="width:100%;height:100%" controls autoplay="true">
+      //   <source src="/ocarplay/${url}" type="video/mp4" />
+      //   <embed style="width:100%;height:100%" src="/ocarplay/${url}" autoplay="true" hidden="no" />
+      // </video>
+      // `
       this.dialogVisibleVideo = true
     },
-    ///////// 预览素颜视频 end /////////
+    ///////// 预览自我介绍 end /////////
 
     ///////// 视频弹窗关闭回调 end /////////
     dialogVideo() {
@@ -413,6 +437,7 @@ export default {
       flex-wrap: wrap;
       align-items: flex-start;
       margin: 16px 0;
+      padding-left: 49px;
       .key {
         width: 110px;
         height: 40px;
@@ -431,7 +456,7 @@ export default {
         line-height: 40px;
       }
       .val {
-        width: 420px;
+        width: calc(100% - 124px);
         // height: 40px;
         line-height: 40px;
         .icon {

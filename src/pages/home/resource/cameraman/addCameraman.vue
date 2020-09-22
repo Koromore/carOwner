@@ -78,6 +78,19 @@
                 <el-input placeholder="请输入内容" v-model="money" clearable type="number"></el-input>
               </el-col>
             </el-col>
+            <!-- <el-col :span="24" class="list">
+              <el-col :span="7" class="key">经纪人：</el-col>
+              <el-col :span="15" class="val">
+                <el-select v-model="agentId" placeholder="请选择">
+                <el-option
+                  v-for="item in agentList"
+                  :key="item.agentId"
+                  :label="item.agentName"
+                  :value="item.agentId"
+                ></el-option>
+              </el-select>
+              </el-col>
+            </el-col> -->
             <el-col :span="24" class="list">
               <el-col :span="7" class="key imp">擅长：</el-col>
               <el-col :span="15" class="val">
@@ -294,6 +307,7 @@ export default {
       dialogImageUrl: '', // 上传头像预览
       dialogVisible: false,
 
+      // agentList: [], // 经纪人列表
       // 摄影师基础信息
       personId: null, // 摄影师Id
       handerImg: null, // 头像
@@ -303,6 +317,7 @@ export default {
       sex: null, // 摄影师性别
       phone: null, // 手机号
       money: null, // 费用
+      // agentId: null, // 经纪人
       goodAt: null, // 擅长
       custom: null, // 客户
       carTypeId: null, // 合作车型
@@ -369,6 +384,8 @@ export default {
     ///////// 获取车型列表 start /////////
     this.getCarSeriesLists()
     // console.log(this.$matchType)
+    ///////// 获取经纪人列表 start /////////
+    // this.getAgentList()
   },
   // 方法事件
   methods: {
@@ -400,6 +417,25 @@ export default {
     },
     ///////// 城市数据处理 end /////////
 
+    ///////// 获取经纪人列表 start /////////
+    // getAgentList() {
+    //   let data = {
+    //     pageNum: 1,
+    //     pageSize: 1000,
+    //   }
+    //   this.$axios
+    //     .post('/ocarplay/api/agent/listAjax', data)
+    //     .then(res => {
+    //       // console.log(res)
+    //       this.loading = false
+    //       if (res.status == 200) {
+    //         let data = res.data
+    //         this.agentList = data.items
+    //       }
+    //     })
+    // },
+    ///////// 获取经纪人列表 end /////////
+
     ///////// 获取摄影师信息 start /////////
     getPhotoPersonDetail() {
       this.loading = true
@@ -420,6 +456,7 @@ export default {
             this.sex = data.sex // 摄影师性别
             this.phone = data.phone // 手机号
             this.money = data.money // 费用
+            // this.agentId = data.agentId // 经纪人
             this.goodAt = data.goodAt // 擅长
             this.custom = data.custom // 客户
             this.carTypeId = data.carTypeId * 1 // 合作车型
@@ -823,6 +860,7 @@ export default {
       let sex = this.sex // 摄影师性别
       let phone = this.phone // 手机号
       let money = this.money * 1 // 费用
+      // let agentId = this.agentId // 经纪人
       let goodAt = this.goodAt // 擅长
       let custom = this.custom // 客户
       let carTypeId = this.carTypeId // 合作车型
@@ -847,6 +885,7 @@ export default {
         sex, // 摄影师性别
         phone, // 手机号
         money, // 费用
+        // agentId, // 经纪人
         goodAt, // 擅长
         custom, // 客户
         carTypeId, // 合作车型

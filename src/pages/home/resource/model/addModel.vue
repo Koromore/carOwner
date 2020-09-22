@@ -24,11 +24,16 @@
             <div class="val">
               <el-input placeholder="请输入内容" v-model="age" clearable></el-input>
             </div>
-          </el-col> -->
+          </el-col>-->
           <el-col :span="24" class="list">
             <div class="key">出生日期</div>
             <div class="val">
-              <el-date-picker v-model="birthday" type="date" placeholder="选择日期" value-format="yyyy-MM-dd"></el-date-picker>
+              <el-date-picker
+                v-model="birthday"
+                type="date"
+                placeholder="选择日期"
+                value-format="yyyy-MM-dd"
+              ></el-date-picker>
             </div>
           </el-col>
           <el-col :span="24" class="list">
@@ -59,7 +64,15 @@
           <el-col :span="24" class="list">
             <div class="key">经纪人</div>
             <div class="val">
-              <el-input placeholder="请输入内容" v-model="agent" clearable></el-input>
+              <!-- <el-input placeholder="请输入内容" v-model="agent" clearable></el-input> -->
+              <el-select v-model="agentId" placeholder="请选择">
+                <el-option
+                  v-for="item in agentList"
+                  :key="item.agentId"
+                  :label="item.agentName"
+                  :value="item.agentId"
+                ></el-option>
+              </el-select>
             </div>
           </el-col>
           <el-col :span="24" class="list">
@@ -128,7 +141,7 @@
             </div>
           </el-col>
           <el-col :span="24" class="list">
-            <div class="key imp">素颜视频</div>
+            <div class="key imp">自我介绍</div>
             <div class="val">
               <el-upload
                 class="upload-demo"
@@ -242,6 +255,7 @@ export default {
       optionsCity: cities,
       district_code: [], // 区域代码
       district: [], // 区域名称
+      agentList: [], // 经纪人列表
       // 信息
       title: '新增模特',
       modelId: null,
@@ -252,6 +266,7 @@ export default {
       phone: null, // 电话
       money: null, // 费用
       agent: null, // 经纪人
+      agentId: null, // 经纪人ID
       sex: null, // 性别
       identity: null, // 身份证好
       qq: null,
@@ -325,6 +340,8 @@ export default {
     this.getCarSeriesLists()
     ///////// 城市数据处理 start /////////
     this.disCities()
+    ///////// 获取经纪人列表 start /////////
+    this.getAgentList()
   },
   // 方法事件
   methods: {
@@ -356,6 +373,26 @@ export default {
       // console.log(type)
     },
     ///////// 接受页面传参 end /////////
+
+    ///////// 获取经纪人列表 start /////////
+    getAgentList() {
+      let data = {
+        pageNum: 1,
+        pageSize: 1000,
+      }
+      this.$axios
+        .post('/ocarplay/api/agent/listAjax', data)
+        .then(res => {
+          // console.log(res)
+          this.loading = false
+          if (res.status == 200) {
+            let data = res.data
+            this.agentList = data.items
+            // this.total = data.totalRows
+          }
+        })
+    },
+    ///////// 获取经纪人列表 end /////////
 
     ///////// 城市数据处理 start /////////
     disCities() {
@@ -437,6 +474,7 @@ export default {
             this.phone = data.phone // 电话
             this.money = data.money // 费用
             this.agent = data.agent // 经纪人
+            this.agentId = data.agentId // 经纪人
             this.sex = data.sex // 性别
             this.birthday = data.birthday // 出生年月
             this.identity = data.identity // 身份证号
@@ -735,6 +773,7 @@ export default {
       let phone = this.phone // 电话
       let money = this.money // 费用
       let agent = this.agent // 经纪人
+      let agentId = this.agentId // 经纪人
       let sex = this.sex // 性别
       let identity = this.identity // 身份证好
       let qq = this.qq
@@ -768,6 +807,7 @@ export default {
         phone, // 电话
         money, // 费用
         agent, // 经纪人
+        agentId, // 经纪人ID
         sex, // 性别
         identity, // 身份证好
         qq,

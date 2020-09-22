@@ -616,6 +616,7 @@ export default {
             this.sex = data.sex // 摄影师性别
             this.phone = data.phone // 手机号
             this.money = data.money // 费用
+            // this.agentName = data.agentName // 经纪人
             this.goodAt = data.goodAt // 擅长
             this.custom = data.custom // 客户
             this.carTypeName = data.carTypeName // 合作车型

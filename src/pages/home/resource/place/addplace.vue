@@ -12,98 +12,102 @@
           </el-col>
           <el-col :span="12">{{title}}</el-col>
         </el-col>
-        <el-col :span="12" class="left">
-          <el-col :span="24" class="list">
-            <div class="key">场地名称</div>
-            <div class="val">
-              <el-input placeholder="请输入内容" v-model="placeName" clearable></el-input>
-            </div>
-          </el-col>
-          <el-col :span="24" class="list">
-            <div class="key">场地类型</div>
-            <div class="val">
-              <el-select v-model="placeTypeId" placeholder="请选择场地类型" clearable filterable>
-                <el-option
-                  v-for="item in placeTypeList"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
-              </el-select>
-            </div>
-          </el-col>
-          <el-col :span="24" class="list">
-            <div class="key">所在区域</div>
-            <div class="val">
-              <el-cascader
-                :options="optionsCity"
-                v-model="district_code"
-                ref="cascaderAddr"
-                filterable
-                clearable
-                @change="handleChangeCity"
-                placeholder="请选择所在区域"
-              ></el-cascader>
-            </div>
-          </el-col>
-          <el-col :span="24" class="list">
-            <div class="key">详细地址</div>
-            <div class="val">
-              <el-input placeholder="请输入内容" v-model="address" clearable></el-input>
-            </div>
-          </el-col>
-          <el-col :span="24" class="list">
-            <div class="key">场地照片</div>
-            <div class="val">
-              <el-upload
-                class="upload-photo"
-                action="/ocarplay/file/upload"
-                list-type="picture-card"
-                :on-success="photoListSuccess"
-                :on-preview="photoListPreview"
-                :before-remove="photoListbeforeRemove"
-                :on-remove="photoListRemove"
-                :file-list="fileList"
-              >
-                <i class="el-icon-plus"></i>
-              </el-upload>
-              <el-dialog :visible.sync="dialogVisible">
-                <img width="100%" :src="dialogImageUrl" alt />
-              </el-dialog>
-            </div>
-          </el-col>
+        <el-col :span="12" class="list">
+          <div class="key">场地名称</div>
+          <div class="val">
+            <el-input placeholder="请输入内容" v-model="placeName" clearable></el-input>
+          </div>
         </el-col>
-        <el-col :span="12" class="right">
-          <el-col :span="24" class="list">
-            <div class="key">是否可停车</div>
-            <div class="val valList">
-              <el-radio-group v-model="isCar">
-                <el-radio :label="true">是</el-radio>
-                <el-radio :label="false">否</el-radio>
-              </el-radio-group>
-            </div>
-          </el-col>
-          <el-col :span="24" class="list">
-            <div class="key">是否可拍车</div>
-            <div class="val valList">
-              <el-radio-group v-model="isPark">
-                <el-radio :label="true">是</el-radio>
-                <el-radio :label="false">否</el-radio>
-              </el-radio-group>
-            </div>
-          </el-col>
-          <el-col :span="24" class="list">
-            <div class="key">费用</div>
-            <div class="val">
-              <el-input placeholder="请输入内容" v-model="money" type="number" clearable></el-input>
-            </div>
-          </el-col>
-          <el-col :span="24" class="list">
-            <div class="key">备注</div>
-            <div class="val">
-              <el-input placeholder="请输入内容" v-model="remark" clearable></el-input>
-            </div>
-          </el-col>
+        <el-col :span="12" class="list">
+          <div class="key">是否可停车</div>
+          <div class="val valList">
+            <el-radio-group v-model="isCar">
+              <el-radio :label="true">是</el-radio>
+              <el-radio :label="false">否</el-radio>
+            </el-radio-group>
+          </div>
+        </el-col>
+        <el-col :span="12" class="list">
+          <div class="key">场地类型</div>
+          <div class="val">
+            <el-select v-model="placeTypeId" placeholder="请选择场地类型" clearable filterable>
+              <el-option
+                v-for="item in placeTypeList"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </div>
+        </el-col>
+        <el-col :span="12" class="list">
+          <div class="key">是否可拍车</div>
+          <div class="val valList">
+            <el-radio-group v-model="isPark">
+              <el-radio :label="true">是</el-radio>
+              <el-radio :label="false">否</el-radio>
+            </el-radio-group>
+          </div>
+        </el-col>
+        <el-col :span="12" class="list">
+          <div class="key">所在区域</div>
+          <div class="val">
+            <el-cascader
+              :options="optionsCity"
+              v-model="district_code"
+              ref="cascaderAddr"
+              filterable
+              clearable
+              @change="handleChangeCity"
+              placeholder="请选择所在区域"
+            ></el-cascader>
+          </div>
+        </el-col>
+        <el-col :span="12" class="list">
+          <div class="key">费用</div>
+          <div class="val">
+            <el-input placeholder="请输入内容" v-model="money" type="number" clearable></el-input>
+          </div>
+        </el-col>
+        <el-col :span="12" class="list">
+          <div class="key">详细地址</div>
+          <div class="val">
+            <el-input placeholder="请输入内容" v-model="address" clearable></el-input>
+          </div>
+        </el-col>
+        <el-col :span="12" class="list">
+          <div class="key">备注</div>
+          <div class="val">
+            <el-input placeholder="请输入内容" v-model="remark" clearable></el-input>
+          </div>
+        </el-col>
+        <el-col :span="24" class="list">
+          <div class="key">场地照片</div>
+          <div class="val">
+            <el-upload
+              class="upload-photo"
+              action="/ocarplay/file/upload"
+              list-type="picture-card"
+              drag
+              :on-success="photoListSuccess"
+              :on-preview="photoListPreview"
+              :before-remove="photoListbeforeRemove"
+              :on-remove="photoListRemove"
+              :file-list="fileList"
+              multiple
+              :accept="'.png,.jpg,.jpeg'"
+            >
+              <i class="el-icon-upload"></i>
+              <div class="el-upload__text">
+                将文件拖到此处，或
+                <em>点击上传</em>
+              </div>
+              <!-- <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div> -->
+            </el-upload>
+            <el-dialog :visible.sync="dialogVisible">
+              <img width="100%" :src="dialogImageUrl" alt />
+            </el-dialog>
+          </div>
         </el-col>
         <el-col :span="24" class="put">
           <el-button type="primary" @click="savePlace">提交</el-button>
@@ -351,7 +355,7 @@ export default {
           }
         })
         this.photoList = photoList
-        // console.log(this.photoList)
+        console.log(this.photoList)
       }
     },
     // 预览事件
@@ -419,7 +423,7 @@ export default {
         province = this.district[0]
         city = this.district[1]
         area = this.district[2]
-      }else if(this.district.length == 2){
+      } else if (this.district.length == 2) {
         province = ''
         city = this.district[0]
         area = this.district[1]
@@ -522,7 +526,7 @@ export default {
         padding-left: 100%;
       }
       .val {
-        width: 420px;
+        width: calc(100% - 140px);
         .el-cascader,
         .el-select,
         .el-date-editor,
@@ -558,33 +562,24 @@ export default {
       }
     }
     $pad: 49px;
-    .left {
-      padding-right: $pad;
-      margin-bottom: 36px;
-      .list {
-        justify-content: flex-end;
-      }
-    }
-    .right {
+    .list {
       padding-left: $pad;
-      .list {
-        justify-content: flex-start;
-        .valList {
-          box-sizing: border-box;
-          display: flex;
-          flex-wrap: wrap;
-          justify-content: space-between;
-          align-items: center;
-          .miKey {
-            font-size: 14px;
-            color: #aaa;
-          }
-          .el-input {
-            width: calc(100% - 64px);
-          }
+      .valList {
+        box-sizing: border-box;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        .miKey {
+          font-size: 14px;
+          color: #aaa;
+        }
+        .el-input {
+          width: calc(100% - 64px);
         }
       }
     }
+    // }
     .put {
       background: white;
       position: absolute;

@@ -3,11 +3,11 @@
     <!-- 头部选项框 start -->
     <el-row class="top">
       <el-col :span="12" class="left">
-        <el-button-group v-if="deptId!=90">
+        <el-button-group>
           <el-button type="success" size="small" @click="statusChange(0)">执行中</el-button>
           <el-button type="danger" size="small" @click="statusChange(3)">延期</el-button>
           <!-- <el-button type="warning" size="small" @click="statusChange(1)">结算中</el-button> -->
-          <el-button type="info" size="small" @click="statusChange(2)">已完成</el-button>
+          <el-button type="info" size="small" @click="statusChange(2)" v-if="deptId!=90">已完成</el-button>
         </el-button-group>
       </el-col>
 
@@ -67,7 +67,17 @@
         >
           <el-table-column prop label width="24" show-overflow-tooltip></el-table-column>
           <el-table-column prop="photoTime" label="拍摄时间" min-width="100" sortable="custom">
-            <template slot-scope="scope">{{$date(scope.row.photoTime)}}</template>
+            <template slot-scope="scope">
+              <template v-if="scope.row.photoTime">
+                {{$date(scope.row.photoTime)}}
+                <template v-if="scope.row.reasonId">
+                  <el-tooltip class="item" effect="dark" :content="scope.row.reason" placement="top">
+                    <span style="color: #e6a23c;">延期</span>
+                  </el-tooltip>
+                </template>
+              </template>
+              <template v-else>/</template>
+            </template>
             <!-- <template slot-scope="scope">{{scope.row.photoTime | date}}</template> -->
           </el-table-column>
           <el-table-column prop="taskName" label="任务名称" min-width="180" show-overflow-tooltip>
@@ -126,7 +136,7 @@
               <span v-else>/</span>
             </template>
           </el-table-column>
-          <el-table-column
+          <!-- <el-table-column
             prop="carSeriesName"
             label="邀约车型"
             min-width="130"
@@ -142,7 +152,7 @@
                 >{{item.carTypeName}},</span>
               </template>
             </template>
-          </el-table-column>
+          </el-table-column>-->
           <el-table-column prop="status" label="状态" min-width="60" v-if="deptId==90">
             <template slot-scope="scope">
               <div v-if="scope.row.status==0" class="statusColor0">执行中</div>
@@ -173,15 +183,17 @@
           <el-table-column
             prop="address"
             label="操作"
-            min-width="150"
+            min-width="130"
             v-if="subordinate==150||deptId==90||adminShow"
           >
             <template slot-scope="scope">
+              <el-tooltip class="item" effect="dark" content="拍摄延期" placement="top">
+                <i
+                  class="el-icon-camera"
+                  @click="openDelayPhoto(scope.row.taskId,scope.row.taskName)"
+                ></i>
+              </el-tooltip>
               <template v-if="deptId!=90">
-                <el-tooltip class="item" effect="dark" content="编辑任务" placement="top">
-                  <i class="el-icon-edit" @click="addTask(1, scope.row.taskId)"></i>
-                </el-tooltip>
-
                 <el-tooltip class="item" effect="dark" content="延期任务" placement="top">
                   <i class="el-icon-timer" @click="delay(scope.row)"></i>
                 </el-tooltip>
@@ -274,10 +286,11 @@
           v-loading="loading"
         >
           <el-table-column prop label width="24" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="photoTime" label="下达时间" min-width="100" sortable>
-            <template slot-scope="scope">{{$date(scope.row.createTime)}}</template>
+          <el-table-column prop="photoTime" label="拍摄时间" min-width="100" sortable="custom">
+            <template slot-scope="scope">{{$date(scope.row.photoTime)}}</template>
+            <!-- <template slot-scope="scope">{{scope.row.photoTime | date}}</template> -->
           </el-table-column>
-          <el-table-column prop="taskName" label="任务名称" min-width="130" show-overflow-tooltip>
+          <el-table-column prop="taskName" label="任务名称" min-width="180" show-overflow-tooltip>
             <template slot-scope="scope">
               <el-link
                 target="_blank"
@@ -287,7 +300,7 @@
               >{{scope.row.taskName}}</el-link>
             </template>
           </el-table-column>
-          <el-table-column prop label="任务类型" min-width="80" show-overflow-tooltip>
+          <el-table-column prop label="任务类型" min-width="80" show-overflow-tooltip v-if="deptId!=90">
             <template slot-scope="scope">
               <template v-if="scope.row.taskType==1">借车</template>
               <template v-else-if="scope.row.taskType==2">素材</template>
@@ -296,7 +309,7 @@
               <template v-else-if="scope.row.taskType==5">发布</template>
             </template>
           </el-table-column>
-          <el-table-column prop="ownerName" label="邀约对象" min-width="90" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="ownerName" label="邀约对象" min-width="90" show-overflow-tooltip v-if="deptId!=90"></el-table-column>
           <!-- <el-table-column prop="ownerItemList" label="邀约事项" min-width="130" show-overflow-tooltip></el-table-column> -->
           <el-table-column prop="personName" label="摄影师" min-width="90" show-overflow-tooltip>
             <template slot-scope="scope">
@@ -317,7 +330,7 @@
               <span v-else>/</span>
             </template>
           </el-table-column>
-          <el-table-column prop="carSeriesName" label="邀约车型" min-width="130" show-overflow-tooltip>
+          <!-- <el-table-column prop="carSeriesName" label="邀约车型" min-width="130" show-overflow-tooltip>
             <template slot-scope="scope">
               <template v-if="scope.row.carSeriesName">{{scope.row.carSeriesName}}</template>
               <template v-else>
@@ -327,7 +340,7 @@
                 >{{item.carTypeName}},</span>
               </template>
             </template>
-          </el-table-column>
+          </el-table-column>-->
           <el-table-column prop="status" label="状态" min-width="80">
             <template slot-scope="scope">
               <div v-if="scope.row.status==0" class="statusColor0">执行中</div>
@@ -337,20 +350,20 @@
               <div v-if="scope.row.status==4" class="statusColor4">人工延期</div>
             </template>
           </el-table-column>
-          <el-table-column label="提交" min-width="80">
+          <el-table-column label="提交" min-width="60">
             <template slot-scope="scope">
               <span v-if="scope.row.isSubmit">&nbsp;&nbsp;&nbsp;Y</span>
               <span v-else>&nbsp;&nbsp;&nbsp;N</span>
             </template>
           </el-table-column>
-          <el-table-column label="结算" min-width="80">
+          <el-table-column label="结算" min-width="60">
             <template slot-scope="scope">
               <span v-if="scope.row.isClearing">&nbsp;&nbsp;&nbsp;Y</span>
               <span v-else>&nbsp;&nbsp;&nbsp;N</span>
             </template>
           </el-table-column>
-          <el-table-column prop="endTime" label="预计时间" min-width="100" sortable>
-            <template slot-scope="scope">{{$date(scope.row.endTime)}}</template>
+          <el-table-column prop="createTime" label="下达时间" min-width="100" sortable>
+            <template slot-scope="scope">{{$date(scope.row.createTime)}}</template>
           </el-table-column>
           <el-table-column prop="delayReason" label="延期原因" min-width="100" show-overflow-tooltip>
             <template slot-scope="scope">
@@ -361,25 +374,36 @@
           <el-table-column
             prop="address"
             label="操作"
-            min-width="160"
-            v-if="subordinate==150||adminShow"
+            min-width="140"
+            v-if="subordinate==150||deptId==90||adminShow"
           >
             <!-- this.$store.state -->
             <template slot-scope="scope">
-              <el-tooltip class="item" effect="dark" content="编辑任务" placement="top">
-                <i class="el-icon-edit" @click="addTask(1, scope.row.taskId)"></i>
+              <el-tooltip class="item" effect="dark" content="拍摄延期" placement="top">
+                <i
+                  class="el-icon-camera"
+                  @click="openDelayPhoto(scope.row.taskId,scope.row.taskName)"
+                ></i>
               </el-tooltip>
+              <template v-if="deptId!=90">
+                <el-tooltip class="item" effect="dark" content="延期任务" placement="top">
+                  <i class="el-icon-timer" @click="delay(scope.row)"></i>
+                </el-tooltip>
 
-              <el-tooltip class="item" effect="dark" content="延期任务" placement="top">
-                <i class="el-icon-timer" @click="delay(scope.row)"></i>
-              </el-tooltip>
-
-              <template v-if="!scope.row.isSubmit">
-                <template v-if="scope.row.taskType==4">
-                  <template v-if="!scope.row.personId||!scope.row.placeId">
-                    <el-tooltip class="item" effect="dark" content="提交任务" placement="top">
-                      <i class="el-icon-circle-check" style="color:#ff0000" @click="noTaskPut"></i>
-                    </el-tooltip>
+                <template v-if="!scope.row.isSubmit">
+                  <template v-if="scope.row.taskType==4">
+                    <template
+                      v-if="!scope.row.taskToPersonList.length||!scope.row.taskToModelList.length"
+                    >
+                      <el-tooltip class="item" effect="dark" content="提交任务" placement="top">
+                        <i class="el-icon-circle-check" style="color:#ff0000" @click="noTaskPut"></i>
+                      </el-tooltip>
+                    </template>
+                    <template v-else>
+                      <el-tooltip class="item" effect="dark" content="提交任务" placement="top">
+                        <i class="el-icon-circle-check" @click="putTask(scope.row)"></i>
+                      </el-tooltip>
+                    </template>
                   </template>
                   <template v-else>
                     <el-tooltip class="item" effect="dark" content="提交任务" placement="top">
@@ -389,23 +413,41 @@
                 </template>
                 <template v-else>
                   <el-tooltip class="item" effect="dark" content="提交任务" placement="top">
-                    <i class="el-icon-circle-check" @click="putTask(scope.row)"></i>
+                    <i class="el-icon-circle-check" style="cursor: not-allowed;color: #aaa"></i>
                   </el-tooltip>
                 </template>
-              </template>
-              <template v-else>
-                <el-tooltip class="item" effect="dark" content="提交任务" placement="top">
-                  <i class="el-icon-circle-check" style="cursor: not-allowed;color: #aaa"></i>
+
+                <!-- {{scope.row.personId}}
+                {{scope.row.placeId}}-->
+                <el-tooltip class="item" effect="dark" content="删除任务" placement="top">
+                  <i
+                    class="el-icon-circle-close"
+                    @click="delContent(scope.row.taskId)"
+                    v-if="postId==231||adminShow"
+                  ></i>
                 </el-tooltip>
               </template>
-
-              <el-tooltip class="item" effect="dark" content="删除任务" placement="top">
-                <i
-                  class="el-icon-circle-close"
-                  @click="delContent(scope.row.taskId)"
-                  v-if="postId==231||adminShow"
-                ></i>
-              </el-tooltip>
+              <template v-else>
+                <template
+                  v-if="scope.row.taskToPersonList.length&&scope.row.taskToModelList.length"
+                >
+                  <el-tooltip class="item" effect="dark" content="编辑任务" placement="top">
+                    <i class="el-icon-edit" @click="addTask(1, scope.row.taskId)"></i>
+                  </el-tooltip>
+                </template>
+                <template v-else>
+                  <el-tooltip class="item" effect="dark" content="完善任务" placement="top">
+                    <i
+                      class="el-icon-edit"
+                      style="color:#f56c6c"
+                      @click="addTask(1, scope.row.taskId)"
+                    ></i>
+                  </el-tooltip>
+                </template>
+                <el-tooltip class="item" effect="dark" content="结算" placement="top">
+                  <i class="el-icon-circle-check" @click="toSettlementDetail(scope.row)"></i>
+                </el-tooltip>
+              </template>
             </template>
           </el-table-column>
         </el-table>
@@ -692,6 +734,51 @@
     </el-drawer>
     <!-- 抽屉弹窗延期原因 end -->
 
+    <!-- 抽屉弹窗延期拍摄 start -->
+    <el-drawer
+      title="延期拍摄"
+      :visible.sync="drawerDelayPhoto"
+      size="566px"
+      @open="drawerDelayPhotoOpen"
+      @close="drawerDelayPhotoClose"
+    >
+      <el-row class="drawerDelay" v-loading="drawerLoading">
+        <el-col :span="4">任务名称:</el-col>
+        <el-col :span="20">{{taskName}}</el-col>
+        <el-col :span="4">拍摄时间:</el-col>
+        <el-col :span="20">
+          <el-date-picker
+            v-model="delayPhotoTime"
+            type="date"
+            placeholder="选择日期"
+            :picker-options="pickerOptions"
+            value-format="yyyy-MM-dd HH:mm:ss"
+          ></el-date-picker>
+        </el-col>
+        <el-col :span="4" class="key keycontent">延期原因:</el-col>
+        <el-col :span="20">
+          <el-select v-model="reasonId" filterable clearable placeholder="延期原因说明">
+            <el-option
+              v-for="item in reasonList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+        </el-col>
+        <!-- 底部按钮 -->
+        <el-col :span="24" class="btn">
+          <el-col :span="6" :offset="5">
+            <el-button type="info" @click="cancel">取消</el-button>
+          </el-col>
+          <el-col :span="6" :offset="2">
+            <el-button type="primary" @click="putDelayPhoto">提交</el-button>
+          </el-col>
+        </el-col>
+      </el-row>
+    </el-drawer>
+    <!-- 抽屉弹窗延期拍摄 end -->
+
     <!-- 抽屉弹窗提交任务 start -->
     <el-dialog
       title="提交任务"
@@ -940,6 +1027,11 @@ export default {
 
       // 抽屉弹窗提交任务
       drawerPuttask: false,
+      // 抽屉拍摄延期
+      drawerDelayPhoto: false,
+      reasonId: '', // 延期拍摄原因
+      reasonList: '', // 延期拍摄原因列表
+      delayPhotoTime: '', // 延期拍摄时间
 
       input: '',
       value2: '',
@@ -1103,7 +1195,7 @@ export default {
       }
       if (this.deptId == 90) {
         data.task.taskType = 4
-        data.task.status = null
+        // data.task.status = null
         data.task.deptId = null
       }
       this.$axios.post('/ocarplay/task/listAjax', data).then((res) => {
@@ -1713,6 +1805,7 @@ export default {
     cancel() {
       this.drawerDelay = false
       this.drawerPuttask = false
+      this.drawerDelayPhoto = false
       // 延期任务数据清除
       this.delayTime = ''
       this.delayReason = ''
@@ -1872,6 +1965,86 @@ export default {
       this.getTaskListAjax()
     },
     ///////// 排序 end /////////
+
+    ///////// 打开延期拍摄弹窗 start /////////
+    openDelayPhoto(id, taskName) {
+      this.drawerDelayPhoto = true
+      this.taskId = id
+      this.taskName = taskName
+    },
+    ///////// 打开延期拍摄弹窗 end /////////
+
+    ///////// 延期拍摄弹窗打开 start /////////
+    drawerDelayPhotoOpen() {
+      let data = {
+        taskId: this.taskId,
+      }
+      this.$axios
+        .post('/ocarplay/pDelayReason/listAjax', {})
+        .then((res) => {
+          console.log(res)
+          if (res.status == 200) {
+            let data = res.data.items
+            let reasonList = []
+            data.forEach((element) => {
+              reasonList.push({
+                value: element.reasonId,
+                label: element.reason,
+              })
+            })
+            this.reasonList = reasonList
+          }
+        })
+        .catch((res) => {
+          console.log(res)
+        })
+    },
+    ///////// 延期拍摄弹窗打开 end /////////
+
+    ///////// 延期拍摄弹窗关闭 start /////////
+    drawerDelayPhotoClose() {
+      this.reasonId = null
+      this.delayPhotoTime = null
+      this.taskId = null
+      this.taskName = null
+    },
+    ///////// 延期拍摄弹窗关闭 end /////////
+
+    ///////// 提交延期拍摄原因 end /////////
+    putDelayPhoto() {
+      let data = {
+        taskId: this.taskId,
+        photoTime: this.delayPhotoTime,
+        reasonId: this.reasonId,
+      }
+      if (!data.photoTime||!data.reasonId) {
+        this.$message.error("请填写拍摄时间和延期原因！")
+        return
+      }
+      this.drawerLoading = true
+      this.$axios
+        .post('/ocarplay//task/save', data)
+        .then((res) => {
+          if (res.status == 200) {
+            console.log(res)
+            let data = res.data
+            if (data == 1) {
+              ///////// 获取任务列表 /////////
+              this.getTaskListAjax()
+              this.drawerDelayPhoto = false
+              this.$message.success("拍摄延期成功！")
+            } else {
+              this.$message.error("拍摄延期失败！")
+            }
+            this.drawerLoading = false
+          }
+        })
+        .catch((res) => {
+          this.drawerLoading = false
+          console.log(res)
+        })
+    },
+    ///////// 提交延期拍摄原因 end /////////
   },
 }
 </script>
@@ -1981,10 +2154,7 @@ $statusColor4: #ea8a85;
       margin-bottom: 36px;
       font-size: 18px;
     }
-    .keycontent {
-      align-self: flex-start;
-    }
-    .el-input {
+    .el-input,.el-select {
       width: 100%;
     }
   }

@@ -204,6 +204,7 @@ export default {
       postId: this.$store.state.user.postId, // 职位ID
       subordinate: this.$store.state.user.subordinate, // 一级部门ID
       adminShow: this.$store.state.adminShow, // 超级管理员
+      searchWordDataValue: this.$parent.searchWordData,
       modelId: null,
       type: 1,
       noDatastyle: 'margin-top: 108px;',
@@ -243,7 +244,7 @@ export default {
   beforeCreate() {},
   beforeMount() {},
   mounted() {
-    ///////// 获取车主列表 start /////////
+    ///////// 获取模特列表 start /////////
     this.getlistModel()
   },
   // 方法
