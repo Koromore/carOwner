@@ -165,7 +165,7 @@
       <el-col :span="24" class="paging">
         <el-pagination
           @current-change="changePage"
-          :current-page="1"
+          :current-page="pageNum"
           :page-size="pageSize"
           layout="total, prev, pager, next"
           :total="total"
@@ -234,7 +234,7 @@ export default {
       cameraListShow: 0,
       // 分页
       total: 0,
-      pageNum: 1,
+      pageNum: this.$store.state.modelPageNum,
       pageSize: 12,
     }
   },
@@ -246,6 +246,8 @@ export default {
   mounted() {
     ///////// 获取模特列表 start /////////
     this.getlistModel()
+    // 清除保存的页码
+    this.$store.commit('modelPage', 1)
   },
   // 方法
   methods: {
@@ -328,6 +330,7 @@ export default {
 
     ///////// 跳转模特详情 start /////////
     toModelDetail(id) {
+      this.$store.commit('modelPage', this.pageNum)
       this.$router.push({
         path: '/home/resource/modelDetail',
         query: { id: id },

@@ -27,7 +27,7 @@ export default new Vuex.Store({
     // user: { userId: 10, deptId: 102, realName: '陆彪' }, //员工信息
     // user: { userId: 194, deptId: 45, realName: '卢雄飞' }, //员工信息
     // user: { userId: 9, deptId:27,subordinate:27, realName: '郑开喜' }, //员工信息
-    user: { userId: 4023, deptId:51, realName: '刘特' }, //员工信息
+    // user: { userId: 4023, deptId:51, realName: '刘特' }, //员工信息
     // user: { userId: 3714, deptId:91, realName: '杨梦倩' }, //员工信息
     // user: { userId: 3820, deptId:91, realName: '黄震宇' }, //员工信息
     // user: { userId: 830, deptId:91, realName: '唐攀' }, //员工信息
@@ -63,11 +63,20 @@ export default new Vuex.Store({
     // isLogin: 'error', //error/success, // 是否登陆
     isLogin: 'success', //error/success, // 是否登陆
     isRouterAlive: true, // 控制页面刷新
-    taskStatusNum: 0,
     ownersTypeNum: 1,
     vehicleOwnerDetailNum: [0, 0],
     // 是否为管理员账号
-    adminShow: true
+    adminShow: true,
+    // 任务列表页码/页数记录
+    taskStatusNum: 0,
+    taskPageNum: 1,
+    taskPageSize: 30,
+    // 摄影师列表页码记录
+    cameramanPageNum: 0,
+    // 模特列表页码记录
+    modelPageNum: 0,
+    // 场地列表页码记录
+    placePageNum: 0,
   },
   action: {
 
@@ -78,10 +87,10 @@ export default new Vuex.Store({
       state.adminShow = data
     },
     // 任务管理状态记录
-    taskStatus(state, data) {
-      state.taskStatusNum = data
-      // console.log(data)
-    },
+    // taskStatus(state, data) {
+    //   state.taskStatusNum = data
+    //   // console.log(data)
+    // },
     // 车主管理类型记录
     ownersType(state, data) {
       state.ownersTypeNum = data
@@ -91,10 +100,23 @@ export default new Vuex.Store({
     ownerDetailId(state, data){
       state.vehicleOwnerDetailNum = data
     },
-    // 项目列表我参与分页记录
-    projectPageNumRecord_(state, data) {
-      state.projectPageNum_ = data
-      // console.log('我参与'+state.projectPageNum_)
+    // 任务列表页码/状态记录
+    taskData(state, data){
+      state.taskStatusNum = data.status
+      state.taskPageNum = data.pageNum
+      state.taskPageSize = data.pageSize
+    },
+    // 摄影师列表页码记录
+    cameramanPage(state, data){
+      state.cameramanPageNum = data
+    },
+    // 模特列表页码记录
+    modelPage(state, data){
+      state.modelPageNum = data
+    },
+    // 场地列表页码记录
+    placePage(state, data){
+      state.placePageNum = data
     },
     /**
      * [reload 控制页面刷新]

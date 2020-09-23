@@ -139,7 +139,7 @@
           <el-col :span="24" class="list" v-show="taskType==4">
             <div class="key imp">拍摄时间</div>
             <div class="val">
-              <el-date-picker v-model="photoTime" type="date" placeholder="选择日期" :disabled="!disabledCaigou" value-format="yyyy-MM-dd HH:mm:ss"></el-date-picker>
+              <el-date-picker v-model="photoTime" type="date" placeholder="选择日期" :disabled="taskId ? true : false" value-format="yyyy-MM-dd HH:mm:ss"></el-date-picker>
             </div>
           </el-col>
           <el-col :span="24" class="list">
@@ -861,14 +861,16 @@ export default {
       })
       let initUserId = this.userId
       let deptId = this.deptId
+      // let createTime = this.$time0(new Date())
       if (this.taskId) {
         initUserId = this.taskDetail.initUserId
         deptId = this.taskDetail.deptId
+        // createTime = null
       }
       let data = {
         initUserId: initUserId,
         deptId: deptId,
-        createTime: this.$time0(new Date()),
+        // createTime: createTime,
         taskType: this.taskType,
         taskId: this.taskId,
         taskName: this.taskName,

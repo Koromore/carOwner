@@ -95,7 +95,7 @@
       <el-col :span="24" class="paging">
         <el-pagination
           @current-change="changePage"
-          :current-page="1"
+          :current-page="pageNum"
           :page-size="pageSize"
           layout="total, prev, pager, next"
           :total="total"
@@ -161,7 +161,7 @@ export default {
       cameraListShow: 0,
       // 分页
       total: 0,
-      pageNum: 1,
+      pageNum: this.$store.state.placePageNum,
       pageSize: 12,
     }
   },
@@ -173,6 +173,8 @@ export default {
   mounted() {
     ///////// 获取车主列表 start /////////
     this.getPlaceList()
+    // 清除保存的页码
+    this.$store.commit('placePage', 1)
   },
   // 方法
   methods: {
@@ -247,6 +249,7 @@ export default {
 
     ///////// 跳转场地详情 start /////////
     toPlaceDetails(id) {
+      this.$store.commit('placePage', this.pageNum)
       this.$router.push({
         path: '/home/resource/placedetails',
         query: { id: id },

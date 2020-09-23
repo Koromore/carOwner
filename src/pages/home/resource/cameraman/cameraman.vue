@@ -198,7 +198,7 @@
       <el-col :span="24" class="paging">
         <el-pagination
           @current-change="changePage"
-          :current-page="1"
+          :current-page="pageNum"
           :page-size="pageSize"
           layout="total, prev, pager, next"
           :total="total"
@@ -284,7 +284,7 @@ export default {
       commentListShow: 0,
       // 分页
       total: 0,
-      pageNum: 1,
+      pageNum: this.$store.state.cameramanPageNum,
       pageSize: 12,
     }
   },
@@ -296,7 +296,8 @@ export default {
   mounted() {
     ///////// 获取车主列表 start /////////
     this.getlistPhotoPerson()
-    
+    // 清除保存的页码
+    this.$store.commit('cameramanPage', 1)
   },
   // 方法
   methods: {
@@ -400,6 +401,7 @@ export default {
 
     ///////// 摄影师详情页 start /////////
     toCameraDetails(id) {
+      this.$store.commit('cameramanPage', this.pageNum)
       this.$router.push({
         path: '/home/resource/cameramanDetails',
         query: { id: id },

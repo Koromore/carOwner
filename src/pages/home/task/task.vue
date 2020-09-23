@@ -71,7 +71,12 @@
               <template v-if="scope.row.photoTime">
                 {{$date(scope.row.photoTime)}}
                 <template v-if="scope.row.reasonId">
-                  <el-tooltip class="item" effect="dark" :content="scope.row.reason" placement="top">
+                  <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="scope.row.reason"
+                    placement="top"
+                  >
                     <span style="color: #e6a23c;">延期</span>
                   </el-tooltip>
                 </template>
@@ -264,7 +269,7 @@
         <el-pagination
           @size-change="changeSize"
           @current-change="changePage"
-          :current-page="1"
+          :current-page="pageNum"
           :page-sizes="[20, 30, 50]"
           :page-size="pageSize"
           layout="total, prev, pager, next, sizes"
@@ -309,7 +314,13 @@
               <template v-else-if="scope.row.taskType==5">发布</template>
             </template>
           </el-table-column>
-          <el-table-column prop="ownerName" label="邀约对象" min-width="90" show-overflow-tooltip v-if="deptId!=90"></el-table-column>
+          <el-table-column
+            prop="ownerName"
+            label="邀约对象"
+            min-width="90"
+            show-overflow-tooltip
+            v-if="deptId!=90"
+          ></el-table-column>
           <!-- <el-table-column prop="ownerItemList" label="邀约事项" min-width="130" show-overflow-tooltip></el-table-column> -->
           <el-table-column prop="personName" label="摄影师" min-width="90" show-overflow-tooltip>
             <template slot-scope="scope">
@@ -456,7 +467,7 @@
         <el-pagination
           @size-change="changeSize"
           @current-change="changePage"
-          :current-page="1"
+          :current-page="pageNum"
           :page-sizes="[20, 30, 50]"
           :page-size="pageSize"
           layout="total, prev, pager, next ,sizes"
@@ -692,7 +703,7 @@
         <el-pagination
           @size-change="changeSize"
           @current-change="changePage"
-          :current-page="1"
+          :current-page="pageNum"
           :page-sizes="[20, 30, 50]"
           :page-size="pageSize"
           layout="total, prev, pager, next ,sizes"
@@ -1017,8 +1028,8 @@ export default {
       orderType: 1, // 1-升序，2-降序
       orderField: 1, // 1-拍摄时间，2-下达时间
       // 分页信息
-      pageNum: 1,
-      pageSize: 30,
+      pageNum: this.$store.state.taskPageNum,
+      pageSize: this.$store.state.taskPageSize,
       total: 0,
       // 抽屉弹窗延期因
       drawerDelay: false,
@@ -1110,6 +1121,13 @@ export default {
     // console.log(list.splice(0,1))
     // console.log(list)
     this.uploadExcle = 'ocarplay/api/invite/uploadExcle?deptId=' + this.deptId
+    // 任务状态页码数据
+    let data = {
+      status: 0,
+      pageNum: 1,
+      pageSize: 30,
+    }
+    this.$store.commit('taskData', data)
   },
   // 方法
   methods: {
@@ -1162,17 +1180,13 @@ export default {
     ///////// 获取任务列表状态筛选 start /////////
     statusChange(id) {
       this.status = id
+      this.pageNum = 1
       this.getTaskListAjax()
     },
     ///////// 获取任务列表状态筛选 end /////////
 
     ///////// 获取任务列表 start /////////
     getTaskListAjax() {
-      // let data = {
-      //   // ids: 0,
-      //   // pageNum: 1,
-      //   // pageSize: 30
-      // }
       this.loading = true
       let data = {
         pageNum: this.pageNum,
@@ -1193,10 +1207,15 @@ export default {
         //   initUserId: 266
         // }
       }
+      if (this.subordinate == 150) {
+        data.task.deptId = this.deptId
+      } else {
+        data.task.deptId = null
+      }
       if (this.deptId == 90) {
         data.task.taskType = 4
         // data.task.status = null
-        data.task.deptId = null
+        // data.task.deptId = null
       }
       this.$axios.post('/ocarplay/task/listAjax', data).then((res) => {
         // console.log(res)
@@ -1272,6 +1291,9 @@ export default {
     // 每页条数变化时触发事件
     changeSize(pageSize) {
       // console.log(pageSize)
+      this.pageSize = pageSize
+      ///////// 获取任务列表 start /////////
+      this.getTaskListAjax()
     },
     // 页码变换时触发事件
     changePage(pageNum) {
@@ -1715,7 +1737,14 @@ export default {
 
     ///////// 跳转任务详情页 start /////////
     toDetail(id) {
-      this.$store.commit('taskStatus', this.status)
+      let data = {
+        status: this.status,
+        pageNum: this.pageNum,
+        pageSize: this.pageSize,
+      }
+      this.$store.commit('taskData', data)
+      // this.$store.commit('taskStatus', this.status)
+      // cameramanPage
       this.$router.push({
         path: '/home/taskDetail',
         query: { id: id },
@@ -2017,8 +2046,8 @@ export default {
         photoTime: this.delayPhotoTime,
         reasonId: this.reasonId,
       }
-      if (!data.photoTime||!data.reasonId) {
-        this.$message.error("请填写拍摄时间和延期原因！")
+      if (!data.photoTime || !data.reasonId) {
+        this.$message.error('请填写拍摄时间和延期原因！')
         return
       }
       this.drawerLoading = true
@@ -2032,9 +2061,9 @@ export default {
               ///////// 获取任务列表 /////////
               this.getTaskListAjax()
               this.drawerDelayPhoto = false
-              this.$message.success("拍摄延期成功！")
+              this.$message.success('拍摄延期成功！')
             } else {
-              this.$message.error("拍摄延期失败！")
+              this.$message.error('拍摄延期失败！')
             }
             this.drawerLoading = false
           }
@@ -2154,7 +2183,8 @@ $statusColor4: #ea8a85;
       margin-bottom: 36px;
       font-size: 18px;
     }
-    .el-input,.el-select {
+    .el-input,
+    .el-select {
       width: 100%;
     }
   }
