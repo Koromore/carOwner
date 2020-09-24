@@ -1207,7 +1207,7 @@ export default {
         //   initUserId: 266
         // }
       }
-      if (this.subordinate == 150) {
+      if (this.deptId == 105 || this.deptId == 110 || this.deptId == 153 || this.deptId == 106) {
         data.task.deptId = this.deptId
       } else {
         data.task.deptId = null

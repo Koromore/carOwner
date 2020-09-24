@@ -236,7 +236,7 @@ export default {
       // 任务对象选择数据
       input2: '',
       textarea: '',
-      props: { multiple: true },
+      props: { multiple: true,expandTrigger: 'hover' },
       carSeriesList: [],
       // 摄影师  模特  场地
       options3: [

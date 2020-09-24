@@ -14,6 +14,18 @@ export default {
 </script>
 
 <style>
+.el-cascader-panel .el-cascader-menu:nth-last-of-type(1) .el-checkbox__original {
+    width: 130px;
+    height: 34px;
+    z-index: 10;
+    position: absolute;
+    top: -10px;
+    left: 0;
+  }
+
+  .el-cascader-panel .el-radio__input {
+    visibility: hidden;
+  }
 #app {
   font-family: 'SourceHanSansSC', 'Avenir', Helvetica, Arial, sans-serif;
 }
