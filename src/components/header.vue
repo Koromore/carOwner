@@ -18,7 +18,7 @@
           <!-- <div @click="navTo(4)" :class="[navNum==3?'act':'']">场地管理</div> -->
           <div @click="navTo(5)" :class="[navNum==4?'act':'']" v-if="postId==231||adminShow">数据分析</div>
           <!-- <div @click="navTo(5)" :class="[navNum==4?'act':'']">数据分析</div> -->
-          <div @click="navTo(6)" :class="[navNum==5?'act':'']" v-if="postId==231||adminShow">元数据管理</div>
+          <div @click="navTo(6)" :class="[navNum==5?'act':'']" v-if="deptId==90||subordinate==150||postId==231||adminShow">元数据管理</div>
           <!-- <div @click="navTo(6)" :class="[navNum==5?'act':'']">元数据管理</div> -->
           <div @click="navTo(7)" :class="[navNum==6?'act':'']">合作文档</div>
         </div>
