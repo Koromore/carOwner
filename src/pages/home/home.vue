@@ -186,6 +186,28 @@ export default {
 </style>
 <style lang="scss">
 #home {
+  .addBtn{
+    overflow: hidden;
+    border: none;
+    i{
+      position: relative;
+      top: 49px;
+      right: 49px;
+      transition: top .5s, right .5s;
+      font-size: 14px;
+    }
+    span{
+      margin-left: -7px;
+      transition: margin-left .5s; 
+    }
+    &:hover span{
+      margin-left: 5px;
+    }
+    &:hover i{
+      top: 0;
+      right: 0;
+    }
+  }
   .el-drawer__body {
     height: calc(100% - 87px);
   }

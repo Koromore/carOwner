@@ -26,6 +26,35 @@
             </div>
           </el-col>
           <el-col :span="24" class="list">
+            <div class="key imp">项目名称</div>
+            <div class="val">
+              <el-cascader
+                v-model="carSeriesId"
+                :props="props"
+                :options="carSeriesList"
+                clearable
+                filterable
+                @change="carSeriesChange"
+                :disabled="!disabledCaigou"
+              ></el-cascader>
+            </div>
+          </el-col>
+          <el-col :span="24" class="list">
+            <div class="key imp">预算明细</div>
+            <div class="val">
+              <el-cascader
+                v-model="carSeriesId"
+                :props="props"
+                :options="carSeriesList"
+                clearable
+                filterable
+                @change="carSeriesChange"
+                :disabled="!disabledCaigou"
+              ></el-cascader>
+            </div>
+          </el-col>
+          
+          <el-col :span="24" class="list">
             <div class="key imp">任务名称</div>
             <div class="val">
               <el-input
@@ -67,7 +96,7 @@
           </el-col>
           <!-- 摄影填写 start -->
           <el-col :span="24" v-show="taskType==4">
-            <el-col :span="24" class="list">
+            <el-col :span="24" class="list" v-show="!disabledCaigou">
               <div class="key">摄影师</div>
               <div class="val">
                 <el-select
@@ -88,7 +117,7 @@
                 <!-- {{personId}} -->
               </div>
             </el-col>
-            <el-col :span="24" class="list">
+            <el-col :span="24" class="list" v-show="!disabledCaigou">
               <div class="key">模特</div>
               <div class="val">
                 <el-select

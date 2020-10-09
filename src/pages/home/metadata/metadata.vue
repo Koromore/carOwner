@@ -16,7 +16,7 @@
           @click="addContent"
           v-show="tabact!='certifications'&&tabact!='brand'"
         >
-          <el-button type="primary" icon="el-icon-circle-plus-outline" size="small">添加内容</el-button>
+          <el-button type="primary" icon="el-icon-circle-plus-outline" size="small" class="addBtn">添加内容</el-button>
         </div>
       </el-col>
     </el-row>

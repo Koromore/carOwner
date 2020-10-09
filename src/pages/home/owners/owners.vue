@@ -73,7 +73,7 @@
           <template v-if="subordinate==150||adminShow||userId==193||userId==32||userId==3790">
             <!-- <i class="el-icon-circle-plus-outline"></i>
             <br />添加车主-->
-            <el-button type="primary" icon="el-icon-circle-plus-outline" size="small">添加车主</el-button>
+            <el-button type="primary" icon="el-icon-circle-plus-outline" size="small" class="addBtn">添加车主</el-button>
           </template>
         </div>
       </el-col>

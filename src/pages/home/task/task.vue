@@ -45,7 +45,7 @@
           ></el-option>
         </el-select>
         <div class="add_task" @click="addTask(0)" v-if="subordinate==150||adminShow">
-          <el-button type="primary" icon="el-icon-circle-plus-outline" size="small">新建任务</el-button>
+          <el-button type="primary" icon="el-icon-circle-plus-outline" size="small" class="addBtn">新建任务</el-button>
         </div>
       </el-col>
     </el-row>
@@ -1907,20 +1907,47 @@ export default {
 
     ///////// 导出结算列表 start /////////
     exportFile(obj) {
-      // console.log(id)
-      let data = { taskId: obj.taskId }
-      this.$axios
-        .post('/ocarplay/api/invite/exportInviteByTaskId', data, {
-          responseType: 'blob', //--设置请求数据格式
+      console.log(obj)
+
+      import('@/utils/ExportExcel').then(excel => {
+        const tHeader = ['inviteId(勿删)', '车主名', '链接']
+        const filterVal = ['inviteId', 'realName', 'url']
+        const list = obj.listInvite
+        const data = this.formatJson(filterVal, list)
+        // console.log(list)
+        // console.log(data)
+        excel.export_json_to_excel({
+          header: tHeader, // 表头名称
+          data, // 表格数据
+          filename: obj.taskName + '结算清单', // 文件名称
+          autoWidth: true, // 表格是否自动撑开
+          bookType: 'xlsx' // 文件后缀格式
         })
-        .then((res) => {
-          // console.log(res.data)
-          var blob = new Blob([res.data], { type: 'text/plain;charset=utf-8' })
-          saveAs(blob, obj.taskName + '结算清单.xls')
-        })
-        .catch(() => {
-          // console.log('捕获错误')
-        })
+        // this.downloadLoading = false
+      })
+
+      // let data = { taskId: obj.taskId }
+      // this.$axios
+      //   .post('/ocarplay/api/invite/exportInviteByTaskId', data, {
+      //     responseType: 'blob', //--设置请求数据格式
+      //   })
+      //   .then((res) => {
+      //     // console.log(res.data)
+      //     var blob = new Blob([res.data], { type: 'text/plain;charset=utf-8' })
+      //     saveAs(blob, obj.taskName + '结算清单.xls')
+      //   })
+      //   .catch(() => {
+      //     // console.log('捕获错误')
+      //   })
+    },
+    formatJson(filterVal, jsonData) {
+      return jsonData.map(v => filterVal.map(j => {
+        if (j === 'timestamp') {
+          return parseTime(v[j])
+        } else {
+          return v[j]
+        }
+      }))
     },
     ///////// 导出结算列表 start /////////
 
