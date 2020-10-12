@@ -1,8 +1,15 @@
 <template>
   <div id="home">
-    <Home-Header :routeName="routeName" :adminShow="adminShow" @sousuo="getSearchWord"></Home-Header>
+    <Home-Header
+      :routeName="routeName"
+      :adminShow="adminShow"
+      @sousuo="getSearchWord"
+    ></Home-Header>
     <el-main id="content">
-      <router-view :carSeriesList="carSeriesList" :searchWordData="searchWordData"></router-view>
+      <router-view
+        :carSeriesList="carSeriesList"
+        :searchWordData="searchWordData"
+      ></router-view>
     </el-main>
   </div>
 </template>
@@ -96,7 +103,7 @@ export default {
               {
                 deptId: 106,
                 label: '东本',
-                children: []
+                children: [],
               },
               {
                 deptId: 117,
@@ -186,24 +193,27 @@ export default {
 </style>
 <style lang="scss">
 #home {
-  .addBtn{
+  .addBtn {
     overflow: hidden;
     border: none;
-    i{
+    i {
       position: relative;
       top: 49px;
       right: 49px;
-      transition: top .5s, right .5s;
+      transition: top 0.5s, right 0.5s, background 0.5s;
       font-size: 14px;
     }
-    span{
+    span {
       margin-left: -7px;
-      transition: margin-left .5s; 
+      transition: margin-left 0.5s;
     }
-    &:hover span{
+    &:hover {
+      background: #315dbd !important;
+    }
+    &:hover span {
       margin-left: 5px;
     }
-    &:hover i{
+    &:hover i {
       top: 0;
       right: 0;
     }
@@ -253,6 +263,115 @@ export default {
     padding: 16px;
     text-align: center;
     background: #fff;
+  }
+  .SlideOpen {
+    vertical-align: middle;
+    position: relative;
+    border: none;
+    z-index: 1;
+    -webkit-backface-visibility: hidden;
+    -moz-osx-font-smoothing: grayscale;
+    overflow: hidden;
+    color: #7986cb;
+    background: #7e497b;
+    color: white;
+  }
+  /*  */
+  .SlideOpen::before,
+  .SlideOpen::after {
+    content: attr(data-text);
+    position: absolute;
+    width: 100%;
+    height: 50%;
+    left: 0;
+    background: #409eff;
+    color: #fff;
+    overflow: hidden;
+    transition: transform 0.3s;
+    transition-timing-function: cubic-bezier(0.2, 1, 0.3, 1);
+  }
+
+  .SlideOpen::before {
+    top: 0;
+    // padding-top: 1em;
+    line-height: 272%;
+  }
+
+  .SlideOpenM::before {
+    line-height: 260%;
+  }
+
+  .SlideOpen::after {
+    bottom: 0;
+    line-height: 0;
+  }
+
+  .SlideOpen > span {
+    display: block;
+    transform: scale3d(0.2, 0.2, 1);
+    opacity: 0;
+    transition: transform 0.3s, opacity 0.3s;
+    -webkit-transition-timing-function: cubic-bezier(0.2, 1, 0.3, 1);
+    transition-timing-function: cubic-bezier(0.2, 1, 0.3, 1);
+  }
+
+  .SlideOpen:hover::before {
+    transform: translate3d(0, -100%, 0);
+  }
+
+  .SlideOpen:hover::after {
+    transform: translate3d(0, 100%, 0);
+  }
+
+  .SlideOpen:hover > span {
+    opacity: 1;
+    transform: scale3d(1, 1, 1);
+  }
+// 
+  .tabButHover {
+    // width: 150px;
+    // height: 45px;
+    vertical-align: middle;
+    position: relative;
+    z-index: 1;
+    -webkit-backface-visibility: hidden;
+    -moz-osx-font-smoothing: grayscale;
+    // border: none;
+    background: white;
+    // transition: color 0.4s;
+  }
+
+  .tabButHover::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #6a91e8;
+    z-index: -1;
+    opacity: 0;
+    -webkit-transform: scale3d(0.7, 1, 1);
+    transform: scale3d(0.7, 1, 1);
+    -webkit-transition: -webkit-transform 0.4s, opacity 0.4s;
+    transition: transform 0.4s, opacity 0.4s;
+    -webkit-transition-timing-function: cubic-bezier(0.2, 1, 0.3, 1);
+    transition-timing-function: cubic-bezier(0.2, 1, 0.3, 1);
+  }
+
+  .tabButHoverAss::before{
+    background: #67a9d6;
+  }
+
+  .tabButHover:hover {
+    color: #fff;
+    font-weight: bold;
+  }
+
+  .tabButHover:hover::before {
+    opacity: 1;
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
   }
 }
 #home .el-table td,

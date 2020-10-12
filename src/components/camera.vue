@@ -77,7 +77,7 @@
             <el-button type="info" @click="cancel" size="small">取消</el-button>
           </el-col>
           <el-col :span="6" :offset="2">
-            <el-button type="primary" @click="saveBtn" size="small">提交</el-button>
+            <el-button type="primary" @click="saveBtn" size="small" class="SlideOpen" data-text="提交"><span>提交</span></el-button>
           </el-col>
         </el-col>
       </el-row>

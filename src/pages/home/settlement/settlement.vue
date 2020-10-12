@@ -25,7 +25,7 @@
             ></el-option>
           </el-select>
         </div>
-        <el-button type="primary" icon="el-icon-download" size="small" @click="downloadList">下载清单</el-button>
+        <el-button type="primary" icon="el-icon-download" size="small" @click="downloadList" class="addBtn">下载清单</el-button>
       </el-col>
     </el-row>
     <!-- 头部选项框 end -->

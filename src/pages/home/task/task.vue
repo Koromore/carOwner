@@ -131,7 +131,6 @@
                   <template v-else>无模特</template>
                 </span>
               </span>
-              <!-- <span v-else-if="!scope.row.modelName&&scope.row.personName">无模特</span> -->
               <span v-else>/</span>
             </template>
           </el-table-column>
@@ -324,15 +323,24 @@
           <!-- <el-table-column prop="ownerItemList" label="邀约事项" min-width="130" show-overflow-tooltip></el-table-column> -->
           <el-table-column prop="personName" label="摄影师" min-width="90" show-overflow-tooltip>
             <template slot-scope="scope">
-              <span v-if="scope.row.personName">{{scope.row.personName}}</span>
+              <span v-if="scope.row.taskToPersonList.length">
+                <span
+                  v-for="(item,index) in scope.row.taskToPersonList"
+                  :key="index"
+                >{{item.realName}}</span>
+              </span>
               <span v-else>/</span>
             </template>
           </el-table-column>
           <el-table-column prop="modelName" label="模特" min-width="90" show-overflow-tooltip>
             <template slot-scope="scope">
-              <span v-if="scope.row.modelName">{{scope.row.modelName}}</span>
-              <span v-else-if="!scope.row.modelName&&scope.row.personName">无模特</span>
-              <span v-else-if="!scope.row.modelName&&!scope.row.personName">/</span>
+              <span v-if="scope.row.taskToModelList.length">
+                <span v-for="(item,index) in scope.row.taskToModelList" :key="index">
+                  <template v-if="item.modelId">{{item.realName}}</template>
+                  <template v-else>无模特</template>
+                </span>
+              </span>
+              <span v-else>/</span>
             </template>
           </el-table-column>
           <el-table-column prop="placeName" label="场地" min-width="90" show-overflow-tooltip>
@@ -838,7 +846,10 @@
                 <i class="el-icon-remove" style="color: #a6a9ad" v-else></i>
               </el-col>
               <el-col :span="4">
-                <template v-if="item.userType==0">
+                <el-input placeholder="搜索车主" v-model="item.realName"></el-input>
+                {{item.realName}}
+                <!-- realName -->
+                <!-- <template v-if="item.userType==0">
                   <el-cascader
                     :options="inviteDataList"
                     v-model="item.inviteData"
@@ -881,7 +892,7 @@
                       :value="item.value"
                     ></el-option>
                   </el-select>
-                </template>
+                </template> -->
               </el-col>
               <el-col :span="15">
                 <template v-if="item.userType==0">
@@ -939,7 +950,7 @@
           <el-button type="info" @click="submitBtn(1)">提交</el-button>
         </el-col>
         <el-col :span="4" :offset="2">
-          <el-button type="primary" @click="submitBtn(0)">保存</el-button>
+          <el-button type="primary" @click="submitBtn(0)" class="SlideOpen" data-text="保存"><span>保存</span></el-button>
         </el-col>
       </el-col>
       <!-- <span slot="footer" class="dialog-footer">
@@ -1907,7 +1918,7 @@ export default {
 
     ///////// 导出结算列表 start /////////
     exportFile(obj) {
-      console.log(obj)
+      // console.log(obj)
 
       import('@/utils/ExportExcel').then(excel => {
         const tHeader = ['inviteId(勿删)', '车主名', '链接']

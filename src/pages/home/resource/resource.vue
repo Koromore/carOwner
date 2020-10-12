@@ -61,14 +61,13 @@ $icoColor: #6a91e8;
             border-right: 1px solid #f0f0f0;
           }
         }
-        .but.act,
-        .but:hover {
+        .but.act{
           background: $icoColor;
           color: white;
         }
-        .but:hover {
-          background: $icoColor;
-        }
+        // .but:hover {
+        //   background: $icoColor;
+        // }
       }
     }
     .right {

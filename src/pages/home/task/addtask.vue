@@ -25,7 +25,7 @@
               </el-radio-group>
             </div>
           </el-col>
-          <el-col :span="24" class="list">
+          <!-- <el-col :span="24" class="list">
             <div class="key imp">项目名称</div>
             <div class="val">
               <el-cascader
@@ -52,7 +52,7 @@
                 :disabled="!disabledCaigou"
               ></el-cascader>
             </div>
-          </el-col>
+          </el-col> -->
           
           <el-col :span="24" class="list">
             <div class="key imp">任务名称</div>
@@ -174,7 +174,7 @@
           <el-col :span="24" class="list">
             <div class="key imp">计划邀约量</div>
             <div class="val">
-              <el-input placeholder="请输入内容" v-model="taskNum" clearable :disabled="!disabledCaigou"></el-input>
+              <el-input placeholder="请输入内容" v-model="taskNum" clearable :disabled="!disabledCaigou" type="number"></el-input>
             </div>
           </el-col>
           <el-col :span="24" class="list">
@@ -188,7 +188,7 @@
                 :file-list="fileList"
                 :disabled="!disabledCaigou"
               >
-                <el-button size="small" type="primary">点击上传</el-button>
+                <el-button size="small" type="primary" class="SlideOpen SlideOpenM" data-text="点击上传"><span>点击上传</span></el-button>
                 <div slot="tip" class="el-upload__tip"></div>
               </el-upload>
             </div>
@@ -235,7 +235,8 @@
           </el-col>
         </el-col>
         <el-col :span="24" class="put">
-          <el-button type="primary" @click="saveTask">提交</el-button>
+          <!-- <el-button type="primary" @click="saveTask">提交</el-button> -->
+          <el-button type="primary" @click="saveTask" class="SlideOpen" data-text="提交"><span>提交</span></el-button>
         </el-col>
       </el-scrollbar>
     </el-row>
@@ -907,7 +908,7 @@ export default {
         startTime: startTime,
         endTime: endTime,
         photoTime: this.photoTime, // 拍摄时间
-        num: this.taskNum,
+        num: this.taskNum*1,
         // carSeriesId: carSeriesId, // 品牌车型
 
         taskToPersonList: [], // 摄影师列表

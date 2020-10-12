@@ -11,7 +11,9 @@ export default new Vuex.Store({
     user: {}, // 员工信息
     // user: { userId: 152, deptId: 1, realName:'谭运猛'}, //员工信息
     // user: { userId: 28 }, //员工信息
+    
     // user: { userId: 527, deptId: 91, subordinate: 91, realName: '付德全' }, //员工信息
+    // user: { userId: 4070, deptId: 153, subordinate: 150, realName: '司马金宇' }, //员工信息
     // user: { userId: 134, deptId: 150, realName: '成志朋' }, //员工信息
     // user: { userId: 6, deptId: 41, subordinate:41, realName: '宋秀' }, //员工信息
     // user: { userId: 3914, deptId: 155, subordinate:41, realName: '鄢然' }, //员工信息
@@ -87,10 +89,10 @@ export default new Vuex.Store({
       state.adminShow = data
     },
     // 任务管理状态记录
-    // taskStatus(state, data) {
-    //   state.taskStatusNum = data
-    //   // console.log(data)
-    // },
+    taskStatus(state, data) {
+      state.taskStatusNum = data
+      // console.log(data)
+    },
     // 车主管理类型记录
     ownersType(state, data) {
       state.ownersTypeNum = data

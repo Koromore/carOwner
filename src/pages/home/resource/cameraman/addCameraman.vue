@@ -166,7 +166,7 @@
                     :limit="1"
                     :file-list="pactFileList"
                   >
-                    <el-button size="small" type="primary">点击上传</el-button>
+                    <el-button size="small" type="primary" class="SlideOpen SlideOpenM" data-text="点击上传"><span>点击上传</span></el-button>
                     <div slot="tip" class="el-upload__tip">上传合作文档后选择合作期限</div>
                   </el-upload>
                 </el-col>
@@ -279,7 +279,7 @@
         <!-- 右侧 end -->
         <!-- 签约合作信息 end -->
         <el-col :span="24" class="put">
-          <el-button type="primary" @click="saveCamera">完成</el-button>
+          <el-button type="primary" @click="saveCamera" class="SlideOpen" data-text="完成"><span>完成</span></el-button>
         </el-col>
       </el-scrollbar>
     </el-row>
@@ -548,7 +548,7 @@ export default {
             this.worksList = worksList
             this.worksFileList = worksFileList
 
-            if (data.photoPersonWorkList.length == 0) {
+            if (data.photoPersonWorkList&&data.photoPersonWorkList.length == 0) {
               this.photoPersonWorkList = [
                 {
                   workId: '',
@@ -1188,7 +1188,7 @@ export default {
       padding: 3px 0;
       button {
         width: 272px;
-        font-size: 18px;
+        // font-size: 18px;
       }
     }
   }

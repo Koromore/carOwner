@@ -110,7 +110,7 @@
           </div>
         </el-col>
         <el-col :span="24" class="put">
-          <el-button type="primary" @click="savePlace">提交</el-button>
+          <el-button type="primary" @click="savePlace" class="SlideOpen" data-text="提交"><span>提交</span></el-button>
         </el-col>
       </el-scrollbar>
     </el-row>

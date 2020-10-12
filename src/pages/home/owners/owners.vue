@@ -4,14 +4,14 @@
     <el-row class="top">
       <el-col :span="14" class="left">
         <div class="butBox1">
-          <div :class="[tab1act==1?'but act':'but']" @click="tab1(1)">支持型</div>
-          <div :class="[tab1act==3?'but act':'but']" @click="tab1(3)">资源型</div>
-          <div :class="[tab1act==4?'but act':'but']" @click="tab1(4)">非车主</div>
+          <div :class="[tab1act==1?'but act tabButHover':'but tabButHover']" @click="tab1(1)">支持型</div>
+          <div :class="[tab1act==3?'but act tabButHover':'but tabButHover']" @click="tab1(3)">资源型</div>
+          <div :class="[tab1act==4?'but act tabButHover':'but tabButHover']" @click="tab1(4)">非车主</div>
         </div>
 
         <div class="butBox2">
           <div
-            :class="[tab2act==item.id?'but act':'but']"
+            :class="[tab2act==item.id?'but act tabButHover tabButHoverAss':'but tabButHover tabButHoverAss']"
             @click="tab2(item.id)"
             v-for="(item,index) in tab2Items"
             :key="index"
@@ -80,7 +80,7 @@
     </el-row>
     <!-- 头部选项框 end -->
 
-    <!-- 内容列表 start -->
+    <!--  内容列表 start -->
 
     <!-- 支持型车主列表 start -->
     <el-row class="content content1" v-show="tab1act==1">
@@ -883,8 +883,7 @@ $icoColor: rgb(106, 145, 232);
         .but:nth-of-type(1) {
           border: none;
         }
-        .but.act,
-        .but:hover {
+        .but.act{
           font-weight: bold;
           color: white;
           background: rgb(106, 145, 232);
@@ -914,8 +913,7 @@ $icoColor: rgb(106, 145, 232);
         .but:nth-of-type(1) {
           border: none;
         }
-        .but.act,
-        .but:hover {
+        .but.act{
           font-weight: bold;
           color: white;
           background: rgb(103, 169, 214);

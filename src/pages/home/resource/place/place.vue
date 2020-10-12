@@ -4,9 +4,9 @@
     <el-row class="top">
       <el-col :span="9" class="left">
         <div class="butBox">
-          <div :class="[tabact==1?'but act':'but']" @click="tab(1)">摄影师</div>
-          <div :class="[tabact==2?'but act':'but']" @click="tab(2)">模特</div>
-          <div :class="[tabact==3?'but act':'but']" @click="tab(3)">场地</div>
+          <div :class="[tabact==1?'but act tabButHover':'but tabButHover']" @click="tab(1)" >摄影师</div>
+          <div :class="[tabact==2?'but act tabButHover':'but tabButHover']" @click="tab(2)">模特</div>
+          <div :class="[tabact==3?'but act tabButHover':'but tabButHover']" @click="tab(3)">场地</div>
         </div>
       </el-col>
       <el-col :span="15" class="right">
@@ -41,6 +41,7 @@
             icon="el-icon-circle-plus-outline"
             size="small"
             @click="add_place"
+            class="addBtn"
           >添加场地</el-button>
         </div>
       </el-col>

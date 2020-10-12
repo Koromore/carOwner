@@ -5,7 +5,7 @@
       <el-col :span="24" class="cont">
         <div class="butBox">
           <div
-            :class="[tabact==item.name?'but act':'but']"
+            :class="[tabact==item.name?'but act tabButHover':'but tabButHover']"
             @click="tab(item.name)"
             v-for="(item,index) in tabItems"
             :key="index"
@@ -160,8 +160,7 @@ $icoColor: rgb(106, 145, 232);
         .but:nth-of-type(1) {
           border: none;
         }
-        .but.act,
-        .but:hover {
+        .but.act{
           font-weight: bold;
           color: white;
           background: rgb(106, 145, 232);
