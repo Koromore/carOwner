@@ -16,10 +16,6 @@
           </el-col>
         </el-col>
         <el-col :span="24" class="banner">
-          <!-- <div style="height:100px;" v-for="(item, index) in swiperList" :key="index">
-             <img class="swp-img" :src="'/ocarplay/'+item.imgUrl" alt />
-          </div>-->
-          <!-- <section class="swiper"> -->
           <swiper :options="swiperOption" ref="goodSwiper" id="bannerList" :style="bannerStyle">
             <swiper-slide
               class="swp-silde"
@@ -27,7 +23,7 @@
               :key="index"
               data-id="item.id"
             >
-              <img class="swp-img" :src="item.imgUrl" alt />
+              <img class="swp-img" :src="item.imgUrl" alt preview="index" />
             </swiper-slide>
             <div class="swiper-pagination" slot="pagination"></div>
           </swiper>
@@ -105,7 +101,6 @@ export default {
       postId: this.$store.state.user.postId, // 职位ID
       subordinate: this.$store.state.user.subordinate, // 一级部门ID
       adminShow: this.$store.state.adminShow, // 超级管理员
-      isshow: false,
       // 轮播数据
       bannerStyle: '',
       swiperOption: {
@@ -118,7 +113,7 @@ export default {
         loop: true, // 环路
         centeredSlides: false, // 第一张图的对齐方式
         // //  pagination: '.swiper-pagination',
-        slidesPerView: 3,
+        slidesPerView: 4,
         paginationClickable: true,
         spaceBetween: 20,
       },
@@ -241,28 +236,18 @@ export default {
           }
           // console.log(swiperList)
           if (swiperList.length==1) {
-            // this.swiperOption.slidesPerView = 1
-            this.bannerStyle = 'position: relative;left: 33%;'
+            this.bannerStyle = 'position: relative;left: 37.5%;'
           }else if (swiperList.length==2){
-            this.bannerStyle = 'position: relative;left: 17%;'
-            // this.swiperOption.centeredSlides = false
+            this.bannerStyle = 'position: relative;left: 25%;'
+          }else if (swiperList.length==3){
+            this.bannerStyle = 'position: relative;left: 12.5%;'
           }else{
              this.bannerStyle = ''
           }
-          // console.log(this.swiperOption)
           this.swiperList = swiperList
-
-          // console.log(this.swiperList)
-          // console.log(this.$refs.goodSwiper.swiper)
-          // this.isshow = true
           this.$nextTick(() => {
             this.$refs.goodSwiper.swiper.init()
-            // console.log("初始化")
-            // console.log(this.swiperList)
-            // console.log(this.swiperOption.centeredSlides)
           })
-          // console.log(this.$refs.goodSwiper.swiper.init)
-          // console.log(this.$refs.goodSwiper.swiper.updata)
         }
       })
     },
@@ -376,7 +361,7 @@ $icoColor: #6a91e8;
     .banner {
       .swp-img {
         width: 100%;
-        height: 260px;
+        height: 360px;
         object-fit: cover;
       }
     }

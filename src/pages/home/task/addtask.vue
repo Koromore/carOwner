@@ -891,9 +891,11 @@ export default {
       })
       let initUserId = this.userId
       let deptId = this.deptId
+      let status = 0
       // let createTime = this.$time0(new Date())
       if (this.taskId) {
-        initUserId = this.taskDetail.initUserId
+        initUserId = ''
+        status = ''
         deptId = this.taskDetail.deptId
         // createTime = null
       }
@@ -904,7 +906,7 @@ export default {
         taskType: this.taskType,
         taskId: this.taskId,
         taskName: this.taskName,
-        status: 0,
+        status: status,
         startTime: startTime,
         endTime: endTime,
         photoTime: this.photoTime, // 拍摄时间
@@ -1054,7 +1056,8 @@ export default {
         flag = false
       }
 
-      // console.log(data)
+      console.log(JSON.stringify(data))
+      
       if (flag) {
         this.putLoading = true
         this.$axios

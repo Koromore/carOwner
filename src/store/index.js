@@ -13,7 +13,12 @@ export default new Vuex.Store({
     // user: { userId: 28 }, //员工信息
     
     // user: { userId: 527, deptId: 91, subordinate: 91, realName: '付德全' }, //员工信息
+    // user: { userId: 704, deptId: 93, subordinate: 93, realName: '姚菲' }, //员工信息
+    // user: { userId: 3945, deptId: 110, subordinate: 150, realName: '刘妍' }, //员工信息
+    // user: { userId: 765, deptId: 90, realName: '段昌国' }, //员工信息
+    // user: { userId: 3875, deptId: 90, realName: '曾雪梅' }, //员工信息
     // user: { userId: 4070, deptId: 153, subordinate: 150, realName: '司马金宇' }, //员工信息
+    // user: { userId: 4119, deptId: 153, subordinate: 150, realName: '屈海龙' }, //员工信息
     // user: { userId: 134, deptId: 150, realName: '成志朋' }, //员工信息
     // user: { userId: 6, deptId: 41, subordinate:41, realName: '宋秀' }, //员工信息
     // user: { userId: 3914, deptId: 155, subordinate:41, realName: '鄢然' }, //员工信息
@@ -79,6 +84,12 @@ export default new Vuex.Store({
     modelPageNum: 0,
     // 场地列表页码记录
     placePageNum: 0,
+    // 任务列表排序记录
+    order: {
+      orderField: 2,
+      orderType: 2
+    },
+    
   },
   action: {
 
@@ -119,6 +130,10 @@ export default new Vuex.Store({
     // 场地列表页码记录
     placePage(state, data){
       state.placePageNum = data
+    },
+    // 任务列表排序记录
+    orderRecord(state, data){
+      state.order = data
     },
     /**
      * [reload 控制页面刷新]

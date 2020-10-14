@@ -127,7 +127,7 @@
             <template slot-scope="scope">
               <span v-if="scope.row.taskToModelList.length">
                 <span v-for="(item,index) in scope.row.taskToModelList" :key="index">
-                  <template v-if="item.modelId">{{item.realName}}</template>
+                  <template v-if="item.modelId"><span v-if="!index">,</span>{{item.realName}}</template>
                   <template v-else>无模特</template>
                 </span>
               </span>
@@ -336,7 +336,7 @@
             <template slot-scope="scope">
               <span v-if="scope.row.taskToModelList.length">
                 <span v-for="(item,index) in scope.row.taskToModelList" :key="index">
-                  <template v-if="item.modelId">{{item.realName}}</template>
+                  <template v-if="item.modelId"><span v-if="!index">,</span>{{item.realName}}</template>
                   <template v-else>无模特</template>
                 </span>
               </span>
@@ -384,6 +384,7 @@
           <el-table-column prop="createTime" label="下达时间" min-width="100" sortable>
             <template slot-scope="scope">{{$date(scope.row.createTime)}}</template>
           </el-table-column>
+          <el-table-column prop="initUserRealName" label="下达人" min-width="100" v-if="deptId==90"></el-table-column>
           <el-table-column prop="delayReason" label="延期原因" min-width="100" show-overflow-tooltip>
             <template slot-scope="scope">
               <template v-if="scope.row.status==3">未按时提交</template>
@@ -486,107 +487,6 @@
     </el-row>
 
     <!-- 内容列表3 -->
-    <!-- <el-row class="content content3" v-show="status==1">
-      <div class="table_list">
-        <el-table
-          :data="taskListData"
-          style="width: 100%"
-          :header-row-style="{'height': '54px'}"
-          :header-cell-style="{'color': '#000'}"
-          height="100%"
-          v-loading="loading"
-        >
-          <el-table-column prop label width="24" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="taskName" label="任务名称" min-width="130" show-overflow-tooltip>
-            <template slot-scope="scope">
-              <el-link
-                target="_blank"
-                class="omit"
-                :underline="false"
-                @click="toDetail(scope.row.taskId)"
-              >{{scope.row.taskName}}</el-link>
-            </template>
-          </el-table-column>
-          <el-table-column prop label="任务类型" min-width="80" show-overflow-tooltip>
-            <template slot-scope="scope">
-              <template v-if="scope.row.taskType==1">借车</template>
-              <template v-else-if="scope.row.taskType==2">素材</template>
-              <template v-else-if="scope.row.taskType==3">邀约</template>
-              <template v-else-if="scope.row.taskType==4">拍摄</template>
-              <template v-else-if="scope.row.taskType==5">发布</template>
-            </template>
-          </el-table-column>
-          <el-table-column prop="ownerName" label="邀约对象" min-width="90" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="ownerItemList" label="邀约事项" min-width="130" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="personName" label="摄影师" min-width="90" show-overflow-tooltip>
-            <template slot-scope="scope">
-              <span v-if="scope.row.personName">{{scope.row.personName}}</span>
-              <span v-else>/</span>
-            </template>
-          </el-table-column>
-          <el-table-column prop="modelName" label="模特" min-width="90" show-overflow-tooltip>
-            <template slot-scope="scope">
-              <span v-if="scope.row.modelName">{{scope.row.modelName}}</span>
-              <span v-else-if="!scope.row.modelName&&scope.row.personName">无模特</span>
-              <span v-else-if="!scope.row.modelName&&!scope.row.personName">/</span>
-            </template>
-          </el-table-column>
-          <el-table-column prop="placeName" label="场地" min-width="90" show-overflow-tooltip>
-            <template slot-scope="scope">
-              <span v-if="scope.row.placeName">{{scope.row.placeName}}</span>
-              <span v-else>/</span>
-            </template>
-          </el-table-column>
-          <el-table-column prop="carSeriesName" label="邀约车型" min-width="130" show-overflow-tooltip>
-            <template slot-scope="scope">
-              <template v-if="scope.row.carSeriesName">{{scope.row.carSeriesName}}</template>
-              <template v-else>
-                <span
-                  v-for="(item, index) in scope.row.listTaskOfCartype"
-                  :key="index"
-                >{{item.carTypeName}},</span>
-              </template>
-            </template>
-          </el-table-column>
-          <el-table-column prop="status" label="状态" min-width="80">
-            <template slot-scope="scope">
-              <div v-if="scope.row.status==0" class="statusColor0">执行中</div>
-              <div v-if="scope.row.status==1" class="statusColor1">结算中</div>
-              <div v-if="scope.row.status==2" class="statusColor2">完成</div>
-              <div v-if="scope.row.status==3" class="statusColor3">延期</div>
-              <div v-if="scope.row.status==4" class="statusColor4">人工延期</div>
-            </template>
-          </el-table-column>
-          <el-table-column prop="num" label="任务进度" min-width="80">
-            <template slot-scope="scope">{{scope.row.inviteNumOver}}/{{scope.row.num}}</template>
-          </el-table-column>
-          <el-table-column prop="listInvite" label="结算进度" min-width="80" v-if="subordinate==150">
-            <template slot-scope="scope">
-              <i class="el-icon-view" @click="toSettlement(scope.row)"></i>
-            </template>
-          </el-table-column>
-          <el-table-column prop="address" label="结算清单" width="200">
-            <template slot-scope="scope">
-              <img src="static/images/document/excle.png" width="16" alt srcset />
-              <el-link @click="exportInvite(scope.row)">{{scope.row.taskName}}</el-link>
-            </template>
-          </el-table-column>
-        </el-table>
-      </div>
-      <el-col :span="24" class="paging">
-        <el-pagination
-          @size-change="changeSize"
-          @current-change="changePage"
-          :current-page="1"
-          :page-sizes="[20, 30, 50]"
-          :page-size="pageSize"
-          layout="total, prev, pager, next ,sizes"
-          :total="total"
-          background
-        ></el-pagination>
-      </el-col>
-    </el-row>-->
-
     <!-- 内容列表4 -->
     <el-row class="content content4" v-show="status==2">
       <div class="table_list">
@@ -846,10 +746,10 @@
                 <i class="el-icon-remove" style="color: #a6a9ad" v-else></i>
               </el-col>
               <el-col :span="4">
-                <el-input placeholder="搜索车主" v-model="item.realName"></el-input>
-                {{item.realName}}
+                <!-- <el-input placeholder="搜索车主" v-model="item.realName"></el-input>
+                {{item.realName}} -->
                 <!-- realName -->
-                <!-- <template v-if="item.userType==0">
+                <template v-if="item.userType==0">
                   <el-cascader
                     :options="inviteDataList"
                     v-model="item.inviteData"
@@ -892,7 +792,7 @@
                       :value="item.value"
                     ></el-option>
                   </el-select>
-                </template> -->
+                </template>
               </el-col>
               <el-col :span="15">
                 <template v-if="item.userType==0">
@@ -1036,8 +936,8 @@ export default {
       loading: false,
       status: this.$store.state.taskStatusNum,
       taskListData: [],
-      orderType: 1, // 1-升序，2-降序
-      orderField: 1, // 1-拍摄时间，2-下达时间
+      orderType: this.$store.state.order.orderType, // 1-升序，2-降序
+      orderField: this.$store.state.order.orderField, // 1-拍摄时间，2-下达时间
       // 分页信息
       pageNum: this.$store.state.taskPageNum,
       pageSize: this.$store.state.taskPageSize,
@@ -2022,12 +1922,16 @@ export default {
       } else if (prop == 'createTime') {
         this.orderField = 2
       }
-
       if (order == 'descending') {
         this.orderType = 2
       } else if (order == 'ascending') {
         this.orderType = 1
       }
+      let data = {
+        orderField: this.orderField,
+        orderType: this.orderType
+      }
+      this.$store.commit('orderRecord', data)
       ///////// 获取任务列表 start /////////
       this.getTaskListAjax()
     },

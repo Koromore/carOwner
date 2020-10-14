@@ -19,6 +19,9 @@ import { intersection, union, complement, diff } from '@/utils/gather' // json�
 import elTableInfiniteScroll from 'el-table-infinite-scroll' // 表格滚动
 import '@/utils/vueOverall'
 
+import preview from 'vue-photo-preview'
+import 'vue-photo-preview/dist/skin.css'
+Vue.use(preview)
 // import {Decrypt,Encrypt} from '@/utils/cryptoJS'
 
 // router.beforeEach((to, from, next) => {
