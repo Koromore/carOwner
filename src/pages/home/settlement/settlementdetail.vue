@@ -2,14 +2,14 @@
   <div id="settlementDetail">
     <!-- 头部选项框 start -->
     <el-row class="top">
-      <el-col :span="8" class="left cont">
+      <el-col :span="3" class="left cont">
         <div @click="previous">
           <i class="el-icon-arrow-left"></i>
           返回
         </div>
       </el-col>
-      <el-col :span="8" class="center cont">《{{taskName}}》</el-col>
-      <el-col :span="8" class="right cont">
+      <el-col :span="18" class="center cont">《{{taskName}}》</el-col>
+      <el-col :span="3" class="right cont">
         <!-- <div @click="submitList">
           <el-button type="primary" icon="el-icon-circle-check" size="small">提交并完成</el-button>
         </div>-->
@@ -44,7 +44,8 @@
           <el-table-column prop="title" label="内容标题" min-width="130" show-overflow-tooltip></el-table-column>
           <el-table-column prop="link" label="链接" width="60">
             <template slot-scope="scope">
-              <el-link :href="'http://'+scope.row.url" target="_blank">【原】</el-link>
+              <el-link :href="scope.row.url" target="_blank" v-if="scope.row.url">【原】</el-link>
+              <span v-else>/</span>
             </template>
           </el-table-column>
           <el-table-column prop="phone" label="电话" min-width="110"></el-table-column>

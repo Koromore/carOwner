@@ -746,52 +746,53 @@
                 <i class="el-icon-remove" style="color: #a6a9ad" v-else></i>
               </el-col>
               <el-col :span="4">
-                <!-- <el-input placeholder="搜索车主" v-model="item.realName"></el-input>
-                {{item.realName}} -->
-                <!-- realName -->
-                <template v-if="item.userType==0">
-                  <el-cascader
-                    :options="inviteDataList"
-                    v-model="item.inviteData"
-                    clearable
-                    filterable
-                    :show-all-levels="false"
-                    size="medium"
-                  >
-                    <i slot="prefix" class="el-input__icon el-icon-search"></i>
-                  </el-cascader>
-                </template>
-                <template v-else-if="item.userType==1">
-                  <el-select
-                    v-model="item.ownerId"
-                    placeholder="摄影师"
-                    clearable
-                    filterable
-                    class="userType1"
-                  >
-                    <el-option
-                      v-for="item in cammeramanList"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    ></el-option>
-                  </el-select>
-                </template>
-                <template v-else-if="item.userType==2">
-                  <el-select
-                    v-model="item.ownerId"
-                    placeholder="模特"
-                    clearable
-                    filterable
-                    class="userType2"
-                  >
-                    <el-option
-                      v-for="item in modelList"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    ></el-option>
-                  </el-select>
+                <el-input placeholder="请输入" size="medium" v-model="item.realName" @focus="changeOwner(index)" v-if="!item.changeShow"></el-input>
+                <!-- {{item.realName}} -->
+                <template v-else>
+                  <template v-if="item.userType==0">
+                    <el-cascader
+                      :options="inviteDataList"
+                      v-model="item.inviteData"
+                      clearable
+                      filterable
+                      :show-all-levels="false"
+                      size="medium"
+                    >
+                      <i slot="prefix" class="el-input__icon el-icon-search"></i>
+                    </el-cascader>
+                  </template>
+                  <template v-else-if="item.userType==1">
+                    <el-select
+                      v-model="item.ownerId"
+                      placeholder="摄影师"
+                      clearable
+                      filterable
+                      class="userType1"
+                    >
+                      <el-option
+                        v-for="item in cammeramanList"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      ></el-option>
+                    </el-select>
+                  </template>
+                  <template v-else-if="item.userType==2">
+                    <el-select
+                      v-model="item.ownerId"
+                      placeholder="模特"
+                      clearable
+                      filterable
+                      class="userType2"
+                    >
+                      <el-option
+                        v-for="item in modelList"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      ></el-option>
+                    </el-select>
+                  </template>
                 </template>
               </el-col>
               <el-col :span="15">
@@ -1432,9 +1433,11 @@ export default {
                   itemId: element.itemId,
                   ownerId: element.ownerId,
                   url: element.url,
+                  realName: element.realName,
                   // money: element.money,
                   // isCard: element.isCard,
                   userType: element.userType,
+                  changeShow: false
                 })
               })
               // if (prm.personId && pushIs) {
@@ -1500,9 +1503,11 @@ export default {
                 itemId: element.itemId,
                 ownerId: element.ownerId,
                 url: element.url,
+                realName: element.realName,
                 // money: element.money,
                 // isCard: element.isCard,
                 userType: element.userType,
+                changeShow: false
               })
             })
             this.listInviteList = listInviteList
@@ -1558,8 +1563,19 @@ export default {
         this.delListInviteList = this.listInviteList.splice(index, 1)
       }
     },
+    // 切换车主
+    changeOwner(index){
+      this.listInviteList[index].changeShow = true
+      this.$message.error("切换"+index)
+    },
     // 提交按钮
     submitBtn(e) {
+      let status = null
+      if (e==0) {
+        status = this.taskDetail.status
+      }else{
+        status = 1
+      }
       this.drawerLoading = true
       let listInviteList = this.listInviteList
       listInviteList.forEach((element) => {
@@ -1569,12 +1585,6 @@ export default {
           element.itemId = element.inviteData[1]
           element.ownerId = element.inviteData[2]
         }
-
-        // if (element.url && element.money) {
-        //   element.isWrite = 1
-        // } else {
-        //   element.isWrite = 0
-        // }
       })
       let delListInviteList = this.delListInviteList
       delListInviteList.forEach((element) => {
@@ -1584,7 +1594,7 @@ export default {
       let data = {
         taskId: this.taskId,
         deptId: this.taskDeptId,
-        status: e,
+        status: status,
         updateTime: this.$time0(new Date()),
         listInvite: listInviteList,
         nowUserId: this.userId,

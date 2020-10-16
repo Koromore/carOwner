@@ -207,18 +207,6 @@
                 maxlength="500"
                 show-word-limit
               ></el-input>
-              <!-- <div class="miKey">邀约目的:</div>
-            <el-input placeholder="请输入内容" v-model="taskDesc.input1"></el-input>
-            <div class="miKey">参与资格:</div>
-            <el-input placeholder="请输入内容" v-model="taskDesc.input2"></el-input>
-            <div class="miKey">字数要求:</div>
-            <el-input placeholder="请输入内容" v-model="taskDesc.input3"></el-input>
-            <div class="miKey">帖子类型:</div>
-            <el-input placeholder="请输入内容" v-model="taskDesc.input4"></el-input>
-            <div class="miKey">费用情况:</div>
-            <el-input placeholder="请输入内容" v-model="taskDesc.input5"></el-input>
-            <div class="miKey">其他说明:</div>
-              <el-input placeholder="请输入内容" v-model="taskDesc.input6"></el-input>-->
             </div>
           </el-col>
           <el-col :span="24" class="list">
@@ -344,26 +332,11 @@ export default {
         this.getCarSeriesId()
       }
     },
-    // carSeriesId: function (newData, oldData) {
-    //   if (newData != '') {
-    //     // console.log(res)
-    //     let data = []
-    //     newData.forEach((element) => {
-    //       data.push(element[1])
-    //     })
-    //     ///////// 获取车主列表 start /////////
-    //     this.getOwnerList(data)
-    //   }
-    // },
   },
   // 钩子函数
   beforeCreate() {},
   beforeMount() {},
   mounted() {
-    // let list = [1, 2, 3]
-    // console.log(list)
-    // list.unshift(0)
-    // console.log(list)
     ///////// 接受页面传参 start /////////
     this.getQuery()
     ///////// 获取车型列表 start /////////
@@ -377,12 +350,6 @@ export default {
     ///////// 获取场地列表 start /////////
     this.getPlaceList()
     this.getOwnerListNo()
-
-    // var a = [1,2,3];
-    // var b = [4,5,6];
-    // var c = [7,8,9];
-    // var d = a.concat(b,c); //c=[1,2,3,4,5,6];
-    // console.log(d)
   },
   // 方法事件
   methods: {
@@ -1056,7 +1023,7 @@ export default {
         flag = false
       }
 
-      console.log(JSON.stringify(data))
+      // console.log(JSON.stringify(data))
       
       if (flag) {
         this.putLoading = true
@@ -1090,27 +1057,6 @@ export default {
       }
     },
     ///////// 新增任务 start /////////
-
-    ///////// 消息提示 start /////////
-    messageWin(message) {
-      // 成功提示
-      this.$message({
-        message: message,
-        type: 'success',
-      })
-    },
-    messageWarning(message) {
-      // 警告提示
-      this.$message({
-        message: message,
-        type: 'warning',
-      })
-    },
-    messageError(message) {
-      // 错误提示
-      this.$message.error(message)
-    },
-    ///////// 消息提示 end /////////
   },
 }
 </script>

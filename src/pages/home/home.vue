@@ -193,6 +193,7 @@ export default {
 </style>
 <style lang="scss">
 #home {
+  /////////// 图标按钮效果 start //////////////
   .addBtn {
     overflow: hidden;
     border: none;
@@ -218,6 +219,7 @@ export default {
       right: 0;
     }
   }
+  /////////// 图标按钮效果 end //////////////
   .el-drawer__body {
     height: calc(100% - 87px);
   }
@@ -264,6 +266,7 @@ export default {
     text-align: center;
     background: #fff;
   }
+  /////////// 按钮打开效果 start //////////////
   .SlideOpen {
     vertical-align: middle;
     position: relative;
@@ -327,7 +330,8 @@ export default {
     opacity: 1;
     transform: scale3d(1, 1, 1);
   }
-// 
+  /////////// 按钮打开效果 end //////////////
+  /////////// 选项卡移入效果 start //////////////
   .tabButHover {
     // width: 150px;
     // height: 45px;
@@ -373,6 +377,7 @@ export default {
     -webkit-transform: translate3d(0, 0, 0);
     transform: translate3d(0, 0, 0);
   }
+  /////////// 选项卡移入效果 end //////////////
 }
 #home .el-table td,
 #home .el-table th {
