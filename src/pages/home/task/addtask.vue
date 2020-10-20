@@ -25,34 +25,32 @@
               </el-radio-group>
             </div>
           </el-col>
-          <!-- <el-col :span="24" class="list">
+          <el-col :span="24" class="list">
             <div class="key imp">项目名称</div>
             <div class="val">
-              <el-cascader
-                v-model="carSeriesId"
-                :props="props"
-                :options="carSeriesList"
-                clearable
-                filterable
-                @change="carSeriesChange"
-                :disabled="!disabledCaigou"
-              ></el-cascader>
+              <el-select v-model="budgetApplyId" placeholder="请选择" clearable filterable @change="chageBudgetApplyId" :disabled="taskId ? true : false">
+                <el-option
+                  v-for="item in budgetApplyIdList"
+                  :key="item.budgetApplyId"
+                  :label="item.proName"
+                  :value="item.budgetApplyId">
+                </el-option>
+              </el-select>
             </div>
           </el-col>
           <el-col :span="24" class="list">
             <div class="key imp">预算明细</div>
             <div class="val">
-              <el-cascader
-                v-model="carSeriesId"
-                :props="props"
-                :options="carSeriesList"
-                clearable
-                filterable
-                @change="carSeriesChange"
-                :disabled="!disabledCaigou"
-              ></el-cascader>
+              <el-select v-model="applyDetailId" placeholder="请选择" clearable filterable no-data-text="请先选择项目名称" :disabled="taskId ? true : false">
+                <el-option
+                  v-for="item in applyDetailIdList"
+                  :key="item.applyDetailId"
+                  :label="item.remark"
+                  :value="item.applyDetailId">
+                </el-option>
+              </el-select>
             </div>
-          </el-col> -->
+          </el-col>
           
           <el-col :span="24" class="list">
             <div class="key imp">任务名称</div>
@@ -178,6 +176,12 @@
             </div>
           </el-col>
           <el-col :span="24" class="list">
+            <div class="key imp">预估费用</div>
+            <div class="val">
+              <el-input placeholder="请输入内容" v-model="cost" clearable :disabled="!disabledCaigou" type="number"></el-input>
+            </div>
+          </el-col>
+          <el-col :span="24" class="list">
             <div class="key">任务文件</div>
             <div class="val">
               <el-upload
@@ -282,6 +286,8 @@ export default {
       cameraList: [], // 摄影师列表
       modelList: [], // 模特列表
       placeList: [], // 场地列表
+      budgetApplyIdList: [], // 项目名称列表
+      applyDetailIdList: [], // 预算明细列表
       personId: [],
       personIdList: [],
       modelId: [],
@@ -299,6 +305,8 @@ export default {
       fileList: [],
       // 任务新增信息
       taskType: '',
+      budgetApplyId: '',
+      applyDetailId: '',
       taskName: '',
       listInviteList: [],
       listInviteOwners: [],
@@ -310,6 +318,7 @@ export default {
       periodTime: [],
       photoTime: null,
       taskNum: '',
+      cost: null,
       listTaskFile: [],
       taskDesc: '',
       remark: '',
@@ -350,6 +359,10 @@ export default {
     ///////// 获取场地列表 start /////////
     this.getPlaceList()
     this.getOwnerListNo()
+    ///////// 获取项目名称 start /////////
+    this.getBudget()
+    ///////// 获取预算明细 start /////////
+    // this.getBudgetDetailByApplyId()
   },
   // 方法事件
   methods: {
@@ -385,6 +398,63 @@ export default {
       // console.log(type)
     },
     ///////// 接受页面传参 end /////////
+
+    ///////// 获取项目名称 start /////////
+    getBudget(){
+      let data = {userId:956}
+      this.$axios
+        .post('/ocarplay/task/getBudget', data)
+        .then((res) => {
+          // console.log(res)
+          // this.listLoading = false
+          if (res.status == 200) {
+            this.budgetApplyIdList = res.data.data
+            // let data = res.data.items
+            // let cameraList = []
+            // data.forEach((element) => {
+            //   cameraList.push({
+            //     value: element.personId,
+            //     label: element.name,
+            //   })
+            // })
+            // this.cameraList = cameraList
+            // this.total = data.totalRows
+          }
+        })
+    },
+    ///////// 获取项目名称 end /////////
+
+    chageBudgetApplyId(val){
+      if (!val) {
+        this.applyDetailId = null
+      }
+      this.getBudgetDetailByApplyId(val)
+    },
+
+    ///////// 获取预算明细 start /////////
+    getBudgetDetailByApplyId(id){
+      let data = {budgetApplyId:id}
+      this.$axios
+        .post('/ocarplay/task/getBudgetDetailByApplyId', data)
+        .then((res) => {
+          // console.log(res)
+          // this.listLoading = false
+          if (res.status == 200) {
+            this.applyDetailIdList = res.data.data
+            // let data = res.data.items
+            // let cameraList = []
+            // data.forEach((element) => {
+            //   cameraList.push({
+            //     value: element.personId,
+            //     label: element.name,
+            //   })
+            // })
+            // this.cameraList = cameraList
+            // this.total = data.totalRows
+          }
+        })
+    },
+    ///////// 获取预算明细 end /////////
 
     ///////// 车型选择改变 end /////////
     carSeriesChange(res) {
@@ -517,6 +587,8 @@ export default {
           this.taskName = data.taskName
           this.taskType = data.taskType
           this.placeId = data.placeId
+          this.budgetApplyId = data.budgetApplyId
+          this.applyDetailId = data.applyDetailId
           let listInviteList = []
           let listInviteOwners = []
           let listInvitePerson = []
@@ -588,6 +660,7 @@ export default {
           ]
           this.photoTime = data.photoTime
           this.taskNum = data.num
+          this.cost = data.cost
           this.taskDesc = data.taskDesc
           this.remark = data.remark
           let fileList = []
@@ -866,6 +939,21 @@ export default {
         deptId = this.taskDetail.deptId
         // createTime = null
       }
+      let proName = null
+      this.budgetApplyIdList.forEach(element => {
+        if (this.budgetApplyId == element.budgetApplyId) {
+          proName=element.proName
+        }
+      });
+      let applyDetail = {}
+      this.applyDetailIdList.forEach(element => {
+        if (element.applyDetailId == this.applyDetailId) {
+          applyDetail=element
+        }
+      });
+      let jsonData = JSON.stringify([{num:1,budget:this.cost}])
+      // console.log(proName)
+      console.log(applyDetail)
       let data = {
         initUserId: initUserId,
         deptId: deptId,
@@ -878,6 +966,7 @@ export default {
         endTime: endTime,
         photoTime: this.photoTime, // 拍摄时间
         num: this.taskNum*1,
+        cost: this.cost*1,
         // carSeriesId: carSeriesId, // 品牌车型
 
         taskToPersonList: [], // 摄影师列表
@@ -888,6 +977,17 @@ export default {
         remark: this.remark,
         listInvite: [],
         listTaskFile: this.taskFileList,
+
+        budgetApplyId: this.budgetApplyId,
+        proName: proName,
+
+        applyDetailId:applyDetail.applyDetailId,
+        subjectId: applyDetail.subjectId,
+        subItemsId:applyDetail.subItemsId,
+        subjectTempId:applyDetail.subjectTempId,
+        jsonData: jsonData,
+        cost:this.cost,
+        subItemsName:applyDetail.subjectName,
       }
       let listInvite = []
       let listInviteList = [] // 邀约对象
@@ -1010,6 +1110,9 @@ export default {
         data.startTime,
         data.num,
         data.listTaskOfCartype.length,
+        data.budgetApplyId,
+        data.applyDetailId,
+        data.cost,
         // data.listInvite.length,
       ]
 
@@ -1023,8 +1126,9 @@ export default {
         flag = false
       }
 
-      // console.log(JSON.stringify(data))
-      
+      // console.log(data)
+      console.log(JSON.stringify(data))
+      // return
       if (flag) {
         this.putLoading = true
         this.$axios
