@@ -175,8 +175,9 @@
           </el-table-column>
           <el-table-column label="结算" min-width="70">
             <template slot-scope="scope">
-              <span v-if="scope.row.isClearing">&nbsp;&nbsp;&nbsp;Y</span>
-              <span v-else>&nbsp;&nbsp;&nbsp;N</span>
+              &nbsp;&nbsp;
+              <el-link v-if="scope.row.isClearing" @click="paydetailListShow(scope.row.proRequireId)">Y</el-link>
+              <el-link v-else @click="paydetailListShow(scope.row.proRequireId)">N</el-link>
             </template>
           </el-table-column>
 
@@ -377,8 +378,11 @@
           </el-table-column>
           <el-table-column label="结算" min-width="60">
             <template slot-scope="scope">
-              <span v-if="scope.row.isClearing">&nbsp;&nbsp;&nbsp;Y</span>
-              <span v-else>&nbsp;&nbsp;&nbsp;N</span>
+              &nbsp;&nbsp;
+              <el-link v-if="scope.row.isClearing" @click="paydetailListShow(scope.row.proRequireId)">Y</el-link>
+              <el-link v-else @click="paydetailListShow(scope.row.proRequireId)">N</el-link>
+              <!-- <el-link>默认链接</el-link>
+              <el-link>默认链接</el-link> -->
             </template>
           </el-table-column>
           <el-table-column prop="createTime" label="下达时间" min-width="100" sortable>
@@ -864,6 +868,22 @@
     <!-- 新增评论 -->
     <comment :commentShow="commentShow"></comment>
     <!-- 新增评论 -->
+
+    <el-dialog title="结算清单" :visible.sync="paydetailShow" width="80%">
+      <el-table :data="paydetailList" v-loading="paydetailShowLoading">
+        <el-table-column property="subjectName" label="科目"></el-table-column>
+        <el-table-column property="subitemName" label="细分项"></el-table-column>
+        <el-table-column property="payMoney" label="付款金额"></el-table-column>
+        <el-table-column property="userName" label="请款人"></el-table-column>
+        <el-table-column property="remark" label="备注"></el-table-column>
+        <el-table-column property="payState" label="状态">
+          <template slot-scope="scope">
+            <span v-if="scope.row.payState">已付款</span>
+            <span v-else>未付款</span>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -973,6 +993,10 @@ export default {
       // 评价
       // evaluatePersonVisible: false,
       uploadExcle: null,
+      // 结算清单
+      paydetailShow: false,
+      paydetailShowLoading: false,
+      paydetailList: [],
     }
   },
   // 过滤器
@@ -1874,7 +1898,7 @@ export default {
 
     ///////// 导入结算列表 start /////////
     importFile(id) {
-      console.log(id)
+      // console.log(id)
     },
     importFileSuccess() {
       this.$message.success('导入成功')
@@ -1887,7 +1911,7 @@ export default {
       if (this.taskListData[index].evaluatePersonVisible) {
         this.taskListData[index].evaluatePersonVisible = false
       } else {
-        console.log(index)
+        // console.log(index)
         for (let i = 0; i < obj.length; i++) {
           const element = obj[i]
           if (element.ifPgOver == 0) {
@@ -1904,20 +1928,23 @@ export default {
 
     ///////// 链接改变验证 start /////////
     urlChange(val) {
-      // console.log(val)
-      let num = 0
-      let list = []
-      this.listInviteList.forEach((element, i) => {
-        // console.log(element.url)
-        if (element.url == val) {
-          num++
-          list.push(i)
+      // console.log(this.taskDetail)
+      if (this.taskDetail.taskType!=4) {
+        let num = 0
+        let list = []
+        this.listInviteList.forEach((element, i) => {
+          // console.log(element.url)
+          if (element.url == val) {
+            num++
+            list.push(i)
+          }
+        })
+        // console.log(list)
+        if (num > 1) {
+          this.$message.error('重复！')
         }
-      })
-      // console.log(list)
-      if (num > 1) {
-        this.$message.error('重复！')
       }
+      
       // let data = this.countJson(this.listInviteList, 'url')
       // console.log(data)
     },
@@ -1963,7 +1990,7 @@ export default {
       this.$axios
         .post('/ocarplay/pDelayReason/listAjax', {})
         .then((res) => {
-          console.log(res)
+          // console.log(res)
           if (res.status == 200) {
             let data = res.data.items
             let reasonList = []
@@ -2004,10 +2031,10 @@ export default {
       }
       this.drawerLoading = true
       this.$axios
-        .post('/ocarplay//task/save', data)
+        .post('/ocarplay/task/save', data)
         .then((res) => {
           if (res.status == 200) {
-            console.log(res)
+            // console.log(res)
             let data = res.data
             if (data == 1) {
               ///////// 获取任务列表 /////////
@@ -2026,6 +2053,23 @@ export default {
         })
     },
     ///////// 提交延期拍摄原因 end /////////
+
+    paydetailListShow(id){
+      this.paydetailShow = true
+      this.paydetailShowLoading = true
+      // console.log(id)
+      // console.log(49576)
+      let data = {proRequireId: id}
+      this.$axios
+        .post('/ocarplay/task/paydetail', data)
+        .then(res=>{
+          // console.log(res)
+          if (res.status==200) {
+            this.paydetailList = res.data.data
+          }
+          this.paydetailShowLoading = false
+        })
+    }
   },
 }
 </script>

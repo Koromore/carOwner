@@ -41,14 +41,13 @@
           <el-col :span="24" class="list">
             <div class="key imp">预算明细</div>
             <div class="val">
-              <el-select v-model="applyDetailId" placeholder="请选择" clearable filterable no-data-text="请先选择项目名称" :disabled="taskId ? true : false">
-                <el-option
-                  v-for="item in applyDetailIdList"
-                  :key="item.applyDetailId"
-                  :label="item.remark"
-                  :value="item.applyDetailId">
-                </el-option>
-              </el-select>
+              <el-input
+                placeholder="请输入内容"
+                v-model="applyDetailName"
+                clearable
+                :disabled="taskId ? true : false"
+                @focus="applyDetailIdBoxShow = true"
+              ></el-input>
             </div>
           </el-col>
           
@@ -79,7 +78,8 @@
             </div>
           </el-col>
           <el-col :span="24" class="list">
-            <div class="key">任务对象</div>
+            <div class="key" v-if="disabledCaigou">任务对象</div>
+            <div class="key" v-else>车辆来源</div>
             <div class="val">
               <el-cascader
                 :options="options2"
@@ -87,8 +87,8 @@
                 v-model="listInviteList"
                 clearable
                 filterable
-                :disabled="!disabledCaigou"
               ></el-cascader>
+              <!-- :disabled="!disabledCaigou" -->
               <!-- collapse-tags -->
             </div>
           </el-col>
@@ -178,7 +178,7 @@
           <el-col :span="24" class="list">
             <div class="key imp">预估费用</div>
             <div class="val">
-              <el-input placeholder="请输入内容" v-model="cost" clearable :disabled="!disabledCaigou" type="number"></el-input>
+              <el-input placeholder="请输入内容" v-model="cost" clearable :disabled="taskId ? true : false" type="number"></el-input>
             </div>
           </el-col>
           <el-col :span="24" class="list">
@@ -233,6 +233,25 @@
       </el-scrollbar>
     </el-row>
     <!-- 内容列表 end -->
+    <!-- 预算明细选择弹窗 -->
+    <el-dialog title="预算明细(点击选中)" :visible.sync="applyDetailIdBoxShow" width="80%">
+      <el-table
+        :data="applyDetailIdList"
+        empty-text="请先选择项目名称"
+        highlight-current-row
+        @current-change="handleCurrentChange"
+      >
+        <el-table-column type="index" width="50"></el-table-column>
+        <el-table-column property="subjectName" label="科目" width="150"></el-table-column>
+        <el-table-column property="subItemsName" label="细分项" width="200"></el-table-column>
+        <el-table-column property="remark" label="预算备注"></el-table-column>
+        <el-table-column width="100" property="remainNum" label="剩余量"></el-table-column>
+      </el-table>
+      <span slot="footer" class="dialog-footer">
+        <!-- <el-button @click="applyDetailIdBoxShow = false">取 消</el-button> -->
+        <el-button type="primary" @click="applyDetailIdBoxShow = false">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -324,6 +343,16 @@ export default {
       remark: '',
       taskFileList: [],
       fileList: [],
+      // 预算明细选择弹窗
+      applyDetailName: null,
+      applyDetailId: null,
+      subjectId: null,
+      subItemsId: null,
+      subjectTempId: null,
+      subItemsName: null,
+
+      applyDetailIdBoxShow: false,
+      gridData: [],
       // 按钮开关
       submitFlag: true,
       putLoading: false,
@@ -401,7 +430,7 @@ export default {
 
     ///////// 获取项目名称 start /////////
     getBudget(){
-      let data = {userId:956}
+      let data = {userId: this.userId}
       this.$axios
         .post('/ocarplay/task/getBudget', data)
         .then((res) => {
@@ -409,16 +438,6 @@ export default {
           // this.listLoading = false
           if (res.status == 200) {
             this.budgetApplyIdList = res.data.data
-            // let data = res.data.items
-            // let cameraList = []
-            // data.forEach((element) => {
-            //   cameraList.push({
-            //     value: element.personId,
-            //     label: element.name,
-            //   })
-            // })
-            // this.cameraList = cameraList
-            // this.total = data.totalRows
           }
         })
     },
@@ -441,18 +460,36 @@ export default {
           // this.listLoading = false
           if (res.status == 200) {
             this.applyDetailIdList = res.data.data
-            // let data = res.data.items
-            // let cameraList = []
-            // data.forEach((element) => {
-            //   cameraList.push({
-            //     value: element.personId,
-            //     label: element.name,
-            //   })
-            // })
-            // this.cameraList = cameraList
-            // this.total = data.totalRows
+            let applyDetailIdList = []
+            res.data.data.forEach(element => {
+              if (element.remainNum>0) {
+                applyDetailIdList.push(element)
+              }
+            });
+            this.applyDetailIdList = applyDetailIdList
           }
         })
+    },
+    handleCurrentChange(val) {
+      // this.currentRow = val;
+      // console.log(val)
+      this.applyDetailId = val.applyDetailId
+      this.subjectId = val.subjectId
+      this.subItemsId = val.subItemsId
+      this.subjectTempId = val.subjectTempId
+      this.subItemsName = val.subItemsName
+      let remark = ''
+      if (val.remark) {
+        remark = val.remark
+      }
+      this.applyDetailName = val.subItemsName + remark
+      // applyDetailId:applyDetail.applyDetailId,
+      //   subjectId: applyDetail.subjectId,
+      //   subItemsId:applyDetail.subItemsId,
+      //   subjectTempId:applyDetail.subjectTempId,
+      //   jsonData: jsonData,
+      //   cost:this.cost,
+      //   subItemsName:applyDetail.subjectName,
     },
     ///////// 获取预算明细 end /////////
 
@@ -593,6 +630,8 @@ export default {
           let listInviteOwners = []
           let listInvitePerson = []
           let listInviteModel = []
+          this.budgetApplyId = data.proName
+          this.applyDetailName = data.subItemsName
           data.listInvite.forEach((element) => {
             if (element.userType == 0) {
               listInviteList.push([
@@ -933,6 +972,7 @@ export default {
       let deptId = this.deptId
       let status = 0
       // let createTime = this.$time0(new Date())
+      let applyDetail = {}
       if (this.taskId) {
         initUserId = ''
         status = ''
@@ -945,15 +985,11 @@ export default {
           proName=element.proName
         }
       });
-      let applyDetail = {}
-      this.applyDetailIdList.forEach(element => {
-        if (element.applyDetailId == this.applyDetailId) {
-          applyDetail=element
-        }
-      });
+      
+      
       let jsonData = JSON.stringify([{num:1,budget:this.cost}])
       // console.log(proName)
-      console.log(applyDetail)
+      // console.log(applyDetail)
       let data = {
         initUserId: initUserId,
         deptId: deptId,
@@ -981,13 +1017,24 @@ export default {
         budgetApplyId: this.budgetApplyId,
         proName: proName,
 
-        applyDetailId:applyDetail.applyDetailId,
-        subjectId: applyDetail.subjectId,
-        subItemsId:applyDetail.subItemsId,
-        subjectTempId:applyDetail.subjectTempId,
+        applyDetailId:this.applyDetailId,
+        subjectId: this.subjectId,
+        subItemsId:this.subItemsId,
+        subjectTempId:this.subjectTempId,
         jsonData: jsonData,
-        cost:this.cost,
-        subItemsName:applyDetail.subjectName,
+        cost:this.cost*1,
+        subItemsName:this.subjectName,
+      }
+      if (this.taskId) {
+        delete data.budgetApplyId
+        delete data.proName
+        delete data.applyDetailId
+        delete data.subjectId,
+        delete data.subItemsId
+        delete data.subjectTempId
+        delete data.jsonData
+        delete data.cost
+        delete data.subItemsName
       }
       let listInvite = []
       let listInviteList = [] // 邀约对象
@@ -1109,12 +1156,14 @@ export default {
         data.taskName,
         data.startTime,
         data.num,
-        data.listTaskOfCartype.length,
-        data.budgetApplyId,
-        data.applyDetailId,
-        data.cost,
+        data.listTaskOfCartype.length
         // data.listInvite.length,
       ]
+      if (!this.taskId) {
+        list.push(data.budgetApplyId)
+        list.push(data.applyDetailId)
+        list.push(data.cost)
+      }
 
       list.forEach((element) => {
         if (!element) {
@@ -1127,7 +1176,7 @@ export default {
       }
 
       // console.log(data)
-      console.log(JSON.stringify(data))
+      // console.log(JSON.stringify(data))
       // return
       if (flag) {
         this.putLoading = true
@@ -1275,6 +1324,9 @@ export default {
         width: 136px;
       }
     }
+  }
+  &>>>.el-table__body tr.current-row>td{
+    background: #d8d8c8;
   }
 }
 </style>

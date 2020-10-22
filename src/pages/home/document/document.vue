@@ -272,13 +272,16 @@ $icoColor: #6a91e8;
         // background: red;
         height: 90px;
         padding: 0 13px;
-        margin-bottom: 26px;
+        margin: 13px 0;
         .item {
           height: 100%;
           background: white;
           display: flex;
           flex-wrap: wrap;
           align-items: center;
+          &:hover{
+            box-shadow: 9px 9px 36px -18px #000000;
+          }
           .icon {
             // width: 72px;
             // height: 72px;

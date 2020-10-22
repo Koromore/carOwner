@@ -15,7 +15,7 @@ Vue.prototype.$axios = axios;
 Vue.use(Router)
 
 // 请求超时时间
-axios.defaults.timeout = 10000;
+// axios.defaults.timeout = 10000;
 
 // axios.defaults.baseURL = process.env.API_ROOT;
 // post请求头
@@ -483,7 +483,7 @@ try {
   var user = JSON.parse(localStorage.getItem('user'));
   let token = localStorage.getItem('token');
   let userSign = localStorage.getItem('userSign');
-  // store.commit('login', { token, user, userSign });
+  store.commit('login', { token, user, userSign });
   // if (user==null) {
   //   window.location.replace('http://guoxin.insun-china.com/hrm');
   // }
