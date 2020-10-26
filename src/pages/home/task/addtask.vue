@@ -166,7 +166,7 @@
           <el-col :span="24" class="list" v-show="taskType==4">
             <div class="key imp">拍摄时间</div>
             <div class="val">
-              <el-date-picker v-model="photoTime" type="date" placeholder="选择日期" :disabled="taskId ? true : false" value-format="yyyy-MM-dd HH:mm:ss"></el-date-picker>
+              <el-date-picker v-model="photoTime" type="date" placeholder="选择日期" :picker-options="pickerOptions" value-format="yyyy-MM-dd HH:mm:ss"></el-date-picker>
             </div>
           </el-col>
           <el-col :span="24" class="list">
@@ -279,6 +279,8 @@ export default {
       textarea: '',
       props: { multiple: true,expandTrigger: 'hover' },
       carSeriesList: [],
+      // 日期禁止
+      pickerOptions: {},
       // 摄影师  模特  场地
       options3: [
         {
@@ -698,6 +700,11 @@ export default {
             new Date(data.endTime.replace(/-/g, '/')),
           ]
           this.photoTime = data.photoTime
+          this.pickerOptions= {
+            disabledDate(time) {
+              return time.getTime() > new Date(data.photoTime.replace(/-/g, '/'))
+            },
+          },
           this.taskNum = data.num
           this.cost = data.cost
           this.taskDesc = data.taskDesc

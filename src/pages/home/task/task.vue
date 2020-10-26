@@ -127,7 +127,7 @@
             <template slot-scope="scope">
               <span v-if="scope.row.taskToModelList.length">
                 <span v-for="(item,index) in scope.row.taskToModelList" :key="index">
-                  <template v-if="item.modelId"><span v-if="!index">,</span>{{item.realName}}</template>
+                  <template v-if="item.modelId"><span v-if="index">,</span>{{item.realName}}</template>
                   <template v-else>无模特</template>
                 </span>
               </span>
@@ -1590,7 +1590,7 @@ export default {
     // 切换车主
     changeOwner(index){
       this.listInviteList[index].changeShow = true
-      this.$message.error("切换"+index)
+      this.$message.warning("再次点击选择车主！")
     },
     // 提交按钮
     submitBtn(e) {
