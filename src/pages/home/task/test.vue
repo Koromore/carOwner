@@ -2,68 +2,40 @@
   <div id="addTask">
     <!-- 内容列表 start -->
     <el-row class="content" v-loading="putLoading">
-      <el-scrollbar style="height:100%">
-        <el-col :span="24" class="title">
-          <el-col :span="6" class="previousBox">
-            <div @click="previous">
-              <i class="el-icon-arrow-left"></i>
-              返回
-            </div>
+      <el-scrollbar style="height: 100%">
+        <el-form
+          :model="formData"
+          :rules="rules"
+          ref="ruleForm"
+          label-width="120px"
+          class="demo-ruleForm"
+        >
+          <el-col :span="24" class="title">
+            <el-col :span="6" class="previousBox">
+              <div @click="previous">
+                <i class="el-icon-arrow-left"></i>
+                返回
+              </div>
+            </el-col>
+            <el-col :span="12">{{ title }}</el-col>
           </el-col>
-          <el-col :span="12">{{title}}</el-col>
-        </el-col>
-        <el-col :span="12" class="left">
-          <el-col :span="24" class="list">
-            <div class="key imp">任务类型</div>
-            <div class="val">
-              <el-radio-group v-model="taskType" :disabled="!disabledCaigou">
-                <el-radio :label="1">借车</el-radio>
-                <el-radio :label="2">素材</el-radio>
-                <el-radio :label="3">邀约</el-radio>
-                <el-radio :label="4">拍摄</el-radio>
-                <el-radio :label="5">发布</el-radio>
-              </el-radio-group>
-            </div>
-          </el-col>
-          <el-col :span="24" class="list">
+          <el-col :span="12" class="left">
+            <el-col :span="24" class="list">
+              <el-form-item label="任务类型" prop="carSeriesId">
+                <el-radio-group
+                  v-model="formData.taskType"
+                  :disabled="!disabledCaigou"
+                >
+                  <el-radio :label="1">借车</el-radio>
+                  <el-radio :label="2">素材</el-radio>
+                  <el-radio :label="3">邀约</el-radio>
+                  <el-radio :label="4">拍摄</el-radio>
+                  <el-radio :label="5">发布</el-radio>
+                </el-radio-group>
+              </el-form-item>
+            </el-col>
+            <!-- <el-col :span="24" class="list">
             <div class="key imp">项目名称</div>
-            <div class="val">
-              <el-select v-model="budgetApplyId" placeholder="请选择" clearable filterable @change="chageBudgetApplyId" :disabled="taskId ? true : false">
-                <el-option
-                  v-for="item in budgetApplyIdList"
-                  :key="item.budgetApplyId"
-                  :label="item.proName"
-                  :value="item.budgetApplyId">
-                </el-option>
-              </el-select>
-            </div>
-          </el-col>
-          <el-col :span="24" class="list">
-            <div class="key imp">预算明细</div>
-            <div class="val">
-              <el-input
-                placeholder="请输入内容"
-                v-model="applyDetailName"
-                clearable
-                :disabled="taskId ? true : false"
-                @focus="applyDetailIdBoxShow = true"
-              ></el-input>
-            </div>
-          </el-col>
-          
-          <el-col :span="24" class="list">
-            <div class="key imp">任务名称</div>
-            <div class="val">
-              <el-input
-                placeholder="请输入内容"
-                v-model="taskName"
-                clearable
-                :disabled="!disabledCaigou"
-              ></el-input>
-            </div>
-          </el-col>
-          <el-col :span="24" class="list">
-            <div class="key imp">品牌车型</div>
             <div class="val">
               <el-cascader
                 v-model="carSeriesId"
@@ -74,187 +46,233 @@
                 @change="carSeriesChange"
                 :disabled="!disabledCaigou"
               ></el-cascader>
-              <!-- collapse-tags -->
             </div>
           </el-col>
           <el-col :span="24" class="list">
-            <div class="key" v-if="disabledCaigou">任务对象</div>
-            <div class="key" v-else>车辆来源</div>
+            <div class="key imp">预算明细</div>
             <div class="val">
               <el-cascader
-                :options="options2"
+                v-model="carSeriesId"
                 :props="props"
-                v-model="listInviteList"
+                :options="carSeriesList"
                 clearable
                 filterable
+                @change="carSeriesChange"
+                :disabled="!disabledCaigou"
               ></el-cascader>
-              <!-- :disabled="!disabledCaigou" -->
-              <!-- collapse-tags -->
             </div>
-          </el-col>
-          <!-- 摄影填写 start -->
-          <el-col :span="24" v-show="taskType==4">
-            <el-col :span="24" class="list" v-show="!disabledCaigou">
-              <div class="key">摄影师</div>
-              <div class="val">
-                <el-select
-                  v-model="personId"
-                  placeholder="请选择"
-                  :disabled="disabledCaigou"
+          </el-col> -->
+
+            <el-col :span="24" class="list">
+              <el-form-item label="任务名称" prop="taskName">
+                <el-input
+                  placeholder="请输入内容"
+                  v-model="formData.taskName"
                   clearable
-                  filterable
-                  multiple
-                >
-                  <el-option
-                    v-for="item in cameraList"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  ></el-option>
-                </el-select>
-                <!-- {{personId}} -->
-              </div>
-              <el-link href="#/home/resource/addCameraman?type=0">添加</el-link>
-            </el-col>
-            <el-col :span="24" class="list" v-show="!disabledCaigou">
-              <div class="key">模特</div>
-              <div class="val">
-                <el-select
-                  v-model="modelId"
-                  placeholder="请选择"
-                  :disabled="disabledCaigou"
-                  clearable
-                  filterable
-                  multiple
-                >
-                  <el-option
-                    v-for="item in modelList"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  ></el-option>
-                </el-select>
-              </div>
-              <el-link href="#/home/resource/addModel?type=0">添加</el-link>
+                  :disabled="!disabledCaigou"
+                ></el-input>
+              </el-form-item>
+
+              <!-- </div> -->
             </el-col>
             <el-col :span="24" class="list">
-              <div class="key">场地</div>
-              <div class="val">
-                <el-select v-model="placeId" placeholder="请选择" clearable filterable>
-                  <el-option
-                    v-for="item in placeList"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  ></el-option>
-                </el-select>
-              </div>
-              <el-link href="#/home/resource/addplace">添加</el-link>
+              <el-form-item label="品牌车型" prop="carSeriesId">
+                <el-cascader
+                  v-model="formData.carSeriesId"
+                  :props="props"
+                  :options="carSeriesList"
+                  clearable
+                  filterable
+                  @change="carSeriesChange"
+                  :disabled="!disabledCaigou"
+                ></el-cascader>
+              </el-form-item>
+            </el-col>
+            <el-col :span="24" class="list">
+              <el-form-item label="任务对象" prop="listInviteList">
+                <el-cascader
+                  :options="options2"
+                  :props="props"
+                  v-model="formData.listInviteList"
+                  clearable
+                  filterable
+                  :disabled="!disabledCaigou"
+                ></el-cascader>
+              </el-form-item>
+            </el-col>
+            <!-- 摄影填写 start -->
+            <el-col :span="24" v-show="formData.taskType == 4">
+              <el-col :span="24" class="list" v-show="disabledCaigou">
+                <el-form-item label="摄影师" prop="carSeriesId">
+                  <el-select
+                    v-model="formData.personId"
+                    placeholder="请选择"
+                    :disabled="disabledCaigou"
+                    clearable
+                    filterable
+                    multiple
+                  >
+                    <el-option
+                      v-for="item in cameraList"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    ></el-option>
+                  </el-select>
+              </el-form-item>
+              </el-col>
+              <el-col :span="24" class="list" v-show="disabledCaigou">
+                <el-form-item label="模特" prop="carSeriesId">
+                  <el-select
+                    v-model="formData.modelId"
+                    placeholder="请选择"
+                    :disabled="disabledCaigou"
+                    clearable
+                    filterable
+                    multiple
+                  >
+                    <el-option
+                      v-for="item in modelList"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    ></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="24" class="list">
+                <el-form-item label="场地" prop="carSeriesId">
+                  <el-select
+                    v-model="formData.placeId"
+                    placeholder="请选择"
+                    clearable
+                    filterable
+                  >
+                    <el-option
+                      v-for="item in placeList"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    ></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-col>
+            <!-- 摄影填写 end -->
+            <el-col :span="24" class="list">
+              <el-form-item label="计划周期" prop="carSeriesId">
+                <el-date-picker
+                  v-model="formData.periodTime"
+                  type="daterange"
+                  range-separator="至"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                  :disabled="taskId ? true : false"
+                ></el-date-picker>
+              </el-form-item>
+            </el-col>
+            <el-col :span="24" class="list" v-show="formData.taskType == 4">
+              <el-form-item label="计划周期" prop="carSeriesId">
+                <el-date-picker
+                  v-model="formData.photoTime"
+                  type="date"
+                  placeholder="选择日期"
+                  :disabled="taskId ? true : false"
+                  value-format="yyyy-MM-dd HH:mm:ss"
+                ></el-date-picker>
+              </el-form-item>
+            </el-col>
+            <el-col :span="24" class="list">
+              <el-form-item label="计划邀约量" prop="carSeriesId">
+                <el-input
+                  placeholder="请输入内容"
+                  v-model="formData.taskNum"
+                  clearable
+                  :disabled="!disabledCaigou"
+                  type="number"
+                ></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="24" class="list">
+              <el-form-item label="任务文件" prop="carSeriesId">
+                <el-upload
+                  class="upload-demo"
+                  action="/ocarplay/file/upload"
+                  :on-remove="taskFileRemove"
+                  :on-success="taskFileSuccess"
+                  :file-list="fileList"
+                  :disabled="!disabledCaigou"
+                >
+                  <el-button
+                    size="small"
+                    type="primary"
+                    class="SlideOpen SlideOpenM"
+                    data-text="点击上传"
+                    ><span>点击上传</span></el-button
+                  >
+                  <div slot="tip" class="el-upload__tip"></div>
+                </el-upload>
+              </el-form-item>
             </el-col>
           </el-col>
-          <!-- 摄影填写 end -->
-          <el-col :span="24" class="list">
-            <div class="key imp">计划周期</div>
-            <div class="val">
-              <el-date-picker
-                v-model="periodTime"
-                type="daterange"
-                range-separator="至"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                :disabled="taskId ? true : false"
-              ></el-date-picker>
-            </div>
+          <el-col :span="12" class="right">
+            <el-col :span="24" class="list">
+              <el-form-item label="任务描述" prop="carSeriesId">
+                <el-input
+                  type="textarea"
+                  :rows="7"
+                  placeholder="请输入内容"
+                  v-model="formData.taskDesc"
+                  :disabled="!disabledCaigou"
+                  maxlength="500"
+                  show-word-limit
+                ></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="24" class="list">
+              <el-form-item label="备注" prop="remark">
+                <el-input
+                  placeholder="请输入内容"
+                  v-model="formData.remark"
+                  clearable
+                  :disabled="!disabledCaigou"
+                  maxlength="500"
+                ></el-input>
+              </el-form-item>
+              <!-- <div class="key">备注</div>
+              <div class="val">
+                <el-input
+                  placeholder="请输入内容"
+                  v-model="formData.remark"
+                  clearable
+                  :disabled="!disabledCaigou"
+                  maxlength="500"
+                ></el-input>
+              </div> -->
+            </el-col>
           </el-col>
-          <el-col :span="24" class="list" v-show="taskType==4">
-            <div class="key imp">拍摄时间</div>
-            <div class="val">
-              <el-date-picker v-model="photoTime" type="date" placeholder="选择日期" :picker-options="pickerOptions" value-format="yyyy-MM-dd HH:mm:ss"></el-date-picker>
-            </div>
+          <el-col :span="24" class="put">
+            <!-- <el-button
+              type="primary"
+              @click="saveTask"
+              class="SlideOpen"
+              data-text="提交"
+            >
+              <span>提交</span>
+            </el-button> -->
+            <el-button
+              type="primary"
+              @click="saveTask()"
+              class="SlideOpen"
+              data-text="提交"
+            >
+              <span>提交</span>
+            </el-button>
           </el-col>
-          <el-col :span="24" class="list">
-            <div class="key imp">计划邀约量</div>
-            <div class="val">
-              <el-input placeholder="请输入内容" v-model="taskNum" clearable :disabled="!disabledCaigou" type="number"></el-input>
-            </div>
-          </el-col>
-          <el-col :span="24" class="list">
-            <div class="key imp">预估费用</div>
-            <div class="val">
-              <el-input placeholder="请输入内容" v-model="cost" clearable :disabled="taskId ? true : false" type="number"></el-input>
-            </div>
-          </el-col>
-          <el-col :span="24" class="list">
-            <div class="key">任务文件</div>
-            <div class="val">
-              <el-upload
-                class="upload-demo"
-                action="/ocarplay/file/upload"
-                :on-remove="taskFileRemove"
-                :on-success="taskFileSuccess"
-                :file-list="fileList"
-                :disabled="!disabledCaigou"
-              >
-                <el-button size="small" type="primary" class="SlideOpen SlideOpenM" data-text="点击上传"><span>点击上传</span></el-button>
-                <div slot="tip" class="el-upload__tip"></div>
-              </el-upload>
-            </div>
-          </el-col>
-        </el-col>
-        <el-col :span="12" class="right">
-          <el-col :span="24" class="list">
-            <div class="key">任务描述</div>
-            <div class="val valList">
-              <el-input
-                type="textarea"
-                :rows="7"
-                placeholder="请输入内容"
-                v-model="taskDesc"
-                :disabled="!disabledCaigou"
-                maxlength="500"
-                show-word-limit
-              ></el-input>
-            </div>
-          </el-col>
-          <el-col :span="24" class="list">
-            <div class="key">备注</div>
-            <div class="val">
-              <el-input
-                placeholder="请输入内容"
-                v-model="remark"
-                clearable
-                :disabled="!disabledCaigou"
-                maxlength="500"
-              ></el-input>
-            </div>
-          </el-col>
-        </el-col>
-        <el-col :span="24" class="put">
-          <!-- <el-button type="primary" @click="saveTask">提交</el-button> -->
-          <el-button type="primary" @click="saveTask" class="SlideOpen" data-text="提交"><span>提交</span></el-button>
-        </el-col>
+        </el-form>
       </el-scrollbar>
     </el-row>
     <!-- 内容列表 end -->
-    <!-- 预算明细选择弹窗 -->
-    <el-dialog title="预算明细(点击选中)" :visible.sync="applyDetailIdBoxShow" width="80%">
-      <el-table
-        :data="applyDetailIdList"
-        empty-text="请先选择项目名称"
-        highlight-current-row
-        @current-change="handleCurrentChange"
-      >
-        <el-table-column type="index" width="50"></el-table-column>
-        <el-table-column property="subjectName" label="科目" width="150"></el-table-column>
-        <el-table-column property="subItemsName" label="细分项" width="200"></el-table-column>
-        <el-table-column property="remark" label="预算备注"></el-table-column>
-        <el-table-column width="100" property="remainNum" label="剩余量"></el-table-column>
-      </el-table>
-      <span slot="footer" class="dialog-footer">
-        <!-- <el-button @click="applyDetailIdBoxShow = false">取 消</el-button> -->
-        <el-button type="primary" @click="applyDetailIdBoxShow = false">确 定</el-button>
-      </span>
-    </el-dialog>
   </div>
 </template>
 <script>
@@ -280,10 +298,8 @@ export default {
       // 任务对象选择数据
       input2: '',
       textarea: '',
-      props: { multiple: true,expandTrigger: 'hover' },
+      props: { multiple: true, expandTrigger: 'hover' },
       carSeriesList: [],
-      // 日期禁止
-      pickerOptions: {},
       // 摄影师  模特  场地
       options3: [
         {
@@ -310,8 +326,6 @@ export default {
       cameraList: [], // 摄影师列表
       modelList: [], // 模特列表
       placeList: [], // 场地列表
-      budgetApplyIdList: [], // 项目名称列表
-      applyDetailIdList: [], // 预算明细列表
       personId: [],
       personIdList: [],
       modelId: [],
@@ -328,9 +342,63 @@ export default {
       // 文件上传
       fileList: [],
       // 任务新增信息
+      formData: {
+        taskType: '',
+        taskName: '',
+        listInviteList: [],
+        listInviteOwners: [],
+        listInvitePerson: [],
+        listInviteModel: [],
+        carSeriesList: [],
+        carSeriesId: [],
+        seriesId: [],
+        periodTime: [],
+        photoTime: null,
+        taskNum: '',
+        listTaskFile: [],
+        taskDesc: '',
+        remark: '',
+        taskFileList: [],
+        fileList: [],
+      },
+      rules: {
+        taskName: [
+          { required: true, message: '请输入活动名称', trigger: 'blur' },
+          { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' },
+        ],
+        taskType: [
+          { required: true, message: '任务类型', trigger: 'change' },
+        ],
+        date1: [
+          {
+            type: 'date',
+            required: true,
+            message: '请选择日期',
+            trigger: 'change',
+          },
+        ],
+        date2: [
+          {
+            type: 'date',
+            required: true,
+            message: '请选择时间',
+            trigger: 'change',
+          },
+        ],
+        type: [
+          {
+            type: 'array',
+            required: true,
+            message: '请至少选择一个活动性质',
+            trigger: 'change',
+          },
+        ],
+        resource: [
+          { required: true, message: '请选择活动资源', trigger: 'change' },
+        ],
+        desc: [{ required: true, message: '请填写活动形式', trigger: 'blur' }],
+      },
       taskType: '',
-      budgetApplyId: '',
-      applyDetailId: '',
       taskName: '',
       listInviteList: [],
       listInviteOwners: [],
@@ -342,22 +410,11 @@ export default {
       periodTime: [],
       photoTime: null,
       taskNum: '',
-      cost: null,
       listTaskFile: [],
       taskDesc: '',
       remark: '',
       taskFileList: [],
       fileList: [],
-      // 预算明细选择弹窗
-      applyDetailName: null,
-      applyDetailId: null,
-      subjectId: null,
-      subItemsId: null,
-      subjectTempId: null,
-      subItemsName: null,
-
-      applyDetailIdBoxShow: false,
-      gridData: [],
       // 按钮开关
       submitFlag: true,
       putLoading: false,
@@ -375,11 +432,26 @@ export default {
         this.getCarSeriesId()
       }
     },
+    // carSeriesId: function (newData, oldData) {
+    //   if (newData != '') {
+    //     // console.log(res)
+    //     let data = []
+    //     newData.forEach((element) => {
+    //       data.push(element[1])
+    //     })
+    //     ///////// 获取车主列表 start /////////
+    //     this.getOwnerList(data)
+    //   }
+    // },
   },
   // 钩子函数
   beforeCreate() {},
   beforeMount() {},
   mounted() {
+    // let list = [1, 2, 3]
+    // console.log(list)
+    // list.unshift(0)
+    // console.log(list)
     ///////// 接受页面传参 start /////////
     this.getQuery()
     ///////// 获取车型列表 start /////////
@@ -393,10 +465,12 @@ export default {
     ///////// 获取场地列表 start /////////
     this.getPlaceList()
     this.getOwnerListNo()
-    ///////// 获取项目名称 start /////////
-    this.getBudget()
-    ///////// 获取预算明细 start /////////
-    // this.getBudgetDetailByApplyId()
+
+    // var a = [1,2,3];
+    // var b = [4,5,6];
+    // var c = [7,8,9];
+    // var d = a.concat(b,c); //c=[1,2,3,4,5,6];
+    // console.log(d)
   },
   // 方法事件
   methods: {
@@ -432,71 +506,6 @@ export default {
       // console.log(type)
     },
     ///////// 接受页面传参 end /////////
-
-    ///////// 获取项目名称 start /////////
-    getBudget(){
-      let data = {userId: this.userId}
-      this.$axios
-        .post('/ocarplay/task/getBudget', data)
-        .then((res) => {
-          // console.log(res)
-          // this.listLoading = false
-          if (res.status == 200) {
-            this.budgetApplyIdList = res.data.data
-          }
-        })
-    },
-    ///////// 获取项目名称 end /////////
-
-    chageBudgetApplyId(val){
-      if (!val) {
-        this.applyDetailId = null
-      }
-      this.getBudgetDetailByApplyId(val)
-    },
-
-    ///////// 获取预算明细 start /////////
-    getBudgetDetailByApplyId(id){
-      let data = {budgetApplyId:id}
-      this.$axios
-        .post('/ocarplay/task/getBudgetDetailByApplyId', data)
-        .then((res) => {
-          // console.log(res)
-          // this.listLoading = false
-          if (res.status == 200) {
-            this.applyDetailIdList = res.data.data
-            let applyDetailIdList = []
-            res.data.data.forEach(element => {
-              if (element.remainNum>0) {
-                applyDetailIdList.push(element)
-              }
-            });
-            this.applyDetailIdList = applyDetailIdList
-          }
-        })
-    },
-    handleCurrentChange(val) {
-      // this.currentRow = val;
-      // console.log(val)
-      this.applyDetailId = val.applyDetailId
-      this.subjectId = val.subjectId
-      this.subItemsId = val.subItemsId
-      this.subjectTempId = val.subjectTempId
-      this.subItemsName = val.subItemsName
-      let remark = ''
-      if (val.remark) {
-        remark = val.remark
-      }
-      this.applyDetailName = val.subItemsName + remark
-      // applyDetailId:applyDetail.applyDetailId,
-      //   subjectId: applyDetail.subjectId,
-      //   subItemsId:applyDetail.subItemsId,
-      //   subjectTempId:applyDetail.subjectTempId,
-      //   jsonData: jsonData,
-      //   cost:this.cost,
-      //   subItemsName:applyDetail.subjectName,
-    },
-    ///////// 获取预算明细 end /////////
 
     ///////// 车型选择改变 end /////////
     carSeriesChange(res) {
@@ -629,14 +638,10 @@ export default {
           this.taskName = data.taskName
           this.taskType = data.taskType
           this.placeId = data.placeId
-          this.budgetApplyId = data.budgetApplyId
-          this.applyDetailId = data.applyDetailId
           let listInviteList = []
           let listInviteOwners = []
           let listInvitePerson = []
           let listInviteModel = []
-          this.budgetApplyId = data.proName
-          this.applyDetailName = data.subItemsName
           data.listInvite.forEach((element) => {
             if (element.userType == 0) {
               listInviteList.push([
@@ -703,13 +708,7 @@ export default {
             new Date(data.endTime.replace(/-/g, '/')),
           ]
           this.photoTime = data.photoTime
-          this.pickerOptions= {
-            disabledDate(time) {
-              return time.getTime() > new Date(data.photoTime.replace(/-/g, '/'))
-            },
-          },
           this.taskNum = data.num
-          this.cost = data.cost
           this.taskDesc = data.taskDesc
           this.remark = data.remark
           let fileList = []
@@ -980,26 +979,12 @@ export default {
       })
       let initUserId = this.userId
       let deptId = this.deptId
-      let status = 0
       // let createTime = this.$time0(new Date())
-      let applyDetail = {}
       if (this.taskId) {
-        initUserId = ''
-        status = ''
+        initUserId = this.taskDetail.initUserId
         deptId = this.taskDetail.deptId
         // createTime = null
       }
-      let proName = null
-      this.budgetApplyIdList.forEach(element => {
-        if (this.budgetApplyId == element.budgetApplyId) {
-          proName=element.proName
-        }
-      });
-      
-      
-      let jsonData = JSON.stringify([{num:1,budget:this.cost}])
-      // console.log(proName)
-      // console.log(applyDetail)
       let data = {
         initUserId: initUserId,
         deptId: deptId,
@@ -1007,12 +992,11 @@ export default {
         taskType: this.taskType,
         taskId: this.taskId,
         taskName: this.taskName,
-        status: status,
+        status: 0,
         startTime: startTime,
         endTime: endTime,
         photoTime: this.photoTime, // 拍摄时间
-        num: this.taskNum*1,
-        cost: this.cost*1,
+        num: this.taskNum * 1,
         // carSeriesId: carSeriesId, // 品牌车型
 
         taskToPersonList: [], // 摄影师列表
@@ -1023,28 +1007,6 @@ export default {
         remark: this.remark,
         listInvite: [],
         listTaskFile: this.taskFileList,
-
-        budgetApplyId: this.budgetApplyId,
-        proName: proName,
-
-        applyDetailId:this.applyDetailId,
-        subjectId: this.subjectId,
-        subItemsId:this.subItemsId,
-        subjectTempId:this.subjectTempId,
-        jsonData: jsonData,
-        cost:this.cost*1,
-        subItemsName:this.subjectName,
-      }
-      if (this.taskId) {
-        delete data.budgetApplyId
-        delete data.proName
-        delete data.applyDetailId
-        delete data.subjectId,
-        delete data.subItemsId
-        delete data.subjectTempId
-        delete data.jsonData
-        delete data.cost
-        delete data.subItemsName
       }
       let listInvite = []
       let listInviteList = [] // 邀约对象
@@ -1166,14 +1128,9 @@ export default {
         data.taskName,
         data.startTime,
         data.num,
-        data.listTaskOfCartype.length
+        data.listTaskOfCartype.length,
         // data.listInvite.length,
       ]
-      if (!this.taskId) {
-        list.push(data.budgetApplyId)
-        list.push(data.applyDetailId)
-        list.push(data.cost)
-      }
 
       list.forEach((element) => {
         if (!element) {
@@ -1181,13 +1138,11 @@ export default {
         }
       })
 
-      if (data.taskType==4&&!data.photoTime) {
+      if (data.taskType == 4 && !data.photoTime) {
         flag = false
       }
 
       // console.log(data)
-      // console.log(JSON.stringify(data))
-      // return
       if (flag) {
         this.putLoading = true
         this.$axios
@@ -1220,6 +1175,27 @@ export default {
       }
     },
     ///////// 新增任务 start /////////
+
+    ///////// 消息提示 start /////////
+    messageWin(message) {
+      // 成功提示
+      this.$message({
+        message: message,
+        type: 'success',
+      })
+    },
+    messageWarning(message) {
+      // 警告提示
+      this.$message({
+        message: message,
+        type: 'warning',
+      })
+    },
+    messageError(message) {
+      // 错误提示
+      this.$message.error(message)
+    },
+    ///////// 消息提示 end /////////
   },
 }
 </script>
@@ -1239,7 +1215,13 @@ export default {
       display: flex;
       flex-wrap: wrap;
       align-items: flex-start;
-      margin: 16px 0;
+      .el-cascader,
+      .el-select,
+      .el-date-editor,
+      .el-input {
+        width: 100%;
+      }
+      // margin: 16px 0;
       .key {
         width: 108px;
         height: 40px;
@@ -1256,12 +1238,7 @@ export default {
       }
       .val {
         width: 420px;
-        .el-cascader,
-        .el-select,
-        .el-date-editor,
-        .el-input {
-          width: 100%;
-        }
+
         .el-radio-group {
           height: 40px;
           display: flex;
@@ -1296,13 +1273,6 @@ export default {
       margin-bottom: 36px;
       .list {
         justify-content: flex-end;
-        position: relative;
-        .el-link{
-          position: absolute;
-          right: -36px;
-          top: 50%;
-          margin-top: -10px;
-        }
       }
     }
     .right {
@@ -1342,12 +1312,19 @@ export default {
       }
     }
   }
-  &>>>.el-table__body tr.current-row>td{
-    background: #d8d8c8;
-  }
 }
 </style>
 <style lang="scss">
+#addTask {
+  .el-form-item__label {
+    font-size: 16px;
+    color: black;
+    padding-right: 24px;
+  }
+  .el-form-item__content {
+    width: 420px;
+  }
+}
 .right {
   .list {
     .valList {

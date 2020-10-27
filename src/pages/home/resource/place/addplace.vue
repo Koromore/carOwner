@@ -355,7 +355,7 @@ export default {
           }
         })
         this.photoList = photoList
-        console.log(this.photoList)
+        // console.log(this.photoList)
       }
     },
     // 预览事件
@@ -468,7 +468,7 @@ export default {
         this.$axios
           .post('/ocarplay/api/place/saveOrUpdate', data)
           .then((res) => {
-            console.log(res)
+            // console.log(res)
             if (res.status == 200 && res.data.errcode == 0) {
               if (placeId) {
                 this.$message.success('场地信息更新成功！')
@@ -487,7 +487,7 @@ export default {
             }
           })
           .catch((res) => {
-            console.log(res)
+            // console.log(res)
             this.putLoading = false
           })
       }

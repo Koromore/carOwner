@@ -300,7 +300,7 @@ export default {
     deletePlace(id) {
       let data = { placeId: id }
       this.$axios.post('/ocarplay/api/place/delete', data).then((res) => {
-        console.log(res)
+        // console.log(res)
         let data = res.data
         // this.listLoading = false
         // // this.drawerAdd = false
