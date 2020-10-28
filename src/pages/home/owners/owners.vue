@@ -393,7 +393,6 @@ import cityList from '@/common/city.js' // 引入城市数据
 import InfiniteLoading from 'vue-infinite-loading' // 监听滚动插件
 export default {
   name: 'owners',
-  props: ['searchWordData'],
   components: {
     InfiniteLoading, //直接在组件中声明
   },
@@ -483,10 +482,10 @@ export default {
       // this.tabItems()
       this.geteventDataList(newData)
     },
-    searchWordData: function (newData, oldData) {
-      // console.log(newData)
+    '$store.state.searchValue': function (newData, oldData) {
+      ///////// 获取车主列表 start /////////
       this.getVehicleOwnerList()
-    },
+    }
   },
   // 钩子函数
   beforeCreate() {},
@@ -642,7 +641,7 @@ export default {
           vehicleOwner: {
             typeId: this.tab1act,
             itemId: this.tab2act,
-            name: this.searchWordData.value,
+            name: this.$store.state.searchValue
           },
           pageNum: this.pageNum,
           pageSize: this.pageSize,

@@ -40,14 +40,14 @@
           @clear="searchStart"
         >
           <el-select v-model="select" slot="prepend" placeholder="请选择">
-            <el-option label="任务" value="1"></el-option>
-            <el-option label="结算" value="2" :disabled="selectDisabled"></el-option>
-            <el-option label="车主" value="3"></el-option>
+            <el-option label="任务" value="task"></el-option>
+            <el-option label="结算" value="settlement" :disabled="selectDisabled"></el-option>
+            <el-option label="车主" value="owners"></el-option>
             <!-- <el-option label="场地" value="4"></el-option> -->
-            <el-option label="文档" value="5"></el-option>
-            <el-option label="摄影师" value="6"></el-option>
-            <el-option label="模特" value="8"></el-option>
-            <el-option label="场地" value="7"></el-option>
+            <el-option label="文档" value="document"></el-option>
+            <el-option label="摄影师" value="cameraman"></el-option>
+            <el-option label="模特" value="model"></el-option>
+            <el-option label="场地" value="place"></el-option>
           </el-select>
           <el-button slot="append" icon="el-icon-search" @click="searchStart"></el-button>
         </el-input>
@@ -87,7 +87,7 @@ export default {
       searchWord: '',
       // 搜索维度
       selectDisabled: false,
-      select: '1',
+      select: 'task',
       navNum: 0,
     }
   },
@@ -96,6 +96,12 @@ export default {
     // 如果 `question` 发生改变，这个函数就会运行
     // unread: function(newQuestion, oldQuestion) {
     // }
+    $route(to, from) {
+      let name = to.name
+      if (name != 'brand' && name != 'analysis') {
+        this.select = name
+      }
+    },
     routeName: function (newData, oldData) {
       let list = [
         ['task', 'addTask', 'taskDetail', 'tasksettlement'],
@@ -168,24 +174,23 @@ export default {
       // console.log(searchWord)
       // console.log(select)
       // console.log(this.$route.name)
-      if (select == 1 && routeName !== 'task') {
+      if (select == 'task' && routeName !== 'task') {
         this.$router.push({ path: '/home/task' })
-      } else if (select == 2 && routeName !== 'settlement') {
+      } else if (select == 'settlement' && routeName !== 'settlement') {
         this.$router.push({ path: '/home/settlement' })
-      } else if (select == 3 && routeName !== 'owners') {
+      } else if (select == 'owners' && routeName !== 'owners') {
         this.$router.push({ path: '/home/owners' })
-      } else if (select == 4 && routeName !== 'site') {
-        this.$router.push({ path: '/home/site' })
-      } else if (select == 5 && routeName !== 'document') {
+      } else if (select == 'document' && routeName !== 'document') {
         this.$router.push({ path: '/home/document' })
-      } else if (select == 6 && routeName !== 'cameraman') {
+      } else if (select == 'cameraman' && routeName !== 'cameraman') {
         this.$router.push({ path: '/home/resource/cameraman' })
-      } else if (select == 7 && routeName !== 'place') {
-        this.$router.push({ path: '/home/resource/place' })
-      } else if (select == 8 && routeName !== 'model') {
+      } else if (select == 'model' && routeName !== 'model') {
         this.$router.push({ path: '/home/resource/model' })
+      } else if (select == 'place' && routeName !== 'place') {
+        this.$router.push({ path: '/home/resource/place' })
       }
-      this.$emit('sousuo', searchWord)
+      // this.$emit('sousuo', searchWord)
+      this.$store.commit('getSearch', searchWordValue)
     },
     ///////// 搜索事件 end /////////
 

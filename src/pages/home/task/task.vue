@@ -526,15 +526,27 @@
           <el-table-column prop="ownerItemList" label="邀约事项" min-width="130" show-overflow-tooltip></el-table-column>
           <el-table-column prop="personName" label="摄影师" min-width="90" show-overflow-tooltip>
             <template slot-scope="scope">
-              <span v-if="scope.row.personName">{{scope.row.personName}}</span>
+              <span v-if="scope.row.taskToPersonList.length">
+                <span
+                  v-for="(item,index) in scope.row.taskToPersonList"
+                  :key="index"
+                >
+                  <span v-if="index">,</span>
+                  {{item.realName}}
+                </span>
+              </span>
               <span v-else>/</span>
             </template>
           </el-table-column>
           <el-table-column prop="modelName" label="模特" min-width="90" show-overflow-tooltip>
             <template slot-scope="scope">
-              <span v-if="scope.row.modelName">{{scope.row.modelName}}</span>
-              <span v-else-if="!scope.row.modelName&&scope.row.personName">无模特</span>
-              <span v-else-if="!scope.row.modelName&&!scope.row.personName">/</span>
+              <span v-if="scope.row.taskToModelList.length">
+                <span v-for="(item,index) in scope.row.taskToModelList" :key="index">
+                  <template v-if="item.modelId"><span v-if="index">,</span>{{item.realName}}</template>
+                  <template v-else>无模特</template>
+                </span>
+              </span>
+              <span v-else>/</span>
             </template>
           </el-table-column>
           <el-table-column prop="placeName" label="场地" min-width="90" show-overflow-tooltip>
@@ -576,17 +588,6 @@
           </el-table-column>
           <el-table-column prop="address" label="评价" min-width="50" show-overflow-tooltip>
             <template slot-scope="scope">
-              <i
-                class="el-icon-chat-dot-round"
-                @click="addComment(scope.row)"
-                v-if="scope.row.taskType==4&&!scope.row.ifPgOver"
-              ></i>
-              <i
-                class="el-icon-chat-dot-round"
-                style="cursor: not-allowed;color: rgb(170, 170, 170);"
-                v-else-if="scope.row.taskType==4&&scope.row.ifPgOver"
-              ></i>
-
               <el-popover
                 placement="top"
                 width="60"
@@ -605,7 +606,10 @@
                   class="el-icon-chat-dot-round"
                   slot="reference"
                   @click="evaluatePersonVisibleShow(scope.row.taskToPersonList,scope.$index)"
+                  v-if="scope.row.taskToPersonList.length"
                 ></i>
+                <!-- v-show="!item.ifPgOver" -->
+                <!--  -->
               </el-popover>
             </template>
           </el-table-column>
@@ -894,7 +898,6 @@ import comment from '@/components/comment' // 新增评分
 
 export default {
   name: 'task',
-  props: ['searchWordData'],
   components: { comment },
   data() {
     return {
@@ -1031,10 +1034,10 @@ export default {
   },
   // 侦听器
   watch: {
-    searchWordData: function (newData, oldData) {
-      // console.log(newData)
+    '$store.state.searchValue': function (newData, oldData) {
+      ///////// 获取任务列表 start /////////
       this.getTaskListAjax()
-    },
+    }
   },
   // 钩子函数
   beforeCreate() {},
@@ -1133,7 +1136,7 @@ export default {
           taskType: this.taskType,
           // itemId: this.itemId,
           carSeriesId: this.carSeriesId,
-          taskName: this.searchWordData.value,
+          taskName: this.$store.state.searchValue
           // deptId: this.deptId
         },
         orderField: this.orderField, // 1-拍摄时间，2-下达时间
@@ -1908,9 +1911,12 @@ export default {
 
     ///////// 导出结算列表 start /////////
     evaluatePersonVisibleShow(obj, index) {
+      // this.taskListData[index].evaluatePersonVisible = !this.taskListData[index].evaluatePersonVisible
       if (this.taskListData[index].evaluatePersonVisible) {
         this.taskListData[index].evaluatePersonVisible = false
+        // console.log(this.taskListData[index].evaluatePersonVisible)
       } else {
+        // console.log(this.taskListData[index].evaluatePersonVisible)
         // console.log(index)
         for (let i = 0; i < obj.length; i++) {
           const element = obj[i]
@@ -1919,7 +1925,7 @@ export default {
             break
           }
         }
-        if (!this.evaluatePersonVisible) {
+        if (!this.taskListData[index].evaluatePersonVisible) {
           this.$message.warning('已评价完成！')
         }
       }

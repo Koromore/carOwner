@@ -135,7 +135,6 @@ import { saveAs } from 'file-saver'
 
 export default {
   name: 'settlement',
-  props: ['searchWordData'],
   components: {},
   data() {
     return {
@@ -175,10 +174,10 @@ export default {
   },
   // 侦听器
   watch: {
-    searchWordData: function (newData, oldData) {
-      // console.log(newData)
+    '$store.state.searchValue': function (newData, oldData) {
+      ///////// 获取结算列表 start /////////
       this.getInviteList()
-    },
+    }
   },
   // 钩子函数
   beforeCreate() {},
@@ -213,7 +212,7 @@ export default {
           deleteFlag: false,
           status: 0,
           deptId: this.memuValue,
-          taskName: this.searchWordData.value,
+          taskName: this.$store.state.searchValue
         },
         pageNum: this.pageNum,
         pageSize: this.pageSize,

@@ -167,7 +167,12 @@ export default {
     }
   },
   // 侦听器
-  watch: {},
+  watch: {
+    '$store.state.searchValue': function (newData, oldData) {
+      ///////// 获取场地列表 start /////////
+      this.getPlaceList()
+    }
+  },
   // 钩子函数
   beforeCreate() {},
   beforeMount() {},
@@ -224,8 +229,8 @@ export default {
         place: {
           isCar: this.isCar,
           city: this.city,
-          placeName: this.$parent.searchWordData.value
-        },
+          placeName: this.$store.state.searchValue
+        }
       }
       this.$axios.post('/ocarplay/api/place/listAjax', data).then((res) => {
         // console.log(res)

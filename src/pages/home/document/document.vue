@@ -176,7 +176,6 @@ import { matchType, matchType0 } from '@/utils/matchType' // 引入文件格
 
 export default {
   name: 'document',
-  props: ['searchWordData'],
   components: {},
   data() {
     return {
@@ -189,10 +188,10 @@ export default {
   },
   // 侦听器
   watch: {
-    searchWordData: function (newData, oldData) {
-      // console.log(newData)
+    '$store.state.searchValue': function (newData, oldData) {
+      ///////// 获取文档列表 start /////////
       this.getTaskListAjax()
-    },
+    }
   },
   // 钩子函数
   beforeCreate() {},
@@ -211,7 +210,7 @@ export default {
         pageNum: this.pageNum,
         pageSize: this.pageSize,
         cooperate: {
-          fileName: this.searchWordData.value,
+          fileName: this.$store.state.searchValue
         },
       }
       this.$axios.post('/ocarplay/api/cooperate/listAjax', data).then((res) => {

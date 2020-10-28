@@ -3,12 +3,10 @@
     <Home-Header
       :routeName="routeName"
       :adminShow="adminShow"
-      @sousuo="getSearchWord"
     ></Home-Header>
     <el-main id="content">
       <router-view
         :carSeriesList="carSeriesList"
-        :searchWordData="searchWordData"
       ></router-view>
     </el-main>
   </div>
@@ -171,11 +169,6 @@ export default {
         }
       })
       this.$store.commit('getAdminShow', adminShow)
-    },
-    // 接受搜索字段
-    getSearchWord(data) {
-      this.searchWordData = data
-      // console.log(this.searchWordData)
     },
   },
 }

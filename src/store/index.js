@@ -89,12 +89,16 @@ export default new Vuex.Store({
       orderField: 2,
       orderType: 2
     },
-    
+    searchValue: null
   },
   action: {
 
   },
   mutations: {
+    // 存储搜索字段
+    getSearch(state, data){
+      state.searchValue = data
+    },
     // 判断管理员账号
     getAdminShow(state, data){
       state.adminShow = data

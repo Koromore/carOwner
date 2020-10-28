@@ -250,7 +250,6 @@ export default {
       postId: this.$store.state.user.postId, // 职位ID
       subordinate: this.$store.state.user.subordinate, // 一级部门ID
       adminShow: this.$store.state.adminShow, // 超级管理员
-      searchWordData: this.$parent.searchWordData, // 搜索信息
       personId: null, // 摄影师ID
       type: 0,
       pgId: null, // 评论Id
@@ -290,7 +289,12 @@ export default {
     }
   },
   // 侦听器
-  watch: {},
+  watch: {
+    '$store.state.searchValue': function (newData, oldData) {
+      ///////// 获取摄影师列表 start /////////
+      this.getlistPhotoPerson()
+    }
+  },
   // 钩子函数
   beforeCreate() {},
   beforeMount() {},
@@ -369,7 +373,7 @@ export default {
         photoPerson: {
           isCar: this.isCar,
           city: this.city,
-          name: this.$parent.searchWordData.value
+          name: this.$store.state.searchValue
         },
         orderType: this.orderType, // 排序类型（1-拍摄排序,2-评分排序）
       }

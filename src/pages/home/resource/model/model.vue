@@ -205,7 +205,6 @@ export default {
       postId: this.$store.state.user.postId, // 职位ID
       subordinate: this.$store.state.user.subordinate, // 一级部门ID
       adminShow: this.$store.state.adminShow, // 超级管理员
-      searchWordDataValue: this.$parent.searchWordData,
       modelId: null,
       type: 1,
       noDatastyle: 'margin-top: 108px;',
@@ -240,7 +239,12 @@ export default {
     }
   },
   // 侦听器
-  watch: {},
+  watch: {
+    '$store.state.searchValue': function (newData, oldData) {
+      ///////// 获取模特列表 start /////////
+      this.getlistModel()
+    }
+  },
   // 钩子函数
   beforeCreate() {},
   beforeMount() {},
@@ -303,7 +307,7 @@ export default {
         pageSize: this.pageSize,
         model: {
           city: this.city,
-          name: this.$parent.searchWordData.value
+          name: this.$store.state.searchValue
         },
         orderType: this.orderType, // 排序类型（1-拍摄排序,2-评分排序）
         type: this.orderSort, // 排序类型（1-正序,2-倒序）
