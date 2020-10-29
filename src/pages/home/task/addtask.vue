@@ -743,9 +743,10 @@ export default {
           if (res.status == 200) {
             let data = res.data
             let noOwner = {}
+            let list = []
             data.forEach((element) => {
-              if (element.typeId == 4) {
-                noOwner = {
+              if (element.typeId == 4 || element.typeId == 1) {
+                let noOwner = {
                   value: element.typeId,
                   label: element.typeName,
                   children: [],
@@ -764,10 +765,11 @@ export default {
                     })
                   })
                 })
+                list.push(noOwner)
               }
             })
-            this.noOwner = noOwner
-            this.options2 = [noOwner]
+            // this.noOwner = noOwner
+            this.options2 = list
             // console.log(noOwner)
           }
         })
@@ -784,7 +786,7 @@ export default {
             // data.splice(1, 1)
             let list = []
             data.forEach((element, i) => {
-              if (element.typeId != 4) {
+              // if (element.typeId != 4) {
                 list.push({
                   value: element.typeId,
                   label: element.typeName,
@@ -818,9 +820,9 @@ export default {
                     // console.log(element2)
                   })
                 })
-              }
+              // }
             })
-            list.push(this.noOwner)
+            // list.push(this.noOwner)
             this.options2 = list
             // console.log(list)
           }
@@ -997,7 +999,7 @@ export default {
       });
       
       
-      let jsonData = JSON.stringify([{num:1,budget:this.cost}])
+      let jsonData = JSON.stringify([{num:1,budget:this.cost,reqFinishTime:endTime, remark:this.remark}])
       // console.log(proName)
       // console.log(applyDetail)
       let data = {
@@ -1166,7 +1168,10 @@ export default {
         data.taskName,
         data.startTime,
         data.num,
-        data.listTaskOfCartype.length
+        data.listTaskOfCartype.length,
+        data.budgetApplyId,
+        data.applyDetailId,
+        data.cost
         // data.listInvite.length,
       ]
       if (!this.taskId) {

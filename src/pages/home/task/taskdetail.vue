@@ -34,6 +34,16 @@
             <div>:</div>
             <div class="val">{{taskDetail.taskName}}</div>
           </el-col>
+          <!-- <el-col :span="24" class="list">
+            <div class="key">项目名称</div>
+            <div>:</div>
+            <div class="val">{{taskDetail.taskName}}</div>
+          </el-col>
+          <el-col :span="24" class="list">
+            <div class="key">预算明细</div>
+            <div>:</div>
+            <div class="val">{{taskDetail.taskName}}</div>
+          </el-col> -->
           <el-col :span="24" class="list">
             <div class="key">任务状态</div>
             <div>:</div>

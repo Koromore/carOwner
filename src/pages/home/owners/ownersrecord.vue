@@ -124,7 +124,7 @@ export default {
       this.$axios
         .post('/ocarplay/api/vehicleOwner/ownerScheduleListAjax', data)
         .then(res => {
-          console.log(res)
+          // console.log(res)
           if (res.status == 200) {
             let data = res.data
             this.ownerScheduleListData = data.items
