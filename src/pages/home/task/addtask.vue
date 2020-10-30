@@ -467,7 +467,7 @@ export default {
             this.applyDetailIdList = res.data.data
             let applyDetailIdList = []
             res.data.data.forEach(element => {
-              if (element.remainNum>0) {
+              if (element.remainNum>0&&element.subjectId!=10) {
                 applyDetailIdList.push(element)
               }
             });
@@ -999,7 +999,14 @@ export default {
       });
       
       
-      let jsonData = JSON.stringify([{num:1,budget:this.cost,reqFinishTime:endTime, remark:this.remark}])
+      // let jsonData = null
+      let jsonData = JSON.stringify([{num:1, budget:this.cost}])
+      // if (this.subjectId == 8) {
+      //   jsonData = JSON.stringify([{num:1,budget:this.cost,reqFinishTime:endTime, remark:this.remark}])
+      // }else if (this.subjectId == 10) {
+      //   jsonData = JSON.stringify([{num:1,cost:this.cost, remark:this.remark}])
+        
+      // }
       // console.log(proName)
       // console.log(applyDetail)
       let data = {
@@ -1032,10 +1039,10 @@ export default {
         applyDetailId:this.applyDetailId,
         subjectId: this.subjectId,
         subItemsId:this.subItemsId,
+        subItemsName:this.subItemsName,
         subjectTempId:this.subjectTempId,
         jsonData: jsonData,
         cost:this.cost*1,
-        subItemsName:this.subjectName,
       }
       if (this.taskId) {
         delete data.budgetApplyId
@@ -1169,10 +1176,6 @@ export default {
         data.startTime,
         data.num,
         data.listTaskOfCartype.length,
-        data.budgetApplyId,
-        data.applyDetailId,
-        data.cost
-        // data.listInvite.length,
       ]
       if (!this.taskId) {
         list.push(data.budgetApplyId)

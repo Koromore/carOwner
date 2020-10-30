@@ -23,7 +23,8 @@ export default new Vuex.Store({
     // user: { userId: 6, deptId: 41, subordinate:41, realName: '宋秀' }, //员工信息
     // user: { userId: 3914, deptId: 155, subordinate:41, realName: '鄢然' }, //员工信息
     // user: { userId: 266, deptId: 134, realName: '冯永强' }, //员工信息
-    user: { userId: 40, deptId: 134, realName: '桂婷' }, //员工信息
+    // user: { userId: 40, deptId: 134, realName: '桂婷' }, //员工信息
+    // user: { userId: 186, deptId: 22, realName: '严玺' }, //员工信息
     // user: { userId: 403, deptId: 121, realName: '林成伟' }, //员工信息
     // user: { userId: 579, deptId: 151, realName: '杨菊玲' }, //员工信息
     // user: { userId: 982, deptId: 91, realName: '赵吉' }, //员工信息

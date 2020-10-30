@@ -337,7 +337,7 @@
             <template slot-scope="scope">
               <span v-if="scope.row.taskToModelList.length">
                 <span v-for="(item,index) in scope.row.taskToModelList" :key="index">
-                  <template v-if="item.modelId"><span v-if="!index">,</span>{{item.realName}}</template>
+                  <template v-if="item.modelId"><span v-if="index">,</span>{{item.realName}}</template>
                   <template v-else>无模特</template>
                 </span>
               </span>
@@ -523,7 +523,7 @@
             </template>
           </el-table-column>
           <el-table-column prop="ownerName" label="邀约对象" min-width="90" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="ownerItemList" label="邀约事项" min-width="130" show-overflow-tooltip></el-table-column>
+          <!-- <el-table-column prop="ownerItemList" label="邀约事项" min-width="130" show-overflow-tooltip></el-table-column> -->
           <el-table-column prop="personName" label="摄影师" min-width="90" show-overflow-tooltip>
             <template slot-scope="scope">
               <span v-if="scope.row.taskToPersonList.length">
@@ -1146,11 +1146,11 @@ export default {
         //   initUserId: 266
         // }
       }
-      if (this.deptId == 105 || this.deptId == 110 || this.deptId == 153 || this.deptId == 106) {
-        data.task.deptId = this.deptId
-      } else {
-        data.task.deptId = null
-      }
+      // if (this.deptId == 105 || this.deptId == 110 || this.deptId == 153 || this.deptId == 106) {
+      //   data.task.deptId = this.deptId
+      // } else {
+      //   data.task.deptId = null
+      // }
       if (this.deptId == 90) {
         data.task.taskType = 4
         // data.task.status = null
@@ -1597,12 +1597,7 @@ export default {
     },
     // 提交按钮
     submitBtn(e) {
-      let status = null
-      if (e==0) {
-        status = this.taskDetail.status
-      }else{
-        status = 1
-      }
+      // let status = null
       this.drawerLoading = true
       let listInviteList = this.listInviteList
       listInviteList.forEach((element) => {
@@ -1621,7 +1616,7 @@ export default {
       let data = {
         taskId: this.taskId,
         deptId: this.taskDeptId,
-        status: status,
+        // status: status,
         updateTime: this.$time0(new Date()),
         listInvite: listInviteList,
         nowUserId: this.userId,
@@ -1641,6 +1636,15 @@ export default {
         }
         // console.log(e)
       })
+      let url = ''
+      if (e==0) {
+        // status = this.taskDetail.status
+        url = '/ocarplay/task/saveInvite'
+      }else{
+        // status = 1
+        url = '/ocarplay/task/save'
+        data.status = 1
+      }
       // flag = false
       // console.log(data)
       // console.log(data.listInvite)
@@ -1653,9 +1657,10 @@ export default {
             element.isCard = 0
           }
         })
+        
         // console.log(data)
         this.$axios
-          .post('/ocarplay/task/save', data)
+          .post(url, data)
           .then((res) => {
             // console.log(res)
             if (res.status == 200 && res.data == 1) {
