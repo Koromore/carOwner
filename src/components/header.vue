@@ -98,9 +98,13 @@ export default {
     // }
     $route(to, from) {
       let name = to.name
-      if (name != 'brand' && name != 'analysis') {
-        this.select = name
-      }
+      this.selectChange(name)
+      // let nameList = ['task','settlement','owners','document','cameraman','model','place']
+      // nameList.forEach(element => {
+      //   if (name == element) {
+      //     this.select = name
+      //   }
+      // });
     },
     routeName: function (newData, oldData) {
       let list = [
@@ -137,7 +141,8 @@ export default {
   // 钩子函数
   mounted() {
     this.selectDisabledShow()
-    // console.log(this.$parent.routeName)
+    let name = this.$route.name
+    this.selectChange(name)
   },
   methods: {
     logout() {
@@ -220,7 +225,6 @@ export default {
     },
     ///////// 导航页面跳转 end /////////
 
-    // deptId==90||adminShow
     selectDisabledShow() {
       if (this.deptId == 90 || this.adminShow) {
         this.selectDisabled = false
@@ -234,6 +238,14 @@ export default {
       a.download = '车主邀约系统操作手册(项目部版).doc'
       a.setAttribute('href', 'http://223.75.59.219:8082/doc/车主邀约系统操作手册(项目部版).doc')
       a.click()
+    },
+    selectChange(name){
+      let nameList = ['task','settlement','owners','document','cameraman','model','place']
+      nameList.forEach(element => {
+        if (name == element) {
+          this.select = name
+        }
+      })
     }
   },
 }

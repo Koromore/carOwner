@@ -121,7 +121,7 @@
                   srcset
                   v-for="(item,index) in synopsisFileList"
                   :key="index"
-                  @click="previewImg(item.url)"
+                  @click="preview(item.localPath, item.suffix)"
                   style="width:auto;height:169px;margin-top: 9px;"
                 />
             </div>
@@ -134,62 +134,49 @@
               <!-- {{photoFileList}} -->
               <!-- <el-image style="width: 169px; height: 169px" :src="item.url" fit="cover" lazy v-for="(item,index) in photoFileList" :key="index" :preview-src-list="[item.url]"></el-image> -->
               <img
+                style="width:200px; height:150px"
                 v-for="(item,index) in photoFileList"
                 :key="index"
                 :src="item.url"
                 alt
                 srcset
-                @click="previewImg(item.url)"
+                @click="preview(item.localPath, item.suffix)"
               />
-              <el-dialog :visible.sync="dialogVisibleImg" width="49%">
-                <img width="100%" :src="dialogImageUrl" alt />
-              </el-dialog>
             </div>
           </el-col>
           <el-col :span="24" class="list">
             <div class="key">自我介绍</div>
-            <!-- <div class="val">{{introduceFileList}}</div> -->
             <div class="colon">:</div>
             <div class="val">
               <!-- {{introduceFileList}} -->
               <img
-                style="width:200px;
-                height:150px"
+                style="width:200px; height:150px"
                 v-for="(item,index) in introduceFileList"
                 :key="index"
                 :src="[item.suffix == 'mp4' ? 'static/images/carow/video.png' : '/ocarplay/'+item.localPath]"
                 alt
                 srcset
-                @click="previewVideo(item.localPath, item.suffix)"
+                @click="preview(item.localPath, item.suffix)"
               />
-              <el-dialog
-                title="视频"
-                :visible.sync="dialogVisibleVideo"
-                width="50%"
-                @close="dialogVideo"
-              >
-                <div v-html="dialogVidoeUrl"></div>
-                <!-- <video id="v2" x-webkit-airplay="true" webkit-playsinline="true" playsinline="tvc&quot;true&quot;"
-                    type="video/mp4" preload="" :src="dialogVidoeUrl" x5-video-player-type="h5"
-                x5-video-player-fullscreen="true" controls="controls"></video>-->
-              </el-dialog>
             </div>
           </el-col>
-        <!-- </el-col> -->
-        <!-- <el-col :span="12" class="right"> -->
-          
-          
-          
-          
-          
-          
-          
-          
-        <!-- </el-col> -->
         <el-col :span="24" class="center"></el-col>
       </el-scrollbar>
     </el-row>
     <!-- 内容列表 end -->
+    <!-- 预览视频/图片 start -->
+    <el-dialog
+      :title="dialogPreviewTitle"
+      :visible.sync="dialogVisiblePreview"
+      :width="dialogPreviewWidth"
+      @close="dialogPreview"
+    >
+      <div v-html="dialogPreviewUrl"></div>
+      <!-- <video id="v2" x-webkit-airplay="true" webkit-playsinline="true" playsinline="tvc&quot;true&quot;"
+          type="video/mp4" preload="" :src="dialogPreviewUrl" x5-video-player-type="h5"
+      x5-video-player-fullscreen="true" controls="controls"></video>-->
+    </el-dialog>
+    <!-- 预览视频/图片 end -->
   </div>
 </template>
 <script>
@@ -238,10 +225,10 @@ export default {
       introduceFileList: [], // 自我介绍文件列表
       introduceAttachmentList: [],
       carSeriesIdList: [],
-      dialogVisibleImg: false,
-      dialogImageUrl: '',
-      dialogVisibleVideo: false,
-      dialogVidoeUrl: '',
+      dialogVisiblePreview: false,
+      dialogPreviewUrl: '',
+      dialogPreviewWidth: '50%',
+      dialogPreviewTitle: '视频预览',
       // 摄影师  模特  场地
       // 品牌车型
       // 文件上传
@@ -364,41 +351,38 @@ export default {
     },
     ///////// 获取车系列表 end /////////
 
-    ///////// 预览素颜照 start /////////
-    previewImg(img) {
-      this.dialogImageUrl = img
-      this.dialogVisibleImg = true
-    },
-    ///////// 预览素颜照 end /////////
-
-    ///////// 预览自我介绍 start /////////
-    previewVideo(url, suffix) {
-      let dialogVidoeUrl = ''
+    ///////// 预览视频/图片 start /////////
+    preview(url, suffix) {
+      let dialogPreviewUrl = ''
       if (this.$matchType(suffix) == 'video') {
-        this.dialogVidoeUrl = `
+        this.dialogPreviewUrl = `
         <video style="width:100%;height:100%" controls autoplay="true">
           <source src="/ocarplay/${url}" type="video/mp4" />
           <embed style="width:100%;height:100%" src="/ocarplay/${url}" autoplay="true" hidden="no" />
         </video>
         `
+        this.dialogPreviewWidth = '50%'
+        this.dialogPreviewTitle = '视频预览'
       }else if (this.$matchType(suffix) == 'image') {
-        this.dialogVidoeUrl = `
+        this.dialogPreviewUrl = `
         <img src="/ocarplay/${url}" width="100%">
         `
+        this.dialogPreviewWidth = '90%'
+        this.dialogPreviewTitle = '图片预览'
       }
-      // this.dialogVidoeUrl = `
+      // this.dialogPreviewUrl = `
       // <video style="width:100%;height:100%" controls autoplay="true">
       //   <source src="/ocarplay/${url}" type="video/mp4" />
       //   <embed style="width:100%;height:100%" src="/ocarplay/${url}" autoplay="true" hidden="no" />
       // </video>
       // `
-      this.dialogVisibleVideo = true
+      this.dialogVisiblePreview = true
     },
-    ///////// 预览自我介绍 end /////////
+    ///////// 预览视频/图片 end /////////
 
     ///////// 视频弹窗关闭回调 end /////////
-    dialogVideo() {
-      this.dialogVidoeUrl = ''
+    dialogPreview() {
+      this.dialogPreviewUrl = ''
     },
     ///////// 视频弹窗关闭回调 end /////////
 

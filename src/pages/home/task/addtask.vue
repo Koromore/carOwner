@@ -1000,9 +1000,9 @@ export default {
       
       
       // let jsonData = null
-      let jsonData = JSON.stringify([{num:1, budget:this.cost}])
+      // let jsonData = JSON.stringify([{num:1, budget:this.cost}])
       // if (this.subjectId == 8) {
-      //   jsonData = JSON.stringify([{num:1,budget:this.cost,reqFinishTime:endTime, remark:this.remark}])
+      let jsonData = JSON.stringify([{num:1,budget:this.cost,reqFinishTime:endTime, remark:this.remark}])
       // }else if (this.subjectId == 10) {
       //   jsonData = JSON.stringify([{num:1,cost:this.cost, remark:this.remark}])
         

@@ -8,7 +8,7 @@ import Test from '@/pages/test'
 // import Gantti from '@/pages/gantti/gantti'
 // import Problem from '@/pages/problem/problem'
 // import Test from '@/pages/test'
-import { Decrypt, Encrypt } from '@/utils/cryptoJS'
+// import { Decrypt, Encrypt } from '@/utils/cryptoJS'
 import { MessageBox } from 'element-ui';
 
 Vue.prototype.$axios = axios;
@@ -236,22 +236,6 @@ const router = new Router({
           path: '/home/ownersdetail',
           name: 'ownersdetail',
           component: resolve => require(['@/pages/home/owners/ownersdetail'], resolve),
-          meta: {
-            requireAuth: true,
-          }
-        },
-        {
-          path: '/home/site',
-          name: 'site',
-          component: resolve => require(['@/pages/home/site/site'], resolve),
-          meta: {
-            requireAuth: true,
-          }
-        },
-        {
-          path: '/home/sitecarownerlist',
-          name: 'sitecarownerlist',
-          component: resolve => require(['@/pages/home/site/sitecarownerlist'], resolve),
           meta: {
             requireAuth: true,
           }

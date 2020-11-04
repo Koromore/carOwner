@@ -445,7 +445,7 @@
                     <div :span="6" v-for="(item,index) in worksList" :key="index">
                       <template v-if="$matchType(item.suffix)== 'image'">
                         <el-image
-                          style="width: 200px; height: 150px"
+                          style="width: 200px; height: 150px;"
                           :src="'/ocarplay/'+item.localPath"
                           :preview-src-list="['/ocarplay/'+item.localPath]"
                         ></el-image>
@@ -453,7 +453,7 @@
                       <template v-if="$matchType(item.suffix)== 'video'">
                         <el-image
                           style="width: 200px; height: 150px"
-                          src="static/images/carow/video.png"
+                          src="/static/images/carow/video.png"
                           @click="previewVideo(item)"
                         ></el-image>
                       </template>
