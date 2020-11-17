@@ -476,9 +476,7 @@ export default {
                 this.$message.success('场地信息新建成功！')
               }
               setTimeout(() => {
-                this.$router.push({
-                  name: 'place',
-                })
+                this.$router.go(-1)
                 this.putLoading = false
               }, 1000)
             } else {

@@ -464,7 +464,7 @@ export default {
         modelId: id,
       }
       this.$axios.post('/ocarplay/api/model/show', data).then((res) => {
-        console.log(res)
+        // console.log(res)
         if (res.status == 200) {
           let data = res.data
           if (data.errcode != -1) {
@@ -835,9 +835,7 @@ export default {
               this.$message.success(res.data.msg)
             }
             setTimeout(() => {
-              this.$router.push({
-                name: 'model',
-              })
+              this.$router.go(-1)
               this.putLoading = false
             }, 1000)
           } else {

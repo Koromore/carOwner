@@ -928,7 +928,7 @@ export default {
             // console.log(res)
             if (res.status == 200 && res.data.errcode == 0) {
               setTimeout(() => {
-                this.$router.push({ name: 'cameraman' })
+                this.$router.go(-1)
                 this.loading = false
               }, 1000)
               this.$message.success(res.data.msg)

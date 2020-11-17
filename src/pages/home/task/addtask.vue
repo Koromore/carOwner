@@ -282,7 +282,6 @@ export default {
       textarea: '',
       props: { multiple: true,expandTrigger: 'hover' },
       carSeriesList: [],
-<<<<<<< HEAD
       // 日期禁止
       pickerOptions: {},
       // 摄影师  模特  场地
@@ -319,8 +318,6 @@ export default {
       modelIdList: [],
       placeId: null,
       disabledCaigou: false,
-=======
->>>>>>> cbb8efe1476c101dec79ab060f4362a1d4e7c2bb
       // 品牌车型
       input3: '',
       options: [],
