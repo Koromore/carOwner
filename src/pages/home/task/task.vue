@@ -642,6 +642,7 @@
             type="date"
             placeholder="选择日期"
             :picker-options="pickerOptions"
+            :unlink-panels="true"
           ></el-date-picker>
         </el-col>
         <el-col :span="4" class="key keycontent">延期说明:</el-col>

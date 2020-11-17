@@ -282,6 +282,7 @@ export default {
       textarea: '',
       props: { multiple: true,expandTrigger: 'hover' },
       carSeriesList: [],
+<<<<<<< HEAD
       // 日期禁止
       pickerOptions: {},
       // 摄影师  模特  场地
@@ -318,11 +319,19 @@ export default {
       modelIdList: [],
       placeId: null,
       disabledCaigou: false,
+=======
+>>>>>>> cbb8efe1476c101dec79ab060f4362a1d4e7c2bb
       // 品牌车型
       input3: '',
       options: [],
       // 计划周期
       input4: '',
+      // 禁止选择当前时间之前的时间
+      pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() < Date.now() - 8.64e7
+        }
+      },
       // 计划邀约量
       input5: '',
       // 文件上传
