@@ -217,14 +217,15 @@
             </div>
           </el-col>
           <el-col :span="24" class="list">
-            <div class="key">备注</div>
+            <div class="key imp">备注</div>
             <div class="val">
               <el-input
-                placeholder="请输入内容"
+                placeholder="拍摄时间+任务名称"
                 v-model="remark"
                 clearable
                 :disabled="!disabledCaigou"
-                maxlength="500"
+                maxlength="100"
+                show-word-limit
               ></el-input>
             </div>
           </el-col>
@@ -1182,6 +1183,7 @@ export default {
         data.startTime,
         data.num,
         data.listTaskOfCartype.length,
+        data.remark
       ]
       if (!this.taskId) {
         list.push(data.budgetApplyId)
