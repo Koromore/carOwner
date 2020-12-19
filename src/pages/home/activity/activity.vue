@@ -1,0 +1,2165 @@
+<template>
+  <div id="activity">
+    <!-- 头部选项框 start -->
+    <el-row class="top">
+      <el-col :span="24" class="box">
+        <div>
+          <el-button
+            type="primary"
+            size="small"
+            icon="el-icon-circle-plus-outline"
+            @click="toAddactivity(0, 0)"
+            >新增活动</el-button
+          >
+          <el-button
+            type="primary"
+            size="small"
+            plain
+            icon="el-icon-chat-line-square"
+            @click="toAdvisory"
+            >采购咨询</el-button
+          >
+        </div>
+
+        <div>
+          <el-button-group>
+            <el-button type="success" size="small" @click="statusChange(0)"
+              >执行中</el-button
+            >
+            <el-button type="danger" size="small" @click="statusChange(3)"
+              >延期</el-button
+            >
+            <!-- <el-button type="warning" size="small" @click="statusChange(1)">结算中</el-button> -->
+            <el-button
+              type="info"
+              size="small"
+              @click="statusChange(2)"
+              v-if="deptId != 90"
+              >已完成</el-button
+            >
+          </el-button-group>
+          <el-button type="info" size="small">拍摄时间</el-button>
+          <el-date-picker
+            v-model="filtrateShootingTime"
+            size="small"
+            type="daterange"
+            value-format="yyyy-MM-dd"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          >
+          </el-date-picker>
+          <!-- {{filtrateShootingTime}} -->
+          <el-select
+            v-model="activityType"
+            filterable
+            clearable
+            placeholder="活动类型"
+            size="small"
+          >
+            <el-option
+              v-for="item in activityTypeList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+          <el-select
+            v-model="appraise"
+            filterable
+            clearable
+            placeholder="是否评价"
+            size="small"
+          >
+            <el-option
+              v-for="item in appraiseList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+          <el-select
+            v-model="linkState"
+            filterable
+            clearable
+            placeholder="链接状态"
+            size="small"
+          >
+            <el-option
+              v-for="item in linkStateList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+        </div>
+
+        <div class="searchBox">
+          <!-- 搜索框 start -->
+          <el-input
+            placeholder="请输入内容"
+            v-model="searchWord"
+            class="input-with-select search"
+            size="small"
+            clearable
+            @keyup.enter.native="searchStart"
+            @clear="searchStart"
+          >
+            <el-select
+              class="searchType"
+              v-model="selectType"
+              slot="prepend"
+              placeholder="选择"
+            >
+              <el-option label="车辆" value="1"></el-option>
+              <el-option label="摄影师" value="2"></el-option>
+              <el-option label="模特" value="3"></el-option>
+              <!-- <el-option label="场地" value="4"></el-option> -->
+            </el-select>
+            <el-button
+              slot="append"
+              icon="el-icon-search"
+              @click="searchStart"
+            ></el-button>
+          </el-input>
+          <!-- 搜索框 end -->
+        </div>
+      </el-col>
+    </el-row>
+    <!-- 头部选项框 end -->
+
+    <!-- 内容列表 start -->
+    <!-- 内容列表1  -->
+    <el-row class="content content1">
+      <div class="table_list">
+        <el-table
+          :data="taskListData"
+          style="width: 100%"
+          :header-row-style="{ height: '54px' }"
+          :header-cell-style="{ color: '#000' }"
+          height="100%"
+          v-loading="loading"
+          ref="table"
+          @sort-change="sortableChange"
+        >
+          <el-table-column
+            prop
+            label
+            type="selection"
+            width="36"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="photoTime"
+            label="拍摄时间"
+            min-width="100"
+            sortable="custom"
+          >
+            <template slot-scope="scope">
+              <template v-if="scope.row.photoTime">
+                {{ $date(scope.row.photoTime) }}
+                <template v-if="scope.row.reasonId">
+                  <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="scope.row.reason"
+                    placement="top"
+                  >
+                    <span style="color: #e6a23c">延期</span>
+                  </el-tooltip>
+                </template>
+              </template>
+              <template v-else>/</template>
+            </template>
+            <!-- <template slot-scope="scope">{{scope.row.photoTime | date}}</template> -->
+          </el-table-column>
+          <el-table-column prop="photoTime" label="下达时间-人" min-width="100">
+          </el-table-column>
+          <el-table-column type="expand" label="请款报销">
+            <!--  slot-scope="props" -->
+            <template>
+              <el-form label-position="left" inline class="demo-table-expand">
+                <el-form-item label="商品名称">
+                  <span>商品名称</span>
+                </el-form-item>
+              </el-form>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="taskName"
+            label="任务名称"
+            min-width="180"
+            show-overflow-tooltip
+          >
+            <template slot-scope="scope">
+              <el-link
+                target="_blank"
+                class="omit"
+                :underline="false"
+                @click="toDetail(scope.row.taskId)"
+                >{{ scope.row.taskName }}</el-link
+              >
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop
+            label="状态"
+            min-width="80"
+            show-overflow-tooltip
+          >
+            <template slot-scope="scope">
+              <span v-if="scope.row.status == 0">有车拍摄</span>
+              <span v-else-if="scope.row.status == 1">无车拍摄</span>
+              <span v-else-if="scope.row.status == 2">其他</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop
+            label="类型"
+            min-width="80"
+            show-overflow-tooltip
+            v-if="deptId != 90"
+          >
+            <template slot-scope="scope">
+              <span v-if="scope.row.taskType == 1">有车拍摄</span>
+              <span v-else-if="scope.row.taskType == 2">无车拍摄</span>
+              <span v-else-if="scope.row.taskType == 3">其他</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="initUserRealName"
+            label="采购负责人"
+            min-width="90"
+            show-overflow-tooltip
+          >
+          </el-table-column>
+          <el-table-column
+            prop="ownerName"
+            label="车辆"
+            min-width="90"
+            show-overflow-tooltip
+            v-if="deptId != 90"
+          ></el-table-column>
+          <!-- <el-table-column prop="ownerItemList" label="邀约事项" min-width="130" show-overflow-tooltip></el-table-column> -->
+          <el-table-column
+            prop="personName"
+            label="摄影师"
+            min-width="90"
+            show-overflow-tooltip
+          >
+            <template slot-scope="scope">
+              <span v-if="scope.row.taskToPersonList.length">
+                <span
+                  v-for="(item, index) in scope.row.taskToPersonList"
+                  :key="index"
+                  >{{ item.realName }}</span
+                >
+              </span>
+              <span v-else>/</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="modelName"
+            label="模特"
+            min-width="90"
+            show-overflow-tooltip
+          >
+            <template slot-scope="scope">
+              <span v-if="scope.row.taskToModelList.length">
+                <span
+                  v-for="(item, index) in scope.row.taskToModelList"
+                  :key="index"
+                >
+                  <template v-if="item.modelId"
+                    ><span v-if="index">,</span>{{ item.realName }}</template
+                  >
+                  <template v-else>无模特</template>
+                </span>
+              </span>
+              <span v-else>/</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="modelName"
+            label="其他资源"
+            min-width="90"
+            show-overflow-tooltip
+          >
+          </el-table-column>
+          <el-table-column
+            prop="placeName"
+            label="场地"
+            min-width="90"
+            show-overflow-tooltip
+          >
+            <template slot-scope="scope">
+              <span v-if="scope.row.placeName">{{ scope.row.placeName }}</span>
+              <span v-else>/</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="status"
+            label="状态"
+            min-width="60"
+            v-if="deptId == 90"
+          >
+            <template slot-scope="scope">
+              <div v-if="scope.row.status == 0" class="statusColor0">
+                执行中
+              </div>
+              <div v-if="scope.row.status == 1" class="statusColor1">
+                结算中
+              </div>
+              <div v-if="scope.row.status == 2" class="statusColor2">完成</div>
+              <div v-if="scope.row.status == 3" class="statusColor3">延期</div>
+              <div v-if="scope.row.status == 4" class="statusColor4">
+                人工延期
+              </div>
+            </template>
+          </el-table-column>
+
+          <el-table-column label="评分" min-width="70">
+            <template slot-scope="scope">
+              <span v-if="scope.row.isSubmit">已评分</span>
+              <span v-else>去评价</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="发布链接" min-width="90">
+            <template slot-scope="scope">
+              <el-link type="primary" @click="putTask(scope.row)"
+                >填写链接</el-link
+              >
+            </template>
+          </el-table-column>
+
+          <el-table-column prop="createTime" label="其他验收" min-width="100">
+            <template>
+              <el-link type="primary">已上传</el-link>
+            </template>
+          </el-table-column>
+          <el-table-column label="反馈" min-width="100">
+            <template>
+              <i
+                class="el-icon-chat-dot-round"
+                @click="feedbackShow = true"
+              ></i>
+            </template>
+          </el-table-column>
+          <el-table-column prop="address" label="操作" min-width="130">
+            <template slot-scope="scope">
+              <!-- v-if="subordinate == 150 || deptId == 90 || adminShow" -->
+              <template>
+                <el-button type="primary" size="mini" @click="delay(scope.row)"
+                  >延期</el-button
+                >
+                <el-button
+                  type="primary"
+                  size="mini"
+                  @click="delContent(scope.row.taskId)"
+                  >删除</el-button
+                >
+              </template>
+
+              <template>
+                <el-button plain size="mini">完成</el-button>
+              </template>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+      <el-col :span="24" class="paging">
+        <el-pagination
+          @size-change="changeSize"
+          @current-change="changePage"
+          :current-page="pageNum"
+          :page-sizes="[20, 30, 50]"
+          :page-size="pageSize"
+          layout="total, prev, pager, next, sizes"
+          :total="total"
+          background
+        ></el-pagination>
+      </el-col>
+    </el-row>
+
+    <!-- 抽屉弹窗延期原因 start -->
+    <el-drawer title="延期任务" :visible.sync="drawerDelay" size="566px">
+      <el-row class="drawerDelay" v-loading="drawerLoading">
+        <el-col :span="4">任务名称:</el-col>
+        <el-col :span="20">{{ taskName }}</el-col>
+        <el-col :span="4">预计时间:</el-col>
+        <el-col :span="20">
+          <el-date-picker
+            v-model="delayTime"
+            type="date"
+            placeholder="选择日期"
+            :picker-options="pickerOptions"
+            :unlink-panels="true"
+          ></el-date-picker>
+        </el-col>
+        <el-col :span="4" class="key keycontent">延期说明:</el-col>
+        <el-col :span="20">
+          <el-input
+            type="textarea"
+            :rows="6"
+            placeholder="请输入内容"
+            v-model="delayReason"
+          ></el-input>
+        </el-col>
+        <!-- 底部按钮 -->
+        <el-col :span="24" class="btn">
+          <el-col :span="6" :offset="5">
+            <el-button type="info" @click="cancel">取消</el-button>
+          </el-col>
+          <el-col :span="6" :offset="2">
+            <el-button type="primary" @click="putDelay">提交</el-button>
+          </el-col>
+        </el-col>
+      </el-row>
+    </el-drawer>
+    <!-- 抽屉弹窗延期原因 end -->
+
+    <!-- 抽屉弹窗提交任务 start -->
+    <el-dialog
+      title="提交任务"
+      :visible.sync="drawerPuttask"
+      width="70%"
+      class="taskDialog"
+      v-loading="drawerLoading"
+    >
+      <!-- <span>这是一段信息</span> -->
+      <el-scrollbar style="height: 100%">
+        <el-row class="drawerPuttask">
+          <el-col :span="3">任务名称:</el-col>
+          <el-col :span="21">
+            <el-col :span="20">{{ taskName }}</el-col>
+            <el-col :span="4" class="import">
+              <el-tooltip
+                class="item"
+                effect="dark"
+                content="导出"
+                placement="top"
+              >
+                <i class="el-icon-upload2" @click="exportFile(taskDetail)"></i>
+              </el-tooltip>
+              <el-tooltip
+                class="item"
+                effect="dark"
+                content="导入"
+                placement="top"
+              >
+                <el-upload
+                  class="upload-demo"
+                  :action="uploadExcle"
+                  :on-success="importFileSuccess"
+                  name="excelFile"
+                  :show-file-list="false"
+                >
+                  <i class="el-icon-download"></i>
+                </el-upload>
+              </el-tooltip>
+            </el-col>
+          </el-col>
+          <el-col :span="3" class="keycontent">结算明细:</el-col>
+          <el-col :span="21">
+            <!-- <el-col :span="20">
+              <el-input placeholder="搜索车主" suffix-icon="el-icon-search" v-model="input"></el-input>
+            </el-col>-->
+            <el-col
+              :span="24"
+              class="detailList"
+              v-for="(item, index) in listInviteList"
+              :key="index"
+            >
+              <el-col :span="1" style="text-align: center">
+                <!-- {{item.isOver}} -->
+                <i
+                  class="el-icon-success"
+                  v-if="item.isOver"
+                  style="color: #85ce61"
+                ></i>
+                <i class="el-icon-remove" style="color: #a6a9ad" v-else></i>
+              </el-col>
+              <el-col :span="4">
+                <el-input
+                  placeholder="请输入"
+                  size="medium"
+                  v-model="item.realName"
+                  @focus="changeOwner(index)"
+                  v-if="!item.changeShow"
+                ></el-input>
+                <!-- {{item.realName}} -->
+                <template v-else>
+                  <template v-if="item.userType == 0">
+                    <el-cascader
+                      :options="inviteDataList"
+                      v-model="item.inviteData"
+                      clearable
+                      filterable
+                      :show-all-levels="false"
+                      size="medium"
+                    >
+                      <i
+                        slot="prefix"
+                        class="el-input__icon el-icon-search"
+                      ></i>
+                    </el-cascader>
+                  </template>
+                  <template v-else-if="item.userType == 1">
+                    <el-select
+                      v-model="item.ownerId"
+                      placeholder="摄影师"
+                      clearable
+                      filterable
+                      class="userType1"
+                    >
+                      <el-option
+                        v-for="item in cammeramanList"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      ></el-option>
+                    </el-select>
+                  </template>
+                  <template v-else-if="item.userType == 2">
+                    <el-select
+                      v-model="item.ownerId"
+                      placeholder="模特"
+                      clearable
+                      filterable
+                      class="userType2"
+                    >
+                      <el-option
+                        v-for="item in modelList"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      ></el-option>
+                    </el-select>
+                  </template>
+                </template>
+              </el-col>
+              <el-col :span="15">
+                <template v-if="item.userType == 0">
+                  <el-input
+                    placeholder="车主链接"
+                    @change="urlChange"
+                    size="medium"
+                    v-model="item.url"
+                    clearable
+                  ></el-input>
+                </template>
+                <template v-if="item.userType == 1">
+                  <el-input
+                    placeholder="摄影师链接"
+                    @change="urlChange"
+                    size="medium"
+                    v-model="item.url"
+                    clearable
+                    class="userType1"
+                  ></el-input>
+                </template>
+                <template v-if="item.userType == 2">
+                  <el-input
+                    placeholder="模特链接"
+                    @change="urlChange"
+                    size="medium"
+                    v-model="item.url"
+                    clearable
+                    class="userType2"
+                  ></el-input>
+                </template>
+              </el-col>
+              <el-col :span="3">
+                <!-- <template v-if="item.userType==0"> -->
+                <i
+                  class="el-icon-document-copy"
+                  @click="copyDetailList(index, item)"
+                ></i>
+                <i class="el-icon-delete" @click="delDetailList(index)"></i>
+                <i
+                  class="el-icon-circle-plus-outline"
+                  @click="addDetailList(index, item)"
+                ></i>
+                <!-- </template> -->
+                <!-- <template v-if="item.userType==1">
+                  摄影师
+                </template>
+                <template v-if="item.userType==2">
+                  模特
+                </template>-->
+              </el-col>
+              <!-- {{item}}-{{index}} -->
+            </el-col>
+            <!-- {{listInviteList}} -->
+          </el-col>
+        </el-row>
+      </el-scrollbar>
+      <!-- 底部按钮 -->
+      <el-col :span="24" class="btn">
+        <el-col :span="4" :offset="7">
+          <el-button type="info" @click="submitBtn(1)">提交</el-button>
+        </el-col>
+        <el-col :span="4" :offset="2">
+          <el-button
+            type="primary"
+            @click="submitBtn(0)"
+            class="SlideOpen"
+            data-text="保存"
+            ><span>保存</span></el-button
+          >
+        </el-col>
+      </el-col>
+      <!-- <span slot="footer" class="dialog-footer">
+        <el-button @click="drawerPuttask = false">取 消</el-button>
+        <el-button type="primary" @click="drawerPuttask = false">确 定</el-button>
+      </span>-->
+    </el-dialog>
+    <!-- 抽屉弹窗提交任务 end -->
+
+    <!-- 新增评论评星 -->
+    <CommentSketchy :commentShow="commentSketchyShow"></CommentSketchy>
+    <!-- 新增评论 -->
+
+    <!-- 新增评论明细 -->
+    <Comment :commentShow="commentShow"></Comment>
+    <!-- 新增评论 -->
+
+    <!-- 新增反馈 -->
+    <el-dialog title="反馈" :visible.sync="feedbackShow" width="50%">
+      <!-- <span>这是一段信息</span> -->
+      <div class="table">
+        <el-table
+          :data="feedbackList"
+          style="width: 100%"
+          height="320"
+          :show-header="false"
+        >
+          <el-table-column prop="date" label="日期" width="180">
+          </el-table-column>
+          <el-table-column prop="name" label="姓名" width="180">
+          </el-table-column>
+          <el-table-column prop="address" label="地址"> </el-table-column>
+        </el-table>
+      </div>
+      <div class="feedbackText">
+        <el-input
+          type="textarea"
+          :rows="9"
+          placeholder="请输入内容"
+          v-model="feedbackText"
+        >
+        </el-input>
+        <el-button type="primary">提交</el-button>
+      </div>
+      <!-- <span slot="footer" class="dialog-footer">
+        <el-button type="primary"> 确 定 </el-button>
+      </span> -->
+    </el-dialog>
+    <!-- 新增反馈 -->
+
+    <el-dialog title="结算清单" :visible.sync="paydetailShow" width="80%">
+      <el-table :data="paydetailList" v-loading="paydetailShowLoading">
+        <el-table-column property="subjectName" label="科目"></el-table-column>
+        <el-table-column
+          property="subitemName"
+          label="细分项"
+        ></el-table-column>
+        <el-table-column property="payMoney" label="付款金额"></el-table-column>
+        <el-table-column property="userName" label="请款人"></el-table-column>
+        <el-table-column property="remark" label="备注"></el-table-column>
+        <el-table-column property="payState" label="状态">
+          <template slot-scope="scope">
+            <span v-if="scope.row.payState">已付款</span>
+            <span v-else>未付款</span>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+  </div>
+</template>
+<script>
+// import { matchType } from '@/utils/matchType' // 引入文件格式判断方法
+import FileSaver from 'file-save'
+import { saveAs } from 'file-saver'
+import Comment from '@/components/comment' // 新增评分评星
+import CommentSketchy from '@/components/commentSketchy' // 新增评分明细
+
+export default {
+  name: 'activity',
+  components: {
+    Comment,
+    CommentSketchy
+  },
+  data() {
+    return {
+      userId: this.$store.state.user.userId, // 用户ID
+      deptId: this.$store.state.user.deptId, // 部门ID
+      postId: this.$store.state.user.postId, // 职位ID
+      subordinate: this.$store.state.user.subordinate, // 一级部门ID
+      adminShow: this.$store.state.adminShow, // 超级管理员
+      commentShow: 0,
+      commentSketchyShow: 0,
+      type: 0,
+      personId: 0,
+
+      taskDeptId: '', // 任务部门ID
+      taskDetail: { taskType: 0 },
+      drawerLoading: false,
+      detailList: [
+        {
+          ownersName: '',
+          link: '',
+          sum: '',
+          type: true,
+        },
+        {
+          ownersName: '',
+          link: '',
+          sum: '',
+          type: true,
+        },
+      ],
+      // 筛选start
+      typeList: [
+        {
+          value: 1,
+          label: '借车',
+        },
+        {
+          value: 2,
+          label: '素材',
+        },
+        {
+          value: 3,
+          label: '邀约',
+        },
+        {
+          value: 4,
+          label: '拍摄',
+        },
+      ],
+
+      itemIdList: [],
+      itemId: '',
+      carSeriesIdList: [],
+      carSeriesId: '',
+      // 筛选end
+      cammeramanList: [],
+      modelList: [],
+      value: '',
+      // 表格数据
+      loading: false,
+
+      taskListData: [],
+      orderType: this.$store.state.order.orderType, // 1-升序，2-降序
+      orderField: this.$store.state.order.orderField, // 1-拍摄时间，2-下达时间
+      // 分页信息
+      pageNum: this.$store.state.taskPageNum,
+      pageSize: this.$store.state.taskPageSize,
+      total: 0,
+
+      // 抽屉弹窗提交任务
+      drawerPuttask: false,
+      // 抽屉拍摄延期
+      drawerDelayPhoto: false,
+      reasonId: '', // 延期拍摄原因
+      reasonList: '', // 延期拍摄原因列表
+      delayPhotoTime: '', // 延期拍摄时间
+
+      input: '',
+      value2: '',
+      // 禁止选择当前时间之前的时间
+      pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() < Date.now() - 8.64e7
+        },
+      },
+      // 提交任务车主列表
+      listInviteList: [],
+      delListInviteList: [],
+      // 车主选择器列表
+      inviteDataList: [],
+      listInviteData: [],
+      // 评价
+      // evaluatePersonVisible: false,
+      uploadExcle: null,
+      // 结算清单
+      paydetailShow: false,
+      paydetailShowLoading: false,
+      paydetailList: [],
+
+      // 影视活动
+      taskId: '', // 任务ID
+      taskName: '', // 任务NAME
+      // 筛选值
+      status: null, // 任务状态
+      taskType: '', // 任务类型
+      filtrateShootingTime: [],
+      activityType: null, // 活动类型
+      activityTypeList: [
+        {
+          value: 1,
+          label: '有车拍摄',
+        },
+        {
+          value: 2,
+          label: '无车拍摄',
+        },
+        {
+          value: 3,
+          label: '其他',
+        },
+      ], // 活动类型列表
+      appraise: null, // 是否评价
+      appraiseList: [
+        {
+          value: 1,
+          label: '已评价',
+        },
+        {
+          value: 0,
+          label: '未评价',
+        },
+      ], // 是否评价列表
+      linkState: null, // 链接状态
+      linkStateList: [
+        {
+          value: 1,
+          label: '待填写',
+        },
+        {
+          value: 2,
+          label: '待跟进',
+        },
+        {
+          value: 3,
+          label: '已完成',
+        },
+      ], // 链接状态
+      selectType: null, // 搜索类型
+      searchWord: null, // 搜索内容
+      // 抽屉弹窗延期因
+      drawerDelay: false,
+      delayReason: '', // 延期原因
+      delayTime: '', // 延期预计时间
+      // 反馈弹窗
+      feedbackShow: false,
+      feedbackList: [
+        {
+          date: '2016-05-02',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄',
+        },
+        {
+          date: '2016-05-04',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1517 弄',
+        },
+        {
+          date: '2016-05-01',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1519 弄',
+        },
+        {
+          date: '2016-05-03',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1516 弄',
+        },
+      ],
+      feedbackText: null,
+    }
+  },
+  // 过滤器
+  filters: {
+    // data: function (value) {
+    //   if (value) {
+    //     let date = ''
+    //     if (typeof data == 'string') {
+    //       date = new Date(value.replace(/-/g, '/'))
+    //     } else {
+    //       date = new Date(value)
+    //     }
+    //     // let date = new Date(data.replace(/-/g,'/'))
+    //     let year = date.getYear()
+    //     let month = date.getMonth() + 1
+    //     let strDate = date.getDate()
+    //     year = year - 100
+    //     if (year >= 1 && year <= 9) {
+    //       year = '0' + year
+    //     }
+    //     if (month >= 1 && month <= 9) {
+    //       month = '0' + month
+    //     }
+    //     if (strDate >= 0 && strDate <= 9) {
+    //       strDate = '0' + strDate
+    //     }
+    //     return `${year}-${month}-${strDate}`
+    //   } else {
+    //     return ''
+    //   }
+    // },
+  },
+  // 侦听器
+  watch: {
+    '$store.state.searchValue': function (newData, oldData) {
+      ///////// 获取任务列表 start /////////
+      this.getTaskListAjax()
+    },
+  },
+  // 钩子函数
+  beforeCreate() {},
+  beforeMount() {},
+  mounted() {
+    // this.foreach()
+    // console.log(this.$refs.table)
+    ///////// 获取车系列表 start /////////
+    this.getCarSeriesLists()
+    ///////// 获取任务列表 /////////
+    this.getTaskListAjax()
+    ///////// 获取车主列表 start /////////
+    this.getOwnerList()
+    ///////// 获取摄影师列表 start /////////
+    this.getlistPhotoPerson()
+    ///////// 获取模特列表 start /////////
+    this.getlistModel()
+
+    // let list = [1,2,3,4,5,6]
+    // console.log(list.splice(0,1))
+    // console.log(list)
+    this.uploadExcle = 'ocarplay/api/invite/uploadExcle?deptId=' + this.deptId
+    // 任务状态页码数据
+    let data = {
+      status: 0,
+      pageNum: 1,
+      pageSize: 30,
+    }
+    this.$store.commit('taskData', data)
+  },
+  // 方法
+  methods: {
+    ///////// 通过供应商搜索 start /////////
+    searchStart() {},
+    ///////// 通过供应商搜索 end /////////
+
+    ///////// 跳转采购咨询页面 start /////////
+    toAdvisory() {
+      this.$router.push({
+        path: '/home/advisory',
+      })
+    },
+    ///////// 跳转采购咨询页面 end /////////
+
+    ///////// 跳转采购咨询页面 start /////////
+    toAddactivity(type,id) {
+      this.$router.push({
+        path: '/home/addactivity',
+        query: {
+          type: type,
+          id: id
+        }
+      })
+    },
+    ///////// 跳转采购咨询页面 end /////////
+
+    ///////// 获取车系列表 start /////////
+    getCarSeriesLists() {
+      let eventList = []
+      this.$axios
+        .post('/ocarplay/api/carSeries/getCarSeriesLists', {})
+        .then((res) => {
+          // console.log(res)
+          if (res.status == 200) {
+            let data = res.data.carTypes
+            let carSeriesList = []
+            data.forEach((element, i) => {
+              if (element.deptId == 110) {
+                element.deptName = '吉利'
+              }
+              carSeriesList.push({
+                value: element.carTypeId,
+                label: `${element.deptName}—${element.carTypeName}`,
+              })
+            })
+            this.carSeriesIdList = carSeriesList
+          }
+        })
+    },
+    ///////// 获取车系列表 end /////////
+
+    ///////// 任务列表事项筛选 start /////////
+    itemIdChange(id) {
+      // this.status = id
+      this.getTaskListAjax()
+    },
+    ///////// 任务列表事项筛选 end /////////
+
+    ///////// 获取任务列表状态筛选 start /////////
+    statusChange(id) {
+      this.status = id
+      this.pageNum = 1
+      this.getTaskListAjax()
+    },
+    ///////// 获取任务列表状态筛选 end /////////
+
+    ///////// 获取任务列表 start /////////
+    getTaskListAjax() {
+      this.loading = true
+      let data = {
+        pageNum: this.pageNum,
+        pageSize: this.pageSize,
+        task: {
+          deleteFlag: false,
+          status: this.status,
+          taskType: this.taskType,
+          // itemId: this.itemId,
+          carSeriesId: this.carSeriesId,
+          taskName: this.$store.state.searchValue,
+          // deptId: this.deptId
+        },
+        orderField: this.orderField, // 1-拍摄时间，2-下达时间
+        orderType: this.orderType, // 1-升序，2-降序
+
+        // task: {
+        //   initUserId: 266
+        // }
+      }
+      // if (this.deptId == 105 || this.deptId == 110 || this.deptId == 153 || this.deptId == 106) {
+      //   data.task.deptId = this.deptId
+      // } else {
+      //   data.task.deptId = null
+      // }
+      // if (this.deptId == 90) {
+      //   data.task.taskType = 4
+      //   // data.task.status = null
+      //   // data.task.deptId = null
+      // }
+      this.$axios.post('/ocarplay/task/listAjax', data).then((res) => {
+        // console.log(res)
+        if (res.status == 200 && data) {
+          let data = res.data.data
+          data.items.forEach((element) => {
+            element.evaluatePersonVisible = false
+            element.typeList = []
+            element.ownerItemList = []
+            element.ownerName = []
+            // element.invMoney = 0
+            element.inviteNumOver = 0
+            // if (element.personId == 0) {
+            //   element.personName = '/'
+            // }
+            // if (element.modelId == 0) {
+            //   element.modelName = '/'
+            // }
+            // if (element.placeId == 0) {
+            //   element.placeName = '/'
+            // }
+            element.listInvite.forEach((element1) => {
+              // console.log(element1)
+              if (
+                element1.listOwnerType &&
+                element1.listOwnerType.length != 0
+              ) {
+                element.typeList.push(element1.listOwnerType[0].typeName)
+                element.ownerItemList.push(element1.listOwnerItem[0].itemName)
+                element.ownerName.push(element1.realName)
+              }
+              // element.invMoney += element1.money
+              if (element1.isWrite == 1) {
+                element.inviteNumOver += 1
+              }
+            })
+            if (!element.ownerName.length) {
+              element.ownerName = '/'
+            }
+            // Array.form(new Set(arr))
+            // console.log(element.ownerName)
+            element.typeList = [...new Set(element.typeList)]
+            element.ownerItemList = [...new Set(element.ownerItemList)]
+            element.ownerName = [...new Set(element.ownerName)]
+            // console.log(element.ownerName)
+            // console.log(element.typeList)
+            element.typeList = element.typeList.join(',')
+            element.ownerItemList = element.ownerItemList.join(',')
+            element.ownerName = element.ownerName.join(',')
+            // console.log(element.ownerName)
+          })
+          this.taskListData = data.items
+          this.total = data.totalRows
+          this.loading = false
+          // console.log(data.items)
+        }
+      })
+    },
+
+    ///////// 获取任务列表 end /////////
+
+    ///////// 分页 start /////////
+    // 每页条数变化时触发事件
+    changeSize(pageSize) {
+      // console.log(pageSize)
+      this.pageSize = pageSize
+      ///////// 获取任务列表 start /////////
+      this.getTaskListAjax()
+    },
+    // 页码变换时触发事件
+    changePage(pageNum) {
+      this.pageNum = pageNum
+      ///////// 获取任务列表 start /////////
+      this.getTaskListAjax()
+      // console.log(pageNum)
+    },
+    ///////// 分页 end /////////
+
+    ///////// 延期原因 start /////////
+    delay(prm) {
+      this.drawerDelay = true
+      this.taskId = prm.taskId
+      this.taskName = prm.taskName
+      console.log(prm)
+    },
+    putDelay() {
+      this.drawerLoading = true
+      let endTime = this.$date0(this.delayTime)
+      let data = {
+        taskId: this.taskId,
+        status: 4,
+        delayReason: this.delayReason,
+        endTime: endTime,
+      }
+      // console.log(data)
+      if (!data.delayReason) {
+        return
+      } else if (!data.endTime) {
+        return
+      }
+      // let falg = true
+      // list.forEach((element) => {
+      //   if (!element) {
+      //     falg = false
+      //   }
+      // })
+      return
+      if (falg) {
+        this.$axios.post('/ocarplay/task/save', data).then((res) => {
+          // console.log(res)
+          if (res.status == 200 && res.data == 1) {
+            this.$message.success('任务延期成功！')
+            this.drawerDelay = false
+            ///////// 获取任务列表 start /////////
+            this.getTaskListAjax()
+          } else {
+            this.$message.error('任务延期失败！')
+          }
+          this.drawerLoading = false
+        })
+      } else {
+        this.$message.error('请检查信息是否完整！')
+        this.drawerLoading = false
+      }
+    },
+    ///////// 延期原因 end /////////
+
+    ///////// 获取车主列表 start /////////
+    getOwnerList() {
+      // this.listLoading = true
+      let data = []
+      this.$axios
+        .post('/ocarplay/api/vehicleOwner/ownerTypeCoopItemOwners', data)
+        .then((res) => {
+          // console.log(res)
+          if (res.status == 200) {
+            let data = res.data
+            // console.log(data)
+            let list = []
+            data.forEach((element, i) => {
+              list.push({
+                value: element.typeId,
+                label: element.typeName,
+                children: [],
+              })
+              element.ownerItems.forEach((element1, j) => {
+                list[i].children.push({
+                  value: element1.itemId,
+                  label: element1.itemName,
+                  children: [],
+                })
+                element1.vehicleOwners.forEach((element2) => {
+                  if (
+                    element2.coopNum &&
+                    element2.alreadyCooperateNum &&
+                    element2.coopNum - element2.alreadyCooperateNum <= 0
+                  ) {
+                    // cosnole.log()
+                    list[i].children[j].children.push({
+                      value: element2.vehicleOwnerId,
+                      label: element2.name,
+                      disabled: true,
+                    })
+                  } else {
+                    list[i].children[j].children.push({
+                      value: element2.vehicleOwnerId,
+                      label: element2.name,
+                    })
+                  }
+                  // console.log(list[i].children[j])
+                })
+              })
+            })
+
+            this.inviteDataList = list
+            // console.log(list)
+          }
+        })
+    },
+    ///////// 获取车主列表 end /////////
+
+    ///////// 获取摄影师列表 start /////////
+    getlistPhotoPerson() {
+      if (this.cammeramanList.length == 0) {
+        this.listLoading = true
+        let data = {
+          pageNum: 1,
+          pageSize: 1000,
+          orderType: 1,
+          type: 2,
+        }
+        this.$axios
+          .post('/ocarplay/api/photoPerson/listAjax', data)
+          .then((res) => {
+            // console.log(res)
+            this.listLoading = false
+            if (res.status == 200) {
+              let data = res.data.items
+              let cammeramanList = []
+              data.forEach((element) => {
+                cammeramanList.push({
+                  value: element.personId,
+                  label: element.name,
+                })
+              })
+              this.cammeramanList = cammeramanList
+            }
+          })
+      }
+    },
+    ///////// 获取摄影师列表 end /////////
+
+    ///////// 获取模特列表 start /////////
+    getlistModel() {
+      if (this.modelList.length == 0) {
+        this.listLoading = true
+        let data = {
+          pageNum: 1,
+          pageSize: 1000,
+          orderType: 1,
+          type: 2,
+        }
+        this.$axios.post('/ocarplay/api/model/listAjax', data).then((res) => {
+          // console.log(res)
+          this.listLoading = false
+          if (res.status == 200) {
+            let data = res.data.items
+            let modelList = []
+            data.forEach((element) => {
+              modelList.push({
+                value: element.modelId,
+                label: element.name,
+              })
+            })
+            this.modelList = modelList
+          }
+        })
+      }
+    },
+    ///////// 获取模特列表 end /////////
+
+    ///////// 提交任务 start /////////
+    noTaskPut() {
+      this.$message.error('无法提交，摄影师模特信息采购尚未填写！')
+    },
+    putTask(prm) {
+      // console.log(prm)
+      // let isCard = ''
+      // if (prm.taskType == 4) {
+      //   isCard = true
+      // } else {
+      //   isCard = false
+      // }
+
+      if (prm.taskType == 4) {
+        if (prm.taskToPersonList.length && prm.placeId) {
+          this.drawerLoading = true
+          this.drawerPuttask = true
+          this.taskId = prm.taskId
+          this.taskDeptId = prm.deptId
+          this.taskName = prm.taskName
+          let data = {
+            taskId: prm.taskId,
+          }
+          this.$axios.post('/ocarplay/task/edit', data).then((res) => {
+            var starttime = new Date().getTime()
+
+            if (res.status == 200) {
+              let data = res.data.data
+              // console.log(data)
+              let listInviteList = []
+              let pushIs = true
+              data.listInvite.forEach((element) => {
+                if (element.userType) {
+                  pushIs = false
+                }
+                listInviteList.push({
+                  inviteId: element.inviteId,
+                  inviteData: [element.typeId, element.itemId, element.ownerId],
+                  isOver: element.isOver,
+                  typeId: element.typeId,
+                  itemId: element.itemId,
+                  ownerId: element.ownerId,
+                  url: element.url,
+                  realName: element.realName,
+                  // money: element.money,
+                  // isCard: element.isCard,
+                  userType: element.userType,
+                  changeShow: false,
+                })
+              })
+              var endtime = new Date().getTime()
+              var second = parseInt(endtime - starttime)
+              console.log(second)
+              this.listInviteList = listInviteList
+              // console.log(listInviteList)
+              this.taskDetail = data
+              this.drawerLoading = false
+            }
+          })
+        } else {
+          this.$message.error('无法提交，模特摄影师信息采购尚未填写！')
+        }
+      } else {
+        this.drawerLoading = true
+        this.drawerPuttask = true
+        this.taskId = prm.taskId
+        this.taskDeptId = prm.deptId
+        this.taskName = prm.taskName
+        let data = {
+          taskId: prm.taskId,
+        }
+        this.$axios.post('/ocarplay/task/edit', data).then((res) => {
+          var starttime = new Date().getTime()
+
+          if (res.status == 200) {
+            let data = res.data.data
+            // console.log(data)
+            let listInviteList = []
+            data.listInvite.forEach((element) => {
+              listInviteList.push({
+                inviteId: element.inviteId,
+                inviteData: [element.typeId, element.itemId, element.ownerId],
+                isOver: element.isOver,
+                typeId: element.typeId,
+                itemId: element.itemId,
+                ownerId: element.ownerId,
+                url: element.url,
+                realName: element.realName,
+                // money: element.money,
+                // isCard: element.isCard,
+                userType: element.userType,
+                changeShow: false,
+              })
+            })
+            this.listInviteList = listInviteList
+            this.taskDetail = data
+            this.drawerLoading = false
+            var endtime = new Date().getTime()
+            var second = parseInt(endtime - starttime)
+            console.log(second)
+          }
+        })
+      }
+      // console.log(this.listInviteList)
+    },
+    // 复制明细
+    copyDetailList(index, obj) {
+      let listInviteList = this.listInviteList
+      let data = {
+        userType: obj.userType,
+        inviteData: [],
+        typeId: '',
+        itemId: '',
+        ownerId: '',
+        url: '',
+        // money: '',
+        // isCard: false,
+      }
+      if (obj.userType == 0) {
+        data.inviteData = obj.inviteData
+      } else {
+        data.inviteData = []
+        data.ownerId = obj.ownerId
+      }
+      this.listInviteList.splice(index + 1, 0, data)
+    },
+    // 添加明细
+    addDetailList(index, obj) {
+      let data = {
+        userType: obj.userType,
+        inviteData: [],
+        typeId: '',
+        itemId: '',
+        ownerId: '',
+        url: '',
+        // money: '',
+        // isCard: false,
+      }
+      this.listInviteList.splice(index + 1, 0, data)
+    },
+    // 删除明细
+    delDetailList(index) {
+      let listInviteList = this.listInviteList
+      if (listInviteList.length > 1) {
+        this.delListInviteList = this.listInviteList.splice(index, 1)
+      }
+    },
+    // 切换车主
+    changeOwner(index) {
+      this.listInviteList[index].changeShow = true
+      this.$message.warning('再次点击选择车主！')
+    },
+    // 提交按钮
+    submitBtn(e) {
+      // let status = null
+      this.drawerLoading = true
+      let listInviteList = this.listInviteList
+      listInviteList.forEach((element) => {
+        element.taskId = this.taskId
+        if (element.userType == 0) {
+          element.typeId = element.inviteData[0]
+          element.itemId = element.inviteData[1]
+          element.ownerId = element.inviteData[2]
+        }
+      })
+      let delListInviteList = this.delListInviteList
+      delListInviteList.forEach((element) => {
+        element.deleteFlag = true
+      })
+      listInviteList = listInviteList.concat(delListInviteList)
+      let data = {
+        taskId: this.taskId,
+        deptId: this.taskDeptId,
+        // status: status,
+        updateTime: this.$time0(new Date()),
+        listInvite: listInviteList,
+        nowUserId: this.userId,
+        nowUserDeptId: this.deptId,
+        initUserId: this.userId,
+      }
+      let flag = true
+      data.listInvite.forEach((element) => {
+        if (e == 0) {
+          if (!element.ownerId) {
+            flag = false
+          }
+        } else if (e == 1) {
+          if (!element.ownerId || !element.url) {
+            flag = false
+          }
+        }
+        // console.log(e)
+      })
+      let url = ''
+      if (e == 0) {
+        // status = this.taskDetail.status
+        url = '/ocarplay/task/saveInvite'
+      } else {
+        // status = 1
+        url = '/ocarplay/task/save'
+        data.status = 1
+      }
+      // flag = false
+      // console.log(data)
+      // console.log(data.listInvite)
+      // console.log(JSON.stringify(data))
+      if (flag) {
+        data.listInvite.forEach((element) => {
+          if (element.isCard) {
+            element.isCard = 1
+          } else {
+            element.isCard = 0
+          }
+        })
+
+        // console.log(data)
+        this.$axios
+          .post(url, data)
+          .then((res) => {
+            // console.log(res)
+            if (res.status == 200 && res.data == 1) {
+              if (e) {
+                this.$message.success('任务提交成功！')
+              } else {
+                this.$message.success('任务保存成功！')
+              }
+              this.drawerLoading = false
+              this.drawerPuttask = false
+              this.getTaskListAjax()
+            } else {
+              this.$message.error('任务提交失败！')
+              this.drawerLoading = false
+            }
+          })
+          .catch((res) => {
+            console.log(res)
+            this.drawerLoading = false
+          })
+      } else {
+        this.drawerLoading = false
+        this.$message.error('保存请选择车主！提交需填入链接！')
+      }
+    },
+    ///////// 提交任务 end /////////
+
+    ///////// 跳转任务详情页 start /////////
+    toDetail(id) {
+      let data = {
+        status: this.status,
+        pageNum: this.pageNum,
+        pageSize: this.pageSize,
+      }
+      this.$store.commit('taskData', data)
+      // this.$store.commit('taskStatus', this.status)
+      // cameramanPage
+      this.$router.push({
+        path: '/home/taskDetail',
+        query: { id: id },
+        // params: {
+        //   id: id
+        // }
+      })
+    },
+    ///////// 跳转任务详情页 end /////////
+
+    ///////// 跳转结算进度页 start /////////
+    toSettlement(prm) {
+      this.$store.commit('taskStatus', this.status)
+      this.$router.push({
+        path: '/home/tasksettlement',
+        query: {
+          id: prm.taskId,
+        },
+      })
+    },
+    ///////// 跳转结算进度页 end /////////
+
+    ///////// 删除任务 start /////////
+    delContent(id) {
+      this.$confirm('确认要删除该任务吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      })
+        .then(() => {
+          this.delTask(id)
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除',
+          })
+        })
+    },
+    delTask(id) {
+      let data = { taskId: id, deleteFlag: 1 }
+      this.$axios.post('/ocarplay/task/delTask', data).then((res) => {
+        // console.log(res)
+        if (res.status == 200 && res.data == 1) {
+          this.$message.success('删除任务成功！')
+          ///////// 获取任务列表 start /////////
+          this.getTaskListAjax()
+        } else {
+          this.$message.error('删除任务失败！')
+        }
+      })
+      // .chath(res => {
+      //   // if (res.status != 200) {
+      //     this.$message.error('网络错误！')
+      //   // }
+      // })
+    },
+    ///////// 删除任务 end /////////
+
+    ///////// 导出结算清单 end /////////
+    exportInvite(prm) {
+      let data = {
+        taskId: prm.taskId,
+      }
+      this.$axios
+        .post('/ocarplay/api/invite/exportInvite', data, {
+          responseType: 'blob', //--设置请求数据格式
+        })
+        .then((res) => {
+          // console.log(res)
+          if (res.status == 200) {
+            // this.$message.success('删除任务成功！')
+            // ///////// 获取任务列表 start /////////
+            // this.getTaskListAjax()
+            var blob = new Blob([res.data], {
+              type: 'text/plain;charset=utf-8',
+            })
+            saveAs(blob, prm.taskName + '.xls')
+          } else {
+            this.$message.error('下载失败！')
+          }
+        })
+    },
+    ///////// 导出结算清单 end /////////
+
+    ///////// 取消按钮 start /////////
+    cancel() {
+      this.drawerDelay = false
+      this.drawerPuttask = false
+      this.drawerDelayPhoto = false
+      // 延期任务数据清除
+      this.delayTime = ''
+      this.delayReason = ''
+      // 提交任务数据清除
+      this.input = ''
+    },
+    ///////// 取消按钮 end /////////
+
+    /**
+     * [exportBtn] 导出Excel
+     */
+    exportBtn() {
+      // console.log(this.Cpoint)
+      // console.log(this.Structure)
+      var type = ''
+      if (this.Cpoint && this.Structure) {
+        type = 3
+      } else if (this.Cpoint) {
+        type = 1
+      } else if (this.Structure) {
+        type = 2
+      } // return;
+      this.exportExl = false // this.$axios.post("/nmbs_back/api/idea/exportMyExcel?type=3&ideaId=" + this.ideaId,{},{
+      this.$axios
+        .post(
+          '/nmbs_back/api/idea/exportMyExcel?type=' +
+            type +
+            '&ideaId=' +
+            this.ideaId,
+          {},
+          {
+            headers: {
+              'content-type': 'application/json; charset=utf-8',
+            },
+            responseType: 'blob', //--设置请求数据格式
+          }
+        )
+        .then((res) => {
+          // console.log(res.data)
+          var blob = new Blob([res.data], { type: 'text/plain;charset=utf-8' })
+          // saveAs(blob, '导出excel.xls')
+        })
+        .catch(() => {
+          // console.log('捕获错误')
+        })
+    },
+    ///////// 新增评论 start /////////
+    addComment(obj) {
+      // console.log(obj)
+      this.personId = obj.personId
+      this.taskId = obj.taskId
+      // console.log(obj)
+      // this.commentShow += 1
+      let data = {
+        personId: obj.personId,
+        taskId: obj.taskId,
+      }
+      this.$axios
+        .post('/ocarplay/api/personGrade/ifPgOver', data)
+        .then((res) => {
+          // console.log(res)
+          if (res.status == 200 && res.data == 1) {
+            this.$message.warning('该任务摄影师已评价！')
+          } else {
+            this.commentSketchyShow += 1
+          }
+        })
+    },
+    ///////// 新增评论 end /////////
+
+    ///////// 导出结算列表 start /////////
+    exportFile(obj) {
+      // console.log(obj)
+
+      import('@/utils/ExportExcel').then((excel) => {
+        const tHeader = ['inviteId(勿删)', '车主名', '链接']
+        const filterVal = ['inviteId', 'realName', 'url']
+        const list = obj.listInvite
+        const data = this.formatJson(filterVal, list)
+        // console.log(list)
+        // console.log(data)
+        excel.export_json_to_excel({
+          header: tHeader, // 表头名称
+          data, // 表格数据
+          filename: obj.taskName + '结算清单', // 文件名称
+          autoWidth: true, // 表格是否自动撑开
+          bookType: 'xlsx', // 文件后缀格式
+        })
+        // this.downloadLoading = false
+      })
+
+      // let data = { taskId: obj.taskId }
+      // this.$axios
+      //   .post('/ocarplay/api/invite/exportInviteByTaskId', data, {
+      //     responseType: 'blob', //--设置请求数据格式
+      //   })
+      //   .then((res) => {
+      //     // console.log(res.data)
+      //     var blob = new Blob([res.data], { type: 'text/plain;charset=utf-8' })
+      //     saveAs(blob, obj.taskName + '结算清单.xls')
+      //   })
+      //   .catch(() => {
+      //     // console.log('捕获错误')
+      //   })
+    },
+    formatJson(filterVal, jsonData) {
+      return jsonData.map((v) =>
+        filterVal.map((j) => {
+          if (j === 'timestamp') {
+            return parseTime(v[j])
+          } else {
+            return v[j]
+          }
+        })
+      )
+    },
+    ///////// 导出结算列表 start /////////
+
+    ///////// 导入结算列表 start /////////
+    importFile(id) {
+      // console.log(id)
+    },
+    importFileSuccess() {
+      this.$message.success('导入成功')
+      this.putTask(this.taskDetail)
+    },
+    ///////// 导入结算列表 start /////////
+
+    ///////// 导出结算列表 start /////////
+    evaluatePersonVisibleShow(obj, index) {
+      // this.taskListData[index].evaluatePersonVisible = !this.taskListData[index].evaluatePersonVisible
+      if (this.taskListData[index].evaluatePersonVisible) {
+        this.taskListData[index].evaluatePersonVisible = false
+        // console.log(this.taskListData[index].evaluatePersonVisible)
+      } else {
+        // console.log(this.taskListData[index].evaluatePersonVisible)
+        // console.log(index)
+        for (let i = 0; i < obj.length; i++) {
+          const element = obj[i]
+          if (element.ifPgOver == 0) {
+            this.taskListData[index].evaluatePersonVisible = true
+            break
+          }
+        }
+        if (!this.taskListData[index].evaluatePersonVisible) {
+          this.$message.warning('已评价完成！')
+        }
+      }
+    },
+    ///////// 导出结算列表 start /////////
+
+    ///////// 链接改变验证 start /////////
+    urlChange(val) {
+      // console.log(this.taskDetail)
+      if (this.taskDetail.taskType != 4) {
+        let num = 0
+        let list = []
+        this.listInviteList.forEach((element, i) => {
+          // console.log(element.url)
+          if (element.url == val) {
+            num++
+            list.push(i)
+          }
+        })
+        // console.log(list)
+        if (num > 1) {
+          this.$message.error('重复！')
+        }
+      }
+
+      // let data = this.countJson(this.listInviteList, 'url')
+      // console.log(data)
+    },
+    ///////// 链接改变验证 end /////////
+
+    ///////// 排序 start /////////
+    sortableChange(column) {
+      let prop = column.prop
+      let order = column.order
+      if (prop == 'photoTime') {
+        this.orderField = 1
+      } else if (prop == 'createTime') {
+        this.orderField = 2
+      }
+      if (order == 'descending') {
+        this.orderType = 2
+      } else if (order == 'ascending') {
+        this.orderType = 1
+      }
+      let data = {
+        orderField: this.orderField,
+        orderType: this.orderType,
+      }
+      this.$store.commit('orderRecord', data)
+      ///////// 获取任务列表 start /////////
+      this.getTaskListAjax()
+    },
+    ///////// 排序 end /////////
+
+    ///////// 打开延期拍摄弹窗 start /////////
+    // openDelayPhoto(id, taskName) {
+    //   this.drawerDelayPhoto = true
+    //   this.taskId = id
+    //   this.taskName = taskName
+    // },
+    ///////// 打开延期拍摄弹窗 end /////////
+
+    ///////// 延期拍摄弹窗打开 start /////////
+    drawerDelayPhotoOpen() {
+      let data = {
+        taskId: this.taskId,
+      }
+      this.$axios
+        .post('/ocarplay/pDelayReason/listAjax', {})
+        .then((res) => {
+          // console.log(res)
+          if (res.status == 200) {
+            let data = res.data.items
+            let reasonList = []
+            data.forEach((element) => {
+              reasonList.push({
+                value: element.reasonId,
+                label: element.reason,
+              })
+            })
+            this.reasonList = reasonList
+          }
+        })
+        .catch((res) => {
+          console.log(res)
+        })
+    },
+    ///////// 延期拍摄弹窗打开 end /////////
+
+    ///////// 延期拍摄弹窗关闭 start /////////
+    drawerDelayPhotoClose() {
+      this.reasonId = null
+      this.delayPhotoTime = null
+      this.taskId = null
+      this.taskName = null
+    },
+    ///////// 延期拍摄弹窗关闭 end /////////
+
+    ///////// 提交延期拍摄原因 end /////////
+    putDelayPhoto() {
+      let data = {
+        taskId: this.taskId,
+        photoTime: this.delayPhotoTime,
+        reasonId: this.reasonId,
+      }
+      if (!data.photoTime || !data.reasonId) {
+        this.$message.error('请填写拍摄时间和延期原因！')
+        return
+      }
+      this.drawerLoading = true
+      this.$axios
+        .post('/ocarplay/task/save', data)
+        .then((res) => {
+          if (res.status == 200) {
+            // console.log(res)
+            let data = res.data
+            if (data == 1) {
+              ///////// 获取任务列表 /////////
+              this.getTaskListAjax()
+              this.drawerDelayPhoto = false
+              this.$message.success('拍摄延期成功！')
+            } else {
+              this.$message.error('拍摄延期失败！')
+            }
+            this.drawerLoading = false
+          }
+        })
+        .catch((res) => {
+          this.drawerLoading = false
+          console.log(res)
+        })
+    },
+    ///////// 提交延期拍摄原因 end /////////
+
+    paydetailListShow(id) {
+      this.paydetailShow = true
+      this.paydetailShowLoading = true
+      // console.log(id)
+      // console.log(49576)
+      let data = { proRequireId: id }
+      this.$axios.post('/ocarplay/task/paydetail', data).then((res) => {
+        // console.log(res)
+        if (res.status == 200) {
+          this.paydetailList = res.data.data
+        }
+        this.paydetailShowLoading = false
+      })
+    },
+  },
+}
+</script>
+<style lang="scss" scoped>
+$white: #fff;
+$icoColor: #6a91e8;
+$statusColor0: #67c23a;
+$statusColor1: #e6a23c;
+$statusColor2: #909399;
+$statusColor3: #f56c6c;
+$statusColor4: #ea8a85;
+
+#activity {
+  height: 100%;
+  .el-dialog__wrapper {
+    &>>>.el-dialog__header{
+      text-align: center;
+      font-weight: bold;
+    }
+    .feedbackText {
+      text-align: center;
+      .el-button {
+        margin-top: 18px;
+        width: 180px;
+      }
+    }
+  }
+
+  .top {
+    height: 45px;
+    margin-bottom: 9px;
+    // background: #fff;
+    .box {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      .searchBox {
+        width: 300px;
+      }
+      .el-date-editor {
+        width: 210px;
+      }
+      .el-select {
+        width: 100px;
+      }
+      .searchType {
+        width: 81px;
+      }
+      .el-button-group {
+        margin-right: 39px;
+        button {
+          width: 81px;
+        }
+      }
+    }
+    .right {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: flex-end;
+      box-sizing: border-box;
+      .el-select {
+        width: 136px;
+        margin-right: 9px;
+      }
+      .add_task {
+        button {
+          width: 136px;
+          background: $icoColor;
+        }
+      }
+    }
+  }
+  .content {
+    height: calc(100% - 54px);
+    border: 1px solid #e7e7e7;
+    border-radius: 8px 8px 0 0;
+    // background: #fff;
+    .table_list {
+      height: calc(100% - 64px);
+      .statusColor0 {
+        color: $statusColor0;
+      }
+      .statusColor1 {
+        color: $statusColor1;
+      }
+      .statusColor2 {
+        color: $statusColor2;
+      }
+      .statusColor3 {
+        color: $statusColor3;
+        font-weight: bold;
+      }
+      .statusColor4 {
+        color: $statusColor4;
+      }
+      // .el-table {
+      //   background: none;
+      //   & >>> .el-table__header-wrapper{
+      //     margin-bottom: 10px;
+      //     border-radius: 8px 8px 0 0;
+      //   }
+      //   & >>> .el-table__body-wrapper{
+      //     background: #fff;
+      //   }
+      //   .el-table__header {
+      //     th {
+      //       background: none;
+      //     }
+      //   }
+      // }
+      i {
+        font-size: 20px;
+        color: $icoColor;
+        cursor: pointer;
+        margin-right: 9px;
+      }
+    }
+  }
+  // 抽屉弹窗延期原因样式
+  .drawerDelay {
+    position: relative;
+    box-sizing: border-box;
+    padding: 20px;
+    height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    align-content: flex-start;
+    .el-col {
+      margin-bottom: 36px;
+      font-size: 18px;
+    }
+    .el-input,
+    .el-select {
+      width: 100%;
+    }
+  }
+  // 抽屉弹窗提交任务样式
+  .drawerPuttask {
+    position: relative;
+    box-sizing: border-box;
+    padding: 20px;
+    padding-bottom: 54px;
+    padding-bottom: 20px;
+    height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    align-content: flex-start;
+    > .el-col {
+      margin-bottom: 16px;
+      font-size: 18px;
+      min-height: 40px;
+      // line-height: 40px;
+      &:nth-of-type(2n + 1) {
+        text-align: right;
+        padding-right: 13px;
+      }
+    }
+    .import {
+      text-align: center;
+      i {
+        font-size: 24px;
+        &:nth-of-type(2) {
+          margin-left: 9px;
+        }
+      }
+      .upload-demo {
+        display: inline-block;
+      }
+    }
+    i {
+      color: $icoColor;
+      cursor: pointer;
+    }
+    .detailList {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      .userType1 {
+        & >>> .el-input__inner {
+          border-color: #67c23a;
+        }
+      }
+      .userType2 {
+        & >>> .el-input__inner {
+          border-color: #0000ff50;
+        }
+      }
+    }
+    .keycontent {
+      align-self: flex-start;
+      // text-align: justify;
+      // text-align: right;
+      // padding-right: 13px;
+    }
+    .el-input {
+      width: 100%;
+    }
+  }
+  .btn {
+    height: 72px;
+    background: white;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    margin-bottom: 0 !important;
+    .el-col {
+      margin-bottom: 0;
+      button {
+        width: 100%;
+      }
+    }
+  }
+}
+.evaluatePerson {
+  height: 24px;
+  line-height: 24px;
+  text-align: center;
+  cursor: pointer;
+}
+</style>
+<style lang="scss">
+.taskDialog {
+  .el-dialog__header {
+    text-align: center;
+    padding-top: 36px;
+  }
+  .el-dialog__title {
+    color: #000;
+    font-size: 24px;
+    font-weight: 700;
+  }
+  .el-dialog {
+    height: 80vh;
+    margin: 10vh auto !important;
+  }
+  .el-dialog__body {
+    height: calc(100% - 114px);
+    padding: 10px 20px;
+  }
+}
+// #task {
+.el-popover {
+  min-width: 0;
+}
+// }
+</style>

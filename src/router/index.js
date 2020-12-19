@@ -143,6 +143,33 @@ const router = new Router({
       },
       children: [
         {
+          path: '/home/activity',
+          name: 'activity',
+          component: resolve => require(['@/pages/home/activity/activity'], resolve),
+          meta: {
+            requireAuth: true,
+            title: '影视活动'
+          }
+        },
+        {
+          path: '/home/advisory',
+          name: 'advisory',
+          component: resolve => require(['@/pages/home/activity/advisory'], resolve),
+          meta: {
+            requireAuth: true,
+            title: '采购咨询'
+          }
+        },
+        {
+          path: '/home/addactivity',
+          name: 'addactivity',
+          component: resolve => require(['@/pages/home/activity/addactivity'], resolve),
+          meta: {
+            requireAuth: true,
+            title: '新增影视活动'
+          }
+        },
+        {
           path: '/home/task',
           name: 'task',
           component: resolve => require(['@/pages/home/task/task'], resolve),

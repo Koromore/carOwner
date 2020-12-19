@@ -10,6 +10,7 @@
 
         <!-- 导航 start -->
         <div class="navList">
+          <div @click="navTo(9)" :class="[navNum==8?'act':'']">影视活动</div>
           <div @click="navTo(1)" :class="[navNum==0?'act':'']">任务管理</div>
           <div @click="navTo(2)" :class="[navNum==1?'act':'']" v-if="deptId==90||adminShow">结算管理</div>
           <!-- <div @click="navTo(2)" :class="[navNum==1?'act':'']">结算管理</div> -->
@@ -123,13 +124,14 @@ export default {
         ['metadata'],
         ['document'],
         ['resource'],
+        ['activity']
       ]
       let navNum = 0
       list.forEach((element, i) => {
         for (let j = 0; j < element.length; j++) {
           const element_ = element[j]
           if (newData == element_) {
-            // console.log(i)
+            console.log(i)
             this.navNum = i
             break
           }
@@ -220,6 +222,8 @@ export default {
         url = '/home/document'
       } else if (index == 8) {
         url = '/home/resource'
+      } else if (index == 9) {
+        url = '/home/activity'
       }
       this.$router.push({ path: url })
     },
