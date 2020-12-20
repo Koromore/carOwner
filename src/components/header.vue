@@ -131,7 +131,6 @@ export default {
         for (let j = 0; j < element.length; j++) {
           const element_ = element[j]
           if (newData == element_) {
-            console.log(i)
             this.navNum = i
             break
           }

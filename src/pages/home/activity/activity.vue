@@ -9,26 +9,28 @@
             size="small"
             icon="el-icon-circle-plus-outline"
             @click="toAddactivity(0, 0)"
-            >新增活动</el-button
           >
+            新增活动
+          </el-button>
           <el-button
             type="primary"
             size="small"
             plain
             icon="el-icon-chat-line-square"
-            @click="toAdvisory"
-            >采购咨询</el-button
+            @click="toAddAdvisory"
           >
+            采购咨询
+          </el-button>
         </div>
 
         <div>
           <el-button-group>
-            <el-button type="success" size="small" @click="statusChange(0)"
-              >执行中</el-button
-            >
-            <el-button type="danger" size="small" @click="statusChange(3)"
-              >延期</el-button
-            >
+            <el-button type="success" size="small" @click="statusChange(0)">
+              执行中
+            </el-button>
+            <el-button type="danger" size="small" @click="statusChange(3)">
+              延期
+            </el-button>
             <!-- <el-button type="warning" size="small" @click="statusChange(1)">结算中</el-button> -->
             <el-button
               type="info"
@@ -173,9 +175,20 @@
             </template>
             <!-- <template slot-scope="scope">{{scope.row.photoTime | date}}</template> -->
           </el-table-column>
-          <el-table-column prop="photoTime" label="下达时间-人" min-width="100">
+          <el-table-column prop="createTime" label="下达时间-人" min-width="100">
+            <template slot-scope="scope">
+              {{scope.row.createTime}}{{scope.row.initUserId}}
+            </template>
           </el-table-column>
-          <el-table-column type="expand" label="请款报销">
+          <el-table-column label="请款报销" min-width="160">
+            <!--  slot-scope="props" -->
+            <template>
+              <span>共7笔</span>
+              <el-tag @click="toReimbursement">报销</el-tag>
+              <el-tag @click="toRequestpayout">请款</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column type="expand" width="18">
             <!--  slot-scope="props" -->
             <template>
               <el-form label-position="left" inline class="demo-table-expand">
@@ -208,9 +221,9 @@
             show-overflow-tooltip
           >
             <template slot-scope="scope">
-              <span v-if="scope.row.status == 0">有车拍摄</span>
-              <span v-else-if="scope.row.status == 1">无车拍摄</span>
-              <span v-else-if="scope.row.status == 2">其他</span>
+              <span v-if="scope.row.status == 0">进行中</span>
+              <span v-else-if="scope.row.status == 2">完成</span>
+              <span v-else-if="scope.row.status == 3">延期</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -218,16 +231,15 @@
             label="类型"
             min-width="80"
             show-overflow-tooltip
-            v-if="deptId != 90"
           >
             <template slot-scope="scope">
-              <span v-if="scope.row.taskType == 1">有车拍摄</span>
-              <span v-else-if="scope.row.taskType == 2">无车拍摄</span>
-              <span v-else-if="scope.row.taskType == 3">其他</span>
+              <span v-if="scope.row.movieType == 1">有车拍摄</span>
+              <span v-else-if="scope.row.movieType == 2">无车拍摄</span>
+              <span v-else-if="scope.row.movieType == 3">其他</span>
             </template>
           </el-table-column>
           <el-table-column
-            prop="initUserRealName"
+            prop="buyUserId"
             label="采购负责人"
             min-width="90"
             show-overflow-tooltip
@@ -238,8 +250,11 @@
             label="车辆"
             min-width="90"
             show-overflow-tooltip
-            v-if="deptId != 90"
-          ></el-table-column>
+          >
+          <template slot-scope="scope">
+            <el-link type="primary" @click="toSupplier(scope.row.taskiId,scope.row.taskName,'车辆')">去完善</el-link>
+          </template>
+          </el-table-column>
           <!-- <el-table-column prop="ownerItemList" label="邀约事项" min-width="130" show-overflow-tooltip></el-table-column> -->
           <el-table-column
             prop="personName"
@@ -248,14 +263,7 @@
             show-overflow-tooltip
           >
             <template slot-scope="scope">
-              <span v-if="scope.row.taskToPersonList.length">
-                <span
-                  v-for="(item, index) in scope.row.taskToPersonList"
-                  :key="index"
-                  >{{ item.realName }}</span
-                >
-              </span>
-              <span v-else>/</span>
+              <el-link type="primary" @click="toSupplier(scope.row.taskiId,scope.row.taskName,'摄影师')">去完善</el-link>
             </template>
           </el-table-column>
           <el-table-column
@@ -265,18 +273,7 @@
             show-overflow-tooltip
           >
             <template slot-scope="scope">
-              <span v-if="scope.row.taskToModelList.length">
-                <span
-                  v-for="(item, index) in scope.row.taskToModelList"
-                  :key="index"
-                >
-                  <template v-if="item.modelId"
-                    ><span v-if="index">,</span>{{ item.realName }}</template
-                  >
-                  <template v-else>无模特</template>
-                </span>
-              </span>
-              <span v-else>/</span>
+              <el-link type="primary" @click="toSupplier(scope.row.taskiId,scope.row.taskName,'模特')">去完善</el-link>
             </template>
           </el-table-column>
           <el-table-column
@@ -287,7 +284,7 @@
           >
           </el-table-column>
           <el-table-column
-            prop="placeName"
+            prop="placeId"
             label="场地"
             min-width="90"
             show-overflow-tooltip
@@ -321,7 +318,7 @@
           <el-table-column label="评分" min-width="70">
             <template slot-scope="scope">
               <span v-if="scope.row.isSubmit">已评分</span>
-              <span v-else>去评价</span>
+              <el-link type="primary" v-else @click="addComment(scope.row)">去评价</el-link>
             </template>
           </el-table-column>
           <el-table-column label="发布链接" min-width="90">
@@ -617,7 +614,7 @@
     <!-- 抽屉弹窗提交任务 end -->
 
     <!-- 新增评论评星 -->
-    <CommentSketchy :commentShow="commentSketchyShow"></CommentSketchy>
+    <CommentSketchy :commentSketchyShow="commentSketchyShow"></CommentSketchy>
     <!-- 新增评论 -->
 
     <!-- 新增评论明细 -->
@@ -675,6 +672,7 @@
         </el-table-column>
       </el-table>
     </el-dialog>
+    <Supplierfill :supplierShow="supplierShow" :supplierData="supplierData"></Supplierfill>
   </div>
 </template>
 <script>
@@ -683,12 +681,14 @@ import FileSaver from 'file-save'
 import { saveAs } from 'file-saver'
 import Comment from '@/components/comment' // 新增评分评星
 import CommentSketchy from '@/components/commentSketchy' // 新增评分明细
+import Supplierfill from '@/components/supplierfill' // 完善供应商
 
 export default {
   name: 'activity',
   components: {
     Comment,
-    CommentSketchy
+    CommentSketchy,
+    Supplierfill
   },
   data() {
     return {
@@ -867,6 +867,12 @@ export default {
         },
       ],
       feedbackText: null,
+      // 完善车辆模特摄影师供应商弹框
+      supplierShow: 0,
+      supplierData: {
+        name: null,
+        type: null
+      }
     }
   },
   // 过滤器
@@ -942,21 +948,21 @@ export default {
     ///////// 通过供应商搜索 end /////////
 
     ///////// 跳转采购咨询页面 start /////////
-    toAdvisory() {
+    toAddAdvisory() {
       this.$router.push({
-        path: '/home/advisory',
+        path: '/home/addadvisory',
       })
     },
     ///////// 跳转采购咨询页面 end /////////
 
     ///////// 跳转采购咨询页面 start /////////
-    toAddactivity(type,id) {
+    toAddactivity(type, id) {
       this.$router.push({
         path: '/home/addactivity',
         query: {
           type: type,
-          id: id
-        }
+          id: id,
+        },
       })
     },
     ///////// 跳转采购咨询页面 end /////////
@@ -1033,56 +1039,57 @@ export default {
       //   // data.task.status = null
       //   // data.task.deptId = null
       // }
-      this.$axios.post('/ocarplay/task/listAjax', data).then((res) => {
+      this.$axios.post('/ocarplay/api/movie/listAjax', data).then((res) => {
         // console.log(res)
         if (res.status == 200 && data) {
-          let data = res.data.data
-          data.items.forEach((element) => {
-            element.evaluatePersonVisible = false
-            element.typeList = []
-            element.ownerItemList = []
-            element.ownerName = []
-            // element.invMoney = 0
-            element.inviteNumOver = 0
-            // if (element.personId == 0) {
-            //   element.personName = '/'
-            // }
-            // if (element.modelId == 0) {
-            //   element.modelName = '/'
-            // }
-            // if (element.placeId == 0) {
-            //   element.placeName = '/'
-            // }
-            element.listInvite.forEach((element1) => {
-              // console.log(element1)
-              if (
-                element1.listOwnerType &&
-                element1.listOwnerType.length != 0
-              ) {
-                element.typeList.push(element1.listOwnerType[0].typeName)
-                element.ownerItemList.push(element1.listOwnerItem[0].itemName)
-                element.ownerName.push(element1.realName)
-              }
-              // element.invMoney += element1.money
-              if (element1.isWrite == 1) {
-                element.inviteNumOver += 1
-              }
-            })
-            if (!element.ownerName.length) {
-              element.ownerName = '/'
-            }
-            // Array.form(new Set(arr))
-            // console.log(element.ownerName)
-            element.typeList = [...new Set(element.typeList)]
-            element.ownerItemList = [...new Set(element.ownerItemList)]
-            element.ownerName = [...new Set(element.ownerName)]
-            // console.log(element.ownerName)
-            // console.log(element.typeList)
-            element.typeList = element.typeList.join(',')
-            element.ownerItemList = element.ownerItemList.join(',')
-            element.ownerName = element.ownerName.join(',')
-            // console.log(element.ownerName)
-          })
+          let data = res.data
+          // data.items.forEach((element) => {
+          //   element.evaluatePersonVisible = false
+          //   element.typeList = []
+          //   element.ownerItemList = []
+          //   element.ownerName = []
+          //   // element.invMoney = 0
+          //   element.inviteNumOver = 0
+          //   // if (element.personId == 0) {
+          //   //   element.personName = '/'
+          //   // }
+          //   // if (element.modelId == 0) {
+          //   //   element.modelName = '/'
+          //   // }
+          //   // if (element.placeId == 0) {
+          //   //   element.placeName = '/'
+          //   // }
+          //   element.listInvite.forEach((element1) => {
+          //     // console.log(element1)
+          //     if (
+          //       element1.listOwnerType &&
+          //       element1.listOwnerType.length != 0
+          //     ) {
+          //       element.typeList.push(element1.listOwnerType[0].typeName)
+          //       element.ownerItemList.push(element1.listOwnerItem[0].itemName)
+          //       element.ownerName.push(element1.realName)
+          //     }
+          //     // element.invMoney += element1.money
+          //     if (element1.isWrite == 1) {
+          //       element.inviteNumOver += 1
+          //     }
+          //   })
+          //   if (!element.ownerName.length) {
+          //     element.ownerName = '/'
+          //   }
+          //   // Array.form(new Set(arr))
+          //   // console.log(element.ownerName)
+          //   element.typeList = [...new Set(element.typeList)]
+          //   element.ownerItemList = [...new Set(element.ownerItemList)]
+          //   element.ownerName = [...new Set(element.ownerName)]
+          //   // console.log(element.ownerName)
+          //   // console.log(element.typeList)
+          //   element.typeList = element.typeList.join(',')
+          //   element.ownerItemList = element.ownerItemList.join(',')
+          //   element.ownerName = element.ownerName.join(',')
+          //   // console.log(element.ownerName)
+          // })
+          
           this.taskListData = data.items
           this.total = data.totalRows
           this.loading = false
@@ -1529,7 +1536,7 @@ export default {
       // this.$store.commit('taskStatus', this.status)
       // cameramanPage
       this.$router.push({
-        path: '/home/taskDetail',
+        path: '/home/activitydetail',
         query: { id: id },
         // params: {
         //   id: id
@@ -1670,7 +1677,9 @@ export default {
       this.personId = obj.personId
       this.taskId = obj.taskId
       // console.log(obj)
-      // this.commentShow += 1
+      this.commentSketchyShow += 1
+      // console.log(this.commentSketchyShow)
+      return
       let data = {
         personId: obj.personId,
         taskId: obj.taskId,
@@ -1911,6 +1920,28 @@ export default {
         this.paydetailShowLoading = false
       })
     },
+    // 完善供应商信息
+    toSupplier(id,name, type){
+      this.supplierShow ++
+      let supplierData = {
+        id: id,
+        name: name,
+        type: type
+      }
+      this.supplierData = supplierData
+    },
+    // 跳转报销页面
+    toReimbursement(){
+      this.$router.push({
+        path: '/home/reimbursement',
+      })
+    },
+    // 跳转请款页面
+    toRequestpayout(){
+      this.$router.push({
+        path: '/home/requestpayout',
+      })
+    }
   },
 }
 </script>
@@ -1926,7 +1957,7 @@ $statusColor4: #ea8a85;
 #activity {
   height: 100%;
   .el-dialog__wrapper {
-    &>>>.el-dialog__header{
+    & >>> .el-dialog__header {
       text-align: center;
       font-weight: bold;
     }
@@ -1992,6 +2023,9 @@ $statusColor4: #ea8a85;
     // background: #fff;
     .table_list {
       height: calc(100% - 64px);
+      .el-tag {
+        cursor: pointer;
+      }
       .statusColor0 {
         color: $statusColor0;
       }

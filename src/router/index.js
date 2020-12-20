@@ -152,9 +152,18 @@ const router = new Router({
           }
         },
         {
-          path: '/home/advisory',
-          name: 'advisory',
-          component: resolve => require(['@/pages/home/activity/advisory'], resolve),
+          path: '/home/addadvisory',
+          name: 'addadvisory',
+          component: resolve => require(['@/pages/home/activity/addadvisory'], resolve),
+          meta: {
+            requireAuth: true,
+            title: '采购咨询'
+          }
+        },
+        {
+          path: '/home/replyadvisory',
+          name: 'replyadvisory',
+          component: resolve => require(['@/pages/home/activity/replyadvisory'], resolve),
           meta: {
             requireAuth: true,
             title: '采购咨询'
@@ -167,6 +176,33 @@ const router = new Router({
           meta: {
             requireAuth: true,
             title: '新增影视活动'
+          }
+        },
+        {
+          path: '/home/activitydetail',
+          name: 'activitydetail',
+          component: resolve => require(['@/pages/home/activity/activitydetail'], resolve),
+          meta: {
+            requireAuth: true,
+            title: '影视活动详情'
+          }
+        },
+        {
+          path: '/home/reimbursement',
+          name: 'reimbursement',
+          component: resolve => require(['@/pages/home/activity/reimbursement'], resolve),
+          meta: {
+            requireAuth: true,
+            title: '报销'
+          }
+        },
+        {
+          path: '/home/requestpayout',
+          name: 'requestpayout',
+          component: resolve => require(['@/pages/home/activity/requestpayout'], resolve),
+          meta: {
+            requireAuth: true,
+            title: '请款'
           }
         },
         {

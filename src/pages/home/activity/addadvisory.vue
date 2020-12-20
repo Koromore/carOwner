@@ -1,5 +1,5 @@
 <template>
-  <div id="advisory">
+  <div id="addadvisory">
     <el-row class="content" v-loading="loading">
       <el-col :span="24" class="top">
         <el-col :span="6" class="previousBox">
@@ -16,7 +16,7 @@
             <el-table :data="tableData" style="width: 100%" height="100%">
               <el-table-column prop="date" label="日期"> </el-table-column>
               <el-table-column prop="name" label="咨询人"> </el-table-column>
-              <el-table-column prop="content" label="咨询内容">
+              <el-table-column show-overflow-tooltip prop="content" label="咨询内容">
               </el-table-column>
               <el-table-column prop="followUser" label="采购跟进人">
                 <template slot-scope="scope">
@@ -60,7 +60,7 @@
 // import { matchType } from '@/utils/matchType' // 引入文件格式判断方法
 
 export default {
-  name: 'advisory',
+  name: 'addadvisory',
   props: {}, // 接受参数
   components: {}, // 注册组件
   data() {
@@ -108,7 +108,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-#advisory {
+#addadvisory {
   height: 100%;
   .content {
     position: relative;

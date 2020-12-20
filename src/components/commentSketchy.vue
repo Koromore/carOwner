@@ -58,7 +58,7 @@ export default {
   components: {},
   data() {
     return {
-      drawerData: true,
+      drawerData: false,
       drawerTitle: '摄影师评价',
       loading: false,
       type: 0,
@@ -69,7 +69,7 @@ export default {
   },
   // 侦听器
   watch: {
-    commentShow: function (newData, oldData) {
+    commentSketchyShow: function (newData, oldData) {
       if (newData != 0) {
         this.drawerData = true
         // console.log(newData)
@@ -88,7 +88,7 @@ export default {
       this.remark = null
     },
     drawerDataOpen() {
-      console.log(this.$parent.type)
+      // console.log(this.$parent.type)
       this.type = this.$parent.type
     },
     // /api/camera/listAjax
