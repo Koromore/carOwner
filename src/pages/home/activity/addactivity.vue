@@ -16,7 +16,7 @@
           <el-col :span="24" class="list">
             <div class="key imp">任务类型</div>
             <div class="val">
-              <el-radio-group v-model="taskType" :disabled="!disabledCaigou">
+              <el-radio-group v-model="movieType" :disabled="!disabledCaigou">
                 <el-radio :label="1">有车拍摄</el-radio>
                 <el-radio :label="2">非车拍摄</el-radio>
                 <el-radio :label="3">其他</el-radio>
@@ -59,61 +59,60 @@
 
           <el-col :span="24" class="list taskName">
             <div class="key imp">任务名称</div>
-            <div class="val" v-show="taskType == 1||!taskType">
-              <el-select
-                v-model="placeId"
-                placeholder="请选择"
-                clearable
-                filterable
-              >
+            <div class="val" v-show="taskType == 1 || !taskType">
+              <el-select v-model="city" placeholder="城市" clearable filterable>
                 <el-option
-                  v-for="item in placeList"
+                  v-for="item in cityList"
                   :key="item.value"
                   :label="item.label"
                   :value="item.value"
                 ></el-option>
               </el-select>
               <el-select
-                v-model="placeId"
-                placeholder="请选择"
+                v-model="brandId"
+                placeholder="品牌"
                 clearable
                 filterable
+                @change="changeBrandId"
               >
                 <el-option
-                  v-for="item in placeList"
+                  v-for="item in brandList"
                   :key="item.value"
                   :label="item.label"
                   :value="item.value"
                 ></el-option>
               </el-select>
               <el-select
-                v-model="placeId"
-                placeholder="请选择"
+                v-model="carTypeId"
+                placeholder="车型"
                 clearable
                 filterable
+                no-data-text="请先选择品牌"
+                @change="changeCarType"
               >
                 <el-option
-                  v-for="item in placeList"
+                  v-for="item in carTypeList"
                   :key="item.value"
                   :label="item.label"
                   :value="item.value"
                 ></el-option>
               </el-select>
               <el-select
-                v-model="placeId"
-                placeholder="请选择"
+                v-model="photoType"
+                placeholder="拍摄类型"
                 clearable
                 filterable
+                @change="changePhotoType"
               >
                 <el-option
-                  v-for="item in placeList"
+                  v-for="item in photoTypeList"
                   :key="item.value"
                   :label="item.label"
                   :value="item.value"
                 ></el-option>
               </el-select>
             </div>
-            <div class="val" v-show="taskType == 2">
+            <div class="val" v-show="movieType == 2">
               <el-select
                 v-model="placeId"
                 placeholder="请选择"
@@ -148,7 +147,7 @@
                 :disabled="!disabledCaigou"
               ></el-input>
             </div>
-            <div class="val" v-show="taskType == 3">
+            <div class="val" v-show="movieType == 3">
               <el-input
                 placeholder="请输入内容"
                 v-model="taskName"
@@ -157,105 +156,34 @@
               ></el-input>
             </div>
           </el-col>
-          <el-col :span="24" class="list">
-            <div class="key imp">品牌车型</div>
-            <div class="val">
-              <el-cascader
-                v-model="carSeriesId"
-                :props="props"
-                :options="carSeriesList"
-                clearable
-                filterable
-                @change="carSeriesChange"
-                :disabled="!disabledCaigou"
-              ></el-cascader>
-              <!-- collapse-tags -->
-            </div>
-          </el-col>
-          <el-col :span="24" class="list" v-show="taskType != 3">
+          <el-col :span="24" class="list" v-show="movieType != 3">
             <div class="key imp">模特资源</div>
             <div class="val">
-              <el-radio-group v-model="modelIf">
+              <el-radio-group v-model="isModel">
                 <el-radio :label="1">需要</el-radio>
                 <el-radio :label="0">不需要</el-radio>
               </el-radio-group>
             </div>
           </el-col>
-          <el-col :span="24" class="list" v-show="taskType != 3">
+          <el-col :span="24" class="list" v-show="movieType != 3">
             <div class="key imp">摄影师资源</div>
             <div class="val">
-              <el-radio-group v-model="cameraIf">
+              <el-radio-group v-model="isPerson">
                 <el-radio :label="1">需要</el-radio>
                 <el-radio :label="0">不需要</el-radio>
               </el-radio-group>
             </div>
           </el-col>
-          <el-col :span="24" class="list" v-show="taskType == 3">
+          <el-col :span="24" class="list" v-show="movieType == 3">
             <div class="key imp">其他资源</div>
             <div class="val">
-              <el-radio-group v-model="restsIf">
+              <el-radio-group v-model="isOther">
                 <el-radio :label="1">需要</el-radio>
                 <el-radio :label="0">不需要</el-radio>
               </el-radio-group>
             </div>
           </el-col>
-          <!-- <el-col :span="24" class="list">
-            <div class="key" v-if="disabledCaigou">任务对象</div>
-            <div class="key" v-else>车辆来源</div>
-            <div class="val">
-              <el-cascader
-                :options="options2"
-                :props="props"
-                v-model="listInviteList"
-                clearable
-                filterable
-              ></el-cascader>
-            </div>
-          </el-col> -->
-          <!-- 摄影填写 start -->
-          <el-col :span="24" v-show="taskType != 3">
-            <!-- <el-col :span="24" class="list" v-show="!disabledCaigou">
-              <div class="key">摄影师</div>
-              <div class="val">
-                <el-select
-                  v-model="personId"
-                  placeholder="请选择"
-                  :disabled="disabledCaigou"
-                  clearable
-                  filterable
-                  multiple
-                >
-                  <el-option
-                    v-for="item in cameraList"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  ></el-option>
-                </el-select>
-              </div>
-              <el-link href="#/home/resource/addCameraman?type=0">添加</el-link>
-            </el-col>
-            <el-col :span="24" class="list" v-show="!disabledCaigou">
-              <div class="key">模特</div>
-              <div class="val">
-                <el-select
-                  v-model="modelId"
-                  placeholder="请选择"
-                  :disabled="disabledCaigou"
-                  clearable
-                  filterable
-                  multiple
-                >
-                  <el-option
-                    v-for="item in modelList"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  ></el-option>
-                </el-select>
-              </div>
-              <el-link href="#/home/resource/addModel?type=0">添加</el-link>
-            </el-col> -->
+          <el-col :span="24" v-show="movieType != 3">
             <el-col :span="24" class="list">
               <div class="key">场地</div>
               <div class="val">
@@ -276,7 +204,6 @@
               <el-link href="#/home/resource/addplace">添加</el-link>
             </el-col>
           </el-col>
-          <!-- 摄影填写 end -->
           <el-col :span="24" class="list">
             <div class="key imp">计划周期</div>
             <div class="val">
@@ -297,8 +224,8 @@
               <el-upload
                 class="upload-demo"
                 action="/ocarplay/file/upload"
-                :on-remove="taskFileRemove"
-                :on-success="taskFileSuccess"
+                :on-remove="movieFileRemove"
+                :on-success="movieFileSuccess"
                 :file-list="fileList"
                 :disabled="!disabledCaigou"
               >
@@ -320,7 +247,7 @@
             <div class="val">
               <el-input
                 placeholder="请输入内容"
-                v-model="taskNum"
+                v-model="num"
                 clearable
                 :disabled="!disabledCaigou"
                 type="number"
@@ -335,7 +262,7 @@
                 type="date"
                 placeholder="选择日期"
                 :picker-options="pickerOptions"
-                value-format="yyyy-MM-dd HH:mm:ss"
+                value-format="yyyy-MM-dd"
               ></el-date-picker>
             </div>
           </el-col>
@@ -343,7 +270,7 @@
             <div class="key imp">任务描述</div>
             <div
               class="val valList"
-              v-for="(item, index) in taskDescList"
+              v-for="(item, index) in movieDescList"
               :key="index"
             >
               <!-- <el-input
@@ -355,40 +282,40 @@
                 maxlength="500"
                 show-word-limit
               ></el-input> -->
-              <div class="miKey">主体:</div>
+              <div class="miKey">主题:</div>
               <el-input
                 placeholder="请输入内容"
-                v-model="item.input1"
+                v-model="item.descName"
               ></el-input>
               <div class="miKey">时间:</div>
               <el-input
                 placeholder="请输入内容"
-                v-model="item.input2"
+                v-model="item.descTime"
               ></el-input>
               <div class="miKey">集合地点:</div>
               <el-input
                 placeholder="请输入内容"
-                v-model="item.input3"
+                v-model="item.place"
               ></el-input>
               <div class="miKey">成片要求:</div>
               <el-input
                 placeholder="请输入内容"
-                v-model="item.input4"
+                v-model="item.photoDesc"
               ></el-input>
               <div class="miKey">人员要求:</div>
               <el-input
                 placeholder="请输入内容"
-                v-model="item.input4"
+                v-model="item.personDesc"
               ></el-input>
               <div class="miKey">其他要求:</div>
               <el-input
                 placeholder="请输入内容"
-                v-model="item.input6"
+                v-model="item.otherDesc"
               ></el-input>
               <i
                 class="el-icon-circle-plus-outline addValList"
-                @click="addTaskDescList"
-                v-show="index == taskDescList.length - 1"
+                @click="addMovieDescList"
+                v-show="index == movieDescList.length - 1"
               ></i>
             </div>
           </el-col>
@@ -416,19 +343,22 @@
                 type="number"
               ></el-input> -->
               <div class="miKey">总费用:</div>
-              <el-input placeholder="请输入内容" v-model="input1"></el-input>
+              <el-input placeholder="请输入内容" v-model="money"></el-input>
               <div class="miKey">费用明细:</div>
-              <el-input placeholder="请输入内容" v-model="input1"></el-input>
+              <el-input
+                placeholder="请输入内容"
+                v-model="moneyRemark"
+              ></el-input>
             </div>
           </el-col>
         </el-col>
 
         <el-col :span="24" class="putPlaceholder"></el-col>
         <el-col :span="24" class="put">
-          <!-- <el-button type="primary" @click="saveTask">提交</el-button> -->
+          <!-- <el-button type="primary" @click="saveMovie">提交</el-button> -->
           <el-button
             type="primary"
-            @click="saveTask"
+            @click="saveMovie"
             class="SlideOpen"
             data-text="提交"
             ><span>提交</span></el-button
@@ -477,7 +407,7 @@
   </div>
 </template>
 <script>
-// import { matchType } from '@/utils/matchType' // 引入文件格式判断方法
+import cityList from '@/common/city' // 引入文件格式判断方法
 
 export default {
   name: 'addactivity',
@@ -536,7 +466,7 @@ export default {
       personIdList: [],
       modelId: [],
       modelIdList: [],
-      placeId: null,
+
       disabledCaigou: false,
       // 品牌车型
       input3: '',
@@ -555,28 +485,26 @@ export default {
       fileList: [],
       // 任务新增信息
       taskType: '',
-      budgetApplyId: '',
-      applyDetailId: '',
+
       taskName: '',
       listInviteList: [],
       listInviteOwners: [],
       listInvitePerson: [],
       listInviteModel: [],
-      carSeriesList: [],
+
       carSeriesId: [],
       seriesId: [],
       periodTime: [],
-      photoTime: null,
+
       taskNum: '',
       cost: null,
-      listTaskFile: [],
+      listmovieFile: [],
       taskDesc: '',
       remark: '',
-      taskFileList: [],
-      fileList: [],
+
       // 预算明细选择弹窗
       applyDetailName: null,
-      applyDetailId: null,
+      // applyDetailId: null,
       subjectId: null,
       subItemsId: null,
       subjectTempId: null,
@@ -589,20 +517,88 @@ export default {
       putLoading: false,
 
       // 影视活动
-      modelIf: null,
-      cameraIf: null,
-      restsIf: null,
-      // 任务描述列表
-      taskDescList: [
+
+      cityList: cityList, // 城市列表
+      // 品牌列表
+      brandList: [
         {
-          input1: null,
-          input2: null,
-          input3: null,
-          input4: null,
-          input5: null,
-          input6: null,
+          value: 105,
+          label: '沃尔沃',
+        },
+        {
+          value: 110,
+          label: '吉利',
+        },
+        {
+          value: 153,
+          label: '长城',
+        },
+        {
+          value: 106,
+          label: '东本',
         },
       ],
+      // 车型列表
+      carTypeList: [],
+      // 车系列表
+      carSeriesList: [],
+      // 拍摄类型列表
+      photoTypeList: [
+        {
+          value: 1,
+          label: '视频拍摄',
+        },
+        {
+          value: 2,
+          label: '超精拍摄',
+        },
+        {
+          value: 3,
+          label: '图片和视频拍摄',
+        },
+      ],
+      // 信息
+      movieName: null, // 任务名称
+      movieType: 1, // 活动类型
+      budgetApplyId: null, // 预算项目
+      applyDetailId: null, // 预算明细
+      city: "武汉", // 所属城市
+      brandId: null, // 品牌
+      brandName: null, // 品牌名称
+      carTypeId: null, // 车型
+      carTypeName: null, // 车型名称
+      photoType: null, // 拍摄类型
+      photoTypeName: null, // 拍摄类型名称
+
+      isModel: 0, // 是否需要模特
+      isPerson: 0, // 是否需要摄影师
+      isOther: null, // 是否需要其他资源
+      placeId: 78, // 场地ID
+      periodTime: ['2020-12-21', '2020-12-23'], // 计划周期
+      // 任务文件
+      movieFileList: [],
+      fileList: [],
+      num: 3, // 发布数
+      photoTime: '2020-12-22', // 拍摄时间
+      // 任务描述列表
+      movieDescList: [
+        {
+          // deleteFlag: null,
+          descName: '主题', // 主题
+          descTime: '时间', // 时间
+          place: '集合地点', // 集合地点
+          photoDesc: '成片要求', // 成片要求
+          personDesc: '人员要求', // 人员要求
+          otherDesc: '其他要求', // 其他要求
+        },
+      ], //
+      money: 100, // 预估费用
+      moneyRemark: '费用明细', // 费用明细
+      halfTaskName: null, //
+      // 任务所属供应商集合
+      // supplierType
+      // 1-模特供应商，2-摄影师供应商，3-车辆供应商，4-其他供应商
+      supplierList: [], //
     }
   },
   // 侦听器
@@ -673,7 +669,7 @@ export default {
 
     ///////// 获取项目名称 start /////////
     getBudget() {
-      let data = { userId: this.userId }
+      let data = { userId: this.userId, subjectId: 8}
       this.$axios.post('/ocarplay/task/getBudget', data).then((res) => {
         // console.log(res)
         // this.listLoading = false
@@ -713,7 +709,7 @@ export default {
     },
     handleCurrentChange(val) {
       // this.currentRow = val;
-      // console.log(val)
+      // console.log(val)applyDetailId
       this.applyDetailId = val.applyDetailId
       this.subjectId = val.subjectId
       this.subItemsId = val.subItemsId
@@ -965,21 +961,21 @@ export default {
           this.taskDesc = data.taskDesc
           this.remark = data.remark
           let fileList = []
-          let taskFileList = []
+          let movieFileList = []
 
-          data.listTaskFile.forEach((element) => {
+          data.listmovieFile.forEach((element) => {
             fileList.push({
               name: element.fileName,
               url: element.localPath,
             })
-            taskFileList.push({
+            movieFileList.push({
               fileName: element.fileName,
               localPath: element.localPath,
               suffix: element.suffix,
             })
           })
           this.fileList = fileList
-          this.taskFileList = taskFileList
+          this.movieFileList = movieFileList
         }
       })
     },
@@ -1090,26 +1086,26 @@ export default {
 
     ///////// 文件上传 start /////////
     // 上传成功回调
-    taskFileSuccess(res, file, fileList) {
-      // this.taskFileList = res
+    movieFileSuccess(res, file, fileList) {
+      // this.movieFileList  = res
       let list = []
       fileList.forEach((element) => {
         list.push(element.response.data)
         // console.log(element.response)
       })
-      this.taskFileList = list
+      this.movieFileList = list
       // console.log(res)
       // console.log(file)
       // console.log(fileList)
       // console.log(list)
     },
     // 删除成功回调
-    taskFileRemove(file, fileList) {
+    movieFileRemove(file, fileList) {
       let list = []
       fileList.forEach((element) => {
         list.push(element.response.data)
       })
-      this.taskFileList = list
+      this.movieFileList = list
     },
     // taskExceed(files, fileList) {
     //   this.$message.warning('只允许上传一个文件')
@@ -1143,22 +1139,22 @@ export default {
     },
 
     // 添加任务描述
-    addTaskDescList() {
-      let taskDescList = this.taskDescList
-      taskDescList.push({
-        input1: null,
-        input2: null,
-        input3: null,
-        input4: null,
-        input5: null,
-        input6: null,
+    addMovieDescList() {
+      let movieDescList = this.movieDescList
+      movieDescList.push({
+        descName: null, // 主题
+        descTime: null, // 时间
+        place: null, // 集合地点
+        photoDesc: null, // 成片要求
+        personDesc: null, // 人员要求
+        otherDesc: null, // 其他要求
       })
-      this.taskDescList = taskDescList
+      this.movieDescList = movieDescList
     },
 
-    ///////// 新增任务 start /////////
+    ///////// 影视活动任务 start /////////
     // （0-进行中，1-结算中，2-完成，3-延期，4-人工延期
-    saveTask() {
+    saveMovie() {
       let periodTime = this.periodTime
       let startTime = ''
       let endTime = ''
@@ -1166,80 +1162,61 @@ export default {
         startTime = this.$date0(periodTime[0])
         endTime = this.$date0(periodTime[1])
       }
-      let carSeriesId = this.carSeriesId
-      let listTaskOfCartype = []
-      carSeriesId.forEach((element) => {
-        listTaskOfCartype.push({ cartypeId: element[1] })
-      })
       let initUserId = this.userId
       let deptId = this.deptId
       let status = 0
-      // let createTime = this.$time0(new Date())
-      let applyDetail = {}
+      let city = this.city
+      let brandName = this.brandName
+      let carTypeName = this.carTypeName
+      let photoTypeName = this.photoTypeName
+      let movieName = `${city}-${brandName}-${carTypeName}-${photoTypeName}`
       if (this.taskId) {
         initUserId = ''
         status = ''
         deptId = this.taskDetail.deptId
-        // createTime = null
       }
-      let proName = null
-      this.budgetApplyIdList.forEach((element) => {
-        if (this.budgetApplyId == element.budgetApplyId) {
-          proName = element.proName
-        }
-      })
-
-      // let jsonData = null
-      // let jsonData = JSON.stringify([{num:1, budget:this.cost}])
-      // if (this.subjectId == 8) {
       let jsonData = JSON.stringify([
         {
           num: 1,
-          budget: this.cost,
+          budget: this.money,
           reqFinishTime: endTime,
-          remark: this.remark,
+          remark: this.photoTime+'-'+movieName,
         },
       ])
-      // }else if (this.subjectId == 10) {
-      //   jsonData = JSON.stringify([{num:1,cost:this.cost, remark:this.remark}])
-
-      // }
-      // console.log(proName)
-      // console.log(applyDetail)
       let data = {
-        initUserId: initUserId,
-        deptId: deptId,
-        // createTime: createTime,
-        taskType: this.taskType,
-        taskId: this.taskId,
-        taskName: this.taskName,
-        status: status,
-        startTime: startTime,
-        endTime: endTime,
-        photoTime: this.photoTime, // 拍摄时间
-        num: this.taskNum * 1,
-        cost: this.cost * 1,
-        // carSeriesId: carSeriesId, // 品牌车型
-
-        taskToPersonList: [], // 摄影师列表
-        taskToModelList: [], // 模特列表
-        placeId: this.placeId,
-        listTaskOfCartype: listTaskOfCartype, // 品牌车型
-        taskDesc: this.taskDesc,
-        remark: this.remark,
-        listInvite: [],
-        listTaskFile: this.taskFileList,
-
-        budgetApplyId: this.budgetApplyId,
-        proName: proName,
-
-        applyDetailId: this.applyDetailId,
-        subjectId: this.subjectId,
-        subItemsId: this.subItemsId,
-        subItemsName: this.subItemsName,
+        movieName: movieName, // 任务名称
+        movieType: this.movieType, // 活动类型
+        budgetApplyId: this.budgetApplyId, // 预算项目
+        applyDetailId: this.applyDetailId, // 预算明细
+        subjectId: 8, // 科目
         subjectTempId: this.subjectTempId,
+        subItemsId: this.subItemsId,
+        city: this.city, // 所属城市
+        brandId: this.brandId, // 品牌
+        carTypeId: this.carTypeId, // 车型
+        photoType: this.photoType, // 拍摄类型
+        isModel: this.isModel, // 是否需要模特
+        isPerson: this.isPerson, // 是否需要摄影师
+        isOther: this.isOther, // 是否需要其他资源
+        placeId: this.placeId, // 场地ID
+        startTime: startTime, // 计划周期
+        endTime: endTime, // 计划周期
+        // 任务文件
+        movieFileList: this.movieFileList,
+        // fileList: [],
+        num: this.num, // 发布数
+        photoTime: this.photoTime, // 拍摄时间
+        // 任务描述列表
+        movieDescList: this.movieDescList, //
+        money: this.money, // 预估费用
+        moneyRemark: this.moneyRemark, // 费用明细
+        // halfTaskName: halfTaskName, //
+        // 任务所属供应商集合
+        // supplierType
+        // 1-模特供应商，2-摄影师供应商，3-车辆供应商，4-其他供应商
+        // supplierList: [], //
+
         jsonData: jsonData,
-        cost: this.cost * 1,
       }
       if (this.taskId) {
         delete data.budgetApplyId
@@ -1251,180 +1228,105 @@ export default {
         delete data.cost
         delete data.subItemsName
       }
-      let listInvite = []
-      let listInviteList = [] // 邀约对象
-      this.listInviteList.forEach((element) => {
-        listInviteList.push({
-          typeId: element[0],
-          itemId: element[1],
-          ownerId: element[2],
-        })
-      })
-      let listInviteOwners = this.listInviteOwners // 车主结算列表
-      let newListInviteOwners = [] // 新车主结算列表
-      this.difference(listInviteList, listInviteOwners, 'ownerId').forEach(
-        (element) => {
-          newListInviteOwners.push({
-            typeId: element.typeId,
-            itemId: element.itemId,
-            ownerId: element.ownerId,
-            userType: 0,
-          })
-        }
-      )
-      this.difference(listInviteOwners, listInviteList, 'ownerId').forEach(
-        (element) => {
-          newListInviteOwners.push({
-            inviteId: element.inviteId,
-            deleteFlag: true,
-            typeId: element.typeId,
-            itemId: element.itemId,
-            ownerId: element.ownerId,
-            userType: 0,
-          })
-        }
-      )
 
-      let taskToPersonList = [] // 摄影师列表
-      let personId = this.personId
-      let personIdList = this.personIdList // 旧摄影师列表
-      let newTaskToPersonList = [] // 新摄影师列表
-      let listInvitePerson = this.listInvitePerson // 摄影师结算列表
-      let listInvitePerson0 = [] // 选择摄影师结算列表
-      let newListInvitePerson = [] // 新摄影师结算列表
-
-      personId.forEach((element) => {
-        taskToPersonList.push({
-          personId: element,
-        })
-        listInvitePerson0.push({
-          ownerId: element,
-          userType: 1,
-        })
-      })
-      // 新增的摄影师
-      this.difference(taskToPersonList, personIdList, 'personId').forEach(
-        (element) => {
-          newTaskToPersonList.push(element)
-        }
-      )
-      // 删除的摄影师
-      this.difference(personIdList, taskToPersonList, 'personId').forEach(
-        (element) => {
-          element.deleteFlag = true
-          newTaskToPersonList.push(element)
-        }
-      )
-      // 新增的摄影师结算
-      this.difference(listInvitePerson0, listInvitePerson, 'personId').forEach(
-        (element) => {
-          newListInvitePerson.push(element)
-        }
-      )
-      data.taskToPersonList = newTaskToPersonList
-
-      let taskToModelIdList = [] // 模特列表
-      let modelId = this.modelId
-      let modelIdList = this.modelIdList // 旧模特列表
-      let newTaskToModelList = [] // 新模特师列表
-      let listInviteMode = this.listInviteModel // 模特结算列表
-      let listInviteMode0 = [] // 选择模特结算列表
-      let newListInviteMode = [] // 新模特结算列表
-
-      modelId.forEach((element) => {
-        taskToModelIdList.push({
-          modelId: element,
-        })
-        listInviteMode0.push({
-          ownerId: element,
-          userType: 2,
-        })
-      })
-      // 新增的模特
-      this.difference(taskToModelIdList, modelIdList, 'modelId').forEach(
-        (element) => {
-          newTaskToModelList.push(element)
-        }
-      )
-      // 删除的模特
-      this.difference(modelIdList, taskToModelIdList, 'modelId').forEach(
-        (element) => {
-          element.deleteFlag = true
-          newTaskToModelList.push(element)
-        }
-      )
-      // 新增的模特结算
-      this.difference(listInviteMode0, listInviteMode, 'modelId').forEach(
-        (element) => {
-          newListInvitePerson.push(element)
-        }
-      )
-      data.taskToModelList = newTaskToModelList
-      data.listInvite = newListInviteOwners.concat(
-        newListInvitePerson,
-        newListInviteMode
-      )
-
-      let flag = true
-      let list = [
-        data.taskType,
-        data.taskName,
-        data.startTime,
-        data.num,
-        data.listTaskOfCartype.length,
-        data.remark,
-      ]
-      if (!this.taskId) {
-        list.push(data.budgetApplyId)
-        list.push(data.applyDetailId)
-        list.push(data.cost)
-      }
-
-      list.forEach((element) => {
-        if (!element) {
-          flag = false
-        }
-      })
-
-      if (data.taskType == 4 && !data.photoTime) {
-        flag = false
-      }
-
-      // console.log(data)
-      // console.log(JSON.stringify(data))
-      // return
-      if (flag) {
-        this.putLoading = true
-        this.$axios
-          .post('/ocarplay/task/save', data)
-          .then((res) => {
-            // console.log(res)
-            if (res.status == 200 && res.data == 1) {
-              if (this.taskId) {
-                this.$message.success('任务更新成功！')
-              } else {
-                this.$message.success('任务新建成功！')
-              }
-              setTimeout(() => {
-                this.$router.push({
-                  name: 'task',
-                })
-              }, 1000)
+      // if (flag) {
+      this.putLoading = true
+      this.$axios
+        .post('/ocarplay/api/movie/save', data)
+        .then((res) => {
+          // console.log(res)
+          if (res.status == 200 && res.data.errcode === 0) {
+            if (this.taskId) {
+              this.$message.success('任务更新成功！')
             } else {
-              this.$message.error('任务新建失败！')
-              this.putLoading = false
+              this.$message.success('任务新建成功！')
             }
-          })
-          .catch((res) => {
-            // console.log(res)
+            return
+            setTimeout(() => {
+              this.$router.push({
+                name: 'task',
+              })
+            }, 1000)
+          } else {
+            this.$message.error('任务新建失败！')
             this.putLoading = false
-          })
-        // this.$message.error('点击提交')
+          }
+        })
+        .catch((res) => {
+          // console.log(res)
+          this.putLoading = false
+        })
+      // this.$message.error('点击提交')
+      // } else {
+      //   this.$message.error('请检查信息是否填写完整！')
+      // }
+    },
+    ///////// 影视活动任务 end /////////
+
+    ///////// 品牌切换 start /////////
+    changeBrandId(val) {
+      // console.log(val)
+      if (val) {
+        let carSeriesList = this.carSeriesList
+        let carTypeList = []
+        carSeriesList.forEach((element) => {
+          if (element.value == val) {
+            carTypeList = element.children
+          }
+        })
+        this.carTypeList = carTypeList
+        let brandName = null
+        let brandList = this.brandList
+        brandList.forEach((element) => {
+          if (val == element.value) {
+            brandName = element.label
+          }
+        })
+        this.brandName = brandName
+        // console.log(this.brandName)
       } else {
-        this.$message.error('请检查信息是否填写完整！')
+        this.carTypeList = []
+        this.carTypeId = null
+        this.brandName = null
+      }
+
+      // console.log(carSeriesList)
+    },
+    ///////// 品牌切换 end /////////
+
+    ///////// 车型切换 start /////////
+    changeCarType(val) {
+      if (val) {
+        let carTypeName = null
+        let carTypeList = this.carTypeList
+        carTypeList.forEach((element) => {
+          if (val == element.value) {
+            carTypeName = element.label
+          }
+        })
+        this.carTypeName = carTypeName
+      } else {
+        this.carTypeName = null
       }
     },
-    ///////// 新增任务 start /////////
+    ///////// 车型切换 end /////////
+
+    ///////// 拍摄类型切换 start /////////
+    changePhotoType(val) {
+      if (val) {
+        let photoTypeName = null
+        let photoTypeList = this.photoTypeList
+        photoTypeList.forEach((element) => {
+          if (val == element.value) {
+            photoTypeName = element.label
+          }
+        })
+        this.photoTypeName = photoTypeName
+      } else {
+        this.photoTypeName = null
+      }
+    },
+    ///////// 拍摄类型切换 end /////////
   },
 }
 </script>
@@ -1445,7 +1347,7 @@ export default {
       flex-wrap: wrap;
       align-items: flex-start;
       margin: 16px 0;
-      
+
       .key {
         width: 108px;
         height: 40px;
@@ -1474,11 +1376,11 @@ export default {
           align-items: center;
         }
       }
-      &.taskName{
-        .el-select{
+      &.taskName {
+        .el-select {
           width: 24%;
         }
-        .halfTaskName{
+        .halfTaskName {
           width: 49%;
         }
       }

@@ -136,7 +136,7 @@ const router = new Router({
     {
       path: '/home',
       name: 'home',
-      redirect: '/home/task',
+      redirect: '/home/activity',
       component: resolve => require(['@/pages/home/home'], resolve),
       meta: {
         requireAuth: true,
@@ -530,7 +530,7 @@ try {
   var user = JSON.parse(localStorage.getItem('user'));
   let token = localStorage.getItem('token');
   let userSign = localStorage.getItem('userSign');
-  store.commit('login', { token, user, userSign });
+  // store.commit('login', { token, user, userSign });
   // if (user==null) {
   //   window.location.replace('http://guoxin.insun-china.com/hrm');
   // }

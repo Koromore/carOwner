@@ -1,8 +1,8 @@
 <template>
   <div id="addadvisory">
-    <el-row class="content" v-loading="loading">
+    <el-row class="content">
       <el-col :span="24" class="top">
-        <el-col :span="6" class="previousBox">
+        <el-col :span="4" class="previousBox">
           <div @click="previous">
             <i class="el-icon-arrow-left"></i>
             返回
@@ -13,41 +13,60 @@
         <div class="left">
           <div class="title">咨询列表</div>
           <div class="table">
-            <el-table :data="tableData" style="width: 100%" height="100%">
-              <el-table-column prop="date" label="日期"> </el-table-column>
-              <el-table-column prop="name" label="咨询人"> </el-table-column>
-              <el-table-column show-overflow-tooltip prop="content" label="咨询内容">
+            <el-table
+              :data="movieConsultList"
+              style="width: 100%"
+              height="100%"
+              v-loading="tableLoading"
+            >
+              <el-table-column prop="createTime" label="日期" min-width="130">
               </el-table-column>
-              <el-table-column prop="followUser" label="采购跟进人">
+              <el-table-column prop="initUserName" label="咨询人" min-width="70">
+              </el-table-column>
+              <el-table-column
+                show-overflow-tooltip
+                prop="consultName"
+                label="咨询内容"
+                min-width="100"
+              >
+              </el-table-column>
+              <el-table-column prop="answerUserName" label="采购跟进人" min-width="100">
                 <template slot-scope="scope">
-                  <span v-if="scope.row.followUser">
-                    {{ scope.row.followUser }}
+                  <span v-if="scope.row.answerUserId">
+                    {{ scope.row.answerUserName }}
                   </span>
                   <span v-else style="color: red"> 待跟进 </span>
                 </template>
               </el-table-column>
-              <el-table-column prop="feedback" label="处理反馈">
+              <el-table-column prop="consultName" label="处理反馈" min-width="100">
               </el-table-column>
             </el-table>
           </div>
           <div class="page">
-            <el-pagination background layout="total, prev, pager, next, sizes" :current-page="pageNum" :total="total">
+            <el-pagination
+              background
+              layout="total, prev, pager, next, sizes"
+              :current-page="pageNum"
+              :total="total"
+              @current-change="changePage"
+              @size-change="changeSize"
+            >
             </el-pagination>
           </div>
         </div>
         <div class="right">
           <div class="title">采购咨询</div>
-          <div class="text">
+          <div class="text" v-loading="submitLoading">
             <el-input
               type="textarea"
               :rows="2"
               placeholder="请输入内容"
-              v-model="textarea"
+              v-model="consultName"
             >
             </el-input>
           </div>
           <div class="btn">
-            <el-button type="primary">
+            <el-button type="primary" @click="saveMovieConsult">
               提交
             </el-button>
           </div>
@@ -65,30 +84,18 @@ export default {
   components: {}, // 注册组件
   data() {
     return {
-      loading: false,
+      userId: this.$store.state.user.userId,
+      deptId: this.$store.state.user.deptId, // 90
+      tableLoading: false,
+      submitLoading: false,
       // 咨询列表
-      tableData: [
-        {
-          date: '2016-05-02',
-          name: '王小虎',
-          content: '内容内容内容内容内容',
-          followUser: '',
-          feedback: '',
-        },
-        {
-          date: '2016-05-02',
-          name: '王小虎',
-          content: '内容内容内容内容内容',
-          followUser: '阳开波',
-          feedback: '反馈反馈',
-        },
-      ],
-      // advisoryContent
-      textarea: null,
+      MovieConsultList: [],
+      // 咨询内容
+      consultName: null,
       // 分页
       pageNum: 1,
       pagesize: 10,
-      total: 1000
+      total: 1000,
     }
   },
   // 侦听器
@@ -96,7 +103,10 @@ export default {
   // 钩子函数
   beforeCreate() {},
   beforeMount() {},
-  mounted() {},
+  mounted() {
+    ///////// 获取咨询列表 /////////
+    this.getMovieConsultListAjax()
+  },
   // 方法
   methods: {
     ///////// 返回上一页 start /////////
@@ -104,6 +114,80 @@ export default {
       this.$router.go(-1) //返回上一层
     },
     ///////// 返回上一页 end /////////
+
+    ///////// 每页条数改变 start /////////
+    changeSize(size) {
+      this.pageSize = size
+      this.pageNum = page
+      this.getMovieConsultListAjax()
+    },
+    ///////// 每页条数改变 end /////////
+    ///////// 翻页 start /////////
+    changePage(page) {
+      this.pageNum = page
+      this.getMovieConsultListAjax()
+    },
+    ///////// 翻页 end /////////
+
+    ///////// 获取咨询列表 start /////////
+    getMovieConsultListAjax() {
+      this.tableLoading = true
+      let data = {
+        pageNum: this.pageNum,
+        pageSize: this.pageSize,
+      }
+      this.$axios
+        .post('/ocarplay/api/movieConsult/listAjax', data)
+        .then((res) => {
+          // console.log(res)
+          // this.listLoading = false
+          if (res.status == 200) {
+            let data = res.data
+            this.movieConsultList = data.items
+            this.total = data.totalRows
+          }
+          this.tableLoading = false
+        })
+        .catch((res) => {
+          console.log(res)
+          this.tableLoading = false
+        })
+    },
+    ///////// 获取咨询列表 end /////////
+
+    ///////// 新增咨询 start /////////
+    saveMovieConsult() {
+      let data = {
+        consultName: this.consultName,
+        initUserId: this.userId,
+      }
+      if (!data.consultName) {
+        this.$message.error('咨询内容不能为空')
+        return
+      }
+      this.submitLoading = true
+      // return
+      this.$axios
+        .post('/ocarplay/api/movieConsult/save', data)
+        .then((res) => {
+          // console.log(res)
+          // this.listLoading = false
+          if (res.status == 200) {
+            let data = res.data
+            // this.MovieConsultList = data.items
+            // this.total = data.totalRows
+            this.$message.success(data.msg)
+            this.consultName = null
+            this.getMovieConsultListAjax()
+          }
+          this.submitLoading = false
+        })
+        .catch((res) => {
+          console.log(res)
+          this.submitLoading = false
+        })
+    },
+    ///////// 新增咨询 end /////////
   },
 }
 </script>
@@ -155,7 +239,7 @@ export default {
           height: calc(100% - 108px);
           margin-top: 9px;
         }
-        .page{
+        .page {
           text-align: center;
           margin-top: 9px;
         }
@@ -173,10 +257,10 @@ export default {
             }
           }
         }
-        .btn{
+        .btn {
           margin-top: 9px;
           text-align: center;
-          .el-button{
+          .el-button {
             width: 180px;
           }
         }

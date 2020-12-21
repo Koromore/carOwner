@@ -2,7 +2,7 @@
   <div id="activitydetail">
     <!-- 内容列表 start -->
     <el-row class="content" v-loading="loading">
-      <el-scrollbar style="height:100%">
+      <el-scrollbar style="height: 100%">
         <!-- <el-col :span="2" class="title">返回</el-col> -->
         <el-col :span="24" class="title">
           <el-col :span="6" class="previousBox">
@@ -20,49 +20,54 @@
           <el-col :span="24" class="list">
             <div class="key">任务细分</div>
             <div>:</div>
-            <!-- <div class="val">{{taskDetail.taskName}}</div> -->
+            <!-- <div class="val">{{movieDetails.movieName}}</div> -->
             <div class="val">
-              <span v-if="taskDetail.taskType==1">借车</span>
-              <span v-else-if="taskDetail.taskType==2">素材</span>
-              <span v-else-if="taskDetail.taskType==3">邀约</span>
-              <span v-else-if="taskDetail.taskType==4">拍摄</span>
-              <span v-else-if="taskDetail.taskType==5">发布</span>
+              <!-- <span v-if="movieDetails.movieType==1">借车</span>
+              <span v-else-if="movieDetails.movieType==2">素材</span>
+              <span v-else-if="movieDetails.movieType==3">邀约</span>
+              <span v-else-if="movieDetails.movieType==4">拍摄</span>
+              <span v-else-if="movieDetails.movieType==5">发布</span> -->
             </div>
           </el-col>
           <el-col :span="24" class="list">
             <div class="key">任务名称</div>
             <div>:</div>
-            <div class="val">{{taskDetail.taskName}}</div>
+            <div class="val">{{ movieDetails.movieName }}</div>
+            <!-- <el-form label-position="left" inline class="demo-table-expand">
+              <el-form-item label="任务名称">
+                <span>{{ movieDetails.movieName }}</span>
+              </el-form-item>
+            </el-form> -->
           </el-col>
           <el-col :span="24" class="list">
             <div class="key">项目名称</div>
             <div>:</div>
-            <div class="val">{{taskDetail.taskName}}</div>
+            <div class="val"></div>
           </el-col>
           <el-col :span="24" class="list">
             <div class="key">预算明细</div>
             <div>:</div>
-            <div class="val">{{taskDetail.taskName}}</div>
+            <div class="val"></div>
           </el-col>
           <el-col :span="24" class="list">
             <div class="key">任务状态</div>
             <div>:</div>
             <div class="val">
-              <span v-if="taskDetail.status==0">执行中</span>
-              <span v-else-if="taskDetail.status==1">审核中</span>
-              <span v-else-if="taskDetail.status==2">已完成</span>
-              <span v-else-if="taskDetail.status==3">延期</span>
-              <span v-else-if="taskDetail.status==4">人工延期</span>
+              <!-- <span v-if="movieDetails.status==0">执行中</span>
+              <span v-else-if="movieDetails.status==1">审核中</span>
+              <span v-else-if="movieDetails.status==2">已完成</span>
+              <span v-else-if="movieDetails.status==3">延期</span>
+              <span v-else-if="movieDetails.status==4">人工延期</span> -->
             </div>
           </el-col>
           <!-- <el-col :span="24" class="list">
             <div class="key">品牌车型</div>
             <div>:</div>
             <div class="val">
-              <template v-if="taskDetail.carSeriesName">{{taskDetail.carSeriesName}}</template>
+              <template v-if="movieDetails.carSeriesName">{{movieDetails.carSeriesName}}</template>
               <template v-else>
                 <span
-                  v-for="(item, index) in taskDetail.listTaskOfCartype"
+                  v-for="(item, index) in movieDetails.listTaskOfCartype"
                   :key="index"
                 >{{item.carTypeName}},</span>
               </template>
@@ -71,61 +76,33 @@
           <el-col :span="24" class="list">
             <div class="key">车辆来源</div>
             <div>:</div>
-            <div class="val" v-if="taskDetail.listInvite.length==1">
-              <!-- <template v-if="taskDetail.listInvite.length!=0"> -->
-              <div v-for="(item, index) in taskDetail.listInvite" :key="index">
-                <span
-                  v-if="item.listOwnerType"
-                >{{item.listOwnerType[0].typeName}}—{{item.listOwnerItem[0].itemName}}—{{item.realName}}</span>
-              </div>
+            <div class="val">
+              <!-- <template v-if="movieDetails.listInvite.length!=0"> -->
               <!-- </template> -->
             </div>
-            <div class="val" v-else>
-              <!-- {{taskDetail.listInvite}} -->
-              <el-collapse v-model="activeNames">
-                <template v-if="taskDetail.ownersList.length">
-                  <el-collapse-item
-                    :title="taskDetail.ownersList[0].listOwnerType[0].typeName+'-'+taskDetail.ownersList[0].realName+'-'+taskDetail.ownersList[0].listOwnerItem[0].itemName"
-                    name="1"
-                  >
-                    <template v-if="taskDetail.ownersList.length!=0">
-                      <div
-                        v-for="(item, index) in taskDetail.ownersList"
-                        :key="index"
-                        v-show="index!=0"
-                      >
-                        <div v-if="item.userType==0">
-                          <span>{{item.listOwnerType[0].typeName}}—{{item.listOwnerItem[0].itemName}}—{{item.realName}}</span>
-                        </div>
-                      </div>
-                    </template>
-                  </el-collapse-item>
-                </template>
-                <template v-else>暂无</template>
-              </el-collapse>
+            <div class="val">
+              <!-- {{movieDetails.listInvite}} -->
+              <el-collapse v-model="activeNames"> </el-collapse>
             </div>
           </el-col>
-          <template v-if="taskDetail.taskType==4">
+          <!-- <template v-if="movieDetails.movieType==4">
             <el-col :span="24" class="list">
               <div class="key">摄影师</div>
               <div>:</div>
-              <!-- <div class="val">{{taskDetail.num}}</div> -->
-              <div class="val" v-if="taskDetail.taskToPersonList.length">
+              <div class="val" v-if="movieDetails.taskToPersonList.length">
                 <span
-                  v-for="(item,index) in taskDetail.taskToPersonList"
+                  v-for="(item,index) in movieDetails.taskToPersonList"
                   :key="index"
                 >{{item.realName}}</span>
-                <!-- {{taskDetail.personName}} -->
               </div>
               <div class="val" v-else style="color: #F56C6C">未完善</div>
             </el-col>
             <el-col :span="24" class="list">
               <div class="key">模特</div>
               <div>:</div>
-              <!-- <div class="val">{{taskDetail.num}}</div> -->
-              <div class="val" v-if="taskDetail.taskToModelList.length">
+              <div class="val" v-if="movieDetails.taskToModelList.length">
                 <span
-                  v-for="(item,index) in taskDetail.taskToModelList"
+                  v-for="(item,index) in movieDetails.taskToModelList"
                   :key="index"
                 >{{item.realName}}</span>
               </div>
@@ -134,27 +111,26 @@
             <el-col :span="24" class="list">
               <div class="key">场地</div>
               <div>:</div>
-              <!-- <div class="val">{{taskDetail.num}}</div> -->
-              <div class="val" v-if="taskDetail.placeName">{{taskDetail.placeName}}</div>
+              <div class="val" v-if="movieDetails.placeName">{{movieDetails.placeName}}</div>
               <div class="val" v-else style="color: #F56C6C">未完善</div>
             </el-col>
-          </template>
-          
+          </template> -->
+
           <el-col :span="24" class="list">
             <div class="key">创建人</div>
             <div>:</div>
-            <div class="val">{{taskDetail.initUserRealName}}</div>
+            <div class="val"></div>
           </el-col>
           <el-col :span="24" class="list">
             <div class="key">计划周期</div>
             <div>:</div>
-            <div class="val">{{taskDetail.startTime}}---{{taskDetail.endTime}}</div>
+            <div class="val"></div>
           </el-col>
           <!-- <el-col :span="24" class="list">
             <div class="key">备注</div>
             <div>:</div>
             <div class="val">
-              <template v-if="taskDetail.remark">{{taskDetail.remark}}</template>
+              <template v-if="movieDetails.remark">{{movieDetails.remark}}</template>
               <template v-else>暂无</template>
             </div>
           </el-col> -->
@@ -162,19 +138,19 @@
           <el-col :span="24" class="list">
             <div class="key">完成时间</div>
             <div>:</div>
-            <div class="val">{{taskDetail.endTime}}</div>
+            <div class="val"></div>
           </el-col>
         </el-col>
         <el-col :span="12" class="right">
           <el-col :span="24" class="list">
             <div class="key">发布数</div>
             <div>:</div>
-            <div class="val">{{taskDetail.num}}</div>
+            <div class="val"></div>
           </el-col>
           <el-col :span="24" class="list">
             <div class="key">拍摄时间</div>
             <div>:</div>
-            <div class="val">{{taskDetail.num}}</div>
+            <div class="val"></div>
           </el-col>
           <el-col :span="24" class="list">
             <div class="key">任务描述</div>
@@ -185,8 +161,8 @@
               <div>集合地点:</div>
               <div>成片要求:</div>
               <div>其他要求:</div>
-              <!-- <template v-if="taskDetail.taskDesc">
-                <pre>{{taskDetail.taskDesc}}</pre>
+              <!-- <template v-if="movieDetails.taskDesc">
+                <pre>{{movieDetails.taskDesc}}</pre>
               </template>
               <template v-else>暂无</template> -->
             </div>
@@ -203,23 +179,23 @@
             <div class="key">任务文件</div>
             <div>:</div>
             <div class="val">
-              <template v-if="taskDetail.listTaskFile.length!=0">
+              <template v-if="movieDetails.listTaskFile.length!=0">
                 <img
-                  v-if="taskDetail.listTaskFile[0].suffix == 'doc' || taskDetail.listTaskFile[0].suffix == 'docx'"
+                  v-if="movieDetails.listTaskFile[0].suffix == 'doc' || movieDetails.listTaskFile[0].suffix == 'docx'"
                   src="static/images/document/word.png"
                   width="16"
                   alt
                   srcset
                 />
                 <img
-                  v-else-if="taskDetail.listTaskFile[0].suffix == 'xls' || taskDetail.listTaskFile[0].suffix == 'xlsx'"
+                  v-else-if="movieDetails.listTaskFile[0].suffix == 'xls' || movieDetails.listTaskFile[0].suffix == 'xlsx'"
                   src="static/images/document/excle.png"
                   width="16"
                   alt
                   srcset
                 />
                 <img
-                  v-else-if="taskDetail.listTaskFile[0].suffix == 'ppt' || taskDetail.listTaskFile[0].suffix == 'pptx'"
+                  v-else-if="movieDetails.listTaskFile[0].suffix == 'ppt' || movieDetails.listTaskFile[0].suffix == 'pptx'"
                   src="static/images/document/ppt.png"
                   width="16"
                   alt
@@ -227,8 +203,8 @@
                 />
                 <img v-else src="static/images/document/other.png" width="16" alt srcset />
                 <el-link
-                  @click="$download(taskDetail.listTaskFile[0])"
-                >{{taskDetail.listTaskFile[0].fileName}}</el-link>
+                  @click="$download(movieDetails.listTaskFile[0])"
+                >{{movieDetails.listTaskFile[0].fileName}}</el-link>
               </template>
               <template v-else>暂无</template>
             </div>
@@ -237,10 +213,10 @@
             <div class="key">结算清单</div>
             <div>:</div>
             <div class="val">
-              <span v-if="taskDetail.status==1||taskDetail.status==2">
+              <span v-if="movieDetails.status==1||movieDetails.status==2">
                 <img src="static/images/document/excle.png" width="16" alt srcset />
 
-                <el-link @click="exportInvite(taskDetail)">{{taskDetail.taskName}}</el-link>
+                <el-link @click="exportInvite(movieDetails)">{{movieDetails.movieName}}</el-link>
               </span>
               <span v-else>暂无</span>
             </div>
@@ -248,17 +224,17 @@
           <el-col :span="24" class="list">
             <div class="key">完成进度</div>
             <div>:</div>
-            <div class="val">{{taskDetail.inviteNumOver}}/{{taskDetail.num}}</div>
+            <div class="val">{{movieDetails.inviteNumOver}}/{{movieDetails.num}}</div>
           </el-col> -->
         </el-col>
         <el-col :span="22" :offset="1">
-          <el-table
-            :data="taskDetail.listInvite"
+          <!-- <el-table
+            :data="movieDetails.listInvite"
             style="width: 100%;margin-bottom: 72px"
             :header-row-style="{'height': '54px','background': 'rgb(242, 242, 242)'}"
             :header-cell-style="{'color': '#000','background': 'rgb(242, 242, 242)',}"
             v-loading="loading"
-            @header-click="exportTaskDetail"
+            @header-click="exportmovieDetails"
           >
             <el-table-column prop label width="24" show-overflow-tooltip></el-table-column>
             <el-table-column prop="authorName" label="ID" min-width="100" show-overflow-tooltip></el-table-column>
@@ -279,11 +255,11 @@
           </el-table>
 
           <el-table
-            :data="taskDetail.listInvite"
+            :data="movieDetails.listInvite"
             style="width: 70%;margin-bottom: 72px"
             :header-cell-style="{'color': '#000',}"
             v-loading="loading"
-            @header-click="exportTaskDetail"
+            @header-click="exportmovieDetails"
           >
             <el-table-column prop label width="180" show-overflow-tooltip>
               <template slot="header">
@@ -302,10 +278,12 @@
             <el-table-column prop="publishedTime" label="发布时间"></el-table-column>
             <el-table-column prop label="金额" width="64"></el-table-column>
             <el-table-column prop label="状态" width="64"></el-table-column>
-          </el-table>
+          </el-table> -->
         </el-col>
         <el-col :span="24" class="btn">
-          <el-button type="primary" @click="sendInvitation">发送邀请函</el-button>
+          <el-button type="primary" @click="sendInvitation"
+            >发送邀请函</el-button
+          >
           <el-button type="primary" @click="toAddactivity">复制任务</el-button>
         </el-col>
       </el-scrollbar>
@@ -323,23 +301,7 @@ export default {
     return {
       // 任务ID
       taskId: 0,
-      taskDetail: {
-        listTaskFile: [],
-        listInvite: [
-          {
-            listOwnerType: [
-              {
-                typeName: null,
-              },
-            ],
-            listOwnerItem: [
-              {
-                itemName: null,
-              },
-            ],
-          },
-        ],
-      },
+      movieDetails: {},
       loading: false,
       activeNames: [],
     }
@@ -353,7 +315,7 @@ export default {
     // 任务ID
     this.taskId = this.$route.query.id
     ///////// 获取任务详情 start /////////
-    this.getTaskDetails()
+    this.getMovieDetails()
   },
   // 方法事件
   methods: {
@@ -363,43 +325,18 @@ export default {
     },
     ///////// 返回上一页 end /////////
     ///////// 获取任务详情 start /////////
-    getTaskDetails() {
+    getMovieDetails() {
       this.loading = true
       let data = {
-        taskId: this.$route.query.id,
+        movieId: this.$route.query.id,
       }
-      this.$axios.post('/ocarplay/task/edit', data).then((res) => {
+      this.$axios.post('/ocarplay/api/movie/show', data).then((res) => {
         // console.log(res)
         if (res.status == 200) {
-          let data = res.data.data
-
-          // data.typeList = []
-          // data.ownerItemList = []
-          // data.ownerName = []
-          // data.listInvite.forEach(element => {
-          //   data.typeList.push(element.listOwnerType[0].typeName)
-          //   data.ownerItemList.push(element.listOwnerItem[0].itemName)
-          //   data.ownerName.push(element.realName)
-          // })
-          // data.typeList = element.typeList.join(',')
-          //   data.ownerItemList = element.ownerItemList.join(',')
-          //   data.ownerName = element.ownerName.join(',')
-          // console.log(data)
+          let data = res.data
           let ownersList = []
-          data.inviteNum = data.listInvite.length
-          data.inviteNumOver = 0
-          data.listInvite.forEach((element) => {
-            if (element.isWrite == 1) {
-              data.inviteNumOver += 1
-            }
-            if (element.userType == 0) {
-              ownersList.push(element)
-            }
-          })
-
-          data.ownersList = ownersList
-          this.taskDetail = data
-          // console.log(data)
+          this.movieDetails = data
+          console.log(this.movieDetails)
           this.loading = false
         }
       })
@@ -463,7 +400,7 @@ export default {
             var blob = new Blob([res.data], {
               type: 'text/plain;charset=utf-8',
             })
-            saveAs(blob, prm.taskName + '.xls')
+            saveAs(blob, prm.movieName + '.xls')
           } else {
             this.$message.error('删除任务失败！')
           }
@@ -471,14 +408,14 @@ export default {
     },
     ///////// 导出结算清单 end /////////
     ///////// 完成详情列表下载 start /////////
-    exportTaskDetail(column, event) {
+    exportmovieDetails(column, event) {
       // console.log(column.label)
-      let taskDetail = this.taskDetail
+      let movieDetails = this.movieDetails
       let data = {
         taskId: this.taskId * 1,
       }
       this.$axios
-        .post('/ocarplay/task/exportTaskDetail', data, {
+        .post('/ocarplay/task/exportmovieDetails', data, {
           responseType: 'blob', //--设置请求数据格式
         })
         .then((res) => {
@@ -486,7 +423,7 @@ export default {
             var blob = new Blob([res.data], {
               type: 'text/plain;charset=utf-8',
             })
-            saveAs(blob, taskDetail.taskName + '结算进度.xls')
+            saveAs(blob, movieDetails.movieName + '结算进度.xls')
           } else {
             this.$message.error('导出失败！')
           }
@@ -591,6 +528,9 @@ export default {
       padding-right: $pad;
       .list {
         justify-content: flex-end;
+        .el-form {
+          width: 80%;
+        }
       }
     }
     .right {

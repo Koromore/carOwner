@@ -5,6 +5,7 @@
       :visible.sync="dialogVisible"
       width="720px"
       center
+      @open="openDialog"
     >
       <el-row class="box">
         <el-scrollbar style="height: 100%">
@@ -23,36 +24,32 @@
                 >
                   <el-col :span="10">
                     <el-select
-                      v-model="item.value1"
+                      v-model="item.supplierId"
                       placeholder="供应商"
                       filterable
                       clearable
                     >
                       <el-option
                         v-for="item in options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
+                        :key="item.supplierId"
+                        :label="item.supplierName"
+                        :value="item.supplierId"
                       >
                       </el-option>
                     </el-select>
                   </el-col>
                   <el-col :span="6" :offset="1">
                     <el-input
-                      v-model="item.value2"
+                      v-model="item.supplierMoney"
                       placeholder="请输入金额"
                       clearable
                     ></el-input>
                   </el-col>
-                  <el-col
-                    :span="6"
-                    :offset="1"
-                    class="icon"
-                    v-show="index == fromData.length - 1"
-                  >
+                  <el-col :span="6" :offset="1" class="icon">
                     <i
                       class="el-icon-circle-plus-outline"
                       @click="addFromData(index)"
+                      v-show="index == fromData.length - 1"
                     ></i>
                     <i class="el-icon-delete" @click="delFromData(index)"></i>
                     <i class="el-icon-plus"></i>
@@ -60,13 +57,12 @@
                 </el-col>
               </el-col>
             </el-col>
+            <!-- {{ fromData }} -->
           </div>
         </el-scrollbar>
       </el-row>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogVisible = false">
-          提交
-        </el-button>
+        <el-button type="primary" @click="saveSupplier"> 提交 </el-button>
       </span>
     </el-dialog>
   </div>
@@ -86,8 +82,9 @@ export default {
       dialogVisible: false,
       fromData: [
         {
-          value1: '',
-          value2: '',
+          supplierId: null,
+          supplierMoney: null,
+          supplierType: this.supplierData.typeId,
         },
       ],
       options: [
@@ -104,6 +101,7 @@ export default {
           value: 3,
         },
       ],
+      movieToSupplierList: [],
     }
   },
   // 侦听器
@@ -117,17 +115,24 @@ export default {
   // 钩子函数
   beforeCreate() {},
   beforeMount() {},
-  mounted() {},
+  mounted() {
+    console.log(this)
+  },
   // 方法
   methods: {
+    // 添加供应商
     addFromData(index) {
       let fromData = this.fromData
       fromData.push({
-        value1: '',
-        value2: '',
+        // value1: '',
+        // value2: '',
+        supplierId: null,
+        supplierMoney: null,
+        supplierType: this.supplierData.typeId,
       })
       this.fromData = fromData
     },
+    // 删除供应商
     delFromData(index) {
       let fromData = this.fromData
       if (fromData.length > 1) {
@@ -136,6 +141,56 @@ export default {
       } else {
         this.$message.warning('至少一个')
       }
+    },
+    // 打开对话框回调
+    openDialog() {
+      this.getPmsSupplierToOcarplay()
+    },
+    // 获取供应商
+    getPmsSupplierToOcarplay() {
+      let data = {
+        subItemsId: 8,
+      }
+      this.$axios
+        .post('/ocarplayapi/movie/getPmsSupplierToOcarplay', data)
+        .then((res) => {
+          // console.log(res)
+          if (res.status == 200) {
+            this.options = res.data.data
+          }
+        })
+        .catch((res) => {
+          console.log(res)
+          this.drawerLoading = false
+        })
+    },
+    // 提交供应商
+    saveSupplier() {
+      // this.dialogVisible = false
+      let that = this
+      let data = {
+        movieId: this.supplierData.id,
+        movieToSupplierList:this.fromData
+        
+      }
+      // console.log(data)
+      // return
+      this.$axios
+        .post('/ocarplay/api/movie/save', data)
+        .then((res) => {
+          // console.log(res)
+          if (res.status == 200 && res.data.errcode == 0) {
+            this.$message.success(that.supplierData.type + '供应商完善成功！')
+            ///////// 获取活动列表 start /////////
+            this.$parent.getMovieListAjax()
+            this.dialogVisible = false
+          } else {
+            this.$message.error(res.data.msg)
+          }
+        })
+        .catch((res) => {
+          console.log(res)
+        })
     },
   },
 }

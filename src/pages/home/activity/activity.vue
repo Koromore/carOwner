@@ -175,9 +175,13 @@
             </template>
             <!-- <template slot-scope="scope">{{scope.row.photoTime | date}}</template> -->
           </el-table-column>
-          <el-table-column prop="createTime" label="下达时间-人" min-width="100">
+          <el-table-column
+            prop="createTime"
+            label="下达时间-人"
+            min-width="100"
+          >
             <template slot-scope="scope">
-              {{scope.row.createTime}}{{scope.row.initUserId}}
+              {{ scope.row.createTime }}{{ scope.row.initUserId }}
             </template>
           </el-table-column>
           <el-table-column label="请款报销" min-width="160">
@@ -209,8 +213,8 @@
                 target="_blank"
                 class="omit"
                 :underline="false"
-                @click="toDetail(scope.row.taskId)"
-                >{{ scope.row.taskName }}</el-link
+                @click="toDetail(scope.row.movieId)"
+                >{{ scope.row.movieName }}</el-link
               >
             </template>
           </el-table-column>
@@ -251,9 +255,24 @@
             min-width="90"
             show-overflow-tooltip
           >
-          <template slot-scope="scope">
-            <el-link type="primary" @click="toSupplier(scope.row.taskiId,scope.row.taskName,'车辆')">去完善</el-link>
-          </template>
+            <template slot-scope="scope">
+              <template v-if="scope.row.movieType == 1">
+                <el-link
+                  type="primary"
+                  @click="
+                    toSupplier(
+                      scope.row.movieId,
+                      scope.row.movieName,
+                      '车辆',
+                      3
+                    )
+                  "
+                >
+                  去完善
+                </el-link>
+              </template>
+              <span v-else>/</span>
+            </template>
           </el-table-column>
           <!-- <el-table-column prop="ownerItemList" label="邀约事项" min-width="130" show-overflow-tooltip></el-table-column> -->
           <el-table-column
@@ -263,7 +282,22 @@
             show-overflow-tooltip
           >
             <template slot-scope="scope">
-              <el-link type="primary" @click="toSupplier(scope.row.taskiId,scope.row.taskName,'摄影师')">去完善</el-link>
+              <template v-if="scope.row.isPerson">
+                <el-link
+                  type="primary"
+                  @click="
+                    toSupplier(
+                      scope.row.movieId,
+                      scope.row.movieName,
+                      '摄影师',
+                      2
+                    )
+                  "
+                >
+                  去完善
+                </el-link>
+              </template>
+              <span v-else>/</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -273,7 +307,22 @@
             show-overflow-tooltip
           >
             <template slot-scope="scope">
-              <el-link type="primary" @click="toSupplier(scope.row.taskiId,scope.row.taskName,'模特')">去完善</el-link>
+              <template v-if="scope.row.isPerson">
+                <el-link
+                  type="primary"
+                  @click="
+                    toSupplier(
+                      scope.row.movieId,
+                      scope.row.movieName,
+                      '模特',
+                      1
+                    )
+                  "
+                >
+                  去完善
+                </el-link>
+              </template>
+              <span v-else>/</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -282,9 +331,27 @@
             min-width="90"
             show-overflow-tooltip
           >
+            <template slot-scope="scope">
+              <template v-if="scope.row.isOther">
+                <el-link
+                  type="primary"
+                  @click="
+                    toSupplier(
+                      scope.row.movieId,
+                      scope.row.movieName,
+                      '模特',
+                      1
+                    )
+                  "
+                >
+                  去完善
+                </el-link>
+              </template>
+              <span v-else>/</span>
+            </template>
           </el-table-column>
           <el-table-column
-            prop="placeId"
+            prop="placeName"
             label="场地"
             min-width="90"
             show-overflow-tooltip
@@ -318,14 +385,16 @@
           <el-table-column label="评分" min-width="70">
             <template slot-scope="scope">
               <span v-if="scope.row.isSubmit">已评分</span>
-              <el-link type="primary" v-else @click="addComment(scope.row)">去评价</el-link>
+              <el-link type="primary" v-else @click="addComment(scope.row)">
+                去评价
+              </el-link>
             </template>
           </el-table-column>
           <el-table-column label="发布链接" min-width="90">
             <template slot-scope="scope">
-              <el-link type="primary" @click="putTask(scope.row)"
-                >填写链接</el-link
-              >
+              <el-link type="primary" @click="toMovieUrl(scope.row)">
+                填写链接
+              </el-link>
             </template>
           </el-table-column>
 
@@ -335,10 +404,10 @@
             </template>
           </el-table-column>
           <el-table-column label="反馈" min-width="100">
-            <template>
+            <template slot-scope="scope">
               <i
                 class="el-icon-chat-dot-round"
-                @click="feedbackShow = true"
+                @click="getMovieFeedbackListAjax(scope.row.movieId)"
               ></i>
             </template>
           </el-table-column>
@@ -415,56 +484,30 @@
     </el-drawer>
     <!-- 抽屉弹窗延期原因 end -->
 
-    <!-- 抽屉弹窗提交任务 start -->
+    <!-- 抽屉弹窗发布链接 start -->
     <el-dialog
-      title="提交任务"
-      :visible.sync="drawerPuttask"
-      width="70%"
+      title="发布链接"
+      :visible.sync="drawerMovieUrl"
+      width="50%"
       class="taskDialog"
       v-loading="drawerLoading"
     >
       <!-- <span>这是一段信息</span> -->
       <el-scrollbar style="height: 100%">
-        <el-row class="drawerPuttask">
-          <el-col :span="3">任务名称:</el-col>
-          <el-col :span="21">
+        <el-row class="drawerMovieUrl">
+          <el-col :span="6">任务名称:</el-col>
+          <el-col :span="18">
             <el-col :span="20">{{ taskName }}</el-col>
-            <el-col :span="4" class="import">
-              <el-tooltip
-                class="item"
-                effect="dark"
-                content="导出"
-                placement="top"
-              >
-                <i class="el-icon-upload2" @click="exportFile(taskDetail)"></i>
-              </el-tooltip>
-              <el-tooltip
-                class="item"
-                effect="dark"
-                content="导入"
-                placement="top"
-              >
-                <el-upload
-                  class="upload-demo"
-                  :action="uploadExcle"
-                  :on-success="importFileSuccess"
-                  name="excelFile"
-                  :show-file-list="false"
-                >
-                  <i class="el-icon-download"></i>
-                </el-upload>
-              </el-tooltip>
-            </el-col>
           </el-col>
-          <el-col :span="3" class="keycontent">结算明细:</el-col>
-          <el-col :span="21">
+          <el-col :span="6" class="keycontent">结算明细:</el-col>
+          <el-col :span="18">
             <!-- <el-col :span="20">
               <el-input placeholder="搜索车主" suffix-icon="el-icon-search" v-model="input"></el-input>
             </el-col>-->
             <el-col
               :span="24"
               class="detailList"
-              v-for="(item, index) in listInviteList"
+              v-for="(item, index) in linkList"
               :key="index"
             >
               <el-col :span="1" style="text-align: center">
@@ -477,113 +520,31 @@
                 <i class="el-icon-remove" style="color: #a6a9ad" v-else></i>
               </el-col>
               <el-col :span="4">
-                <el-input
-                  placeholder="请输入"
-                  size="medium"
-                  v-model="item.realName"
-                  @focus="changeOwner(index)"
-                  v-if="!item.changeShow"
-                ></el-input>
-                <!-- {{item.realName}} -->
-                <template v-else>
-                  <template v-if="item.userType == 0">
-                    <el-cascader
-                      :options="inviteDataList"
-                      v-model="item.inviteData"
-                      clearable
-                      filterable
-                      :show-all-levels="false"
-                      size="medium"
-                    >
-                      <i
-                        slot="prefix"
-                        class="el-input__icon el-icon-search"
-                      ></i>
-                    </el-cascader>
-                  </template>
-                  <template v-else-if="item.userType == 1">
-                    <el-select
-                      v-model="item.ownerId"
-                      placeholder="摄影师"
-                      clearable
-                      filterable
-                      class="userType1"
-                    >
-                      <el-option
-                        v-for="item in cammeramanList"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
-                      ></el-option>
-                    </el-select>
-                  </template>
-                  <template v-else-if="item.userType == 2">
-                    <el-select
-                      v-model="item.ownerId"
-                      placeholder="模特"
-                      clearable
-                      filterable
-                      class="userType2"
-                    >
-                      <el-option
-                        v-for="item in modelList"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
-                      ></el-option>
-                    </el-select>
-                  </template>
-                </template>
+                <el-select
+                  v-model="item.ownerId"
+                  placeholder="摄影师"
+                  clearable
+                  filterable
+                  class="userType1"
+                >
+                  <el-option
+                    v-for="item in cammeramanList"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  ></el-option>
+                </el-select>
               </el-col>
               <el-col :span="15">
-                <template v-if="item.userType == 0">
-                  <el-input
-                    placeholder="车主链接"
-                    @change="urlChange"
-                    size="medium"
-                    v-model="item.url"
-                    clearable
-                  ></el-input>
-                </template>
-                <template v-if="item.userType == 1">
-                  <el-input
-                    placeholder="摄影师链接"
-                    @change="urlChange"
-                    size="medium"
-                    v-model="item.url"
-                    clearable
-                    class="userType1"
-                  ></el-input>
-                </template>
-                <template v-if="item.userType == 2">
-                  <el-input
-                    placeholder="模特链接"
-                    @change="urlChange"
-                    size="medium"
-                    v-model="item.url"
-                    clearable
-                    class="userType2"
-                  ></el-input>
-                </template>
-              </el-col>
-              <el-col :span="3">
-                <!-- <template v-if="item.userType==0"> -->
-                <i
-                  class="el-icon-document-copy"
-                  @click="copyDetailList(index, item)"
-                ></i>
-                <i class="el-icon-delete" @click="delDetailList(index)"></i>
-                <i
-                  class="el-icon-circle-plus-outline"
-                  @click="addDetailList(index, item)"
-                ></i>
+                <!-- <template v-if="item.userType == 0"> -->
+                <el-input
+                  placeholder="请输入链接"
+                  @change="urlChange"
+                  size="medium"
+                  v-model="item.url"
+                  clearable
+                ></el-input>
                 <!-- </template> -->
-                <!-- <template v-if="item.userType==1">
-                  摄影师
-                </template>
-                <template v-if="item.userType==2">
-                  模特
-                </template>-->
               </el-col>
               <!-- {{item}}-{{index}} -->
             </el-col>
@@ -602,16 +563,13 @@
             @click="submitBtn(0)"
             class="SlideOpen"
             data-text="保存"
-            ><span>保存</span></el-button
           >
+            <span>保存</span>
+          </el-button>
         </el-col>
       </el-col>
-      <!-- <span slot="footer" class="dialog-footer">
-        <el-button @click="drawerPuttask = false">取 消</el-button>
-        <el-button type="primary" @click="drawerPuttask = false">确 定</el-button>
-      </span>-->
     </el-dialog>
-    <!-- 抽屉弹窗提交任务 end -->
+    <!-- 抽屉弹窗发布链接 end -->
 
     <!-- 新增评论评星 -->
     <CommentSketchy :commentSketchyShow="commentSketchyShow"></CommentSketchy>
@@ -630,12 +588,15 @@
           style="width: 100%"
           height="320"
           :show-header="false"
+          v-loading="movieFeedbackloading"
         >
-          <el-table-column prop="date" label="日期" width="180">
+          <el-table-column prop="createTime" width="180"> </el-table-column>
+          <el-table-column prop="name" width="180">
+            <template slot-scope="scope">
+              {{ scope.row.deptName }}-{{ scope.row.realName }}
+            </template>
           </el-table-column>
-          <el-table-column prop="name" label="姓名" width="180">
-          </el-table-column>
-          <el-table-column prop="address" label="地址"> </el-table-column>
+          <el-table-column prop="feedbackName"></el-table-column>
         </el-table>
       </div>
       <div class="feedbackText">
@@ -646,11 +607,8 @@
           v-model="feedbackText"
         >
         </el-input>
-        <el-button type="primary">提交</el-button>
+        <el-button type="primary" @click="savetMovieFeedback">提交</el-button>
       </div>
-      <!-- <span slot="footer" class="dialog-footer">
-        <el-button type="primary"> 确 定 </el-button>
-      </span> -->
     </el-dialog>
     <!-- 新增反馈 -->
 
@@ -672,7 +630,11 @@
         </el-table-column>
       </el-table>
     </el-dialog>
-    <Supplierfill :supplierShow="supplierShow" :supplierData="supplierData"></Supplierfill>
+    <!-- 完善供应商 -->
+    <Supplierfill
+      :supplierShow="supplierShow"
+      :supplierData="supplierData"
+    ></Supplierfill>
   </div>
 </template>
 <script>
@@ -688,13 +650,14 @@ export default {
   components: {
     Comment,
     CommentSketchy,
-    Supplierfill
+    Supplierfill,
   },
   data() {
     return {
       userId: this.$store.state.user.userId, // 用户ID
       deptId: this.$store.state.user.deptId, // 部门ID
       postId: this.$store.state.user.postId, // 职位ID
+      deptName: this.$store.state.user.deptName, // 职位ID
       subordinate: this.$store.state.user.subordinate, // 一级部门ID
       adminShow: this.$store.state.adminShow, // 超级管理员
       commentShow: 0,
@@ -703,7 +666,7 @@ export default {
       personId: 0,
 
       taskDeptId: '', // 任务部门ID
-      taskDetail: { taskType: 0 },
+      // taskDetail: { taskType: 0 },
       drawerLoading: false,
       detailList: [
         {
@@ -758,8 +721,6 @@ export default {
       pageSize: this.$store.state.taskPageSize,
       total: 0,
 
-      // 抽屉弹窗提交任务
-      drawerPuttask: false,
       // 抽屉拍摄延期
       drawerDelayPhoto: false,
       reasonId: '', // 延期拍摄原因
@@ -782,7 +743,6 @@ export default {
       listInviteData: [],
       // 评价
       // evaluatePersonVisible: false,
-      uploadExcle: null,
       // 结算清单
       paydetailShow: false,
       paydetailShowLoading: false,
@@ -844,72 +804,28 @@ export default {
       delayTime: '', // 延期预计时间
       // 反馈弹窗
       feedbackShow: false,
-      feedbackList: [
-        {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-        },
-        {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄',
-        },
-        {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄',
-        },
-        {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄',
-        },
-      ],
+      movieFeedbackloading: false,
+      feedbackMovieId: null,
+      feedbackList: [],
       feedbackText: null,
       // 完善车辆模特摄影师供应商弹框
       supplierShow: 0,
       supplierData: {
         name: null,
-        type: null
-      }
+        type: null,
+      },
+      // 抽屉弹窗发布链接
+      drawerMovieUrl: false,
+      linkList: [{}], // 发布链接列表
     }
   },
   // 过滤器
-  filters: {
-    // data: function (value) {
-    //   if (value) {
-    //     let date = ''
-    //     if (typeof data == 'string') {
-    //       date = new Date(value.replace(/-/g, '/'))
-    //     } else {
-    //       date = new Date(value)
-    //     }
-    //     // let date = new Date(data.replace(/-/g,'/'))
-    //     let year = date.getYear()
-    //     let month = date.getMonth() + 1
-    //     let strDate = date.getDate()
-    //     year = year - 100
-    //     if (year >= 1 && year <= 9) {
-    //       year = '0' + year
-    //     }
-    //     if (month >= 1 && month <= 9) {
-    //       month = '0' + month
-    //     }
-    //     if (strDate >= 0 && strDate <= 9) {
-    //       strDate = '0' + strDate
-    //     }
-    //     return `${year}-${month}-${strDate}`
-    //   } else {
-    //     return ''
-    //   }
-    // },
-  },
+  filters: {},
   // 侦听器
   watch: {
     '$store.state.searchValue': function (newData, oldData) {
       ///////// 获取任务列表 start /////////
-      this.getTaskListAjax()
+      this.getMovieListAjax()
     },
   },
   // 钩子函数
@@ -921,7 +837,7 @@ export default {
     ///////// 获取车系列表 start /////////
     this.getCarSeriesLists()
     ///////// 获取任务列表 /////////
-    this.getTaskListAjax()
+    this.getMovieListAjax()
     ///////// 获取车主列表 start /////////
     this.getOwnerList()
     ///////// 获取摄影师列表 start /////////
@@ -932,7 +848,6 @@ export default {
     // let list = [1,2,3,4,5,6]
     // console.log(list.splice(0,1))
     // console.log(list)
-    this.uploadExcle = 'ocarplay/api/invite/uploadExcle?deptId=' + this.deptId
     // 任务状态页码数据
     let data = {
       status: 0,
@@ -995,7 +910,7 @@ export default {
     ///////// 任务列表事项筛选 start /////////
     itemIdChange(id) {
       // this.status = id
-      this.getTaskListAjax()
+      this.getMovieListAjax()
     },
     ///////// 任务列表事项筛选 end /////////
 
@@ -1003,12 +918,12 @@ export default {
     statusChange(id) {
       this.status = id
       this.pageNum = 1
-      this.getTaskListAjax()
+      this.getMovieListAjax()
     },
     ///////// 获取任务列表状态筛选 end /////////
 
     ///////// 获取任务列表 start /////////
-    getTaskListAjax() {
+    getMovieListAjax() {
       this.loading = true
       let data = {
         pageNum: this.pageNum,
@@ -1024,72 +939,11 @@ export default {
         },
         orderField: this.orderField, // 1-拍摄时间，2-下达时间
         orderType: this.orderType, // 1-升序，2-降序
-
-        // task: {
-        //   initUserId: 266
-        // }
       }
-      // if (this.deptId == 105 || this.deptId == 110 || this.deptId == 153 || this.deptId == 106) {
-      //   data.task.deptId = this.deptId
-      // } else {
-      //   data.task.deptId = null
-      // }
-      // if (this.deptId == 90) {
-      //   data.task.taskType = 4
-      //   // data.task.status = null
-      //   // data.task.deptId = null
-      // }
       this.$axios.post('/ocarplay/api/movie/listAjax', data).then((res) => {
         // console.log(res)
         if (res.status == 200 && data) {
           let data = res.data
-          // data.items.forEach((element) => {
-          //   element.evaluatePersonVisible = false
-          //   element.typeList = []
-          //   element.ownerItemList = []
-          //   element.ownerName = []
-          //   // element.invMoney = 0
-          //   element.inviteNumOver = 0
-          //   // if (element.personId == 0) {
-          //   //   element.personName = '/'
-          //   // }
-          //   // if (element.modelId == 0) {
-          //   //   element.modelName = '/'
-          //   // }
-          //   // if (element.placeId == 0) {
-          //   //   element.placeName = '/'
-          //   // }
-          //   element.listInvite.forEach((element1) => {
-          //     // console.log(element1)
-          //     if (
-          //       element1.listOwnerType &&
-          //       element1.listOwnerType.length != 0
-          //     ) {
-          //       element.typeList.push(element1.listOwnerType[0].typeName)
-          //       element.ownerItemList.push(element1.listOwnerItem[0].itemName)
-          //       element.ownerName.push(element1.realName)
-          //     }
-          //     // element.invMoney += element1.money
-          //     if (element1.isWrite == 1) {
-          //       element.inviteNumOver += 1
-          //     }
-          //   })
-          //   if (!element.ownerName.length) {
-          //     element.ownerName = '/'
-          //   }
-          //   // Array.form(new Set(arr))
-          //   // console.log(element.ownerName)
-          //   element.typeList = [...new Set(element.typeList)]
-          //   element.ownerItemList = [...new Set(element.ownerItemList)]
-          //   element.ownerName = [...new Set(element.ownerName)]
-          //   // console.log(element.ownerName)
-          //   // console.log(element.typeList)
-          //   element.typeList = element.typeList.join(',')
-          //   element.ownerItemList = element.ownerItemList.join(',')
-          //   element.ownerName = element.ownerName.join(',')
-          //   // console.log(element.ownerName)
-          // })
-          
           this.taskListData = data.items
           this.total = data.totalRows
           this.loading = false
@@ -1106,13 +960,13 @@ export default {
       // console.log(pageSize)
       this.pageSize = pageSize
       ///////// 获取任务列表 start /////////
-      this.getTaskListAjax()
+      this.getMovieListAjax()
     },
     // 页码变换时触发事件
     changePage(pageNum) {
       this.pageNum = pageNum
       ///////// 获取任务列表 start /////////
-      this.getTaskListAjax()
+      this.getMovieListAjax()
       // console.log(pageNum)
     },
     ///////// 分页 end /////////
@@ -1153,7 +1007,7 @@ export default {
             this.$message.success('任务延期成功！')
             this.drawerDelay = false
             ///////// 获取任务列表 start /////////
-            this.getTaskListAjax()
+            this.getMovieListAjax()
           } else {
             this.$message.error('任务延期失败！')
           }
@@ -1281,156 +1135,8 @@ export default {
     ///////// 获取模特列表 end /////////
 
     ///////// 提交任务 start /////////
-    noTaskPut() {
-      this.$message.error('无法提交，摄影师模特信息采购尚未填写！')
-    },
-    putTask(prm) {
-      // console.log(prm)
-      // let isCard = ''
-      // if (prm.taskType == 4) {
-      //   isCard = true
-      // } else {
-      //   isCard = false
-      // }
-
-      if (prm.taskType == 4) {
-        if (prm.taskToPersonList.length && prm.placeId) {
-          this.drawerLoading = true
-          this.drawerPuttask = true
-          this.taskId = prm.taskId
-          this.taskDeptId = prm.deptId
-          this.taskName = prm.taskName
-          let data = {
-            taskId: prm.taskId,
-          }
-          this.$axios.post('/ocarplay/task/edit', data).then((res) => {
-            var starttime = new Date().getTime()
-
-            if (res.status == 200) {
-              let data = res.data.data
-              // console.log(data)
-              let listInviteList = []
-              let pushIs = true
-              data.listInvite.forEach((element) => {
-                if (element.userType) {
-                  pushIs = false
-                }
-                listInviteList.push({
-                  inviteId: element.inviteId,
-                  inviteData: [element.typeId, element.itemId, element.ownerId],
-                  isOver: element.isOver,
-                  typeId: element.typeId,
-                  itemId: element.itemId,
-                  ownerId: element.ownerId,
-                  url: element.url,
-                  realName: element.realName,
-                  // money: element.money,
-                  // isCard: element.isCard,
-                  userType: element.userType,
-                  changeShow: false,
-                })
-              })
-              var endtime = new Date().getTime()
-              var second = parseInt(endtime - starttime)
-              console.log(second)
-              this.listInviteList = listInviteList
-              // console.log(listInviteList)
-              this.taskDetail = data
-              this.drawerLoading = false
-            }
-          })
-        } else {
-          this.$message.error('无法提交，模特摄影师信息采购尚未填写！')
-        }
-      } else {
-        this.drawerLoading = true
-        this.drawerPuttask = true
-        this.taskId = prm.taskId
-        this.taskDeptId = prm.deptId
-        this.taskName = prm.taskName
-        let data = {
-          taskId: prm.taskId,
-        }
-        this.$axios.post('/ocarplay/task/edit', data).then((res) => {
-          var starttime = new Date().getTime()
-
-          if (res.status == 200) {
-            let data = res.data.data
-            // console.log(data)
-            let listInviteList = []
-            data.listInvite.forEach((element) => {
-              listInviteList.push({
-                inviteId: element.inviteId,
-                inviteData: [element.typeId, element.itemId, element.ownerId],
-                isOver: element.isOver,
-                typeId: element.typeId,
-                itemId: element.itemId,
-                ownerId: element.ownerId,
-                url: element.url,
-                realName: element.realName,
-                // money: element.money,
-                // isCard: element.isCard,
-                userType: element.userType,
-                changeShow: false,
-              })
-            })
-            this.listInviteList = listInviteList
-            this.taskDetail = data
-            this.drawerLoading = false
-            var endtime = new Date().getTime()
-            var second = parseInt(endtime - starttime)
-            console.log(second)
-          }
-        })
-      }
-      // console.log(this.listInviteList)
-    },
-    // 复制明细
-    copyDetailList(index, obj) {
-      let listInviteList = this.listInviteList
-      let data = {
-        userType: obj.userType,
-        inviteData: [],
-        typeId: '',
-        itemId: '',
-        ownerId: '',
-        url: '',
-        // money: '',
-        // isCard: false,
-      }
-      if (obj.userType == 0) {
-        data.inviteData = obj.inviteData
-      } else {
-        data.inviteData = []
-        data.ownerId = obj.ownerId
-      }
-      this.listInviteList.splice(index + 1, 0, data)
-    },
-    // 添加明细
-    addDetailList(index, obj) {
-      let data = {
-        userType: obj.userType,
-        inviteData: [],
-        typeId: '',
-        itemId: '',
-        ownerId: '',
-        url: '',
-        // money: '',
-        // isCard: false,
-      }
-      this.listInviteList.splice(index + 1, 0, data)
-    },
-    // 删除明细
-    delDetailList(index) {
-      let listInviteList = this.listInviteList
-      if (listInviteList.length > 1) {
-        this.delListInviteList = this.listInviteList.splice(index, 1)
-      }
-    },
-    // 切换车主
-    changeOwner(index) {
-      this.listInviteList[index].changeShow = true
-      this.$message.warning('再次点击选择车主！')
+    toMovieUrl(prm) {
+      this.drawerMovieUrl = true
     },
     // 提交按钮
     submitBtn(e) {
@@ -1507,8 +1213,8 @@ export default {
                 this.$message.success('任务保存成功！')
               }
               this.drawerLoading = false
-              this.drawerPuttask = false
-              this.getTaskListAjax()
+              this.drawerMovieUrl = false
+              this.getMovieListAjax()
             } else {
               this.$message.error('任务提交失败！')
               this.drawerLoading = false
@@ -1581,7 +1287,7 @@ export default {
         if (res.status == 200 && res.data == 1) {
           this.$message.success('删除任务成功！')
           ///////// 获取任务列表 start /////////
-          this.getTaskListAjax()
+          this.getMovieListAjax()
         } else {
           this.$message.error('删除任务失败！')
         }
@@ -1608,7 +1314,7 @@ export default {
           if (res.status == 200) {
             // this.$message.success('删除任务成功！')
             // ///////// 获取任务列表 start /////////
-            // this.getTaskListAjax()
+            // this.getMovieListAjax()
             var blob = new Blob([res.data], {
               type: 'text/plain;charset=utf-8',
             })
@@ -1623,7 +1329,7 @@ export default {
     ///////// 取消按钮 start /////////
     cancel() {
       this.drawerDelay = false
-      this.drawerPuttask = false
+      this.drawerMovieUrl = false
       this.drawerDelayPhoto = false
       // 延期任务数据清除
       this.delayTime = ''
@@ -1698,40 +1404,6 @@ export default {
     ///////// 新增评论 end /////////
 
     ///////// 导出结算列表 start /////////
-    exportFile(obj) {
-      // console.log(obj)
-
-      import('@/utils/ExportExcel').then((excel) => {
-        const tHeader = ['inviteId(勿删)', '车主名', '链接']
-        const filterVal = ['inviteId', 'realName', 'url']
-        const list = obj.listInvite
-        const data = this.formatJson(filterVal, list)
-        // console.log(list)
-        // console.log(data)
-        excel.export_json_to_excel({
-          header: tHeader, // 表头名称
-          data, // 表格数据
-          filename: obj.taskName + '结算清单', // 文件名称
-          autoWidth: true, // 表格是否自动撑开
-          bookType: 'xlsx', // 文件后缀格式
-        })
-        // this.downloadLoading = false
-      })
-
-      // let data = { taskId: obj.taskId }
-      // this.$axios
-      //   .post('/ocarplay/api/invite/exportInviteByTaskId', data, {
-      //     responseType: 'blob', //--设置请求数据格式
-      //   })
-      //   .then((res) => {
-      //     // console.log(res.data)
-      //     var blob = new Blob([res.data], { type: 'text/plain;charset=utf-8' })
-      //     saveAs(blob, obj.taskName + '结算清单.xls')
-      //   })
-      //   .catch(() => {
-      //     // console.log('捕获错误')
-      //   })
-    },
     formatJson(filterVal, jsonData) {
       return jsonData.map((v) =>
         filterVal.map((j) => {
@@ -1748,10 +1420,6 @@ export default {
     ///////// 导入结算列表 start /////////
     importFile(id) {
       // console.log(id)
-    },
-    importFileSuccess() {
-      this.$message.success('导入成功')
-      this.putTask(this.taskDetail)
     },
     ///////// 导入结算列表 start /////////
 
@@ -1822,7 +1490,7 @@ export default {
       }
       this.$store.commit('orderRecord', data)
       ///////// 获取任务列表 start /////////
-      this.getTaskListAjax()
+      this.getMovieListAjax()
     },
     ///////// 排序 end /////////
 
@@ -1890,7 +1558,7 @@ export default {
             let data = res.data
             if (data == 1) {
               ///////// 获取任务列表 /////////
-              this.getTaskListAjax()
+              this.getMovieListAjax()
               this.drawerDelayPhoto = false
               this.$message.success('拍摄延期成功！')
             } else {
@@ -1912,36 +1580,97 @@ export default {
       // console.log(id)
       // console.log(49576)
       let data = { proRequireId: id }
-      this.$axios.post('/ocarplay/task/paydetail', data).then((res) => {
-        // console.log(res)
-        if (res.status == 200) {
-          this.paydetailList = res.data.data
-        }
-        this.paydetailShowLoading = false
-      })
+      this.$axios
+        .post('/ocarplay/task/paydetail', data)
+        .then((res) => {
+          // console.log(res)
+          if (res.status == 200) {
+            this.paydetailList = res.data.data
+          }
+          this.paydetailShowLoading = false
+        })
+        .catch((res) => {
+          console.log
+        })
     },
     // 完善供应商信息
-    toSupplier(id,name, type){
-      this.supplierShow ++
+    toSupplier(id, name, type, typeId) {
+      this.supplierShow++
       let supplierData = {
         id: id,
         name: name,
-        type: type
+        type: type,
+        typeId: typeId,
       }
       this.supplierData = supplierData
+      console.log(supplierData)
     },
     // 跳转报销页面
-    toReimbursement(){
+    toReimbursement() {
       this.$router.push({
         path: '/home/reimbursement',
       })
     },
     // 跳转请款页面
-    toRequestpayout(){
+    toRequestpayout() {
       this.$router.push({
         path: '/home/requestpayout',
       })
-    }
+    },
+    ///////// 获取反馈列表 start /////////
+    getMovieFeedbackListAjax(id) {
+      this.feedbackShow = true
+      // this.movieFeedbackloading = true
+      this.feedbackMovieId = id
+      let data = {
+        movieId: id,
+      }
+      // console.log(id)
+      // return
+      this.$axios.post('/ocarplay/api/movieFeedback/list', data).then((res) => {
+        // console.log(res)
+        if (res.status == 200) {
+          // let data = res.data
+          this.feedbackList = res.data
+          // this.total = data.totalRows
+          // this.loading = false
+          this.movieFeedbackloading = false
+          // console.log(data.items)
+        }
+      })
+    },
+    ///////// 获取反馈列表 end /////////
+
+    ///////// 新增反馈 start /////////
+    savetMovieFeedback() {
+      this.feedbackShow = true
+      // this.movieFeedbackloading = true
+      let data = {
+        doUserId: this.userId,
+        deptName: this.deptName,
+        feedbackName: this.feedbackText,
+        movieId: this.feedbackMovieId,
+      }
+      console.log(data)
+      if (!data.feedbackName) {
+        this.$message.error('请填写反馈内容！')
+        return
+      }
+      this.$axios.post('/ocarplay/api/movieFeedback/save', data).then((res) => {
+        console.log(res)
+        if (res.status == 200 && res.data.errcode === 0) {
+          this.feedbackText = null
+          this.$message.success('添加反馈成功!')
+          // let data = res.data
+          // this.feedbackList = data.items
+          // this.movieFeedbackloading = false
+          this.getMovieFeedbackListAjax(this.feedbackMovieId)
+        } else {
+          this.$message.success(res.data.msg)
+        }
+      })
+    },
+    ///////// 新增反馈 end /////////
   },
 }
 </script>
@@ -1980,7 +1709,7 @@ $statusColor4: #ea8a85;
       align-items: center;
       justify-content: space-between;
       .searchBox {
-        width: 300px;
+        width: 281px;
       }
       .el-date-editor {
         width: 210px;
@@ -2085,7 +1814,7 @@ $statusColor4: #ea8a85;
     }
   }
   // 抽屉弹窗提交任务样式
-  .drawerPuttask {
+  .drawerMovieUrl {
     position: relative;
     box-sizing: border-box;
     padding: 20px;
@@ -2106,38 +1835,16 @@ $statusColor4: #ea8a85;
         padding-right: 13px;
       }
     }
-    .import {
-      text-align: center;
-      i {
-        font-size: 24px;
-        &:nth-of-type(2) {
-          margin-left: 9px;
-        }
-      }
-      .upload-demo {
-        display: inline-block;
-      }
-    }
     i {
       color: $icoColor;
       cursor: pointer;
     }
     .detailList {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
+      // display: flex;
+      // flex-wrap: wrap;
+      // align-items: center;
+      // justify-content: space-between;
       margin-bottom: 18px;
-      .userType1 {
-        & >>> .el-input__inner {
-          border-color: #67c23a;
-        }
-      }
-      .userType2 {
-        & >>> .el-input__inner {
-          border-color: #0000ff50;
-        }
-      }
     }
     .keycontent {
       align-self: flex-start;
