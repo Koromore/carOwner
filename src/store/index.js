@@ -107,12 +107,18 @@ export default new Vuex.Store({
       orderField: 2,
       orderType: 2
     },
-    searchValue: null
+    searchValue: null,
+
+    batchCashOut:[],//批量请款数组
   },
   action: {
 
   },
   mutations: {
+    getBatchCashOut(state,data){
+      state.batchCashOut = data;
+      localStorage.batchCashOut = JSON.stringify(data) ;
+    },
     // 存储搜索字段
     getSearch(state, data){
       state.searchValue = data

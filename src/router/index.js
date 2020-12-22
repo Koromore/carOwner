@@ -530,6 +530,8 @@ try {
   var user = JSON.parse(localStorage.getItem('user'));
   let token = localStorage.getItem('token');
   let userSign = localStorage.getItem('userSign');
+
+  store.commit('getBatchCashOut',JSON.parse(localStorage.getItem('batchCashOut')))
   // store.commit('login', { token, user, userSign });
   // if (user==null) {
   //   window.location.replace('http://guoxin.insun-china.com/hrm');
