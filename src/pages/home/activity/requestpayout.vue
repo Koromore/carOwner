@@ -12,64 +12,84 @@
           </el-col>
           <el-col :span="12"></el-col>
         </el-col>
-        <el-col :span="18" class="top">
+        <el-col :span="24" class="top">
           <div class="case">申请人</div>
-          <div class="case">{{ userName }}</div>
+          <div class="case">{{ supplierObj.supplierName }}</div>
           <div class="case">申请日期</div>
-          <div class="case"></div>
-
+          <div class="case">{{supplierObj.createTime}}</div>
           <div class="case">供应商</div>
           <div class="case">
-            <el-select v-model="value" placeholder="请选择">
+            <el-select v-model="fromData.supplierId" @change="handleSupplier" placeholder="请选择">
               <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+                v-for="item in supplierOptions"
+                :key="item.supplierId"
+                :label="item.supplierName"
+                :value="item.supplierId"
               >
               </el-option>
             </el-select>
           </div>
           <div class="case">付款方</div>
           <div class="case">
-            <el-radio-group v-model="radio1">
-              <el-radio :label="1">武汉财务</el-radio>
-              <el-radio :label="2">上海财务</el-radio>
-              <el-radio :label="3">卓越财务</el-radio>
-              <el-radio :label="4">泉州财务</el-radio>
-              <el-radio :label="5">个人财务</el-radio>
-              <el-radio :label="6">灵析财务</el-radio>
+            <el-radio-group v-model="fromData.roleId" @change="getServe">
+               <el-radio v-for="item in payerList" :key="item.roleId" :label="item.roleId">{{item.roleName}}</el-radio>
             </el-radio-group>
           </div>
 
           <div class="case">联系人</div>
-          <div class="case"></div>
+          <div class="case">{{supplierObj.contacts?supplierObj.contacts:'/'}}</div>
           <div class="case">联系方式</div>
-          <div class="case"></div>
+          <div class="case">{{supplierObj.phoneNum?supplierObj.phoneNum:'/'}}</div>
 
           <div class="case">银行卡号</div>
-          <div class="case"></div>
+          <div class="case">{{supplierObj.bankAccount?supplierObj.bankAccount:'/'}}</div>
           <div class="case">开户行</div>
-          <div class="case"></div>
+          <div class="case">{{supplierObj.depositBank?supplierObj.depositBank:'/'}}</div>
 
           <div class="case">支付宝账号</div>
-          <div class="case"></div>
+          <div class="case">{{supplierObj.alipayAccount?supplierObj.alipayAccount:'/'}}</div>
           <div class="case">链接</div>
-          <div class="case"></div>
+          <div class="case">{{supplierObj.url?supplierObj.url:'/'}}</div>
 
           <div class="case">付款种类</div>
           <div class="case">
-            <el-radio-group v-model="radio2">
-              <el-radio :label="1">对公付款</el-radio>
-              <el-radio :label="2">对私付款</el-radio>
+            <el-radio-group v-model="fromData.payType">
+              <el-radio label="0">对公付款</el-radio>
+              <el-radio label="1">对私付款</el-radio>
             </el-radio-group>
           </div>
+         
           <div class="case">有无发票</div>
           <div class="case">
-            <el-radio-group v-model="radio3">
-              <el-radio :label="1">有发票</el-radio>
-              <el-radio :label="2">无发票</el-radio>
+            <el-radio-group v-model="fromData.isInvoice" @change="handleInvoice">
+              <el-radio label="1">无发票</el-radio>
+              <el-radio label="0">有发票</el-radio>
             </el-radio-group>
+            <el-select style="width:37%" v-show="invoiceFlag" v-model="fromData.invoiceRemark"  placeholder="请选择发票类型">
+              <el-option  label="普票" value="0"></el-option>
+              <el-option  label="3点专票" value="1"></el-option>
+              <el-option  label="6点专票" value="2"></el-option>
+              <el-option  label="17点专票" value="3"></el-option>
+            </el-select>
+          </div>
+
+          <div class="case" ></div>
+          <div class="case"></div>
+
+           <div class="case" >服务费率</div>
+          <div class="case" >
+             <el-radio-group v-model="fromData.serviceScale" @change="handleSevice">
+              <el-radio label="0">默认({{defscale}})%</el-radio>
+              <el-radio label="1">其他</el-radio>
+            </el-radio-group>
+            <el-input v-show="otherFlag"
+            style="display:inline-block;    width: 35%;"
+                  placeholder="请输入内容"
+                  v-model="fromData.deforOther"
+                  clearable
+                >
+            </el-input>
+            <span v-show="otherFlag">%</span>
           </div>
         </el-col>
         <el-col class="bottom">
@@ -86,23 +106,51 @@
             }"
             border
           >
-            <el-table-column prop="name" label="项目编号"> </el-table-column>
-            <el-table-column prop="name" label="项目名称"> </el-table-column>
-            <el-table-column prop="name" label="科目"> </el-table-column>
-            <el-table-column prop="name" label="细分项"> </el-table-column>
-            <el-table-column prop="name" label="预计费用"> </el-table-column>
-            <el-table-column prop="name" label="采购数量"></el-table-column>
-            <el-table-column prop="name" label="单价"> </el-table-column>
-            <el-table-column prop="name" label="费用"> </el-table-column>
-            <el-table-column prop="name" label="支付方式">
+            <el-table-column prop="identifier" label="项目编号" show-overflow-tooltip> 
+              <template slot-scope="scope">
+                {{scope.row.identifier?scope.row.identifier:'/'}}
+              </template>
+            </el-table-column>
+            <el-table-column prop="proName " label="项目名称" show-overflow-tooltip>
+              <template slot-scope="scope">
+                {{scope.row.proName?scope.row.proName:'/'}}
+              </template> </el-table-column>
+            <el-table-column  label="科目" show-overflow-tooltip> 
+              <template>
+                影视活动
+              </template>
+            </el-table-column>
+            <el-table-column prop="subItemsName" label="细分项" show-overflow-tooltip>
+              <template slot-scope="scope">
+                {{scope.row.subItemsName?scope.row.subItemsName:'/'}}
+              </template> </el-table-column>
+            <el-table-column prop="money" label="预计费用" show-overflow-tooltip> 
+              <template slot-scope="scope">
+                {{scope.row.money?scope.row.money:'/'}}
+              </template>
+            </el-table-column>
+            <el-table-column prop="buyNum" label="采购数量" show-overflow-tooltip>
+              <template slot-scope="scope">
+                {{scope.row.buyNum?scope.row.buyNum:'/'}}
+              </template>
+            </el-table-column>
+            <el-table-column prop="buyPrice" label="单价" show-overflow-tooltip>
+              <template slot-scope="scope">
+                {{scope.row.buyPrice?scope.row.buyPrice:'/'}}
+              </template> </el-table-column>
+            <el-table-column prop="totalMoney" label="费用" show-overflow-tooltip>
+              <template slot-scope="scope">
+                {{scope.row.totalMoney?scope.row.totalMoney:'/'}}
+              </template> </el-table-column>
+            <el-table-column prop="name" label="支付方式" width="120">
               <template slot-scope="scope">
                 <el-select
-                  v-model="scope.row.input1"
+                  v-model="scope.row.payMode"
                   clearable
                   placeholder="请选择"
                 >
                   <el-option
-                    v-for="item in options"
+                    v-for="item in payMode"
                     :key="item.value"
                     :label="item.label"
                     :value="item.value"
@@ -114,7 +162,7 @@
             <el-table-column prop="name" label="付款日期">
               <template slot-scope="scope">
                 <el-date-picker
-                  v-model="scope.row.input2"
+                  v-model="scope.row.payTime"
                   type="date"
                   placeholder="选择日期"
                 >
@@ -125,37 +173,37 @@
               <template slot-scope="scope">
                 <el-input
                   placeholder="请输入内容"
-                  v-model="scope.row.input3"
+                  v-model="scope.row.cashMoney"
                   clearable
                 >
                 </el-input>
               </template>
             </el-table-column>
-            <el-table-column prop="name" label="服务费">
+            <el-table-column prop="name" label="服务费" >
               <template slot-scope="scope">
-                <el-input
-                  placeholder="请输入内容"
-                  v-model="scope.row.input4"
-                  clearable
+                <!-- <el-input
+                  v-model="scope.row.fwf"
+                  disabled
                 >
-                </el-input>
+                </el-input> -->{{scope.row.cashMoney?((scope.row.cashMoney*defscale)/100).toFixed(2):0}}
               </template>
             </el-table-column>
             <el-table-column prop="name" label="付款金额">
               <template slot-scope="scope">
-                <el-input
+                <!-- <el-input
                   placeholder="请输入内容"
-                  v-model="scope.row.input5"
+                  v-model="scope.row.payMoney"
                   clearable
                 >
-                </el-input>
+                </el-input> -->
+                {{scope.row.cashMoney?(Number((scope.row.cashMoney*defscale)/100)+Number(scope.row.cashMoney)).toFixed(2) :0}}
               </template>
             </el-table-column>
             <el-table-column prop="name" label="备注">
               <template slot-scope="scope">
                 <el-input
                   placeholder="请输入内容"
-                  v-model="scope.row.input6"
+                  v-model="scope.row.remark"
                   clearable
                 >
                 </el-input>
@@ -172,7 +220,7 @@
         </el-col>
         <el-col :span="24" class="putPlaceholder"></el-col>
         <el-col :span="24" class="put">
-          <el-button type="primary" class="SlideOpen" data-text="提交">
+          <el-button type="primary" class="SlideOpen" @click="submit" data-text="提交">
             <span>提交</span>
           </el-button>
         </el-col>
@@ -182,56 +230,44 @@
   </div>
 </template>
 <script>
+import Template from '../../template.vue';
 // import { matchType } from '@/utils/matchType' // 引入文件格式判断方法
 
 export default {
   name: 'requestpayout',
-  components: {},
+  components: {Template},
   data() {
     return {
       userId: this.$store.state.user.userId,
       deptId: this.$store.state.user.deptId,
       userName: this.$store.state.user.userName,
-      // 供应商选择
-      options: [
-        {
-          value: '选项1',
-          label: '黄金糕',
-        },
-        {
-          value: '选项2',
-          label: '双皮奶',
-        },
-        {
-          value: '选项3',
-          label: '蚵仔煎',
-        },
-        {
-          value: '选项4',
-          label: '龙须面',
-        },
-        {
-          value: '选项5',
-          label: '北京烤鸭',
-        },
+      supplierOptions:[],//供应商
+      payMode:[
+        {label:'全款先付',value:'1'},
+        {label:'全款后付',value:'2'},
+        {label:'预付款',value:'3'},
+        {label:'分期预付',value:'4'},
+        {label:'尾款',value:'5'},
       ],
-      value: '',
-      radio1: null,
-      radio2: null,
-      radio3: null,
+      supplierObj:{},//供应商数据
+      payerList:[],
+      supplierData:{},//付款方/服务费率
+      fromData:{
+        supplierId:'',
+          supplierId:'',
+          serviceScale:'0' , //默认费率
+          deforOther:'',  //其他费率
+          roleId:'',//付款方
+          payType:'0',//付款种类
+          isInvoice:'1',
+      },
+      defscale:0,//用户输入的服务费率
+      otherFlag:false,//用户输入服务费率输入框
+      invoiceFlag:false,//有票下拉框
 
-      tableData: [
-        {
-          date: '2016-05-02',
-          name: '王小虎',
-          input1: null,
-          input2: null,
-          input3: null,
-          input4: null,
-          input5: null,
-          input6: null,
-        },
-      ],
+      tableData: [ ],//列表数据
+
+      chooseArr:[],//批量请款选中的id数组
     }
   },
   // 侦听器
@@ -240,11 +276,159 @@ export default {
   beforeCreate() {},
   beforeMount() {},
   mounted() {
+
+    this.chooseArr=this.$store.state.batchCashOut;
+
     ///////// 接受页面传参 start /////////
-    this.getQuery()
+    // this.getQuery();
+    this.getSupplier();
+    this.getpayerList();
+
   },
   // 方法事件
   methods: {
+    submit(){
+      let outData={
+            subjectId:this.tableData[0].subjectId,
+            subItemsId:this.tableData[0].subItemsId,
+            supplierName: this.supplierObj.supplierName,
+            supplierId:this.fromData.supplierId
+        };
+      let data=[];
+      this.tableData.forEach(element => {
+        let money='';
+        if(this.fromData.deforOther){
+         money= Number((element.cashMoney*this.fromData.deforOther)/100)+Number(element.cashMoney)
+        }
+        if(this.fromData.serviceScale=='0'){
+         money= Number((element.cashMoney*this.defscale)/100)+Number(element.cashMoney)
+        }
+        data.push(
+          {
+            serviceScale:this.fromData.serviceScale,
+            deforOther:this.fromData.deforOther,
+            proRequireId:element.proRequireId,
+            roleId:this.fromData.roleId,
+            supplierId:this.fromData.supplierId,
+            payType:this.fromData.payType,
+            payMode:element.payMode,
+            payMoney:money,
+            subjectId:element.subjectId,
+            subItemsId:element.subItemsId,
+            remark:element.remark,
+            payTime:element.payTime,
+            subjectName:'影视活动',
+            subitemName:element.subitemName,
+            isInvoice:this.fromData.isInvoice,
+            invoiceRemark:this.fromData.invoiceRemark
+          }
+        )
+      });
+      let sumData={
+        supplie:outData,
+        proRequireId:this.tableData[0].proRequireId,
+        user:{
+          userId:this.$store.state.user.userId
+        },
+        paydetail:JSON.stringify(data) 
+      }
+      this.$axios.post('/ocarplay/api/movie/creatPayDetail',sumData).then((res) => {
+        
+      }).catch((err) => {
+        
+      });
+      console.log(sumData);
+
+    },
+    handleInvoice(e){
+      if(e=='0'){
+        this.invoiceFlag=true;
+      }else{
+        this.invoiceFlag=false;
+
+      }
+    },
+    //费率选中其他
+    handleSevice(e){
+      if(e=='1'){
+        this.otherFlag=true;
+      }else{
+        this.otherFlag=false;
+
+      }
+    },
+    //供应商下拉框选中
+    handleSupplier(e){
+      console.log(e);
+       this.$axios.post('/ocarplay/api/movie/toCashOut',{movieIdList:this.chooseArr,supplierId:e}).then((res) => {
+            if(res.status==200){
+              this.supplierObj=res.data[0].supplierList[0];
+              // this.fromData.supplier.subjectId=this.supplierObj.s
+             res.data.forEach(element => {
+                element.totalMoney=0;
+                element.cashMoney=0;
+                element.payMode='';
+                element.remark='';
+                element.payTime='';
+                element.invoiceRemark='';
+
+              });
+              this.tableData=res.data;
+            }
+          }).catch((err) => {
+            
+          });
+    },
+    //付款方选中——服务费率
+    getServe(e){
+       this.$axios.post('/ocarplay/api/movie/getPaymentRoleToOcarplay', {roleId: e}).then((res) => {
+          // this.listLoading = false
+          if (res.status == 200 && res.data.errorCode == 0) {
+              this.defscale = res.data.data[0].defscale;
+          }
+      })
+    },
+    //获取付款方
+    getpayerList() {
+      this.$axios.post('/ocarplay/api/movie/getPaymentRoleToOcarplay', {isOther: 1}).then((res) => {
+          // this.listLoading = false
+          if (res.status == 200 && res.data.errorCode == 0) {
+              this.payerList = res.data.data;
+              this.fromData.roleId=res.data.data[0].roleId;
+              this.getServe(res.data.data[0].roleId)
+          }
+      })
+        },
+        //获取供应商
+    getSupplier(){
+      this.$axios.post('/ocarplay/api/movie/getSupplierByMovieIds',{movieIdList:this.chooseArr}).then((res) => {
+        if(res.status==200){
+          this.supplierOptions=res.data;
+          this.fromData.supplierId=res.data[0].supplierId;
+          this.$axios.post('/ocarplay/api/movie/toCashOut',{movieIdList:this.chooseArr,supplierId:res.data[0].supplierId}).then((res) => {
+            if(res.status==200){
+              this.supplierObj=res.data[0].supplierList[0];
+              res.data.forEach(element => {
+                element.payMoney=0;
+                element.cashMoney=0;
+                element.payMode='';
+                element.remark='';
+                element.payTime='';
+                element.invoiceRemark='';
+
+
+              });
+              this.tableData=res.data;
+            }
+          }).catch((err) => {
+            
+          });
+        }
+      }).catch((err) => {
+        
+      });
+
+    },
     ///////// 返回上一页 start /////////
     previous() {
       this.$router.go(-1) //返回上一层
@@ -314,23 +498,39 @@ export default {
       flex-wrap: wrap;
       align-items: center;
       box-sizing: border-box;
-      border-top: 1px solid $borderColor;
-      border-left: 1px solid $borderColor;
+      // border-top: 1px solid $borderColor;
+      // border-left: 1px solid $borderColor;
+
+       border: 1px solid #DCDBDB;
+      border-radius: 10px;
+      overflow: hidden;
+      
       .case {
         // min-width: 160px;
         height: 49px;
-        border-bottom: 1px solid $borderColor;
+        // border-bottom: 1px solid $borderColor;
+        border-bottom:1px dashed #EFEFEF;
+        
         border-right: 1px solid $borderColor;
         box-sizing: border-box;
         line-height: 49px;
         &:nth-of-type(2n-1) {
-          width: 15%;
-          background: #f2f2f2;
-          text-align: center;
+          width: 10%;
+          // background: #f2f2f2;
+          background: #8C8C8C;
+          text-align: left;
+          border: none !important;
+          color: #ffffff;
+          padding: 0 10px;
         }
         &:nth-of-type(2n) {
-          width: 35%;
+          width: 40%;
+          padding: 0 20px;
+          color: #606266;
           // background: #ccc;
+        }
+        .el-radio{
+          padding: 4px 0;
         }
       }
     }
@@ -350,6 +550,10 @@ export default {
   }
   & >>> .el-table__body tr.current-row > td {
     background: #d8d8c8;
+  }
+  .el-table thead{
+    background-color:#8C8C8C !important;
+    color: #ffffff !important;
   }
 }
 </style>

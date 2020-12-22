@@ -4,13 +4,22 @@
     <el-row class="top">
       <el-col :span="24" class="box">
         <div>
-          <el-button
+          <!-- <el-button
             type="primary"
             size="small"
             icon="el-icon-circle-plus-outline"
             @click="toAddactivity(0, 0)"
           >
             新增活动
+          </el-button> -->
+
+           <el-button
+            type="primary"
+            size="small"
+            icon="el-icon-circle-plus-outline"
+            @click="handleCashOut"
+          >
+            批量请款
           </el-button>
           <el-button
             type="primary"
@@ -186,10 +195,10 @@
           </el-table-column>
           <el-table-column label="请款报销" min-width="160">
             <!--  slot-scope="props" -->
-            <template>
+            <template slot-scope="scope">
               <span>共7笔</span>
-              <el-tag @click="toReimbursement">报销</el-tag>
-              <el-tag @click="toRequestpayout">请款</el-tag>
+              <el-tag @click="toReimbursement(scope.row.proRequireId)">报销</el-tag>
+              <el-tag @click="toRequestpayout(scope.row.movieId)">请款</el-tag>
             </template>
           </el-table-column>
           <el-table-column type="expand" width="18">
@@ -817,6 +826,8 @@ export default {
       // 抽屉弹窗发布链接
       drawerMovieUrl: false,
       linkList: [{}], // 发布链接列表
+
+      chooseArr:[],
     }
   },
   // 过滤器
@@ -858,6 +869,22 @@ export default {
   },
   // 方法
   methods: {
+    handleCashOut(){
+      this.chooseArr=[];
+      let choose=this.$refs.table.selection;
+      if(choose.length>0){
+         for (const s of choose) {
+            this.chooseArr.push(s.movieId)
+          }
+          this.$store.commit('getBatchCashOut', this.chooseArr);
+           this.$router.push({
+              path: '/home/requestpayout',
+            })
+      }else{
+        this.$message.error('请选择')
+      }
+     
+    },
     ///////// 通过供应商搜索 start /////////
     searchStart() {},
     ///////// 通过供应商搜索 end /////////
@@ -1606,13 +1633,21 @@ export default {
       console.log(supplierData)
     },
     // 跳转报销页面
-    toReimbursement() {
+    toReimbursement(obj) {
       this.$router.push({
         path: '/home/reimbursement',
+        query:{
+          id:obj
+        }
       })
     },
     // 跳转请款页面
-    toRequestpayout() {
+    toRequestpayout(id) {
+      this.chooseArr=[];
+      this.chooseArr.push(id);
+      this.$store.commit('getBatchCashOut', this.chooseArr);
+
+    
       this.$router.push({
         path: '/home/requestpayout',
       })
