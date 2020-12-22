@@ -135,7 +135,7 @@
     <el-row class="content content1">
       <div class="table_list">
         <el-table
-          :data="taskListData"
+          :data="movieListData"
           style="width: 100%"
           :header-row-style="{ height: '54px' }"
           :header-cell-style="{ color: '#000' }"
@@ -143,6 +143,7 @@
           v-loading="loading"
           ref="table"
           @sort-change="sortableChange"
+          @expand-change="getExpansionData"
         >
           <el-table-column
             prop
@@ -159,7 +160,7 @@
           >
             <template slot-scope="scope">
               <template v-if="scope.row.photoTime">
-                {{ $date(scope.row.photoTime) }}
+                {{ $date0(scope.row.photoTime) }}
                 <template v-if="scope.row.reasonId">
                   <el-tooltip
                     class="item"
@@ -178,7 +179,7 @@
           <el-table-column
             prop="createTime"
             label="下达时间-人"
-            min-width="100"
+            min-width="180"
           >
             <template slot-scope="scope">
               {{ scope.row.createTime }}{{ scope.row.initUserId }}
@@ -195,11 +196,29 @@
           <el-table-column type="expand" width="18">
             <!--  slot-scope="props" -->
             <template>
-              <el-form label-position="left" inline class="demo-table-expand">
-                <el-form-item label="商品名称">
-                  <span>商品名称</span>
-                </el-form-item>
-              </el-form>
+              <el-col :span="2" style="text-align: right;">
+                共2笔 合计3000元
+              </el-col>
+              <el-table :data="tableData" style="width: 45%">
+                <el-table-column type="index" label="序号">
+                </el-table-column>
+                <el-table-column prop="name" label="金额类别">
+                </el-table-column>
+                <el-table-column prop="name" label="时间">
+                </el-table-column>
+                <el-table-column prop="name" label="部门">
+                </el-table-column>
+                <el-table-column prop="name" label="请款人">
+                </el-table-column>
+                <el-table-column prop="name" label="供应商请款">
+                </el-table-column>
+                <el-table-column prop="name" label="金额(元)">
+                </el-table-column>
+                <el-table-column prop="name" label="状态">
+                </el-table-column>
+                <el-table-column prop="name" label="地址">
+                </el-table-column>
+              </el-table>
             </template>
           </el-table-column>
           <el-table-column
@@ -214,7 +233,8 @@
                 class="omit"
                 :underline="false"
                 @click="toDetail(scope.row.movieId)"
-                >{{ scope.row.movieName }}</el-link
+                >{{ $date0(scope.row.photoTime)
+                }}{{ scope.row.movieName }}</el-link
               >
             </template>
           </el-table-column>
@@ -225,9 +245,15 @@
             show-overflow-tooltip
           >
             <template slot-scope="scope">
-              <span v-if="scope.row.status == 0">进行中</span>
-              <span v-else-if="scope.row.status == 2">完成</span>
-              <span v-else-if="scope.row.status == 3">延期</span>
+              <span v-if="scope.row.status == 0" class="statusColor0"
+                >进行中</span
+              >
+              <span v-else-if="scope.row.status == 2" class="statusColor2"
+                >完成</span
+              >
+              <span v-else-if="scope.row.status == 3" class="statusColor3"
+                >延期</span
+              >
             </template>
           </el-table-column>
           <el-table-column
@@ -249,32 +275,43 @@
             show-overflow-tooltip
           >
           </el-table-column>
+
+          <!-- <el-table-column prop="ownerItemList" label="邀约事项" min-width="130" show-overflow-tooltip></el-table-column> -->
           <el-table-column
-            prop="ownerName"
-            label="车辆"
+            prop="modelName"
+            label="模特"
             min-width="90"
             show-overflow-tooltip
           >
             <template slot-scope="scope">
-              <template v-if="scope.row.movieType == 1">
-                <el-link
-                  type="primary"
-                  @click="
-                    toSupplier(
-                      scope.row.movieId,
-                      scope.row.movieName,
-                      '车辆',
-                      3
-                    )
-                  "
-                >
-                  去完善
-                </el-link>
+              <template v-if="scope.row.isModel">
+                <template v-if="scope.row.movieToSupplierList1.length">
+                  <span
+                    v-for="(item, index) in scope.row.movieToSupplierList1"
+                    :key="index"
+                  >
+                    {{ item.supplierName }}
+                  </span>
+                </template>
+                <template v-else>
+                  <el-link
+                    type="primary"
+                    @click="
+                      toSupplier(
+                        scope.row.movieId,
+                        scope.row.movieName,
+                        '模特',
+                        1
+                      )
+                    "
+                  >
+                    去完善
+                  </el-link>
+                </template>
               </template>
               <span v-else>/</span>
             </template>
           </el-table-column>
-          <!-- <el-table-column prop="ownerItemList" label="邀约事项" min-width="130" show-overflow-tooltip></el-table-column> -->
           <el-table-column
             prop="personName"
             label="摄影师"
@@ -283,44 +320,64 @@
           >
             <template slot-scope="scope">
               <template v-if="scope.row.isPerson">
-                <el-link
-                  type="primary"
-                  @click="
-                    toSupplier(
-                      scope.row.movieId,
-                      scope.row.movieName,
-                      '摄影师',
-                      2
-                    )
-                  "
-                >
-                  去完善
-                </el-link>
+                <template v-if="scope.row.movieToSupplierList2.length">
+                  <span
+                    v-for="(item, index) in scope.row.movieToSupplierList2"
+                    :key="index"
+                  >
+                    {{ item.supplierName }}
+                  </span>
+                </template>
+                <template v-else>
+                  <el-link
+                    type="primary"
+                    @click="
+                      toSupplier(
+                        scope.row.movieId,
+                        scope.row.movieName,
+                        '摄影师',
+                        2
+                      )
+                    "
+                  >
+                    去完善
+                  </el-link>
+                </template>
               </template>
               <span v-else>/</span>
             </template>
           </el-table-column>
           <el-table-column
-            prop="modelName"
-            label="模特"
+            prop="ownerName"
+            label="车辆"
             min-width="90"
             show-overflow-tooltip
           >
             <template slot-scope="scope">
-              <template v-if="scope.row.isPerson">
-                <el-link
-                  type="primary"
-                  @click="
-                    toSupplier(
-                      scope.row.movieId,
-                      scope.row.movieName,
-                      '模特',
-                      1
-                    )
-                  "
-                >
-                  去完善
-                </el-link>
+              <template v-if="scope.row.movieType == 1">
+                <template v-if="scope.row.movieToSupplierList3.length">
+                  <span
+                    v-for="(item, index) in scope.row.movieToSupplierList3"
+                    :key="index"
+                  >
+                    {{ item.supplierName }}
+                  </span>
+                </template>
+                <template v-else>
+                  <el-link
+                    type="primary"
+                    @click="
+                      toSupplier(
+                        scope.row.movieId,
+                        scope.row.movieName,
+                        '车辆',
+                        3
+                      )
+                    "
+                  >
+                    去完善
+                  </el-link>
+                </template>
               </template>
               <span v-else>/</span>
             </template>
@@ -339,7 +396,7 @@
                     toSupplier(
                       scope.row.movieId,
                       scope.row.movieName,
-                      '模特',
+                      '其他',
                       1
                     )
                   "
@@ -361,46 +418,37 @@
               <span v-else>/</span>
             </template>
           </el-table-column>
-          <el-table-column
-            prop="status"
-            label="状态"
-            min-width="60"
-            v-if="deptId == 90"
-          >
-            <template slot-scope="scope">
-              <div v-if="scope.row.status == 0" class="statusColor0">
-                执行中
-              </div>
-              <div v-if="scope.row.status == 1" class="statusColor1">
-                结算中
-              </div>
-              <div v-if="scope.row.status == 2" class="statusColor2">完成</div>
-              <div v-if="scope.row.status == 3" class="statusColor3">延期</div>
-              <div v-if="scope.row.status == 4" class="statusColor4">
-                人工延期
-              </div>
-            </template>
-          </el-table-column>
-
           <el-table-column label="评分" min-width="70">
             <template slot-scope="scope">
-              <span v-if="scope.row.isSubmit">已评分</span>
-              <el-link type="primary" v-else @click="addComment(scope.row)">
-                去评价
-              </el-link>
+              <template v-if="scope.row.movieToSupplierList2.length">
+                <span v-if="scope.row.isScore">已评分</span>
+                <el-link type="primary" v-else @click="addComment(scope.row)">
+                  去评价
+                </el-link>
+              </template>
+              <span v-else>/</span>
             </template>
           </el-table-column>
           <el-table-column label="发布链接" min-width="90">
             <template slot-scope="scope">
-              <el-link type="primary" @click="toMovieUrl(scope.row)">
+              <el-link
+                type="primary"
+                @click="toMovieUrl(scope.row)"
+                v-if="scope.row.urlStatus == 1"
+              >
                 填写链接
               </el-link>
+              <span v-else-if="scope.row.urlStatus == 2">待跟进</span>
+              <span v-else-if="scope.row.urlStatus == 3">已完成</span>
             </template>
           </el-table-column>
 
           <el-table-column prop="createTime" label="其他验收" min-width="100">
-            <template>
-              <el-link type="primary">已上传</el-link>
+            <template slot-scope="scope">
+              <div v-if="scope.row.isOther">
+                <el-link type="primary">点击上传</el-link>
+              </div>
+              <span v-else> / </span>
             </template>
           </el-table-column>
           <el-table-column label="反馈" min-width="100">
@@ -411,24 +459,25 @@
               ></i>
             </template>
           </el-table-column>
-          <el-table-column prop="address" label="操作" min-width="130">
+          <el-table-column prop="address" label="操作" min-width="160">
             <template slot-scope="scope">
               <!-- v-if="subordinate == 150 || deptId == 90 || adminShow" -->
               <template>
-                <el-button type="primary" size="mini" @click="delay(scope.row)"
-                  >延期</el-button
-                >
+                <el-button type="primary" size="mini" @click="delay(scope.row)">
+                  延期
+                </el-button>
                 <el-button
                   type="primary"
                   size="mini"
-                  @click="delContent(scope.row.taskId)"
-                  >删除</el-button
+                  @click="delContent(scope.row.movieId)"
                 >
+                  删除
+                </el-button>
               </template>
 
-              <template>
+              <!-- <template>
                 <el-button plain size="mini">完成</el-button>
-              </template>
+              </template> -->
             </template>
           </el-table-column>
         </el-table>
@@ -448,11 +497,11 @@
     </el-row>
 
     <!-- 抽屉弹窗延期原因 start -->
-    <el-drawer title="延期任务" :visible.sync="drawerDelay" size="566px">
+    <el-drawer title="延期活动" :visible.sync="drawerDelay" size="566px">
       <el-row class="drawerDelay" v-loading="drawerLoading">
-        <el-col :span="4">任务名称:</el-col>
-        <el-col :span="20">{{ taskName }}</el-col>
-        <el-col :span="4">预计时间:</el-col>
+        <el-col :span="4">活动名称:</el-col>
+        <el-col :span="20">{{ linkMovieName }}</el-col>
+        <el-col :span="4">延期时间:</el-col>
         <el-col :span="20">
           <el-date-picker
             v-model="delayTime"
@@ -462,7 +511,7 @@
             :unlink-panels="true"
           ></el-date-picker>
         </el-col>
-        <el-col :span="4" class="key keycontent">延期说明:</el-col>
+        <el-col :span="4" class="key keycontent">延期原因:</el-col>
         <el-col :span="20">
           <el-input
             type="textarea"
@@ -497,9 +546,9 @@
         <el-row class="drawerMovieUrl">
           <el-col :span="6">任务名称:</el-col>
           <el-col :span="18">
-            <el-col :span="20">{{ taskName }}</el-col>
+            <el-col :span="20">{{ linkMovieName }}</el-col>
           </el-col>
-          <el-col :span="6" class="keycontent">结算明细:</el-col>
+          <el-col :span="6" class="keycontent">验收链接:</el-col>
           <el-col :span="18">
             <!-- <el-col :span="20">
               <el-input placeholder="搜索车主" suffix-icon="el-icon-search" v-model="input"></el-input>
@@ -507,35 +556,30 @@
             <el-col
               :span="24"
               class="detailList"
-              v-for="(item, index) in linkList"
+              v-for="(item, index) in movieUrlList"
               :key="index"
             >
               <el-col :span="1" style="text-align: center">
-                <!-- {{item.isOver}} -->
-                <i
-                  class="el-icon-success"
-                  v-if="item.isOver"
-                  style="color: #85ce61"
-                ></i>
-                <i class="el-icon-remove" style="color: #a6a9ad" v-else></i>
+                {{ index + 1 }}.
               </el-col>
-              <el-col :span="4">
+              <el-col :span="6">
                 <el-select
-                  v-model="item.ownerId"
-                  placeholder="摄影师"
+                  v-model="item.urlType"
+                  placeholder="发布状态"
                   clearable
                   filterable
                   class="userType1"
+                  size="medium"
                 >
                   <el-option
-                    v-for="item in cammeramanList"
+                    v-for="item in linkStatus"
                     :key="item.value"
                     :label="item.label"
                     :value="item.value"
                   ></el-option>
                 </el-select>
               </el-col>
-              <el-col :span="15">
+              <el-col :span="14">
                 <!-- <template v-if="item.userType == 0"> -->
                 <el-input
                   placeholder="请输入链接"
@@ -586,7 +630,7 @@
         <el-table
           :data="feedbackList"
           style="width: 100%"
-          height="320"
+          height="230"
           :show-header="false"
           v-loading="movieFeedbackloading"
         >
@@ -713,7 +757,7 @@ export default {
       // 表格数据
       loading: false,
 
-      taskListData: [],
+      movieListData: [],
       orderType: this.$store.state.order.orderType, // 1-升序，2-降序
       orderField: this.$store.state.order.orderField, // 1-拍摄时间，2-下达时间
       // 分页信息
@@ -816,7 +860,43 @@ export default {
       },
       // 抽屉弹窗发布链接
       drawerMovieUrl: false,
-      linkList: [{}], // 发布链接列表
+      linkMovieName: null,
+      linkMovieId: null,
+      linkStatus: [
+        {
+          value: 1,
+          label: '正常发布',
+        },
+        {
+          value: 2,
+          label: '客户否定',
+        },
+        {
+          value: 3,
+          label: '拍摄不好',
+        },
+        {
+          value: 4,
+          label: '待发布',
+        },
+      ],
+      repeatIs: false, //
+      movieUrlList: [{}], // 发布链接列表
+      reimburAndPaymentOfPrequireList: [],
+      tableData: [
+        {
+          name: '王小虎',
+        },
+        {
+          name: '王小虎',
+        },
+        {
+          name: '王小虎',
+        },
+        {
+          name: '王小虎',
+        },
+      ],
     }
   },
   // 过滤器
@@ -928,13 +1008,14 @@ export default {
       let data = {
         pageNum: this.pageNum,
         pageSize: this.pageSize,
-        task: {
-          deleteFlag: false,
+        movie: {
+          // deleteFlag: false,
           status: this.status,
-          taskType: this.taskType,
+          movieType: this.taskType,
+          urlStatus: this.linkState,
           // itemId: this.itemId,
-          carSeriesId: this.carSeriesId,
-          taskName: this.$store.state.searchValue,
+          // carSeriesId: this.activityType,
+          // taskName: this.$store.state.searchValue,
           // deptId: this.deptId
         },
         orderField: this.orderField, // 1-拍摄时间，2-下达时间
@@ -944,10 +1025,27 @@ export default {
         // console.log(res)
         if (res.status == 200 && data) {
           let data = res.data
-          this.taskListData = data.items
+          data.items.forEach((element) => {
+            element.movieToSupplierList1 = []
+            element.movieToSupplierList2 = []
+            element.movieToSupplierList3 = []
+            element.movieToSupplierList4 = []
+            element.movieToSupplierList.forEach((element_) => {
+              if (element_.supplierType == 1) {
+                element.movieToSupplierList1.push(element_)
+              } else if (element_.supplierType == 2) {
+                element.movieToSupplierList2.push(element_)
+              } else if (element_.supplierType == 3) {
+                element.movieToSupplierList3.push(element_)
+              } else if (element_.supplierType == 4) {
+                element.movieToSupplierList4.push(element_)
+              }
+            })
+          })
+          this.movieListData = data.items
           this.total = data.totalRows
           this.loading = false
-          // console.log(data.items)
+          // console.log(this.movieListData)
         }
       })
     },
@@ -974,49 +1072,38 @@ export default {
     ///////// 延期原因 start /////////
     delay(prm) {
       this.drawerDelay = true
-      this.taskId = prm.taskId
-      this.taskName = prm.taskName
-      console.log(prm)
+      this.linkMovieId = prm.movieId
+      this.linkMovieName = prm.movieName
+      // console.log(prm)
     },
     putDelay() {
-      this.drawerLoading = true
       let endTime = this.$date0(this.delayTime)
       let data = {
-        taskId: this.taskId,
-        status: 4,
+        movieId: this.linkMovieId,
+        status: 3,
         delayReason: this.delayReason,
         endTime: endTime,
       }
       // console.log(data)
       if (!data.delayReason) {
+        this.$message.error('请填写延期原因！')
         return
       } else if (!data.endTime) {
+        this.$message.error('请填写延期时间！')
         return
       }
-      // let falg = true
-      // list.forEach((element) => {
-      //   if (!element) {
-      //     falg = false
-      //   }
-      // })
-      return
-      if (falg) {
-        this.$axios.post('/ocarplay/task/save', data).then((res) => {
-          // console.log(res)
-          if (res.status == 200 && res.data == 1) {
-            this.$message.success('任务延期成功！')
-            this.drawerDelay = false
-            ///////// 获取任务列表 start /////////
-            this.getMovieListAjax()
-          } else {
-            this.$message.error('任务延期失败！')
-          }
-          this.drawerLoading = false
-        })
-      } else {
-        this.$message.error('请检查信息是否完整！')
+      this.drawerLoading = true
+      this.$axios.post('/ocarplay/api/movie/save', data).then((res) => {
+        if (res.status == 200 && res.data.errcode == 0) {
+          this.$message.success('任务延期成功！')
+          this.drawerDelay = false
+          ///////// 获取任务列表 start /////////
+          this.getMovieListAjax()
+        } else {
+          this.$message.error('任务延期失败！')
+        }
         this.drawerLoading = false
-      }
+      })
     },
     ///////// 延期原因 end /////////
 
@@ -1137,97 +1224,95 @@ export default {
     ///////// 提交任务 start /////////
     toMovieUrl(prm) {
       this.drawerMovieUrl = true
+      this.linkMovieName = prm.movieName
+      this.linkMovieId = prm.movieId
+      let num = prm.num
+      let movieUrlList = []
+      if (prm.movieUrlList && prm.movieUrlList.length) {
+        // movieUrlList = prm.movieUrlList
+        prm.movieUrlList.forEach((element) => {
+          movieUrlList.push({
+            movieId: element.movieId,
+            urlId: element.urlId,
+            url: element.url,
+            urlType: element.urlType,
+            userId: this.userId,
+          })
+        })
+      } else {
+        for (let i = 0; i < num; i++) {
+          movieUrlList.push({
+            movieId: this.linkMovieId,
+            url: null,
+            urlType: 1,
+            userId: this.userId,
+          })
+        }
+      }
+      this.movieUrlList = movieUrlList
     },
+    ///////// 链接改变验证 start /////////
+    urlChange(val) {
+      // console.log(this.taskDetail)
+      // if (this.taskDetail.taskType != 4) {
+      let num = 0
+      let list = []
+      this.movieUrlList.forEach((element, i) => {
+        // console.log(element.url)
+        if (element.url == val) {
+          num++
+          list.push(i)
+        }
+      })
+      // console.log(list)
+      if (num > 1) {
+        this.$message.error('链接重复！')
+        this.repeatIs = true
+      } else {
+        this.repeatIs = false
+      }
+      // }
+
+      // let data = this.countJson(this.listInviteList, 'url')
+      // console.log(data)
+    },
+    ///////// 链接改变验证 end /////////
     // 提交按钮
     submitBtn(e) {
-      // let status = null
-      this.drawerLoading = true
-      let listInviteList = this.listInviteList
-      listInviteList.forEach((element) => {
-        element.taskId = this.taskId
-        if (element.userType == 0) {
-          element.typeId = element.inviteData[0]
-          element.itemId = element.inviteData[1]
-          element.ownerId = element.inviteData[2]
-        }
-      })
-      let delListInviteList = this.delListInviteList
-      delListInviteList.forEach((element) => {
-        element.deleteFlag = true
-      })
-      listInviteList = listInviteList.concat(delListInviteList)
+      // this.drawerLoading = true
+      let movieUrlList = this.movieUrlList
+      let repeatIs = this.repeatIs
+      if (repeatIs) {
+        this.$message.error('请检查链接不能重复！')
+        return
+      }
       let data = {
-        taskId: this.taskId,
-        deptId: this.taskDeptId,
-        // status: status,
-        updateTime: this.$time0(new Date()),
-        listInvite: listInviteList,
-        nowUserId: this.userId,
-        nowUserDeptId: this.deptId,
-        initUserId: this.userId,
+        movieId: this.linkMovieId,
+        movieUrlList: this.movieUrlList,
       }
-      let flag = true
-      data.listInvite.forEach((element) => {
-        if (e == 0) {
-          if (!element.ownerId) {
-            flag = false
-          }
-        } else if (e == 1) {
-          if (!element.ownerId || !element.url) {
-            flag = false
-          }
-        }
-        // console.log(e)
-      })
-      let url = ''
-      if (e == 0) {
-        // status = this.taskDetail.status
-        url = '/ocarplay/task/saveInvite'
-      } else {
-        // status = 1
-        url = '/ocarplay/task/save'
-        data.status = 1
-      }
-      // flag = false
       // console.log(data)
-      // console.log(data.listInvite)
-      // console.log(JSON.stringify(data))
-      if (flag) {
-        data.listInvite.forEach((element) => {
-          if (element.isCard) {
-            element.isCard = 1
+      // return
+      this.$axios
+        .post('/ocarplay/api/movie/save', data)
+        .then((res) => {
+          if (res.status == 200 && res.data.errcode === 0) {
+            this.$message.success('链接提交成功！')
+            this.drawerLoading = false
+            this.drawerMovieUrl = false
+            this.getMovieListAjax()
           } else {
-            element.isCard = 0
+            this.$message.error('任务提交失败！')
+            this.drawerLoading = false
           }
         })
-
-        // console.log(data)
-        this.$axios
-          .post(url, data)
-          .then((res) => {
-            // console.log(res)
-            if (res.status == 200 && res.data == 1) {
-              if (e) {
-                this.$message.success('任务提交成功！')
-              } else {
-                this.$message.success('任务保存成功！')
-              }
-              this.drawerLoading = false
-              this.drawerMovieUrl = false
-              this.getMovieListAjax()
-            } else {
-              this.$message.error('任务提交失败！')
-              this.drawerLoading = false
-            }
-          })
-          .catch((res) => {
-            console.log(res)
-            this.drawerLoading = false
-          })
-      } else {
-        this.drawerLoading = false
-        this.$message.error('保存请选择车主！提交需填入链接！')
-      }
+        .catch((res) => {
+          console.log(res)
+          this.drawerLoading = false
+        })
+      // } else {
+      //   this.drawerLoading = false
+      //   this.$message.error('保存请选择车主！提交需填入链接！')
+      // }
     },
     ///////// 提交任务 end /////////
 
@@ -1265,13 +1350,13 @@ export default {
 
     ///////// 删除任务 start /////////
     delContent(id) {
-      this.$confirm('确认要删除该任务吗?', '提示', {
+      this.$confirm('确认要删除该活动吗?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
       })
         .then(() => {
-          this.delTask(id)
+          this.delMovie(id)
         })
         .catch(() => {
           this.$message({
@@ -1280,23 +1365,23 @@ export default {
           })
         })
     },
-    delTask(id) {
-      let data = { taskId: id, deleteFlag: 1 }
-      this.$axios.post('/ocarplay/task/delTask', data).then((res) => {
-        // console.log(res)
-        if (res.status == 200 && res.data == 1) {
-          this.$message.success('删除任务成功！')
-          ///////// 获取任务列表 start /////////
-          this.getMovieListAjax()
-        } else {
-          this.$message.error('删除任务失败！')
-        }
-      })
-      // .chath(res => {
-      //   // if (res.status != 200) {
-      //     this.$message.error('网络错误！')
-      //   // }
-      // })
+    delMovie(id) {
+      let data = { movieId: id }
+      this.$axios
+        .post('/ocarplay/api/movie/delete', data)
+        .then((res) => {
+          // console.log(res)
+          if (res.status == 200 && res.data.errcode === 0) {
+            this.$message.success('删除活动成功！')
+            ///////// 获取任务列表 start /////////
+            this.getMovieListAjax()
+          } else {
+            this.$message.error('删除活动失败！')
+          }
+        })
+        .catch((res) => {
+          console.log(res)
+        })
     },
     ///////// 删除任务 end /////////
 
@@ -1425,50 +1510,26 @@ export default {
 
     ///////// 导出结算列表 start /////////
     evaluatePersonVisibleShow(obj, index) {
-      // this.taskListData[index].evaluatePersonVisible = !this.taskListData[index].evaluatePersonVisible
-      if (this.taskListData[index].evaluatePersonVisible) {
-        this.taskListData[index].evaluatePersonVisible = false
-        // console.log(this.taskListData[index].evaluatePersonVisible)
+      // this.movieListData[index].evaluatePersonVisible = !this.movieListData[index].evaluatePersonVisible
+      if (this.movieListData[index].evaluatePersonVisible) {
+        this.movieListData[index].evaluatePersonVisible = false
+        // console.log(this.movieListData[index].evaluatePersonVisible)
       } else {
-        // console.log(this.taskListData[index].evaluatePersonVisible)
+        // console.log(this.movieListData[index].evaluatePersonVisible)
         // console.log(index)
         for (let i = 0; i < obj.length; i++) {
           const element = obj[i]
           if (element.ifPgOver == 0) {
-            this.taskListData[index].evaluatePersonVisible = true
+            this.movieListData[index].evaluatePersonVisible = true
             break
           }
         }
-        if (!this.taskListData[index].evaluatePersonVisible) {
+        if (!this.movieListData[index].evaluatePersonVisible) {
           this.$message.warning('已评价完成！')
         }
       }
     },
     ///////// 导出结算列表 start /////////
-
-    ///////// 链接改变验证 start /////////
-    urlChange(val) {
-      // console.log(this.taskDetail)
-      if (this.taskDetail.taskType != 4) {
-        let num = 0
-        let list = []
-        this.listInviteList.forEach((element, i) => {
-          // console.log(element.url)
-          if (element.url == val) {
-            num++
-            list.push(i)
-          }
-        })
-        // console.log(list)
-        if (num > 1) {
-          this.$message.error('重复！')
-        }
-      }
-
-      // let data = this.countJson(this.listInviteList, 'url')
-      // console.log(data)
-    },
-    ///////// 链接改变验证 end /////////
 
     ///////// 排序 start /////////
     sortableChange(column) {
@@ -1502,97 +1563,6 @@ export default {
     // },
     ///////// 打开延期拍摄弹窗 end /////////
 
-    ///////// 延期拍摄弹窗打开 start /////////
-    drawerDelayPhotoOpen() {
-      let data = {
-        taskId: this.taskId,
-      }
-      this.$axios
-        .post('/ocarplay/pDelayReason/listAjax', {})
-        .then((res) => {
-          // console.log(res)
-          if (res.status == 200) {
-            let data = res.data.items
-            let reasonList = []
-            data.forEach((element) => {
-              reasonList.push({
-                value: element.reasonId,
-                label: element.reason,
-              })
-            })
-            this.reasonList = reasonList
-          }
-        })
-        .catch((res) => {
-          console.log(res)
-        })
-    },
-    ///////// 延期拍摄弹窗打开 end /////////
-
-    ///////// 延期拍摄弹窗关闭 start /////////
-    drawerDelayPhotoClose() {
-      this.reasonId = null
-      this.delayPhotoTime = null
-      this.taskId = null
-      this.taskName = null
-    },
-    ///////// 延期拍摄弹窗关闭 end /////////
-
-    ///////// 提交延期拍摄原因 end /////////
-    putDelayPhoto() {
-      let data = {
-        taskId: this.taskId,
-        photoTime: this.delayPhotoTime,
-        reasonId: this.reasonId,
-      }
-      if (!data.photoTime || !data.reasonId) {
-        this.$message.error('请填写拍摄时间和延期原因！')
-        return
-      }
-      this.drawerLoading = true
-      this.$axios
-        .post('/ocarplay/task/save', data)
-        .then((res) => {
-          if (res.status == 200) {
-            // console.log(res)
-            let data = res.data
-            if (data == 1) {
-              ///////// 获取任务列表 /////////
-              this.getMovieListAjax()
-              this.drawerDelayPhoto = false
-              this.$message.success('拍摄延期成功！')
-            } else {
-              this.$message.error('拍摄延期失败！')
-            }
-            this.drawerLoading = false
-          }
-        })
-        .catch((res) => {
-          this.drawerLoading = false
-          console.log(res)
-        })
-    },
-    ///////// 提交延期拍摄原因 end /////////
-
-    paydetailListShow(id) {
-      this.paydetailShow = true
-      this.paydetailShowLoading = true
-      // console.log(id)
-      // console.log(49576)
-      let data = { proRequireId: id }
-      this.$axios
-        .post('/ocarplay/task/paydetail', data)
-        .then((res) => {
-          // console.log(res)
-          if (res.status == 200) {
-            this.paydetailList = res.data.data
-          }
-          this.paydetailShowLoading = false
-        })
-        .catch((res) => {
-          console.log
-        })
-    },
     // 完善供应商信息
     toSupplier(id, name, type, typeId) {
       this.supplierShow++
@@ -1656,21 +1626,60 @@ export default {
         this.$message.error('请填写反馈内容！')
         return
       }
-      this.$axios.post('/ocarplay/api/movieFeedback/save', data).then((res) => {
-        console.log(res)
-        if (res.status == 200 && res.data.errcode === 0) {
-          this.feedbackText = null
-          this.$message.success('添加反馈成功!')
-          // let data = res.data
-          // this.feedbackList = data.items
-          // this.movieFeedbackloading = false
-          this.getMovieFeedbackListAjax(this.feedbackMovieId)
-        } else {
-          this.$message.success(res.data.msg)
-        }
-      })
+      this.$axios
+        .post('/ocarplay/api/movieFeedback/save', data)
+        .then((res) => {
+          console.log(res)
+          if (res.status == 200 && res.data.errcode === 0) {
+            this.feedbackText = null
+            this.$message.success('添加反馈成功!')
+            // let data = res.data
+            // this.feedbackList = data.items
+            // this.movieFeedbackloading = false
+            this.getMovieFeedbackListAjax(this.feedbackMovieId)
+          } else {
+            this.$message.success(res.data.msg)
+          }
+        })
+        .catch((res) => {
+          console.log(res)
+        })
     },
     ///////// 新增反馈 end /////////
+    ///////// 折叠获取请款和报销数据 end /////////
+    getExpansionData(row) {
+      // console.log(row)
+      let data = {
+        // proRequireId: row.proRequireId,
+        proRequireId: 50811,
+      }
+      this.$axios
+        .post('/ocarplay/api/movie/getReimburAndPaymentOfPrequire', data)
+        .then((res) => {
+          // console.log(res)
+          if (res.status == 200) {
+            let data = res.data.data[0]
+            let listOfflineData = data.listOfflineData
+            let listPayment = data.listPayment
+            // console.log(listOfflineData)
+            // console.log(listPayment)
+            let list = listPayment.concat(listOfflineData);
+            console.log(list)
+            // this.feedbackText = null
+            // this.$message.success('添加反馈成功!')
+            // let data = res.data
+            // this.feedbackList = data.items
+            // this.movieFeedbackloading = false
+            // this.getMovieFeedbackListAjax(this.feedbackMovieId)
+          } else {
+            // this.$message.success(res.data.msg)
+          }
+        })
+        .catch((res) => {
+          console.log(res)
+        })
+    },
+    ///////// 折叠获取请款和报销数据 end /////////
   },
 }
 </script>
@@ -1682,7 +1691,23 @@ $statusColor1: #e6a23c;
 $statusColor2: #909399;
 $statusColor3: #f56c6c;
 $statusColor4: #ea8a85;
-
+.statusColor0 {
+  color: $statusColor0;
+  
+}
+.statusColor1 {
+  color: $statusColor1;
+}
+.statusColor2 {
+  color: $statusColor2;
+}
+.statusColor3 {
+  color: $statusColor3;
+  font-weight: bold;
+}
+.statusColor4 {
+  color: $statusColor4;
+}
 #activity {
   height: 100%;
   .el-dialog__wrapper {
@@ -1755,22 +1780,7 @@ $statusColor4: #ea8a85;
       .el-tag {
         cursor: pointer;
       }
-      .statusColor0 {
-        color: $statusColor0;
-      }
-      .statusColor1 {
-        color: $statusColor1;
-      }
-      .statusColor2 {
-        color: $statusColor2;
-      }
-      .statusColor3 {
-        color: $statusColor3;
-        font-weight: bold;
-      }
-      .statusColor4 {
-        color: $statusColor4;
-      }
+
       // .el-table {
       //   background: none;
       //   & >>> .el-table__header-wrapper{
@@ -1840,10 +1850,10 @@ $statusColor4: #ea8a85;
       cursor: pointer;
     }
     .detailList {
-      // display: flex;
-      // flex-wrap: wrap;
-      // align-items: center;
-      // justify-content: space-between;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-around;
       margin-bottom: 18px;
     }
     .keycontent {

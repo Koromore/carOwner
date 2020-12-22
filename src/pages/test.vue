@@ -123,8 +123,60 @@ export default {
   watch: {},
   // 钩子函数
   mounted() {
-    
-    // test(){
+    let data = {
+      movieType: 1,
+      budgetApplyId: 1624,
+      subItemsId: 131,
+      subjectId: 8,
+      applyDetailId: 24729,
+      subjectTempId: 0,
+      jsonData:
+        '[{"num":2,"budget":505.1,"reqFinishTime":"2020-12-30","remark":"武汉-博越-2020款 2.0L 手动两驱智悦型-视频拍摄-2020-12-22"}]',
+
+      city: '武汉',
+      carTypeId: 1,
+      carSeriesId: 1,
+      photoType: 1,
+      isModel: true,
+      isPerson: true,
+      placeId: 1,
+      startTime: '2020-12-01',
+      endTime: '2020-12-30',
+      num: 2,
+      photoTime: '2020-12-22',
+      money: 505.1,
+      moneyRemark: 'ccc',
+      movieFileList: [
+        {
+          fileName: '111',
+          suffix: 'doc',
+          localPath: 'c:',
+          updateUserId: 3985,
+        },
+        {
+          fileName: '222',
+          suffix: 'doc',
+          localPath: 'c:',
+          updateUserId: 3985,
+        },
+      ],
+      movieDescList: [
+        {
+          descName: 'descName',
+          place: 'place',
+          photoDesc: 'photoDesc',
+          personDesc: 'personDesc',
+          otherDesc: 'otherDesc',
+        },
+        {
+          descName: 'descName',
+          place: 'place',
+          photoDesc: 'photoDesc',
+          personDesc: 'personDesc',
+          otherDesc: 'otherDesc',
+        },
+      ],
+    }
 
     this.G2()
   },
@@ -140,7 +192,7 @@ export default {
   },
   // 方法
   methods: {
-    onPick(time){
+    onPick(time) {
       console.log(123)
     },
     resetDateFilter() {
@@ -170,7 +222,6 @@ export default {
     },
     test(res) {
       return res
-
     },
     G2() {
       // 数据来源于 https://github.com/react-d3/react-d3-map-bubble

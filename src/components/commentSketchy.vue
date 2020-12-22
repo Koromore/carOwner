@@ -20,24 +20,26 @@
             <div class="title">服务指标</div>
             <el-rate v-model="value2"></el-rate>
           </el-col>
+          {{value1}}
+          {{value2}}
           <el-col :span="24" class="btn">
             <template v-if="type == 0">
               <el-col :span="6" :offset="5">
-                <el-button type="info" @click="cancel" size="small"
-                  >取消</el-button
-                >
+                <el-button type="info" @click="cancel" size="small">
+                  取消
+                </el-button>
               </el-col>
               <el-col :span="6" :offset="2">
-                <el-button type="primary" @click="saveBtn" size="small"
-                  >提交</el-button
-                >
+                <el-button type="primary" @click="saveBtn" size="small">
+                  提交
+                </el-button>
               </el-col>
             </template>
             <template v-if="type == 1">
               <el-col :span="5" :offset="18">
-                <el-button type="primary" size="small" @click="close"
-                  >返回</el-button
-                >
+                <el-button type="primary" size="small" @click="close">
+                  返回
+                </el-button>
               </el-col>
             </template>
           </el-col>
@@ -157,14 +159,15 @@ export default {
   .el-row {
     height: 100%;
     position: relative;
-    .left,.right{
+    .left,
+    .right {
       height: 200px;
       text-align: center;
       border: 1px solid #cccccc;
       padding-top: 36px;
       font-size: 18px;
       font-weight: bold;
-      .el-rate{
+      .el-rate {
         margin-top: 49px;
         text-align: center;
       }

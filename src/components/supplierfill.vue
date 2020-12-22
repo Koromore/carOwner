@@ -41,7 +41,7 @@
                   <el-col :span="6" :offset="1">
                     <el-input
                       v-model="item.supplierMoney"
-                      placeholder="请输入金额"
+                      placeholder="金额"
                       clearable
                     ></el-input>
                   </el-col>
@@ -83,8 +83,9 @@ export default {
       fromData: [
         {
           supplierId: null,
+          supplierName: null,
           supplierMoney: null,
-          supplierType: this.supplierData.typeId,
+          // supplierType: this.supplierData.typeId,
         },
       ],
       options: [
@@ -116,7 +117,7 @@ export default {
   beforeCreate() {},
   beforeMount() {},
   mounted() {
-    console.log(this)
+    // console.log(this)
   },
   // 方法
   methods: {
@@ -124,11 +125,10 @@ export default {
     addFromData(index) {
       let fromData = this.fromData
       fromData.push({
-        // value1: '',
-        // value2: '',
         supplierId: null,
         supplierMoney: null,
-        supplierType: this.supplierData.typeId,
+        supplierName: null,
+        // supplierType: this.supplierData.typeId,
       })
       this.fromData = fromData
     },
@@ -145,11 +145,19 @@ export default {
     // 打开对话框回调
     openDialog() {
       this.getPmsSupplierToOcarplay()
+      this.fromData = [
+        {
+          supplierId: null,
+          supplierName: null,
+          supplierMoney: null,
+          // supplierType: this.supplierData.typeId,
+        },
+      ]
     },
     // 获取供应商
     getPmsSupplierToOcarplay() {
       let data = {
-        subItemsId: 8,
+        subjectId: 8,
       }
       this.$axios
         .post('/ocarplayapi/movie/getPmsSupplierToOcarplay', data)
@@ -168,10 +176,31 @@ export default {
     saveSupplier() {
       // this.dialogVisible = false
       let that = this
+      let movieToSupplierList = this.fromData
+      let options = this.options
+      for (let i = 0; i < movieToSupplierList.length; i++) {
+        let element = movieToSupplierList[i]
+        if (!element.supplierId) {
+          this.$message.error('请选择供应商！')
+          return
+        }
+        if (!element.supplierMoney) {
+          this.$message.error('请填写金额！')
+          return
+        }
+        element.supplierType = this.supplierData.typeId
+        for (let j = 0; j < options.length; j++) {
+          let element_ = options[j]
+          // console.log(j)
+          if (element.supplierId == element_.supplierId) {
+            element.supplierName = element_.supplierName
+            break
+          }
+        }
+      }
       let data = {
         movieId: this.supplierData.id,
-        movieToSupplierList:this.fromData
-        
+        movieToSupplierList: this.fromData,
       }
       // console.log(data)
       // return

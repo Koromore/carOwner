@@ -59,7 +59,7 @@
 
           <el-col :span="24" class="list taskName">
             <div class="key imp">任务名称</div>
-            <div class="val" v-show="taskType == 1 || !taskType">
+            <div class="val" v-show="movieType == 1 || !movieType">
               <el-select v-model="city" placeholder="城市" clearable filterable>
                 <el-option
                   v-for="item in cityList"
@@ -113,27 +113,23 @@
               </el-select>
             </div>
             <div class="val" v-show="movieType == 2">
-              <el-select
-                v-model="placeId"
-                placeholder="请选择"
-                clearable
-                filterable
-              >
+              <el-select v-model="city" placeholder="城市" clearable filterable>
                 <el-option
-                  v-for="item in placeList"
+                  v-for="item in cityList"
                   :key="item.value"
                   :label="item.label"
                   :value="item.value"
                 ></el-option>
               </el-select>
               <el-select
-                v-model="placeId"
-                placeholder="请选择"
+                v-model="brandId"
+                placeholder="品牌"
                 clearable
                 filterable
+                @change="changeBrandId"
               >
                 <el-option
-                  v-for="item in placeList"
+                  v-for="item in brandList"
                   :key="item.value"
                   :label="item.label"
                   :value="item.value"
@@ -142,17 +138,15 @@
               <el-input
                 class="halfTaskName"
                 placeholder="请输入内容"
-                v-model="halfTaskName"
+                v-model="movieName2"
                 clearable
-                :disabled="!disabledCaigou"
               ></el-input>
             </div>
             <div class="val" v-show="movieType == 3">
               <el-input
                 placeholder="请输入内容"
-                v-model="taskName"
+                v-model="movieName3"
                 clearable
-                :disabled="!disabledCaigou"
               ></el-input>
             </div>
           </el-col>
@@ -502,14 +496,6 @@ export default {
       taskDesc: '',
       remark: '',
 
-      // 预算明细选择弹窗
-      applyDetailName: null,
-      // applyDetailId: null,
-      subjectId: null,
-      subItemsId: null,
-      subjectTempId: null,
-      subItemsName: null,
-
       applyDetailIdBoxShow: false,
       gridData: [],
       // 按钮开关
@@ -557,18 +543,28 @@ export default {
           label: '图片和视频拍摄',
         },
       ],
+      // 预算明细选择弹窗
+      applyDetailName: null,
+      // applyDetailId: null,
+      subjectId: null,
+      subItemsId: null,
+      subjectTempId: null,
+      subItemsName: null,
+      identifier: null, // 编号
       // 信息
+      movieName2: null,
+      movieName3: null,
       movieName: null, // 任务名称
       movieType: 1, // 活动类型
       budgetApplyId: null, // 预算项目
       applyDetailId: null, // 预算明细
-      city: "武汉", // 所属城市
+      city: '', // 所属城市
       brandId: null, // 品牌
-      brandName: null, // 品牌名称
+      brandName: '', // 品牌名称
       carTypeId: null, // 车型
-      carTypeName: null, // 车型名称
+      carTypeName: '', // 车型名称
       photoType: null, // 拍摄类型
-      photoTypeName: null, // 拍摄类型名称
+      photoTypeName: '', // 拍摄类型名称
 
       isModel: 0, // 是否需要模特
       isPerson: 0, // 是否需要摄影师
@@ -669,7 +665,7 @@ export default {
 
     ///////// 获取项目名称 start /////////
     getBudget() {
-      let data = { userId: this.userId, subjectId: 8}
+      let data = { userId: this.userId, subjectId: 8 }
       this.$axios.post('/ocarplay/task/getBudget', data).then((res) => {
         // console.log(res)
         // this.listLoading = false
@@ -683,6 +679,14 @@ export default {
     chageBudgetApplyId(val) {
       if (!val) {
         this.applyDetailId = null
+      } else {
+        let budgetApplyIdList = this.budgetApplyIdList
+        budgetApplyIdList.forEach((element) => {
+          if (val == element.groupId) {
+            this.identifier = element.identifier
+          }
+        })
+        // this.identifier =
       }
       this.getBudgetDetailByApplyId(val)
     },
@@ -696,10 +700,10 @@ export default {
           // console.log(res)
           // this.listLoading = false
           if (res.status == 200) {
-            this.applyDetailIdList = res.data.data
+            // this.applyDetailIdList = res.data.data
             let applyDetailIdList = []
             res.data.data.forEach((element) => {
-              if (element.remainNum > 0 && element.subjectId != 10) {
+              if (element.subjectId == 8) {
                 applyDetailIdList.push(element)
               }
             })
@@ -1169,7 +1173,17 @@ export default {
       let brandName = this.brandName
       let carTypeName = this.carTypeName
       let photoTypeName = this.photoTypeName
-      let movieName = `${city}-${brandName}-${carTypeName}-${photoTypeName}`
+      let movieName = null
+      let movieName2 = this.movieName2
+      let movieName3 = this.movieName3
+      if (this.movieType == 1) {
+        movieName = `${city}-${brandName}-${carTypeName}-${photoTypeName}`
+      } else if (this.movieType == 2) {
+        movieName = `${city}-${brandName}-${movieName2}`
+      } else if (this.movieType == 3) {
+        movieName = movieName3
+      }
+
       if (this.taskId) {
         initUserId = ''
         status = ''
@@ -1180,12 +1194,13 @@ export default {
           num: 1,
           budget: this.money,
           reqFinishTime: endTime,
-          remark: this.photoTime+'-'+movieName,
+          remark: this.photoTime + '-' + movieName,
         },
       ])
       let data = {
         movieName: movieName, // 任务名称
         movieType: this.movieType, // 活动类型
+        identifier: this.identifier, // 编号
         budgetApplyId: this.budgetApplyId, // 预算项目
         applyDetailId: this.applyDetailId, // 预算明细
         subjectId: 8, // 科目
@@ -1241,10 +1256,10 @@ export default {
             } else {
               this.$message.success('任务新建成功！')
             }
-            return
+            // return
             setTimeout(() => {
               this.$router.push({
-                name: 'task',
+                name: 'activity',
               })
             }, 1000)
           } else {
