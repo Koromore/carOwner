@@ -28,7 +28,7 @@
           </el-col>
           <el-col :span="20" :offset="1" class="right">
             <template v-if="type==0">
-              <el-col class="gradeList" v-for="(item,index) in gradeList" :key="index">
+              <el-col class="mGradeInfoList" v-for="(item,index) in mGradeInfoList" :key="index">
                 <span>{{item.secondGrade}}/</span>
                 <span>{{item.thirdGrade}}</span>
                 <div class="score">
@@ -52,7 +52,7 @@
               </el-col>
             </template>
             <template v-else-if="type==1">
-              <el-col class="gradeList" v-for="(item,index) in gradeList" :key="index">
+              <el-col class="mGradeInfoList" v-for="(item,index) in mGradeInfoList" :key="index">
                 <span>{{item.grade.secondGrade}}/</span>
                 <span>{{item.grade.thirdGrade}}</span>
                 <div class="score">
@@ -109,9 +109,10 @@ export default {
       drawerTitle: '摄影师评价',
       loading: false,
       type: 0,
-      personId: null, // 摄影师Id
+      movieId: null, // 任务ID
+      supplierId: null, // 摄影师Id
       cameraTime: null, // 拍摄时间
-      gradeList: [], // 评分列表
+      mGradeInfoList: [], // 评分列表
       remark: null, // 备注
       personScore: 0, // 总分
     }
@@ -129,7 +130,7 @@ export default {
   beforeCreate() {},
   beforeMount() {},
   mounted() {
-    this.getGradeList()
+    this.getmGradeInfoList()
   },
   // 方法
   methods: {
@@ -139,14 +140,16 @@ export default {
       this.remark = null
     },
     drawerDataOpen() {
-      console.log(this.$parent.type)
-      this.type = this.$parent.type
-      if (this.type == 0) {
-        this.personId = this.$parent.personId
-        this.getGradeList()
-      } else if (this.type == 1) {
-        this.personGradeShow()
-      }
+      // console.log(this.$parent.type)
+      // this.type = this.$parent.type
+      // if (this.type == 0) {
+        this.movieId = this.$parent.gradeMovieId
+        this.supplierId = this.$parent.gradeSupplierId
+        this.drawerTitle = this.$parent.gradeSupplierName
+        this.getmGradeInfoList()
+      // } else if (this.type == 1) {
+        // this.personGradeShow()
+      // }
     },
     // /api/camera/listAjax
 
@@ -156,22 +159,22 @@ export default {
     },
     ///////// json数组排序 /////////
 
-    getGradeList() {
+    getmGradeInfoList() {
       // console.log(data)
       let data = {
         pageNum: 1,
         pageSize: 20,
       }
-      this.$axios.post('/ocarplay/api/grade/listAjax', data).then((res) => {
+      this.$axios.post('/ocarplay/api/mGrade/list', data).then((res) => {
         // console.log(res)
         if (res.status == 200) {
           let data = res.data
-          data.items.forEach((element) => {
+          data.forEach((element) => {
             element.score = 0
           })
           ///////// json数组排序 /////////
-          data.items.sort(this.sortby)
-          this.gradeList = data.items
+          data.sort(this.sortby)
+          this.mGradeInfoList = data
           this.loading = false
         }
       })
@@ -190,7 +193,7 @@ export default {
           // })
           // ///////// json数组排序 /////////
           // data.items.sort(this.sortby)
-          this.gradeList = data.gradeInfoList
+          this.mGradeInfoList = data.gradeInfoList
           this.personScore = data.personScore
           this.remark = data.remark
           // this.loading = false
@@ -205,15 +208,15 @@ export default {
     },
     saveBtn() {
       let doUserId = this.$parent.userId
-      let personId = this.personId
+      let supplierId  = this.supplierId // 供应商ID
       let remark = this.remark
-      let gradeInfoList = []
+      let mGradeInfoList = []
       let personScore = 0
-      let gradeList = this.gradeList
+      let GradeInfoList = this.mGradeInfoList
       let max = true
-      let taskId = this.$parent.taskId
-      gradeList.forEach((element) => {
-        gradeInfoList.push({
+      let movieId = this.movieId
+      GradeInfoList.forEach((element) => {
+        mGradeInfoList.push({
           gradeId: element.gradeId,
           score: element.score * 1,
         })
@@ -224,16 +227,16 @@ export default {
       })
       let data = {
         doUserId, // 评论人
-        taskId, // 任务Id
-        gradeInfoList, // 评分详情
-        personId, // 摄影师Id
+        movieId, // 任务Id
+        mGradeInfoList, // 评分详情
+        supplierId, // 供应商ID
         personScore, // 总分
         remark, // 备注
       }
       // console.log(data)
       if (max) {
         this.loading = true
-        this.$axios.post('/ocarplay/api/personGrade/save', data).then((res) => {
+        this.$axios.post('/ocarplay/api/movieGrade/save', data).then((res) => {
           console.log(res)
           if (res.status == 200) {
             let data = res.data
@@ -285,7 +288,7 @@ export default {
       height: 207px;
     }
   }
-  .gradeList {
+  .mGradeInfoList {
     height: 45px;
     line-height: 45px;
     box-shadow: 0 0 10px 0 #ddd;

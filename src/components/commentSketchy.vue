@@ -14,34 +14,34 @@
         <el-row>
           <el-col :span="11" class="left">
             <div class="title">技术指标</div>
-            <el-rate v-model="value1"></el-rate>
+            <el-rate v-model="techScore"></el-rate>
           </el-col>
           <el-col :span="11" :offset="2" class="right">
             <div class="title">服务指标</div>
-            <el-rate v-model="value2"></el-rate>
+            <el-rate v-model="serviceScore"></el-rate>
           </el-col>
-          {{value1}}
-          {{value2}}
+          <!-- {{techScore}}
+          {{serviceScore}} -->
           <el-col :span="24" class="btn">
-            <template v-if="type == 0">
-              <el-col :span="6" :offset="5">
-                <el-button type="info" @click="cancel" size="small">
-                  取消
-                </el-button>
-              </el-col>
-              <el-col :span="6" :offset="2">
-                <el-button type="primary" @click="saveBtn" size="small">
-                  提交
-                </el-button>
-              </el-col>
-            </template>
-            <template v-if="type == 1">
+            <!-- <template v-if="type == 0"> -->
+            <el-col :span="6" :offset="5">
+              <el-button type="info" @click="cancel" size="small">
+                取消
+              </el-button>
+            </el-col>
+            <el-col :span="6" :offset="2">
+              <el-button type="primary" @click="saveBtn" size="small">
+                提交
+              </el-button>
+            </el-col>
+            <!-- </template> -->
+            <!-- <template v-if="type == 1">
               <el-col :span="5" :offset="18">
                 <el-button type="primary" size="small" @click="close">
                   返回
                 </el-button>
               </el-col>
-            </template>
+            </template> -->
           </el-col>
         </el-row>
       </el-scrollbar>
@@ -64,9 +64,11 @@ export default {
       drawerTitle: '摄影师评价',
       loading: false,
       type: 0,
+      movieId: null,
+      supplierId: null, // 摄影师供应商Id
       personId: null, // 摄影师Id
-      value1: null,
-      value2: null,
+      techScore: null, // 技术分
+      serviceScore: null, // 服务分
     }
   },
   // 侦听器
@@ -91,7 +93,9 @@ export default {
     },
     drawerDataOpen() {
       // console.log(this.$parent.type)
-      this.type = this.$parent.type
+      // this.type = this.$parent.type
+      this.movieId = this.$parent.gradeMovieId
+      this.supplierId = this.$parent.gradeSupplierId
     },
     // /api/camera/listAjax
 
@@ -102,40 +106,62 @@ export default {
     ///////// json数组排序 /////////
     close() {
       this.drawerData = false
+      this.techScore = null // 技术分
+      this.serviceScore = null // 服务分
     },
     cancel() {
       this.drawerData = false
     },
     saveBtn() {
-      let doUserId = this.$parent.userId
-      let personId = this.personId
+      // let doUserId = this.$parent.userId
+      let supplierId = this.supplierId
 
       let data = {
-        doUserId, // 评论人
-        taskId, // 任务Id
-        personId, // 摄影师Id
+        movieId: this.movieId,
+        movieToSupplierList: [
+          {
+            // msId: null,
+            supplierId: supplierId,
+            techScore: this.techScore, // 技术分
+            serviceScore: this.serviceScore, // 服务分
+          },
+        ],
       }
       // console.log(data)
-      return
-      if (max) {
-        this.loading = true
-        this.$axios.post('/ocarplay/api/personGrade/save', data).then((res) => {
+      if (!this.techScore || !this.serviceScore) {
+        this.$message.error('分值不能为空')
+        return
+      }
+      // return
+      // if (max) {
+      this.loading = true
+      this.$axios
+        .post('/ocarplay/api/movie/save', data)
+        .then((res) => {
           console.log(res)
           if (res.status == 200) {
             let data = res.data
             if (data.errcode == 0) {
-              this.$message.success(data.msg)
+              this.$message.success('评分成功')
               this.drawerData = false
-              this.$parent.getlistPhotoPerson()
+              this.$parent.getMovieListAjax()
+
+              if (this.techScore<3||this.techScore<3) {
+                this.$message.warning('分数少于2星，请进行详细评分')
+                this.$parent.commentShow++
+              }
             } else {
               this.$message.error(data.msg)
             }
             this.loading = false
           }
         })
-      } else {
-        this.$message.error('分数不可超过最大值')
-      }
+        .catch((res) => {
+          console.log(res)
+        })
+      // } else {
+      //   this.$message.error('分数不可超过最大值')
+      // }
     },
   },
 }
