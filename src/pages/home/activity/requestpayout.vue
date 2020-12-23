@@ -287,6 +287,7 @@ export default {
   // 方法事件
   methods: {
     submit(){
+
       let outData={
             subjectId:this.tableData[0].subjectId,
             subItemsId:this.tableData[0].subItemsId,
@@ -294,7 +295,23 @@ export default {
             supplierId:this.fromData.supplierId
         };
       let data=[];
+      for (let i = 0; i < this.tableData.length; i++) {
+        if(!this.tableData[i].payMode){
+          this.$message.error('请选择支付方式');
+          return false
+        }
+        if(!this.tableData[i].payTime){
+           this.$message.error('请选择付款日期');
+          return false
+        }
+
+         if(!this.tableData[i].cashMoney){
+           this.$message.error('请输入请款金额');
+          return false
+        }
+      }
       this.tableData.forEach(element => {
+        
         let money='';
         if(this.fromData.deforOther){
          money= Number((element.cashMoney*this.fromData.deforOther)/100)+Number(element.cashMoney)

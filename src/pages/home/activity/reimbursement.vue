@@ -268,7 +268,7 @@ export default {
                 ],
                 buyPrice: [
                     { required: true, message: '请输入采购单价', trigger: 'blur' },
-                    { pattern: /^[1-9]$|^\d{1,6}\.?\d{1,2}$/, message: '必须为数字值' }
+                    { pattern:  /^([1-9]+[\d]*(.[0-9]{1,2})?)$/ , message: '小数点后保留两位' }
                 ],
                 buyNum: [
                     { required: true, message: '请输入采购数量', trigger: 'change' },
