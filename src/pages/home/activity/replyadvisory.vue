@@ -50,6 +50,7 @@
                       class="followUserSelect"
                       size="mini"
                       @change="changeAnswerUser"
+                      clearable
                     >
                       <el-option
                         v-for="item in answerUserLst"
@@ -101,6 +102,7 @@
                         :rows="2"
                         placeholder="请输入内容"
                         v-model="answerNameText"
+                        clearable
                       >
                       </el-input>
                       <el-button
@@ -322,6 +324,7 @@ export default {
             // this.MovieConsultList = data.items
             // this.total = data.totalRows
             this.$message.success(data.msg)
+            this.answerNameText = null
             this.consultName = null
             this.getMovieConsultListAjax()
             this.answerNameShowIndex = null

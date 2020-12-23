@@ -532,7 +532,7 @@ try {
   let userSign = localStorage.getItem('userSign');
 
   store.commit('getBatchCashOut',JSON.parse(localStorage.getItem('batchCashOut')))
-  // store.commit('login', { token, user, userSign });
+  store.commit('login', { token, user, userSign });
   // if (user==null) {
   //   window.location.replace('http://guoxin.insun-china.com/hrm');
   // }

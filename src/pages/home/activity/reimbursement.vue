@@ -100,6 +100,7 @@ export default {
         }
         return {
             userId: this.$store.state.user.userId,
+            userName: this.$store.state.user.realName,
             deptId: this.$store.state.user.deptId, // 90
             // 页面类型
             input1: null,
@@ -239,6 +240,8 @@ export default {
                 },
             ],
             fromData: {
+                createUserId: this.userId,
+                costPerson: this.$store.state.user.realName,
                 budgetApplyId: '',
                 proRequireId: '',
                 applyDetailId: '',
@@ -466,6 +469,10 @@ export default {
 
         ///////// 提交表单 start /////////
         submitForm(formName) {
+            // console.log(this.fromData)
+            // console.log(this.userName)
+            // return
+            this.putLoading = true
             this.$refs[formName].validate((valid) => {
                 if (valid) {
                     this.fromData.buyMoney = (Number(this.fromData.buyPrice) * Number(this.fromData.buyNum)).toFixed(2);
@@ -478,7 +485,11 @@ export default {
                         console.log(res)
                         // this.listLoading = false
                         if (res.status == 200 && res.data.errorCode == 0) {
-                            this.$message.success(res.data.msg)
+                            this.$message.success('申请报销成功！')
+                            setTimeout(() => {
+                                this.$router.go(-1) //返回上一层
+                            }, 1000);
+                            
                         } else {
                             this.$message.error(res.data.msg)
                         }
@@ -486,6 +497,7 @@ export default {
                     console.log(this.fromData);
                 } else {
                     console.log('error submit!!')
+                    this.putLoading = false
                     return false
                 }
             })

@@ -552,11 +552,13 @@ export default {
       subItemsName: null,
       identifier: null, // 编号
       // 信息
+      movieId: null, // 活动任务ID
       movieName2: null,
       movieName3: null,
       movieName: null, // 任务名称
       movieType: 1, // 活动类型
       budgetApplyId: null, // 预算项目
+      proName: null, // 预算项目
       applyDetailId: null, // 预算明细
       city: '', // 所属城市
       brandId: null, // 品牌
@@ -682,8 +684,10 @@ export default {
       } else {
         let budgetApplyIdList = this.budgetApplyIdList
         budgetApplyIdList.forEach((element) => {
-          if (val == element.groupId) {
+          if (val == element.budgetApplyId) {
             this.identifier = element.identifier
+            this.proName = element.proName
+            console.log(this.identifier)
           }
         })
         // this.identifier =
@@ -1184,11 +1188,11 @@ export default {
         movieName = movieName3
       }
 
-      if (this.taskId) {
-        initUserId = ''
-        status = ''
-        deptId = this.taskDetail.deptId
-      }
+      // if (this.movieId) {
+      //   initUserId = ''
+      //   status = ''
+      //   deptId = this.taskDetail.deptId
+      // }
       let jsonData = JSON.stringify([
         {
           num: 1,
@@ -1198,14 +1202,17 @@ export default {
         },
       ])
       let data = {
+        initUserId: initUserId, // 任务发起人
         movieName: movieName, // 任务名称
         movieType: this.movieType, // 活动类型
         identifier: this.identifier, // 编号
-        budgetApplyId: this.budgetApplyId, // 预算项目
+        budgetApplyId: this.budgetApplyId, // 预算项目名称
+        proName: this.proName, // 预算项目ID
         applyDetailId: this.applyDetailId, // 预算明细
         subjectId: 8, // 科目
         subjectTempId: this.subjectTempId,
-        subItemsId: this.subItemsId,
+        subItemsId: this.subItemsId, // 细分项ID
+        subItemsName: this.applyDetailName, // 细分项名称
         city: this.city, // 所属城市
         brandId: this.brandId, // 品牌
         carTypeId: this.carTypeId, // 车型

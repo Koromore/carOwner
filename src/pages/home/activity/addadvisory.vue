@@ -38,7 +38,7 @@
                   <span v-else style="color: red"> 待跟进 </span>
                 </template>
               </el-table-column>
-              <el-table-column prop="consultName" label="处理反馈" min-width="100">
+              <el-table-column prop="answerName" label="处理反馈" min-width="100">
               </el-table-column>
             </el-table>
           </div>

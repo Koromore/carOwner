@@ -1,7 +1,7 @@
 <template>
   <div id="requestpayout">
     <!-- 内容列表 start -->
-    <el-row class="content">
+    <el-row class="content" v-loading="loading">
       <el-scrollbar style="height: 100%">
         <el-col :span="24" class="title">
           <el-col :span="6" class="previousBox">
@@ -241,6 +241,7 @@ export default {
       userId: this.$store.state.user.userId,
       deptId: this.$store.state.user.deptId,
       userName: this.$store.state.user.userName,
+      loading: false,
       supplierOptions:[],//供应商
       payMode:[
         {label:'全款先付',value:'1'},
@@ -287,7 +288,6 @@ export default {
   // 方法事件
   methods: {
     submit(){
-
       let outData={
             subjectId:this.tableData[0].subjectId,
             subItemsId:this.tableData[0].subItemsId,
@@ -350,14 +350,17 @@ export default {
         },
         paydetail:jsonstr
       }
+      this.loading = true
       this.$axios.post('/ocarplay/api/movie/creatPayDetail',sumData).then((res) => {
         if(res.status==200){
           this.$message.success(res.data.msg);
         }else{
          this.$message.error(res.data.msg)
         }
+        this.loading = false
       }).catch((err) => {
          this.$message.error(err)
+         this.loading = false
       });
       // console.log(sumData);
 
@@ -406,7 +409,6 @@ export default {
     //付款方选中——服务费率
     getServe(e){
        this.$axios.post('/ocarplay/api/movie/getPaymentRoleToOcarplay', {roleId: e}).then((res) => {
-          // this.listLoading = false
           if (res.status == 200 && res.data.errorCode == 0) {
               this.defscale = res.data.data[0].defscale;
           }
@@ -415,7 +417,6 @@ export default {
     //获取付款方
     getpayerList() {
       this.$axios.post('/ocarplay/api/movie/getPaymentRoleToOcarplay', {isOther: 1}).then((res) => {
-          // this.listLoading = false
           if (res.status == 200 && res.data.errorCode == 0) {
               this.payerList = res.data.data;
               this.fromData.roleId=res.data.data[0].roleId;
