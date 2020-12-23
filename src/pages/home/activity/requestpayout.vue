@@ -185,7 +185,7 @@
                   v-model="scope.row.fwf"
                   disabled
                 >
-                </el-input> -->{{scope.row.cashMoney?((scope.row.cashMoney*defscale)/100).toFixed(2):0}}
+                </el-input> -->{{otherFlag&&scope.row.cashMoney?(( Number(fromData.deforOther)*Number(scope.row.cashMoney))/100).toFixed(2):!otherFlag&&scope.row.cashMoney?((scope.row.cashMoney*defscale)/100).toFixed(2):0}}
               </template>
             </el-table-column>
             <el-table-column prop="name" label="付款金额">
@@ -196,7 +196,7 @@
                   clearable
                 >
                 </el-input> -->
-                {{scope.row.cashMoney?(Number((scope.row.cashMoney*defscale)/100)+Number(scope.row.cashMoney)).toFixed(2) :0}}
+                {{otherFlag&&scope.row.cashMoney?((( Number(fromData.deforOther)*Number(scope.row.cashMoney))/100)+Number(scope.row.cashMoney)).toFixed(2):!otherFlag&&scope.row.cashMoney?(((scope.row.cashMoney*defscale)/100)+Number(scope.row.cashMoney)).toFixed(2):0}}
               </template>
             </el-table-column>
             <el-table-column prop="name" label="备注">
@@ -254,12 +254,11 @@ export default {
       supplierData:{},//付款方/服务费率
       fromData:{
         supplierId:'',
-          supplierId:'',
-          serviceScale:'0' , //默认费率
-          deforOther:'',  //其他费率
-          roleId:'',//付款方
-          payType:'0',//付款种类
-          isInvoice:'1',
+        serviceScale:'0' , //默认费率
+        deforOther:'',  //其他费率
+        roleId:'',//付款方
+        payType:'0',//付款种类
+        isInvoice:'1',
       },
       defscale:0,//用户输入的服务费率
       otherFlag:false,//用户输入服务费率输入框
@@ -288,6 +287,7 @@ export default {
   // 方法事件
   methods: {
     submit(){
+
       let outData={
             subjectId:this.tableData[0].subjectId,
             subItemsId:this.tableData[0].subItemsId,
@@ -295,7 +295,23 @@ export default {
             supplierId:this.fromData.supplierId
         };
       let data=[];
+      for (let i = 0; i < this.tableData.length; i++) {
+        if(!this.tableData[i].payMode){
+          this.$message.error('请选择支付方式');
+          return false
+        }
+        if(!this.tableData[i].payTime){
+           this.$message.error('请选择付款日期');
+          return false
+        }
+
+         if(!this.tableData[i].cashMoney){
+           this.$message.error('请输入请款金额');
+          return false
+        }
+      }
       this.tableData.forEach(element => {
+        
         let money='';
         if(this.fromData.deforOther){
          money= Number((element.cashMoney*this.fromData.deforOther)/100)+Number(element.cashMoney)
@@ -305,41 +321,48 @@ export default {
         }
         data.push(
           {
-            serviceScale:this.fromData.serviceScale,
-            deforOther:this.fromData.deforOther,
-            proRequireId:element.proRequireId,
-            roleId:this.fromData.roleId,
-            supplierId:this.fromData.supplierId,
-            payType:this.fromData.payType,
-            payMode:element.payMode,
-            payMoney:money,
-            subjectId:element.subjectId,
-            subItemsId:element.subItemsId,
-            remark:element.remark,
-            payTime:element.payTime,
-            subjectName:'影视活动',
-            subitemName:element.subitemName,
-            isInvoice:this.fromData.isInvoice,
-            invoiceRemark:this.fromData.invoiceRemark
+            serviceScale:this.fromData.serviceScale,//默认费率
+            deforOther:this.fromData.deforOther,//其他费率
+            proRequireId:element.proRequireId,//采购系统任务id
+            roleId:this.fromData.roleId,//付款方
+            supplierId:this.fromData.supplierId,//供应商id
+            payType:this.fromData.payType,//付款种类
+            payMode:element.payMode, //支付方式
+            payMoney:money,//请款金额(总额)
+            subjectId:element.subjectId,//科目id
+            subItemsId:element.subItemsId,//细分项id
+            remark:element.remark,//备注
+            payTime:element.payTime,//付款日期
+            subjectName:'影视活动',//科目名
+            subitemName:element.subitemName,//细分项名
+            isInvoice:this.fromData.isInvoice,//有无发票 0-有  1-没有
+            invoiceRemark:this.fromData.invoiceRemark//发票类型(用户下拉框选中)
           }
         )
       });
+      
+      let jsonstr=JSON.stringify(data).substr(1,JSON.stringify(data).length-2)
       let sumData={
-        supplie:outData,
-        proRequireId:this.tableData[0].proRequireId,
+        supplier:outData,
+        prequireId:this.tableData[0].proRequireId,
         user:{
           userId:this.$store.state.user.userId
         },
-        paydetail:JSON.stringify(data) 
+        paydetail:jsonstr
       }
       this.$axios.post('/ocarplay/api/movie/creatPayDetail',sumData).then((res) => {
-        
+        if(res.status==200){
+          this.$message.success(res.data.msg);
+        }else{
+         this.$message.error(res.data.msg)
+        }
       }).catch((err) => {
-        
+         this.$message.error(err)
       });
-      console.log(sumData);
+      // console.log(sumData);
 
     },
+    //是否有票
     handleInvoice(e){
       if(e=='0'){
         this.invoiceFlag=true;
@@ -354,6 +377,7 @@ export default {
         this.otherFlag=true;
       }else{
         this.otherFlag=false;
+        this.fromData.deforOther='';
 
       }
     },
@@ -409,12 +433,12 @@ export default {
             if(res.status==200){
               this.supplierObj=res.data[0].supplierList[0];
               res.data.forEach(element => {
-                element.payMoney=0;
-                element.cashMoney=0;
-                element.payMode='';
-                element.remark='';
-                element.payTime='';
-                element.invoiceRemark='';
+                element.payMoney=0;//付款金额-总额
+                element.cashMoney=0;//用户输入-请款金额
+                element.payMode='';//支付方式
+                element.remark='';//备注
+                element.payTime='';//时间
+                element.invoiceRemark='';//有发票-用户下拉框选择
 
 
               });
