@@ -16,7 +16,7 @@
           <div class="case">申请人</div>
           <div class="case">{{ supplierObj.supplierName }}</div>
           <div class="case">申请日期</div>
-          <div class="case">{{supplierObj.createTime}}</div>
+          <div class="case">{{ createTime }}</div>
           <div class="case">供应商</div>
           <div class="case">
             <el-select v-model="fromData.supplierId" @change="handleSupplier" placeholder="请选择">
@@ -125,9 +125,10 @@
                 {{scope.row.subItemsName?scope.row.subItemsName:'/'}}
               </template> </el-table-column>
             <el-table-column prop="money" label="预计费用" show-overflow-tooltip> 
-              <template slot-scope="scope">
+              <!-- <template slot-scope="scope" >
                 {{scope.row.money?scope.row.money:'/'}}
-              </template>
+                {{scope.row.money?scope.row.money:'/'}}
+              </template> -->
             </el-table-column>
             <el-table-column prop="buyNum" label="采购数量" show-overflow-tooltip>
               <template slot-scope="scope">
@@ -169,7 +170,7 @@
                 </el-date-picker>
               </template>
             </el-table-column>
-            <el-table-column prop="name" label="请款金额">
+            <el-table-column prop="name" label="请款金额" width="100">
               <template slot-scope="scope">
                 <el-input
                   placeholder="请输入内容"
@@ -242,6 +243,8 @@ export default {
       deptId: this.$store.state.user.deptId,
       userName: this.$store.state.user.userName,
       loading: false,
+      createTime: null,
+      pId: 0,
       supplierOptions:[],//供应商
       payMode:[
         {label:'全款先付',value:'1'},
@@ -283,7 +286,7 @@ export default {
     // this.getQuery();
     this.getSupplier();
     this.getpayerList();
-
+    this.createTime = this.$date0(new Date())
   },
   // 方法事件
   methods: {
@@ -336,7 +339,8 @@ export default {
             subjectName:'影视活动',//科目名
             subitemName:element.subitemName,//细分项名
             isInvoice:this.fromData.isInvoice,//有无发票 0-有  1-没有
-            invoiceRemark:this.fromData.invoiceRemark//发票类型(用户下拉框选中)
+            invoiceRemark:this.fromData.invoiceRemark,//发票类型(用户下拉框选中)
+            id: this.pId
           }
         )
       });
@@ -393,13 +397,14 @@ export default {
               // this.fromData.supplier.subjectId=this.supplierObj.s
              res.data.forEach(element => {
                 element.totalMoney=0;
-                element.cashMoney=0;
+                element.cashMoney=element.money;
                 element.payMode='';
                 element.remark='';
                 element.payTime='';
                 element.invoiceRemark='';
 
               });
+              this.pId = res.data[0].pId
               this.tableData=res.data;
             }
           }).catch((err) => {
@@ -435,7 +440,7 @@ export default {
               this.supplierObj=res.data[0].supplierList[0];
               res.data.forEach(element => {
                 element.payMoney=0;//付款金额-总额
-                element.cashMoney=0;//用户输入-请款金额
+                element.cashMoney=element.money;//用户输入-请款金额
                 element.payMode='';//支付方式
                 element.remark='';//备注
                 element.payTime='';//时间
@@ -443,6 +448,7 @@ export default {
 
 
               });
+              this.pId = res.data[0].pId
               this.tableData=res.data;
             }
           }).catch((err) => {
@@ -488,6 +494,9 @@ export default {
   height: 100%;
   background: white;
   border-radius: 8px 8px 0 0;
+  .putPlaceholder{
+    height: 40px;
+  }
   .content {
     position: relative;
     height: 100%;

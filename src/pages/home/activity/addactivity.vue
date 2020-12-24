@@ -16,7 +16,7 @@
           <el-col :span="24" class="list">
             <div class="key imp">任务类型</div>
             <div class="val">
-              <el-radio-group v-model="movieType" :disabled="!disabledCaigou">
+              <el-radio-group v-model="movieType" :disabled="movieId ? true : false">
                 <el-radio :label="1">有车拍摄</el-radio>
                 <el-radio :label="2">非车拍摄</el-radio>
                 <el-radio :label="3">其他</el-radio>
@@ -32,7 +32,7 @@
                 clearable
                 filterable
                 @change="chageBudgetApplyId"
-                :disabled="taskId ? true : false"
+                :disabled="movieId ? true : false"
               >
                 <el-option
                   v-for="item in budgetApplyIdList"
@@ -51,7 +51,7 @@
                 placeholder="请输入内容"
                 v-model="applyDetailName"
                 clearable
-                :disabled="taskId ? true : false"
+                :disabled="movieId ? true : false"
                 @focus="applyDetailIdBoxShow = true"
               ></el-input>
             </div>
@@ -138,14 +138,14 @@
               <el-input
                 class="halfTaskName"
                 placeholder="请输入内容"
-                v-model="movieName2"
+                v-model="movieName"
                 clearable
               ></el-input>
             </div>
             <div class="val" v-show="movieType == 3">
               <el-input
                 placeholder="请输入内容"
-                v-model="movieName3"
+                v-model="movieName"
                 clearable
               ></el-input>
             </div>
@@ -154,8 +154,8 @@
             <div class="key imp">模特资源</div>
             <div class="val">
               <el-radio-group v-model="isModel">
-                <el-radio :label="1">需要</el-radio>
-                <el-radio :label="0">不需要</el-radio>
+                <el-radio :label="true">需要</el-radio>
+                <el-radio :label="false">不需要</el-radio>
               </el-radio-group>
             </div>
           </el-col>
@@ -163,8 +163,8 @@
             <div class="key imp">摄影师资源</div>
             <div class="val">
               <el-radio-group v-model="isPerson">
-                <el-radio :label="1">需要</el-radio>
-                <el-radio :label="0">不需要</el-radio>
+                <el-radio :label="true">需要</el-radio>
+                <el-radio :label="false">不需要</el-radio>
               </el-radio-group>
             </div>
           </el-col>
@@ -172,8 +172,8 @@
             <div class="key imp">其他资源</div>
             <div class="val">
               <el-radio-group v-model="isOther">
-                <el-radio :label="1">需要</el-radio>
-                <el-radio :label="0">不需要</el-radio>
+                <el-radio :label="true">需要</el-radio>
+                <el-radio :label="false">不需要</el-radio>
               </el-radio-group>
             </div>
           </el-col>
@@ -207,7 +207,7 @@
                 range-separator="至"
                 start-placeholder="开始日期"
                 end-placeholder="结束日期"
-                :disabled="taskId ? true : false"
+                :disabled="movieId ? true : false"
               ></el-date-picker>
             </div>
           </el-col>
@@ -257,6 +257,7 @@
                 placeholder="选择日期"
                 :picker-options="pickerOptions"
                 value-format="yyyy-MM-dd"
+                :disabled="movieId ? true : false"
               ></el-date-picker>
             </div>
           </el-col>
@@ -333,7 +334,7 @@
                 placeholder="请输入内容"
                 v-model="cost"
                 clearable
-                :disabled="taskId ? true : false"
+                :disabled="movieId ? true : false"
                 type="number"
               ></el-input> -->
               <div class="miKey">总费用:</div>
@@ -412,11 +413,11 @@ export default {
       deptId: this.$store.state.user.deptId, // 90
       // 页面类型
       input1: null,
-      taskId: '',
+      movieId: '',
       type: 0,
       title: '新建影视活动',
       // 任务名称
-      taskDetail: null,
+      movieDetail: null,
       options2: [], // 任务对象（车主）
       noOwner: null, // 非车主信息
       input: '',
@@ -556,7 +557,7 @@ export default {
       movieName2: null,
       movieName3: null,
       movieName: null, // 任务名称
-      movieType: 1, // 活动类型
+      movieType: null, // 活动类型
       budgetApplyId: null, // 预算项目
       proName: null, // 预算项目
       applyDetailId: null, // 预算明细
@@ -568,30 +569,30 @@ export default {
       photoType: null, // 拍摄类型
       photoTypeName: '', // 拍摄类型名称
 
-      isModel: 0, // 是否需要模特
-      isPerson: 0, // 是否需要摄影师
+      isModel: null, // 是否需要模特
+      isPerson: null, // 是否需要摄影师
       isOther: null, // 是否需要其他资源
-      placeId: 78, // 场地ID
-      periodTime: ['2020-12-21', '2020-12-23'], // 计划周期
+      placeId: null, // 场地ID
+      periodTime: ['', ''], // 计划周期
       // 任务文件
       movieFileList: [],
       fileList: [],
-      num: 3, // 发布数
-      photoTime: '2020-12-22', // 拍摄时间
+      num: null, // 发布数
+      photoTime: '', // 拍摄时间
       // 任务描述列表
       movieDescList: [
         {
           // deleteFlag: null,
-          descName: '主题', // 主题
-          descTime: '时间', // 时间
-          place: '集合地点', // 集合地点
-          photoDesc: '成片要求', // 成片要求
-          personDesc: '人员要求', // 人员要求
-          otherDesc: '其他要求', // 其他要求
+          descName: '', // 主题
+          descTime: '', // 时间
+          place: '', // 集合地点
+          photoDesc: '', // 成片要求
+          personDesc: '', // 人员要求
+          otherDesc: '', // 其他要求
         },
       ], //
-      money: 100, // 预估费用
-      moneyRemark: '费用明细', // 费用明细
+      money: null, // 预估费用
+      moneyRemark: '', // 费用明细
       halfTaskName: null, //
       // 任务所属供应商集合
       // supplierType
@@ -601,25 +602,29 @@ export default {
   },
   // 侦听器
   watch: {
-    carSeriesList: function (newData, oldData) {
-      if (newData.length != 0) {
-        this.getCarSeriesId()
-      }
-    },
-    seriesId: function (newData, oldData) {
-      if (newData != '') {
-        this.getCarSeriesId()
-      }
-    },
+    // carSeriesList: function (newData, oldData) {
+    //   if (newData.length != 0) {
+    //     this.getCarSeriesId()
+    //   }
+    // },
+    // seriesId: function (newData, oldData) {
+    //   if (newData != '') {
+    //     this.getCarSeriesId()
+    //   }
+    // },
   },
   // 钩子函数
-  beforeCreate() {},
-  beforeMount() {},
+  beforeCreate() {
+    
+  },
+  beforeMount() {
+    ///////// 获取车型列表 start /////////
+    this.getCarSeriesLists()
+  },
   mounted() {
     ///////// 接受页面传参 start /////////
     this.getQuery()
-    ///////// 获取车型列表 start /////////
-    this.getCarSeriesLists()
+    
     ///////// 获取场地列表 start /////////
     this.getPlaceList()
     ///////// 判断部门 start /////////
@@ -649,17 +654,17 @@ export default {
       this.type = type
       if (type == 0) {
         this.title = '新建影视活动'
-        this.taskId = ''
+        this.movieId = ''
       } else if (type == 1) {
         this.title = '编辑影视活动'
-        this.taskId = id
+        this.movieId = id
         ///////// 获取任务详情 start /////////
-        this.getTaskDetail(id)
+        this.getMovieDetail(id)
       } else if (type == 2) {
         this.title = '新建影视活动'
-        // this.taskId = id
+        // this.movieId = id
         ///////// 获取任务详情 start /////////
-        this.getTaskDetail(id)
+        this.getMovieDetail(id)
       }
       // console.log(type)
     },
@@ -707,7 +712,7 @@ export default {
             // this.applyDetailIdList = res.data.data
             let applyDetailIdList = []
             res.data.data.forEach((element) => {
-              if (element.subjectId == 8) {
+              if (element.subjectId == 8 && element.remainNum>0) {
                 applyDetailIdList.push(element)
               }
             })
@@ -751,22 +756,22 @@ export default {
     ///////// 接受页面传参 end /////////
 
     ///////// 循环查找品牌车型 start /////////
-    getCarSeriesId() {
-      // console.log(this.seriesId)
-      let carSeriesId = []
+    // getCarSeriesId() {
+    //   // console.log(this.seriesId)
+    //   let carSeriesId = []
 
-      this.carSeriesList.forEach((element0) => {
-        element0.children.forEach((element1) => {
-          this.seriesId.forEach((element2) => {
-            if (element1.value == element2) {
-              carSeriesId.push([element0.value, element1.value])
-            }
-          })
-        })
-      })
-      this.carSeriesId = carSeriesId
-      // console.log(carSeriesId)
-    },
+    //   this.carSeriesList.forEach((element0) => {
+    //     element0.children.forEach((element1) => {
+    //       this.seriesId.forEach((element2) => {
+    //         if (element1.value == element2) {
+    //           carSeriesId.push([element0.value, element1.value])
+    //         }
+    //       })
+    //     })
+    //   })
+    //   this.carSeriesId = carSeriesId
+    //   // console.log(carSeriesId)
+    // },
     ///////// 循环查找品牌车型 start /////////
 
     ///////// 获取场地列表 start /////////
@@ -838,19 +843,14 @@ export default {
                 children: [],
               },
             ]
+            let carTypeList = []
             data.forEach((element) => {
               let children = {
                 value: element.carTypeId,
                 label: element.carTypeName,
                 // children: []
               }
-              // element.carSeries.forEach(element_ => {
-              //   children.children.push({
-              //     value: element_.carSeriesId,
-              //     label: element_.carSeriesName
-              //   })
-              // })
-              // console.log(carSeriesIds)
+              carTypeList.push(children)
               if (element.deptId == 105) {
                 carSeriesList[0].children.push(children)
               } else if (element.deptId == 110) {
@@ -863,6 +863,7 @@ export default {
                 carSeriesList[4].children.push(children)
               }
             })
+            this.carTypeList = carTypeList
             this.carSeriesList = carSeriesList
             // console.log(carSeriesList)
           }
@@ -871,107 +872,41 @@ export default {
     ///////// 获取车型列表 end /////////
 
     ///////// 获取任务详情 start /////////
-    getTaskDetail(id) {
+    getMovieDetail(id) {
       let data = {
-        taskId: id,
+        movieId: id,
       }
-      this.$axios.post('/ocarplay/task/edit', data).then((res) => {
+      this.$axios.post('/ocarplay/api/movie/show', data).then((res) => {
         // console.log(res)
         if (res.status == 200) {
-          let data = res.data.data
-          this.taskDetail = data
-          this.taskName = data.taskName
-          this.taskType = data.taskType
-          this.placeId = data.placeId
+          let data = res.data
+          this.movieDetail = data
+          this.movieId = data.movieId
+          this.movieType = data.movieType
           this.budgetApplyId = data.budgetApplyId
-          this.applyDetailId = data.applyDetailId
-          let listInviteList = []
-          let listInviteOwners = []
-          let listInvitePerson = []
-          let listInviteModel = []
-          this.budgetApplyId = data.proName
           this.applyDetailName = data.subItemsName
-          data.listInvite.forEach((element) => {
-            if (element.userType == 0) {
-              listInviteList.push([
-                element.listOwnerType[0].typeId,
-                element.listOwnerItem[0].itemId,
-                element.ownerId,
-              ])
-              listInviteOwners.push({
-                inviteId: element.inviteId,
-                ownerId: element.ownerId,
-                userType: element.userType,
-              })
-            } else if (element.userType == 1) {
-              listInvitePerson.push({
-                inviteId: element.inviteId,
-                ownerId: element.ownerId,
-                userType: element.userType,
-              })
-            } else if (element.userType == 2) {
-              listInviteModel.push({
-                inviteId: element.inviteId,
-                ownerId: element.ownerId,
-                userType: element.userType,
-              })
-            }
-          })
-          this.listInviteOwners = listInviteOwners // 车主结算列表
-          this.listInvitePerson = listInvitePerson // 摄影师结算列表
-          this.listInviteModel = listInviteModel // 模特结算列表
-
-          this.listInviteList = listInviteList
-
-          let personId = []
-          let personIdList = data.taskToPersonList
-          let modelId = []
-          let modelIdList = data.taskToModelList
-          personIdList.forEach((element) => {
-            personId.push(element.personId)
-          })
-          modelIdList.forEach((element) => {
-            modelId.push(element.modelId)
-          })
-          this.personId = personId
-          // console.log(personId)
-          this.personIdList = personIdList
-          this.modelId = modelId
-          this.modelIdList = modelIdList
-
-          // this.personId = data.taskToPersonList
-          // if (data.taskToModelList) {
-          //   this.modelId = data.taskToModelList
-          // } else if (!data.modelId && data.personId) {
-          //   this.modelId = 0
-          // } else {
-          //   this.modelId = null
-          // }
-          // this.carSeriesId = [null,null,data.carSeriesId]
-          data.listTaskOfCartype.forEach((element) => {
-            this.seriesId.push(element.cartypeId)
-          })
-
-          this.periodTime = [
-            new Date(data.startTime.replace(/-/g, '/')),
-            new Date(data.endTime.replace(/-/g, '/')),
-          ]
+          this.city = data.city
+          this.brandId = data.brandId
+          this.carTypeId = data.carTypeId
+          this.photoType = data.photoType
+          this.isModel = data.isModel
+          this.isPerson =data.isPerson
+          this.isOther = data.isOther
+          this.placeId = data.placeId
+          this.periodTime = [data.startTime, data.endTime]
+          this.num = data.num
           this.photoTime = data.photoTime
-          ;(this.pickerOptions = {
-            disabledDate(time) {
-              return (
-                time.getTime() > new Date(data.photoTime.replace(/-/g, '/'))
-              )
-            },
-          }),
-            (this.taskNum = data.num)
-          this.cost = data.cost
-          this.taskDesc = data.taskDesc
-          this.remark = data.remark
+          this.movieDescList = data.movieDescList
+          this.money = data.money
+          this.moneyRemark = data.moneyRemark
+
+          // moneyRemark
+          // this.changeBrandId(data.brandId)
+          // 文件回调
           let fileList = []
           let movieFileList = []
 
-          data.listmovieFile.forEach((element) => {
+          data.movieFileList.forEach((element) => {
             fileList.push({
               name: element.fileName,
               url: element.localPath,
@@ -1181,18 +1116,11 @@ export default {
       let movieName2 = this.movieName2
       let movieName3 = this.movieName3
       if (this.movieType == 1) {
-        movieName = `${city}-${brandName}-${carTypeName}-${photoTypeName}`
-      } else if (this.movieType == 2) {
-        movieName = `${city}-${brandName}-${movieName2}`
-      } else if (this.movieType == 3) {
-        movieName = movieName3
+        movieName = ``
+      } else {
+        movieName = this.movieName
       }
 
-      // if (this.movieId) {
-      //   initUserId = ''
-      //   status = ''
-      //   deptId = this.taskDetail.deptId
-      // }
       let jsonData = JSON.stringify([
         {
           num: 1,
@@ -1203,6 +1131,7 @@ export default {
       ])
       let data = {
         initUserId: initUserId, // 任务发起人
+        movieId: this.movieId, // 任务名称
         movieName: movieName, // 任务名称
         movieType: this.movieType, // 活动类型
         identifier: this.identifier, // 编号
@@ -1228,9 +1157,8 @@ export default {
         // fileList: [],
         num: this.num, // 发布数
         photoTime: this.photoTime, // 拍摄时间
-        // 任务描述列表
-        movieDescList: this.movieDescList, //
-        money: this.money, // 预估费用
+        movieDescList: this.movieDescList, // 任务描述列表
+        money: this.money*1, // 预估费用
         moneyRemark: this.moneyRemark, // 费用明细
         // halfTaskName: halfTaskName, //
         // 任务所属供应商集合
@@ -1240,17 +1168,80 @@ export default {
 
         jsonData: jsonData,
       }
-      if (this.taskId) {
+      data.movieId
+      data.movieType
+      if (!data.movieType) {
+        this.$message.error("请选择任务类型")
+        return
+      }
+      if (!data.applyDetailId&&!data.movieId) {
+        this.$message.error("请选择项目名称和预算明细")
+        return
+      }
+      if (data.movieType!=3&&!data.city) {
+        this.$message.error("请选择城市")
+        return
+      }
+      if (data.movieType!=3&&!data.brandId) {
+        this.$message.error("请选择品牌")
+        return
+      }
+      if (data.movieType==1&&!data.carTypeId) {
+        this.$message.error("请选择车型")
+        return
+      }
+      if (data.movieType==1&&!data.photoType) {
+        this.$message.error("请选择拍摄类型")
+        return
+      }
+      if (data.movieType!=1&&!data.movieName) {
+        this.$message.error("请填写任务名称")
+        return
+      }
+      if (data.movieType!=3&&data.isModel == null) {
+        this.$message.error("请选择是否需要模特资源")
+        return
+      }
+      if (data.movieType!=3&&data.isPerson == null) {
+        this.$message.error("请选择是否需要摄影师资源")
+        return
+      }
+      if (data.movieType==3&&data.isOther == null) {
+        this.$message.error("请选择是否需要其他资源")
+        return
+      }
+      if (!data.startTime||!data.endTime) {
+        this.$message.error("请填写计划周期")
+        return
+      }
+      if (!data.num) {
+        this.$message.error("请填写计发布数")
+        return
+      }
+      // console.log(data)
+      if (!data.money&&data.money>0) {
+        this.$message.error("预估费用必须大于0")
+        return
+      }
+      if (!data.moneyRemark) {
+        this.$message.error("请填写费用明细")
+        return
+      }
+      if (!data.movieDescList[0].descName||!data.movieDescList[0].descTime||!data.movieDescList[0].place||!data.movieDescList[0].photoDesc||!data.movieDescList[0].personDesc||!data.movieDescList[0].otherDesc) {
+        this.$message.error("请填写任务描述")
+        return
+      }
+      if (this.movieId) {
         delete data.budgetApplyId
         delete data.proName
         delete data.applyDetailId
-        delete data.subjectId, delete data.subItemsId
+        delete data.subjectId
+        delete data.subItemsId
         delete data.subjectTempId
         delete data.jsonData
         delete data.cost
         delete data.subItemsName
       }
-
       // if (flag) {
       this.putLoading = true
       this.$axios
@@ -1258,7 +1249,7 @@ export default {
         .then((res) => {
           // console.log(res)
           if (res.status == 200 && res.data.errcode === 0) {
-            if (this.taskId) {
+            if (this.movieId) {
               this.$message.success('任务更新成功！')
             } else {
               this.$message.success('任务新建成功！')
@@ -1305,6 +1296,7 @@ export default {
           }
         })
         this.brandName = brandName
+        this.carTypeId = null
         // console.log(this.brandName)
       } else {
         this.carTypeList = []

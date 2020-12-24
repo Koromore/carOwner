@@ -160,7 +160,7 @@ export default {
         subjectId: 8,
       }
       this.$axios
-        .post('/ocarplayapi/movie/getPmsSupplierToOcarplay', data)
+        .post('/ocarplay/api/movie/getPmsSupplierToOcarplay', data)
         .then((res) => {
           // console.log(res)
           if (res.status == 200) {

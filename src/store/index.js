@@ -66,22 +66,22 @@ export default new Vuex.Store({
     // user: { userId: 572, deptId:118, realName: '赵颖慧' }, //员工信息
     // user: { userId: 193, deptId:57, realName: '唐婷' }, //员工信息
     // user: { userId: 3790, deptId:57, realName: '薛云' }, //员工信息
-    user: { captcha: null,
-      deleteFlag: false,
-      deptId: 161,
-      deptName: "长城一组",
-      headImg: null,
-      ids: null,
-      loginName: null,
-      password: null,
-      postId: 224,
-      postName: "文案策划",
-      realName: "李欢",
-      roleId: null,
-      roleList: null,
-      updateTime: null,
-      userId: 3899,
-      userName: "lihuan" }, //员工信息
+    // user: { captcha: null,
+    //   deleteFlag: false,
+    //   deptId: 161,
+    //   deptName: "长城一组",
+    //   headImg: null,
+    //   ids: null,
+    //   loginName: null,
+    //   password: null,
+    //   postId: 224,
+    //   postName: "文案策划",
+    //   realName: "李欢",
+    //   roleId: null,
+    //   roleList: null,
+    //   updateTime: null,
+    //   userId: 3899,
+    //   userName: "lihuan" }, //员工信息
     
     token: '', // 登录令牌
     userSign: '', // 用户信息带参
@@ -182,9 +182,9 @@ export default new Vuex.Store({
     },
     //登录
     login(state, data) {
-      if (!data.token) {
-        window.location.replace('http://guoxin.insun-china.com/hrm');
-      }
+      // if (!data.token) {
+      //   window.location.replace('http://guoxin.insun-china.com/hrm');
+      // }
       // 将获取到的user，token和微信标识存在vuex内
       state.user = data.user;
       state.token = data.token;

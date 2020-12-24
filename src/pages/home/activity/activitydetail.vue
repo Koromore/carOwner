@@ -11,7 +11,7 @@
               返回
             </div>
           </el-col>
-          <el-col :span="12">任务详情</el-col>
+          <el-col :span="12">活动任务详情</el-col>
           <el-col :span="6" class="redact">
             <i class="el-icon-edit" @click="addactivity"></i>
           </el-col>
@@ -30,7 +30,9 @@
           <el-col :span="24" class="list">
             <div class="key">项目名称</div>
             <div>:</div>
-            <div class="val">{{ movieDetails.proName }}</div>
+            <div class="val">
+              {{ $date0(movieDetails.photoTime) }}{{ movieDetails.city }}-{{ movieDetails.deptName }}-{{ movieDetails.carTypeName }}-{{ movieDetails.photoTypeName }}
+            </div>
           </el-col>
           <el-col :span="24" class="list">
             <div class="key">预算明细</div>
@@ -87,7 +89,7 @@
                     {{ item.supplierName }}
                   </span>
                 </template>
-                <template>
+                <template v-else>
                   <span style="color: #f56c6c">待完善</span>
                 </template>
               </div>
@@ -109,7 +111,7 @@
                     {{ item.supplierName }}
                   </span>
                 </template>
-                <template>
+                <template v-else>
                   <span style="color: #f56c6c">待完善</span>
                 </template>
               </div>
@@ -519,6 +521,8 @@ export default {
     ///////// 跳转新增任务页面 end /////////
     toAddactivity() {
       let id = this.movieId
+      console.log(id)
+      return
       this.$router.push({
         path: '/home/addactivity',
         query: { type: 2, id: id },
@@ -609,7 +613,7 @@ export default {
       // this.$store.commit('taskStatus', this.status)
       this.$router.push({
         path: '/home/addactivity',
-        query: { type: 1, id: this.taskId },
+        query: { type: 1, id: this.movieId },
       })
     },
     ///////// 修改任务 end /////////

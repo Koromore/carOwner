@@ -20,7 +20,7 @@
                             </el-select>
                         </el-form-item>
                         <el-form-item label="项目名称" prop="budgetApplyId">
-                            <el-select v-model="fromData.budgetApplyId" placeholder="请选择项目名称">
+                            <el-select v-model="fromData.budgetApplyId" placeholder="请选择项目名称" disabled>
                                 <el-option v-for="item in budgetApplyIdList" :key="item.budgetApplyId" :label="item.proName" :value="item.budgetApplyId">
                                 </el-option>
                             </el-select>
@@ -33,12 +33,12 @@
                             </el-radio-group>
                         </el-form-item>
                         <el-form-item label="科目" prop="subjectId">
-                            <el-select v-model="fromData.subjectId" placeholder="请选择科目">
-                                <el-option label="影视活动" value="8"></el-option>
+                            <el-select v-model="fromData.subjectId" placeholder="请选择科目" disabled>
+                                <el-option label="影视活动" :value="8"></el-option>
                             </el-select>
                         </el-form-item>
                         <el-form-item label="细分项" prop="applyDetailId">
-                            <el-select v-model="fromData.applyDetailId" placeholder="请选择细分项">
+                            <el-select v-model="fromData.applyDetailId" placeholder="请选择细分项" disabled>
                                 <el-option v-for="item in subdivideList" :key="item.applyDetailId" :label="item.subItemsName" :value="item.applyDetailId">
                                 </el-option>
                             </el-select>
@@ -242,10 +242,10 @@ export default {
             fromData: {
                 createUserId: this.userId,
                 costPerson: this.$store.state.user.realName,
-                budgetApplyId: '',
                 proRequireId: '',
-                applyDetailId: '',
+                applyDetailId: '', // 采购项目
                 groupId: '',//项目组
+                budgetApplyId: '', // 采购项目
                 buyType: '',//类型
                 subjectId: '',//科目
                 subItemsId: '',//细分项
@@ -298,7 +298,11 @@ export default {
     beforeCreate() { },
     beforeMount() { },
     mounted() {
-        this.fromData.proRequireId = this.$route.query.id;
+        this.fromData.proRequireId = this.$route.query.proRequireId*1;
+        this.fromData.budgetApplyId = this.$route.query.budgetApplyId*1;
+        this.fromData.applyDetailId = this.$route.query.applyDetailId*1;
+        this.fromData.subjectId = this.$route.query.subjectId*1;
+        this.fromData.subItemsId = this.$route.query.subItemsId*1;
         ///////// 接受页面传参 start /////////
         this.getQuery()
         ///////// 判断部门 start /////////
@@ -315,7 +319,10 @@ export default {
     // 方法事件
     methods: {
         getSubdivide(e) {
-            this.$axios.post('/ocarplay/task/getBudgetDetailByApplyId', { "budgetApplyId": 1624 }).then((res) => {
+            let data = {
+                budgetApplyId: this.$route.query.budgetApplyId
+            }
+            this.$axios.post('/ocarplay/task/getBudgetDetailByApplyId', data).then((res) => {
                 console.log(res)
                 // this.listLoading = false
                 if (res.status == 200 && res.data.errorCode == 0) {

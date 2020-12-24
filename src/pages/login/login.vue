@@ -40,7 +40,7 @@ export default {
           aesStr: aesStr
         })
         .then(res => {
-          // console.log(res)
+          console.log(res)
           if (res.data.data) {
             window.sessionStorage.setItem('isLogin', 'success')
             this.$store.commit('login', {
@@ -51,7 +51,7 @@ export default {
             this.$router.push({ path: '/home' })
           } else {
             //失败就直接调回去
-            this.$store.commit('clearToken')
+            // this.$store.commit('clearToken')
           }
         })
 
