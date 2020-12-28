@@ -1026,9 +1026,6 @@
   </div>
 </template>
 <script>
-// import { matchType } from '@/utils/matchType' // 引入文件格式判断方法
-import FileSaver from 'file-save'
-import { saveAs } from 'file-saver'
 import Comment from '@/components/comment' // 新增评分评星
 import CommentSketchy from '@/components/commentSketchy' // 新增评分明细
 import Supplierfill from '@/components/supplierfill' // 完善供应商
@@ -1264,31 +1261,15 @@ export default {
   beforeCreate() {},
   beforeMount() {},
   mounted() {
-    // this.foreach()
-    // console.log(this.$refs.table)
-    ///////// 获取车系列表 start /////////
-    // this.getCarSeriesLists()
     ///////// 获取任务列表 /////////
     this.getMovieListAjax()
-    ///////// 获取车主列表 start /////////
-    // this.getOwnerList()
-    ///////// 获取摄影师列表 start /////////
-    // this.getlistPhotoPerson()
-    ///////// 获取模特列表 start /////////
-    // this.getlistModel()
-    // 获取供应商
-    // this.getPmsSupplierToOcarplay()
-
-    // let list = [1,2,3,4,5,6]
-    // console.log(list.splice(0,1))
-    // console.log(list)
     // 任务状态页码数据
     let data = {
       status: 0,
       pageNum: 1,
       pageSize: 30,
     }
-    this.$store.commit('taskData', data)
+    // this.$store.commit('taskData', data)
   },
   // 方法
   methods: {
@@ -1791,32 +1772,6 @@ export default {
     },
     ///////// 删除任务 end /////////
 
-    ///////// 导出结算清单 end /////////
-    exportInvite(prm) {
-      let data = {
-        taskId: prm.taskId,
-      }
-      this.$axios
-        .post('/ocarplay/api/invite/exportInvite', data, {
-          responseType: 'blob', //--设置请求数据格式
-        })
-        .then((res) => {
-          // console.log(res)
-          if (res.status == 200) {
-            // this.$message.success('删除任务成功！')
-            // ///////// 获取任务列表 start /////////
-            // this.getMovieListAjax()
-            var blob = new Blob([res.data], {
-              type: 'text/plain;charset=utf-8',
-            })
-            saveAs(blob, prm.taskName + '.xls')
-          } else {
-            this.$message.error('下载失败！')
-          }
-        })
-    },
-    ///////// 导出结算清单 end /////////
-
     ///////// 取消按钮 start /////////
     cancel() {
       this.drawerDelay = false
@@ -1830,44 +1785,6 @@ export default {
     },
     ///////// 取消按钮 end /////////
 
-    /**
-     * [exportBtn] 导出Excel
-     */
-    exportBtn() {
-      // console.log(this.Cpoint)
-      // console.log(this.Structure)
-      var type = ''
-      if (this.Cpoint && this.Structure) {
-        type = 3
-      } else if (this.Cpoint) {
-        type = 1
-      } else if (this.Structure) {
-        type = 2
-      } // return;
-      this.exportExl = false // this.$axios.post("/nmbs_back/api/idea/exportMyExcel?type=3&ideaId=" + this.ideaId,{},{
-      this.$axios
-        .post(
-          '/nmbs_back/api/idea/exportMyExcel?type=' +
-            type +
-            '&ideaId=' +
-            this.ideaId,
-          {},
-          {
-            headers: {
-              'content-type': 'application/json; charset=utf-8',
-            },
-            responseType: 'blob', //--设置请求数据格式
-          }
-        )
-        .then((res) => {
-          // console.log(res.data)
-          var blob = new Blob([res.data], { type: 'text/plain;charset=utf-8' })
-          // saveAs(blob, '导出excel.xls')
-        })
-        .catch((res) => {
-          // console.log('res')
-        })
-    },
     ///////// 新增评论 start /////////
     addComment(obj, item) {
       // console.log(obj)
@@ -1892,35 +1809,6 @@ export default {
           }
         })
       )
-    },
-    ///////// 导出结算列表 start /////////
-
-    ///////// 导入结算列表 start /////////
-    importFile(id) {
-      // console.log(id)
-    },
-    ///////// 导入结算列表 start /////////
-
-    ///////// 导出结算列表 start /////////
-    evaluatePersonVisibleShow(obj, index) {
-      // this.movieListData[index].evaluatePersonVisible = !this.movieListData[index].evaluatePersonVisible
-      if (this.movieListData[index].evaluatePersonVisible) {
-        this.movieListData[index].evaluatePersonVisible = false
-        // console.log(this.movieListData[index].evaluatePersonVisible)
-      } else {
-        // console.log(this.movieListData[index].evaluatePersonVisible)
-        // console.log(index)
-        for (let i = 0; i < obj.length; i++) {
-          const element = obj[i]
-          if (element.ifPgOver == 0) {
-            this.movieListData[index].evaluatePersonVisible = true
-            break
-          }
-        }
-        if (!this.movieListData[index].evaluatePersonVisible) {
-          this.$message.warning('已评价完成！')
-        }
-      }
     },
     ///////// 导出结算列表 start /////////
 

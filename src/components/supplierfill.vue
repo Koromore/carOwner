@@ -52,7 +52,11 @@
                       v-show="index == fromData.length - 1"
                     ></i>
                     <i class="el-icon-delete" @click="delFromData(index)"></i>
-                    <i class="el-icon-plus"></i>
+                    <i
+                      class="el-icon-s-promotion"
+                      v-show="supplierData.type == '模特'"
+                      @click="send(index)"
+                    ></i>
                   </el-col>
                 </el-col>
               </el-col>
@@ -219,6 +223,26 @@ export default {
         })
         .catch((res) => {
           console.log(res)
+        })
+    },
+    // 发送任务补全模特
+    send(index) {
+      let data = {
+        isVisible: true,
+        movieId: this.supplierData.id,
+        supplierId: fromData[index].supplierId,
+      }
+      this.$axios
+        .post('/ocarplay/api/movie/updateVisible', data)
+        .then((res) => {
+          // console.log(res)
+          if (res.status == 200) {
+            // this.options = res.data.data
+          }
+        })
+        .catch((res) => {
+          console.log(res)
+          this.drawerLoading = false
         })
     },
   },

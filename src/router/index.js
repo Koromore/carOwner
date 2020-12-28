@@ -206,6 +206,15 @@ const router = new Router({
           }
         },
         {
+          path: '/home/supplieradmin',
+          name: 'supplieradmin',
+          component: resolve => require(['@/pages/home/activity/supplieradmin'], resolve),
+          meta: {
+            requireAuth: true,
+            title: '供应商账号管理'
+          }
+        },
+        {
           path: '/home/task',
           name: 'task',
           component: resolve => require(['@/pages/home/task/task'], resolve),
