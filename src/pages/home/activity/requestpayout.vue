@@ -19,7 +19,7 @@
           <div class="case">{{ createTime }}</div>
           <div class="case">供应商</div>
           <div class="case">
-            <el-select v-model="fromData.supplierId" @change="handleSupplier" placeholder="请选择">
+            <el-select v-model="fromData.supplierId" @change="handleSupplier" placeholder="请选择" filterable>
               <el-option
                 v-for="item in supplierOptions"
                 :key="item.supplierId"
@@ -130,16 +130,16 @@
                 {{scope.row.money?scope.row.money:'/'}}
               </template> -->
             </el-table-column>
-            <el-table-column prop="buyNum" label="采购数量" show-overflow-tooltip>
+            <el-table-column prop="buyNum" label="采购数量" show-overflow-tooltip width="80">
               <template slot-scope="scope">
                 {{scope.row.buyNum?scope.row.buyNum:'/'}}
               </template>
             </el-table-column>
-            <el-table-column prop="buyPrice" label="单价" show-overflow-tooltip>
+            <el-table-column prop="buyPrice" label="单价" show-overflow-tooltip width="50">
               <template slot-scope="scope">
                 {{scope.row.buyPrice?scope.row.buyPrice:'/'}}
               </template> </el-table-column>
-            <el-table-column prop="totalMoney" label="费用" show-overflow-tooltip>
+            <el-table-column prop="totalMoney" label="费用" show-overflow-tooltip width="50">
               <template slot-scope="scope">
                 {{scope.row.totalMoney?scope.row.totalMoney:'/'}}
               </template> </el-table-column>

@@ -172,15 +172,18 @@
           <el-table-column
             prop="createTime"
             label="下达时间"
-            min-width="140"
+            width="100"
             show-overflow-tooltip
           >
+            <template slot-scope="scope">
+              {{ $timeformat(scope.row.createTime, 'MM.dd hh:mm') }}
+            </template>
           </el-table-column>
 
           <el-table-column
             prop="initUserName"
             label="下达人"
-            min-width="80"
+            width="80"
             show-overflow-tooltip
           >
           </el-table-column>
@@ -188,22 +191,28 @@
           <el-table-column
             prop="photoTime"
             label="拍摄时间"
-            min-width="100"
+            width="100"
             sortable="custom"
           >
             <template slot-scope="scope">
               <template v-if="scope.row.photoTime">
-                {{ $date0(scope.row.photoTime) }}
-                <template v-if="scope.row.reasonId">
+                <!-- openDelayPhoto -->
+                
+                <el-link @click="openDelayPhoto(scope.row)">
+                  {{ $timeformat(scope.row.photoTime, 'MM.dd') }}
+                </el-link>
+                <!-- 123 -->
+                <!-- <template v-if="scope.row.photoTimeOld"> -->
                   <el-tooltip
                     class="item"
                     effect="dark"
-                    :content="scope.row.reason"
+                    :content="scope.row.photoDelayReason"
                     placement="top"
                   >
-                    <span style="color: #e6a23c">延期</span>
+                    <span class="statusColor3" v-if="scope.row.photoDelayType==1">推迟</span>
+                    <span class="statusColor1" v-else-if="scope.row.photoDelayType==2">提前</span>
                   </el-tooltip>
-                </template>
+                <!-- </template> -->
               </template>
               <template v-else>/</template>
             </template>
@@ -221,22 +230,20 @@
                 class="omit"
                 :underline="false"
                 @click="toDetail(scope.row.movieId)"
-                >{{ $date0(scope.row.photoTime) }}
-                <template v-if="scope.row.movieType==1">
-                  {{ scope.row.city }}-
-                  {{ scope.row.deptName }}-
+                >{{ $timeformat(scope.row.photoTime, 'MM.dd') }}
+                <template v-if="scope.row.movieType == 1">
+                  {{ scope.row.city }}- {{ scope.row.deptName }}-
                   {{ scope.row.carTypeName }}-
                   {{ scope.row.photoTypeName }}
                 </template>
-                <template v-else-if="scope.row.movieType==2">
-                  {{ scope.row.city }}-
-                  {{ scope.row.deptName }}-
+                <template v-else-if="scope.row.movieType == 2">
+                  {{ scope.row.city }}- {{ scope.row.deptName }}-
                   {{ scope.row.movieName }}
                 </template>
-                <template v-else-if="scope.row.movieType==3">
+                <template v-else-if="scope.row.movieType == 3">
                   {{ scope.row.movieName }}
                 </template>
-                </el-link>
+              </el-link>
             </template>
           </el-table-column>
           <!-- <el-table-column
@@ -261,70 +268,6 @@
 
           <!-- <el-table-column prop="ownerItemList" label="邀约事项" min-width="130" show-overflow-tooltip></el-table-column> -->
           <el-table-column
-            prop="modelName"
-            label="模特"
-            min-width="70"
-            show-overflow-tooltip
-          >
-            <template slot-scope="scope">
-              <template v-if="scope.row.status != 2">
-                <template v-if="deptId == 90">
-                  <template v-if="scope.row.isModel">
-                    <template v-if="scope.row.movieToSupplierList1.length">
-                      <span
-                        v-for="(item, index) in scope.row.movieToSupplierList1"
-                        :key="index"
-                      >
-                        {{ item.supplierName }}
-                      </span>
-                    </template>
-                    <template v-else>
-                      <el-link
-                        type="primary"
-                        @click="
-                          toSupplier(
-                            scope.row.movieId,
-                            scope.row.movieName,
-                            '模特',
-                            1
-                          )
-                        "
-                      >
-                        去完善
-                      </el-link>
-                    </template>
-                  </template>
-                  <span v-else>/</span>
-                </template>
-                <template v-else>
-                  <template v-if="scope.row.isModel">
-                    <template v-if="scope.row.movieToSupplierList1.length">
-                      <span
-                        v-for="(item, index) in scope.row.movieToSupplierList1"
-                        :key="index"
-                      >
-                        {{ item.supplierName }}
-                      </span>
-                    </template>
-                    <span v-else>待完善</span>
-                  </template>
-                  <span v-else>/</span>
-                </template>
-              </template>
-              <template v-else>
-                <template v-if="scope.row.movieToSupplierList1.length">
-                  <span
-                    v-for="(item, index) in scope.row.movieToSupplierList1"
-                    :key="index"
-                  >
-                    {{ item.supplierName }}
-                  </span>
-                </template>
-                <span v-else>/</span>
-              </template>
-            </template>
-          </el-table-column>
-          <el-table-column
             prop="personName"
             label="摄影师"
             min-width="70"
@@ -345,14 +288,7 @@
                     <template v-else>
                       <el-link
                         type="primary"
-                        @click="
-                          toSupplier(
-                            scope.row.movieId,
-                            scope.row.movieName,
-                            '摄影师',
-                            2
-                          )
-                        "
+                        @click="toSupplier(scope.row, '摄影师', 2)"
                       >
                         去完善
                       </el-link>
@@ -388,6 +324,66 @@
               </template>
             </template>
           </el-table-column>
+
+          <el-table-column
+            prop="modelName"
+            label="模特"
+            min-width="70"
+            show-overflow-tooltip
+          >
+            <template slot-scope="scope">
+              <template v-if="scope.row.status != 2">
+                <template v-if="deptId == 90">
+                  <template v-if="scope.row.isModel">
+                    <template v-if="scope.row.movieToSupplierList1.length">
+                      <el-link
+                        @click="toSupplier(scope.row, '模特', 1)"
+                        v-for="(item, index) in scope.row.movieToSupplierList1"
+                        :key="index"
+                      >
+                        {{ item.supplierName }}
+                      </el-link>
+                    </template>
+                    <template v-else>
+                      <el-link
+                        type="primary"
+                        @click="toSupplier(scope.row, '模特', 1)"
+                      >
+                        去完善
+                      </el-link>
+                    </template>
+                  </template>
+                  <span v-else>/</span>
+                </template>
+                <template v-else>
+                  <template v-if="scope.row.isModel">
+                    <template v-if="scope.row.movieToSupplierList1.length">
+                      <span
+                        v-for="(item, index) in scope.row.movieToSupplierList1"
+                        :key="index"
+                      >
+                        {{ item.supplierName }}
+                      </span>
+                    </template>
+                    <span v-else>待完善</span>
+                  </template>
+                  <span v-else>/</span>
+                </template>
+              </template>
+              <template v-else>
+                <template v-if="scope.row.movieToSupplierList1.length">
+                  <span
+                    v-for="(item, index) in scope.row.movieToSupplierList1"
+                    :key="index"
+                  >
+                    {{ item.supplierName }}
+                  </span>
+                </template>
+                <span v-else>/</span>
+              </template>
+            </template>
+          </el-table-column>
+
           <el-table-column
             prop="ownerName"
             label="车辆"
@@ -409,14 +405,7 @@
                     <template v-else>
                       <el-link
                         type="primary"
-                        @click="
-                          toSupplier(
-                            scope.row.movieId,
-                            scope.row.movieName,
-                            '车辆',
-                            3
-                          )
-                        "
+                        @click="toSupplier(scope.row, '车辆', 3)"
                       >
                         去完善
                       </el-link>
@@ -464,14 +453,7 @@
                   <template v-if="scope.row.isOther">
                     <el-link
                       type="primary"
-                      @click="
-                        toSupplier(
-                          scope.row.movieId,
-                          scope.row.movieName,
-                          '其他',
-                          1
-                        )
-                      "
+                      @click="toSupplier(scope.row, '其他', 1)"
                     >
                       去完善
                     </el-link>
@@ -517,7 +499,7 @@
               <span v-else>/</span>
             </template>
           </el-table-column> -->
-          <el-table-column label="评分" min-width="70" v-if="deptId != 90">
+          <el-table-column label="评分" width="90" v-if="deptId != 90">
             <template slot-scope="scope">
               <!-- {{scope.row.movieToSupplierList2}} -->
               <template v-if="scope.row.status != 2">
@@ -529,7 +511,7 @@
                       <el-dropdown-item
                         v-for="(item, index) in scope.row.movieToSupplierList2"
                         :key="index"
-                        v-show="!item.techScore"
+                        v-show="!item.grade"
                       >
                         <div @click="addComment(scope.row, item)">
                           {{ item.supplierName }}
@@ -551,7 +533,7 @@
               </template>
             </template>
           </el-table-column>
-          <el-table-column label="发布" min-width="70">
+          <el-table-column label="发布" width="90">
             <template slot-scope="scope">
               <template v-if="deptId != 90">
                 <template v-if="scope.row.movieToSupplierList2.length">
@@ -561,7 +543,7 @@
                       @click="toMovieUrl(scope.row)"
                       v-if="scope.row.urlStatus == 1"
                     >
-                      待填写
+                      待填写 0/{{ scope.row.movieUrlList.length }}
                     </el-link>
                     <el-link
                       type="warning"
@@ -586,7 +568,7 @@
                     @click="toMovieUrl(scope.row)"
                     v-if="scope.row.urlStatus == 1"
                   >
-                    待填写
+                    待填写 0/{{ scope.row.movieUrlList.length }}
                   </el-link>
                   <el-link
                     type="warning"
@@ -605,9 +587,15 @@
                 </template>
               </template>
               <template v-else>
-                <span v-if="scope.row.urlStatus == 1" class="statusColor3">{{ scope.row.urlNum }}/{{ scope.row.num }}</span>
-                <span v-else-if="scope.row.urlStatus == 2" class="statusColor1">{{ scope.row.urlNum }}/{{ scope.row.num }}</span>
-                <span v-else-if="scope.row.urlStatus == 3" class="$statusColor2">{{ scope.row.urlNum }}/{{ scope.row.num }}</span>
+                <span v-if="scope.row.urlStatus == 1" class="statusColor3"
+                  >{{ scope.row.urlNum }}/{{ scope.row.num }}</span
+                >
+                <span v-else-if="scope.row.urlStatus == 2" class="statusColor1"
+                  >{{ scope.row.urlNum }}/{{ scope.row.num }}</span
+                >
+                <span v-else-if="scope.row.urlStatus == 3" class="$statusColor2"
+                  >{{ scope.row.urlNum }}/{{ scope.row.num }}</span
+                >
                 <!-- <el-link type="primary" v-if="scope.row.urlStatus == 1">
                   待填写
                 </el-link> -->
@@ -630,7 +618,7 @@
               <span> / </span>
             </template>
           </el-table-column> -->
-          <el-table-column label="反馈" min-width="50">
+          <el-table-column label="反馈" width="60">
             <template slot-scope="scope">
               <i
                 class="el-icon-chat-dot-round feedbackIcon"
@@ -641,7 +629,7 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="请款报销" min-width="110">
+          <el-table-column label="请款报销" width="110">
             <!--  slot-scope="props" -->
             <template slot-scope="scope">
               <span
@@ -667,7 +655,7 @@
           <el-table-column type="expand" width="18">
             <!--  slot-scope="props" -->
             <template slot-scope="scope">
-              <el-col :span="2" style="text-align: right; line-height: 42px">
+              <el-col :span="2" :offset="9" style="text-align: right; line-height: 42px">
                 共{{
                   scope.row.paymentList.length +
                   scope.row.offlineDataList.length
@@ -679,8 +667,10 @@
                   :data="scope.row.paymentList"
                   style="width: 100%"
                   v-if="scope.row.paymentList.length"
+                  border
+                  class="nonemp"
                 >
-                  <el-table-column type="index" label="序号"> </el-table-column>
+                  <el-table-column type="index" label="序号" width="50"> </el-table-column>
                   <el-table-column prop="name" label="金额类别">
                     <template>请款</template>
                   </el-table-column>
@@ -695,7 +685,7 @@
                   <el-table-column
                     prop="userName"
                     label="请款人/报销人"
-                    width="108"
+                    width="110"
                   >
                   </el-table-column>
                   <el-table-column
@@ -708,8 +698,8 @@
                   </el-table-column>
                   <el-table-column prop="name" label="状态">
                     <template slot-scope="scope1">
-                      <span v-if="scope1.row.payState">已完成</span>
-                      <span v-else>未完成</span>
+                      <span v-if="scope1.row.payState" class="statusColor2">已完成</span>
+                      <span v-else class="statusColor4">未完成</span>
                     </template>
                   </el-table-column>
                 </el-table>
@@ -718,6 +708,8 @@
                   style="width: 100%"
                   :show-header="!scope.row.paymentList.length"
                   v-if="scope.row.offlineDataList.length"
+                  border
+                  class="nonemp"
                 >
                   <el-table-column type="index" label="序号">
                     <template slot-scope="scope2">
@@ -752,9 +744,9 @@
                   </el-table-column>
                   <el-table-column prop="name" label="状态">
                     <template slot-scope="scope">
-                      <span v-if="scope.row.auditStatus == 0">未审核</span>
-                      <span v-else-if="scope.row.auditStatus == 1">已通过</span>
-                      <span v-else-if="scope.row.auditStatus == 2">未通过</span>
+                      <span v-if="scope.row.auditStatus == 0" class="statusColor1">未审核</span>
+                      <span v-else-if="scope.row.auditStatus == 1" class="statusColor2">已通过</span>
+                      <span v-else-if="scope.row.auditStatus == 2" class="statusColor3">未通过</span>
                     </template>
                   </el-table-column>
                 </el-table>
@@ -762,12 +754,7 @@
             </template>
           </el-table-column>
 
-          <el-table-column
-            prop
-            label="状态"
-            min-width="80"
-            show-overflow-tooltip
-          >
+          <el-table-column prop label="状态" width="80" show-overflow-tooltip>
             <template slot-scope="scope">
               <span v-if="scope.row.status == 0" class="statusColor0">
                 进行中
@@ -799,10 +786,10 @@
           <el-table-column
             prop="address"
             label="操作"
-            min-width="150"
+            width="150"
             v-if="deptId != 90"
           >
-            <template slot-scope="scope">
+            <template slot-scope="scope" v-if="scope.row.status != 2">
               <el-button type="primary" size="mini" @click="delay(scope.row)">
                 延期
               </el-button>
@@ -816,7 +803,7 @@
             </template>
           </el-table-column>
           <el-table-column prop="address" label="操作" min-width="80" v-else>
-            <template slot-scope="scope">
+            <template slot-scope="scope" v-if="scope.row.status != 2">
               <el-button
                 plain
                 size="mini"
@@ -843,42 +830,7 @@
     </el-row>
     <!------------------ 内容列表 end ------------------>
 
-    <!-- 抽屉弹窗延期原因 start -->
-    <el-drawer title="延期活动" :visible.sync="drawerDelay" size="566px">
-      <el-row class="drawerDelay" v-loading="drawerLoading">
-        <el-col :span="4">活动名称:</el-col>
-        <el-col :span="20">{{ linkMovieName }}</el-col>
-        <el-col :span="4">延期时间:</el-col>
-        <el-col :span="20">
-          <el-date-picker
-            v-model="delayTime"
-            type="date"
-            placeholder="选择日期"
-            :picker-options="pickerOptions"
-            :unlink-panels="true"
-          ></el-date-picker>
-        </el-col>
-        <el-col :span="4" class="key keycontent">延期原因:</el-col>
-        <el-col :span="20">
-          <el-input
-            type="textarea"
-            :rows="6"
-            placeholder="请输入内容"
-            v-model="delayReason"
-          ></el-input>
-        </el-col>
-        <!-- 底部按钮 -->
-        <el-col :span="24" class="btn">
-          <el-col :span="6" :offset="5">
-            <el-button type="info" @click="cancel">取消</el-button>
-          </el-col>
-          <el-col :span="6" :offset="2">
-            <el-button type="primary" @click="putDelay">提交</el-button>
-          </el-col>
-        </el-col>
-      </el-row>
-    </el-drawer>
-    <!-- 抽屉弹窗延期原因 end -->
+    
 
     <!-- 抽屉弹窗发布链接 start -->
     <el-dialog
@@ -959,14 +911,6 @@
     </el-dialog>
     <!-- 抽屉弹窗发布链接 end -->
 
-    <!-- 新增评论评星 -->
-    <CommentSketchy :commentSketchyShow="commentSketchyShow"></CommentSketchy>
-    <!-- 新增评论 -->
-
-    <!-- 新增评论明细 -->
-    <Comment :commentShow="commentShow"></Comment>
-    <!-- 新增评论 -->
-
     <!-- 新增反馈 -->
     <el-dialog title="反馈" :visible.sync="feedbackShow" width="50%">
       <!-- <span>这是一段信息</span> -->
@@ -1018,16 +962,114 @@
         </el-table-column>
       </el-table>
     </el-dialog>
+
+    <!-- 抽屉弹窗延期原因 start -->
+    <el-drawer title="延期活动" :visible.sync="drawerDelay" size="566px">
+      <el-row class="drawerDelay" v-loading="drawerLoading">
+        <el-col :span="4">活动名称:</el-col>
+        <el-col :span="20">{{ linkMovieName }}</el-col>
+        <el-col :span="4">延期时间:</el-col>
+        <el-col :span="20">
+          <el-date-picker
+            v-model="delayTime"
+            type="date"
+            placeholder="选择日期"
+            :picker-options="pickerOptions"
+            :unlink-panels="true"
+          ></el-date-picker>
+        </el-col>
+        <el-col :span="4" class="key keycontent">延期原因:</el-col>
+        <el-col :span="20">
+          <el-input
+            type="textarea"
+            :rows="6"
+            placeholder="请输入内容"
+            v-model="delayReason"
+          ></el-input>
+        </el-col>
+        <!-- 底部按钮 -->
+        <el-col :span="24" class="btn">
+          <el-col :span="6" :offset="5">
+            <el-button type="info" @click="cancel">取消</el-button>
+          </el-col>
+          <el-col :span="6" :offset="2">
+            <el-button type="primary" @click="putDelay">提交</el-button>
+          </el-col>
+        </el-col>
+      </el-row>
+    </el-drawer>
+    <!-- 抽屉弹窗延期原因 end -->
+
+    <!-- 抽屉弹窗延期拍摄 start -->
+    <el-drawer
+      title="延期拍摄"
+      :visible.sync="drawerDelayPhoto"
+      size="566px"
+      
+    >
+    <!-- @close="drawerDelayPhotoClose" -->
+      <el-row class="drawerDelay" v-loading="drawerLoading">
+        <el-col :span="4">任务名称:</el-col>
+        <el-col :span="20">{{linkMovieName}}</el-col>
+        <el-col :span="4">拍摄时间:</el-col>
+        <el-col :span="20">
+          <el-date-picker
+            v-model="delayPhotoTime"
+            type="date"
+            placeholder="选择日期"
+            :picker-options="pickerOptions"
+            value-format="yyyy-MM-dd"
+          ></el-date-picker>
+        </el-col>
+        <el-col :span="4" class="key keycontent">延期原因:</el-col>
+        <el-col :span="20">
+          <!-- photoDelayReason -->
+          <el-input
+            type="textarea"
+            :rows="6"
+            placeholder="请输入内容"
+            v-model="photoDelayReason"
+          ></el-input>
+          <!-- <el-select v-model="reasonId" filterable clearable placeholder="延期原因说明">
+            <el-option
+              v-for="item in reasonList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select> -->
+        </el-col>
+        <!-- 底部按钮 -->
+        <el-col :span="24" class="btn">
+          <el-col :span="6" :offset="5">
+            <el-button type="info" @click="cancel">取消</el-button>
+          </el-col>
+          <el-col :span="6" :offset="2">
+            <el-button type="primary" @click="putDelayPhoto">提交</el-button>
+          </el-col>
+        </el-col>
+      </el-row>
+    </el-drawer>
+    <!-- 抽屉弹窗延期拍摄 end -->
+
     <!-- 完善供应商 -->
     <Supplierfill
       :supplierShow="supplierShow"
       :supplierData="supplierData"
     ></Supplierfill>
+
+    <!-- 新增评论评星 -->
+    <CommentSketchy :commentSketchyShow="commentSketchyShow"></CommentSketchy>
+    <!-- 新增评论 -->
+
+    <!-- 新增评论明细 -->
+    <Comment :commentShow="commentShow"></Comment>
+    <!-- 新增评论 -->
   </div>
 </template>
 <script>
-import Comment from '@/components/comment' // 新增评分评星
-import CommentSketchy from '@/components/commentSketchy' // 新增评分明细
+import Comment from '@/components/comment' // 新增评分明细
+import CommentSketchy from '@/components/commentSketchy' // 新增评分评星
 import Supplierfill from '@/components/supplierfill' // 完善供应商
 
 export default {
@@ -1107,8 +1149,11 @@ export default {
 
       // 抽屉拍摄延期
       drawerDelayPhoto: false,
-      reasonId: '', // 延期拍摄原因
-      reasonList: '', // 延期拍摄原因列表
+      // reasonId: '', // 延期拍摄原因
+      // reasonList: '', // 延期拍摄原因列表
+      photoDelayType: '', // 1-推迟 2-提前
+      photoDelayReason: '', // 延期拍摄原因
+      photoTimeOld: '', // 旧的拍摄时间
       delayPhotoTime: '', // 延期拍摄时间
 
       input: '',
@@ -1399,7 +1444,7 @@ export default {
                 element.movieToSupplierList1.push(element_)
               } else if (element_.supplierType == 2) {
                 element.movieToSupplierList2.push(element_)
-                if (!element_.techScore) {
+                if (!element_.grade) {
                   element.scoreNum = false
                 }
               } else if (element_.supplierType == 3) {
@@ -1419,7 +1464,7 @@ export default {
           this.movieListData = data.items
           this.total = data.totalRows
           this.loading = false
-          console.log(this.movieListData)
+          // console.log(this.movieListData)
         }
       })
     },
@@ -1447,7 +1492,20 @@ export default {
     delay(prm) {
       this.drawerDelay = true
       this.linkMovieId = prm.movieId
-      this.linkMovieName = prm.movieName
+      if (prm.movieType == 1) {
+        this.linkMovieName =
+          prm.city +
+          '-' +
+          prm.deptName +
+          '-' +
+          prm.carTypeName +
+          '-' +
+          prm.photoTypeName
+      } else if (prm.movieType == 2) {
+        this.linkMovieName = prm.city + '-' + prm.deptName + '-' + prm.movieName
+      } else if (prm.movieType == 3) {
+        this.linkMovieName = prm.movieName
+      }
       // console.log(prm)
     },
     putDelay() {
@@ -1485,6 +1543,81 @@ export default {
         })
     },
     ///////// 延期原因 end /////////
+
+    ///////// 延期拍摄 start /////////
+    openDelayPhoto(prm) {
+      this.drawerDelayPhoto = true
+      this.linkMovieId = prm.movieId
+      this.photoTimeOld = prm.photoTime
+      // this.delayPhotoTime = prm.photoTime
+      if (prm.movieType == 1) {
+        this.linkMovieName =
+          prm.city +
+          '-' +
+          prm.deptName +
+          '-' +
+          prm.carTypeName +
+          '-' +
+          prm.photoTypeName
+      } else if (prm.movieType == 2) {
+        this.linkMovieName = prm.city + '-' + prm.deptName + '-' + prm.movieName
+      } else if (prm.movieType == 3) {
+        this.linkMovieName = prm.movieName
+      }
+      // this.taskId = id
+      // this.taskName = taskName
+    },
+    putDelayPhoto(){
+      let endTime = this.$date0(this.delayTime)
+      let photoDelayType = null
+      // new Date(Date.parse(customTime))
+      let photoTimeOld = new Date(Date.parse(this.photoTimeOld))
+      let photoTime = new Date(Date.parse(this.delayPhotoTime))
+      if (photoTimeOld>photoTime) {
+        photoDelayType = 2
+      }else{
+        photoDelayType = 1
+      }
+      let data = {
+        movieId: this.linkMovieId,
+        photoDelayReason: this.photoDelayReason,
+        photoTimeOld: this.photoTimeOld,
+        photoTime: this.delayPhotoTime,
+        photoDelayType: photoDelayType
+      }
+      // console.log(photoTimeOld)
+      // console.log(photoDelayType)
+      // console.log(data)
+      // return
+      if (!data.photoDelayReason) {
+        this.$message.error('请填写延期原因！')
+        return
+      } else if (!data.photoTime) {
+        this.$message.error('请填写延期时间！')
+        return
+      }
+      this.drawerLoading = true
+      this.$axios
+        .post('/ocarplay/api/movie/save', data)
+        .then((res) => {
+          if (res.status == 200 && res.data.errcode == 0) {
+            this.$message.success('拍摄延期成功！')
+            this.drawerDelayPhoto = false
+            this.photoDelayReason = ''
+            this.delayPhotoTime = ''
+            ///////// 获取任务列表 start /////////
+            this.getMovieListAjax()
+          } else {
+            this.$message.error('拍摄延期失败！')
+          }
+          this.drawerLoading = false
+        })
+        .catch((res) => {
+          console.log(res)
+          this.drawerLoading = false
+        })
+    },
+    ///////// 延期拍摄 end /////////
 
     ///////// 获取车主列表 start /////////
     getOwnerList() {
@@ -1602,6 +1735,22 @@ export default {
 
     ///////// 提交任务 start /////////
     toMovieUrl(prm) {
+      if (prm.isModel && !prm.movieToSupplierList1.length) {
+        this.$message.error('请先完善模特')
+        return
+      }
+      if (prm.isPerson && !prm.movieToSupplierList2.length) {
+        this.$message.error('请先完善摄影师')
+        return
+      }
+      if (prm.movieType == 1 && !prm.movieToSupplierList3.length) {
+        this.$message.error('请先完善车辆')
+        return
+      }
+      // if (prm.isOther&&!prm.movieToSupplierList4.length) {
+      //   this.$message.error('请先完善其他资源')
+      //   return
+      // }
       this.drawerMovieUrl = true
       this.linkMovieName = prm.movieName
       this.linkMovieId = prm.movieId
@@ -1629,6 +1778,20 @@ export default {
         }
       }
       this.movieUrlList = movieUrlList
+      if (prm.movieType == 1) {
+        this.linkMovieName =
+          prm.city +
+          '-' +
+          prm.deptName +
+          '-' +
+          prm.carTypeName +
+          '-' +
+          prm.photoTypeName
+      } else if (prm.movieType == 2) {
+        this.linkMovieName = prm.city + '-' + prm.deptName + '-' + prm.movieName
+      } else if (prm.movieType == 3) {
+        this.linkMovieName = prm.movieName
+      }
     },
     ///////// 链接改变验证 start /////////
     urlChange(val) {
@@ -1668,8 +1831,10 @@ export default {
       let urlStatus = 3
       for (let i = 0; i < movieUrlList.length; i++) {
         let element = movieUrlList[i]
-        if (element.urlType == 1 && !element.url) {
-          urlStatus = 2
+        if (element.urlType == 1 || element.urlType == 4) {
+          if (!element.url) {
+            urlStatus = 2
+          }
         }
       }
       let data = {
@@ -1788,11 +1953,16 @@ export default {
     ///////// 新增评论 start /////////
     addComment(obj, item) {
       // console.log(obj)
-      // console.log(item)
+      console.log(item)
+      if (item.serviceScore) {
+        this.commentShow++
+      }else{
+        this.commentSketchyShow++
+      }
       this.gradeMovieId = obj.movieId
       this.gradeMovieName = obj.movieName
-      this.commentSketchyShow += 1
-      // this.commentShow++
+      
+      // 
       this.gradeSupplierId = item.supplierId // 评价供应商ID
       this.gradeSupplierName = item.supplierName // 评价供应商名称
     },
@@ -1814,6 +1984,7 @@ export default {
 
     ///////// 排序 start /////////
     sortableChange(column) {
+      return
       let prop = column.prop
       let order = column.order
       if (prop == 'photoTime') {
@@ -1836,25 +2007,31 @@ export default {
     },
     ///////// 排序 end /////////
 
-    ///////// 打开延期拍摄弹窗 start /////////
-    // openDelayPhoto(id, taskName) {
-    //   this.drawerDelayPhoto = true
-    //   this.taskId = id
-    //   this.taskName = taskName
-    // },
-    ///////// 打开延期拍摄弹窗 end /////////
-
     // 完善供应商信息
-    toSupplier(id, name, type, typeId) {
+    toSupplier(row, type, typeId) {
+      // console.log(row)
       this.supplierShow++
+      let name = this.$timeformat(row.photoTime, 'MM.dd')
+      if (row.movieType == 1) {
+        name += `${row.city}-${row.deptName}-${row.carTypeName}-${row.photoTypeName}`
+      } else if (row.movieType == 2) {
+        name += `${row.city}-${row.deptName}-${row.movieName}`
+      } else if (row.movieType == 3) {
+        name += `${row.movieName}`
+      }
+      let list = []
+      row['movieToSupplierList' + typeId].forEach((element) => {
+        list.push(element)
+      })
       let supplierData = {
-        id: id,
+        id: row.movieId,
         name: name,
         type: type,
         typeId: typeId,
+        list: list
       }
       this.supplierData = supplierData
-      console.log(supplierData)
+      // console.log(supplierData)
     },
     // 跳转报销页面
     toReimbursement(obj) {

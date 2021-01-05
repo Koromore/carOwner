@@ -81,7 +81,7 @@
                       type="primary"
                       v-else
                       @click="designate(scope.$index)"
-                      >指拍跟进人</el-link
+                      >指派跟进人</el-link
                     >
                   </div>
                 </template>
@@ -99,7 +99,7 @@
                     <div v-show="answerNameShowIndex == scope.$index">
                       <el-input
                         type="textarea"
-                        :rows="2"
+                        :rows="6"
                         placeholder="请输入内容"
                         v-model="answerNameText"
                         clearable

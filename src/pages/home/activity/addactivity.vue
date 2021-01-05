@@ -16,7 +16,10 @@
           <el-col :span="24" class="list">
             <div class="key imp">任务类型</div>
             <div class="val">
-              <el-radio-group v-model="movieType" :disabled="movieId ? true : false">
+              <el-radio-group
+                v-model="movieType"
+                :disabled="movieId ? true : false"
+              >
                 <el-radio :label="1">有车拍摄</el-radio>
                 <el-radio :label="2">非车拍摄</el-radio>
                 <el-radio :label="3">其他</el-radio>
@@ -168,7 +171,7 @@
               </el-radio-group>
             </div>
           </el-col>
-          <el-col :span="24" class="list" v-show="movieType == 3">
+          <!-- <el-col :span="24" class="list" v-show="movieType == 3">
             <div class="key imp">其他资源</div>
             <div class="val">
               <el-radio-group v-model="isOther">
@@ -176,10 +179,10 @@
                 <el-radio :label="false">不需要</el-radio>
               </el-radio-group>
             </div>
-          </el-col>
+          </el-col> -->
           <el-col :span="24" v-show="movieType != 3">
             <el-col :span="24" class="list">
-              <div class="key">场地</div>
+              <div class="key imp">场地</div>
               <div class="val">
                 <el-select
                   v-model="placeId"
@@ -236,7 +239,7 @@
           </el-col>
         </el-col>
         <el-col :span="12" class="right">
-          <el-col :span="24" class="list" v-show="taskType != 3">
+          <el-col :span="24" class="list" v-show="movieType != 3">
             <div class="key imp">发布数</div>
             <div class="val">
               <el-input
@@ -248,7 +251,7 @@
               ></el-input>
             </div>
           </el-col>
-          <el-col :span="24" class="list" v-show="taskType != 3">
+          <el-col :span="24" class="list" v-show="movieType != 3">
             <div class="key imp">拍摄时间</div>
             <div class="val">
               <el-date-picker
@@ -402,7 +405,7 @@
   </div>
 </template>
 <script>
-import cityList from '@/common/city' // 引入文件格式判断方法
+import cityList from '@/common/cityen' // 引入文件格式判断方法
 
 export default {
   name: 'addactivity',
@@ -489,7 +492,6 @@ export default {
 
       carSeriesId: [],
       seriesId: [],
-      periodTime: [],
 
       taskNum: '',
       cost: null,
@@ -528,7 +530,7 @@ export default {
       // 车型列表
       carTypeList: [],
       // 车系列表
-      carSeriesList: [],
+      carSeriesList: this.$store.state.carSeriesList,
       // 拍摄类型列表
       photoTypeList: [
         {
@@ -573,7 +575,7 @@ export default {
       isPerson: null, // 是否需要摄影师
       isOther: null, // 是否需要其他资源
       placeId: null, // 场地ID
-      periodTime: ['', ''], // 计划周期
+      periodTime: [new Date(), ''], // 计划周期
       // 任务文件
       movieFileList: [],
       fileList: [],
@@ -614,17 +616,25 @@ export default {
     // },
   },
   // 钩子函数
-  beforeCreate() {
-    
-  },
-  beforeMount() {
-    ///////// 获取车型列表 start /////////
-    this.getCarSeriesLists()
-  },
+  beforeCreate() {},
+  beforeMount() {},
   mounted() {
+    let data = {
+      movieId: 14,
+      movieToSupplierList: [
+        {
+          deleteFlag: false,
+          movieId: 14,
+          supplierId: 61,
+          supplierName: '冯萌',
+          supplierMoney: '100',
+          supplierType: 2,
+        },
+      ],
+    }
     ///////// 接受页面传参 start /////////
     this.getQuery()
-    
+
     ///////// 获取场地列表 start /////////
     this.getPlaceList()
     ///////// 判断部门 start /////////
@@ -634,6 +644,15 @@ export default {
     this.getBudget()
     ///////// 获取预算明细 start /////////
     // this.getBudgetDetailByApplyId()
+    let brandList = this.brandList
+    let deptId = this.deptId
+
+    for (let i = 0; i < brandList.length; i++) {
+      let element = brandList[i]
+      if (element.value == deptId) {
+        this.brandList = [element]
+      }
+    }
   },
   // 方法事件
   methods: {
@@ -712,7 +731,7 @@ export default {
             // this.applyDetailIdList = res.data.data
             let applyDetailIdList = []
             res.data.data.forEach((element) => {
-              if (element.subjectId == 8 && element.remainNum>0) {
+              if (element.subjectId == 8 && element.remainNum > 0) {
                 applyDetailIdList.push(element)
               }
             })
@@ -800,77 +819,6 @@ export default {
     },
     ///////// 获取场地列表 end /////////
 
-    ///////// 获取车型列表 start /////////
-    getCarSeriesLists() {
-      // this.listLoading = true
-      let data = {
-        ids: 0,
-        pageNum: 1,
-        pageSize: 30,
-      }
-      this.$axios
-        .post('/ocarplay/api/carSeries/getCarSeriesLists', data)
-        .then((res) => {
-          // console.log(res)
-          // this.listLoading = false
-          if (res.status == 200) {
-            let data = res.data.carTypes
-
-            let carSeriesList = [
-              {
-                value: 105,
-                label: '沃尔沃',
-                children: [],
-              },
-              {
-                value: 110,
-                label: '吉利',
-                children: [],
-              },
-              {
-                value: 153,
-                label: '长城',
-                children: [],
-              },
-              {
-                deptId: 106,
-                label: '东本',
-                children: [],
-              },
-              {
-                deptId: 117,
-                label: '内容一组',
-                children: [],
-              },
-            ]
-            let carTypeList = []
-            data.forEach((element) => {
-              let children = {
-                value: element.carTypeId,
-                label: element.carTypeName,
-                // children: []
-              }
-              carTypeList.push(children)
-              if (element.deptId == 105) {
-                carSeriesList[0].children.push(children)
-              } else if (element.deptId == 110) {
-                carSeriesList[1].children.push(children)
-              } else if (element.deptId == 153) {
-                carSeriesList[2].children.push(children)
-              } else if (element.deptId == 106) {
-                carSeriesList[3].children.push(children)
-              } else if (element.deptId == 117) {
-                carSeriesList[4].children.push(children)
-              }
-            })
-            this.carTypeList = carTypeList
-            this.carSeriesList = carSeriesList
-            // console.log(carSeriesList)
-          }
-        })
-    },
-    ///////// 获取车型列表 end /////////
-
     ///////// 获取任务详情 start /////////
     getMovieDetail(id) {
       let data = {
@@ -880,6 +828,7 @@ export default {
         // console.log(res)
         if (res.status == 200) {
           let data = res.data
+          this.changeBrandId(data.brandId)
           this.movieDetail = data
           this.movieId = data.movieId
           this.movieType = data.movieType
@@ -890,7 +839,7 @@ export default {
           this.carTypeId = data.carTypeId
           this.photoType = data.photoType
           this.isModel = data.isModel
-          this.isPerson =data.isPerson
+          this.isPerson = data.isPerson
           this.isOther = data.isOther
           this.placeId = data.placeId
           this.periodTime = [data.startTime, data.endTime]
@@ -899,9 +848,8 @@ export default {
           this.movieDescList = data.movieDescList
           this.money = data.money
           this.moneyRemark = data.moneyRemark
+          this.movieName = data.movieName
 
-          // moneyRemark
-          // this.changeBrandId(data.brandId)
           // 文件回调
           let fileList = []
           let movieFileList = []
@@ -1120,13 +1068,30 @@ export default {
       } else {
         movieName = this.movieName
       }
-
+      let remark = null
+      if (this.movieType == 1) {
+        remark =
+          this.photoTime +
+          '-' +
+          city +
+          '-' +
+          brandName +
+          '-' +
+          carTypeName +
+          '-' +
+          photoTypeName
+      } else if (this.movieType == 2) {
+        remark =
+          this.photoTime + '-' + city + '-' + brandName + '-' + this.movieName
+      } else if (this.movieType == 3) {
+        remark = this.photoTime + '-' + this.movieName
+      }
       let jsonData = JSON.stringify([
         {
           num: 1,
           budget: this.money,
           reqFinishTime: endTime,
-          remark: this.photoTime + '-' + movieName,
+          remark: this.photoTime + '-' + city + '-' + brandName,
         },
       ])
       let data = {
@@ -1148,7 +1113,7 @@ export default {
         photoType: this.photoType, // 拍摄类型
         isModel: this.isModel, // 是否需要模特
         isPerson: this.isPerson, // 是否需要摄影师
-        isOther: this.isOther, // 是否需要其他资源
+        // isOther: this.isOther, // 是否需要其他资源
         placeId: this.placeId, // 场地ID
         startTime: startTime, // 计划周期
         endTime: endTime, // 计划周期
@@ -1158,7 +1123,7 @@ export default {
         num: this.num, // 发布数
         photoTime: this.photoTime, // 拍摄时间
         movieDescList: this.movieDescList, // 任务描述列表
-        money: this.money*1, // 预估费用
+        money: this.money * 1, // 预估费用
         moneyRemark: this.moneyRemark, // 费用明细
         // halfTaskName: halfTaskName, //
         // 任务所属供应商集合
@@ -1168,67 +1133,84 @@ export default {
 
         jsonData: jsonData,
       }
-      data.movieId
-      data.movieType
+      // data.movieId
+      // data.movieType
+      if (data.movieType == 3) {
+        data.isOther = true
+      }
       if (!data.movieType) {
-        this.$message.error("请选择任务类型")
+        this.$message.error('请选择任务类型')
         return
       }
-      if (!data.applyDetailId&&!data.movieId) {
-        this.$message.error("请选择项目名称和预算明细")
+      if (!data.applyDetailId && !data.movieId) {
+        this.$message.error('请选择项目名称和预算明细')
         return
       }
-      if (data.movieType!=3&&!data.city) {
-        this.$message.error("请选择城市")
+      if (data.movieType != 3 && !data.city) {
+        this.$message.error('请选择城市')
         return
       }
-      if (data.movieType!=3&&!data.brandId) {
-        this.$message.error("请选择品牌")
+      if (data.movieType != 3 && !data.brandId) {
+        this.$message.error('请选择品牌')
         return
       }
-      if (data.movieType==1&&!data.carTypeId) {
-        this.$message.error("请选择车型")
+      if (data.movieType == 1 && !data.carTypeId) {
+        this.$message.error('请选择车型')
         return
       }
-      if (data.movieType==1&&!data.photoType) {
-        this.$message.error("请选择拍摄类型")
+      if (data.movieType == 1 && !data.photoType) {
+        this.$message.error('请选择拍摄类型')
         return
       }
-      if (data.movieType!=1&&!data.movieName) {
-        this.$message.error("请填写任务名称")
+      if (data.movieType != 1 && !data.movieName) {
+        this.$message.error('请填写任务名称')
         return
       }
-      if (data.movieType!=3&&data.isModel == null) {
-        this.$message.error("请选择是否需要模特资源")
+      if (data.movieType != 3 && data.isModel == null) {
+        this.$message.error('请选择是否需要模特资源')
         return
       }
-      if (data.movieType!=3&&data.isPerson == null) {
-        this.$message.error("请选择是否需要摄影师资源")
+      if (data.movieType != 3 && data.isPerson == null) {
+        this.$message.error('请选择是否需要摄影师资源')
         return
       }
-      if (data.movieType==3&&data.isOther == null) {
-        this.$message.error("请选择是否需要其他资源")
+      // if (data.movieType == 3 && data.isOther == null) {
+      //   this.$message.error('请选择是否需要其他资源')
+      //   return
+      // }
+      if (!data.placeId) {
+        this.$message.error('请填写场地信息')
         return
       }
-      if (!data.startTime||!data.endTime) {
-        this.$message.error("请填写计划周期")
+      if (!data.startTime || !data.endTime) {
+        this.$message.error('请填写计划周期')
         return
       }
-      if (!data.num) {
-        this.$message.error("请填写计发布数")
+      if (data.movieType != 3 && !data.num) {
+        this.$message.error('请填写发布数')
         return
       }
-      // console.log(data)
-      if (!data.money&&data.money>0) {
-        this.$message.error("预估费用必须大于0")
+      if (data.movieType != 3 && !data.photoTime) {
+        this.$message.error('请填写拍摄时间')
+        return
+      }
+      if (!data.money && data.money > 0) {
+        this.$message.error('预估费用必须大于0')
         return
       }
       if (!data.moneyRemark) {
-        this.$message.error("请填写费用明细")
+        this.$message.error('请填写费用明细')
         return
       }
-      if (!data.movieDescList[0].descName||!data.movieDescList[0].descTime||!data.movieDescList[0].place||!data.movieDescList[0].photoDesc||!data.movieDescList[0].personDesc||!data.movieDescList[0].otherDesc) {
-        this.$message.error("请填写任务描述")
+      if (
+        !data.movieDescList[0].descName ||
+        !data.movieDescList[0].descTime ||
+        !data.movieDescList[0].place ||
+        !data.movieDescList[0].photoDesc ||
+        !data.movieDescList[0].personDesc ||
+        !data.movieDescList[0].otherDesc
+      ) {
+        this.$message.error('请填写任务描述')
         return
       }
       if (this.movieId) {
@@ -1278,7 +1260,7 @@ export default {
 
     ///////// 品牌切换 start /////////
     changeBrandId(val) {
-      // console.log(val)
+      console.log(val)
       if (val) {
         let carSeriesList = this.carSeriesList
         let carTypeList = []

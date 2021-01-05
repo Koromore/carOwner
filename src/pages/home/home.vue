@@ -1,13 +1,8 @@
 <template>
   <div id="home">
-    <Home-Header
-      :routeName="routeName"
-      :adminShow="adminShow"
-    ></Home-Header>
+    <Home-Header :routeName="routeName" :adminShow="adminShow"></Home-Header>
     <el-main id="content">
-      <router-view
-        :carSeriesList="carSeriesList"
-      ></router-view>
+      <router-view :carSeriesList="carSeriesList"></router-view>
     </el-main>
   </div>
 </template>
@@ -127,6 +122,7 @@ export default {
               }
             })
             this.carSeriesList = carSeriesList
+            this.$store.commit('setCarSeriesList', carSeriesList)
             // console.log(carSeriesList)
           }
         })
@@ -145,9 +141,22 @@ export default {
       }
     },
     ///////// 用户列表获取 end /////////
-    gitAdmin(){
-      let adminList = [704,160,152,134,3910,4001,4023,3985,521,266,10,3962]
-                    // 姚菲、杜总、谭总、成总、黄天倚、石杨、张倩
+    gitAdmin() {
+      let adminList = [
+        704,
+        160,
+        152,
+        134,
+        3910,
+        4001,
+        4023,
+        3985,
+        521,
+        266,
+        10,
+        3962,
+      ]
+      // 姚菲、杜总、谭总、成总、黄天倚、石杨、张倩
       let userId = this.userId
       let adminShow = false
       adminList.forEach((element) => {
@@ -238,7 +247,15 @@ export default {
         background: none;
       }
     }
+    &.nonemp {
+      .el-table__header-wrapper {
+        margin-bottom: 0;
+        border-radius: 0;
+        // background: #fff;
+      }
+    }
   }
+
   .paging {
     height: 64px;
     box-sizing: border-box;
@@ -343,7 +360,7 @@ export default {
     transition-timing-function: cubic-bezier(0.2, 1, 0.3, 1);
   }
 
-  .tabButHoverAss::before{
+  .tabButHoverAss::before {
     background: #67a9d6;
   }
 

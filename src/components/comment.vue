@@ -243,7 +243,7 @@ export default {
             if (data.errcode == 0) {
               this.$message.success(data.msg)
               this.drawerData = false
-              this.$parent.getlistPhotoPerson()
+              this.$parent.getMovieListAjax()
             } else {
               this.$message.error(data.msg)
             }

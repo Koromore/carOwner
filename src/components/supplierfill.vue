@@ -61,7 +61,6 @@
                 </el-col>
               </el-col>
             </el-col>
-            <!-- {{ fromData }} -->
           </div>
         </el-scrollbar>
       </el-row>
@@ -84,14 +83,7 @@ export default {
   data() {
     return {
       dialogVisible: false,
-      fromData: [
-        {
-          supplierId: null,
-          supplierName: null,
-          supplierMoney: null,
-          // supplierType: this.supplierData.typeId,
-        },
-      ],
+      fromData: [],
       options: [
         {
           label: 'label1',
@@ -107,6 +99,8 @@ export default {
         },
       ],
       movieToSupplierList: [],
+      delFromDataList: [],
+      list: this.supplierData.list,
     }
   },
   // 侦听器
@@ -121,7 +115,7 @@ export default {
   beforeCreate() {},
   beforeMount() {},
   mounted() {
-    // console.log(this)
+    // console.log(this.list)
   },
   // 方法
   methods: {
@@ -129,10 +123,12 @@ export default {
     addFromData(index) {
       let fromData = this.fromData
       fromData.push({
+        deleteFlag: false,
+        movieId: this.supplierData.id,
         supplierId: null,
         supplierMoney: null,
         supplierName: null,
-        // supplierType: this.supplierData.typeId,
+        supplierType: this.supplierData.typeId,
       })
       this.fromData = fromData
     },
@@ -140,23 +136,50 @@ export default {
     delFromData(index) {
       let fromData = this.fromData
       if (fromData.length > 1) {
+        if (fromData[index].msId) {
+          fromData[index].deleteFlag = true
+          this.delFromDataList.push(fromData[index])
+        }
         fromData.splice(index, 1)
         this.fromData = fromData
       } else {
         this.$message.warning('至少一个')
       }
+      // console.log(this.delFromDataList)
+      // console.log(this.fromData)
     },
     // 打开对话框回调
     openDialog() {
       this.getPmsSupplierToOcarplay()
-      this.fromData = [
-        {
-          supplierId: null,
-          supplierName: null,
-          supplierMoney: null,
-          // supplierType: this.supplierData.typeId,
-        },
-      ]
+      let fromData = []
+      if (this.supplierData.list.length) {
+        this.supplierData.list.forEach(element => {
+          fromData.push({
+            deleteFlag: false,
+            msId: element.msId,
+            movieId: element.movieId,
+            supplierId: element.supplierId,
+            supplierName: element.supplierName,
+            supplierMoney: element.supplierMoney,
+            supplierType: element.supplierType,
+          })
+        });
+        this.fromData = fromData
+      } else {
+        this.fromData = [
+          {
+            deleteFlag: false,
+            movieId: this.supplierData.id,
+            supplierId: null,
+            supplierName: null,
+            supplierMoney: null,
+            supplierType: this.supplierData.typeId,
+          },
+        ]
+      }
+
+      // console.log(this.supplierData.list)
+      // console.log(this.fromData)
     },
     // 获取供应商
     getPmsSupplierToOcarplay() {
@@ -180,10 +203,10 @@ export default {
     saveSupplier() {
       // this.dialogVisible = false
       let that = this
-      let movieToSupplierList = this.fromData
+      let fromData = this.fromData
       let options = this.options
-      for (let i = 0; i < movieToSupplierList.length; i++) {
-        let element = movieToSupplierList[i]
+      for (let i = 0; i < fromData.length; i++) {
+        let element = fromData[i]
         if (!element.supplierId) {
           this.$message.error('请选择供应商！')
           return
@@ -192,7 +215,6 @@ export default {
           this.$message.error('请填写金额！')
           return
         }
-        element.supplierType = this.supplierData.typeId
         for (let j = 0; j < options.length; j++) {
           let element_ = options[j]
           // console.log(j)
@@ -202,9 +224,10 @@ export default {
           }
         }
       }
+      let movieToSupplierList = fromData.concat(this.delFromDataList);
       let data = {
         movieId: this.supplierData.id,
-        movieToSupplierList: this.fromData,
+        movieToSupplierList: movieToSupplierList,
       }
       // console.log(data)
       // return

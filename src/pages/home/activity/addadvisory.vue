@@ -19,7 +19,7 @@
               height="100%"
               v-loading="tableLoading"
             >
-              <el-table-column prop="createTime" label="日期" min-width="130">
+              <el-table-column prop="createTime" label="日期" min-width="100">
               </el-table-column>
               <el-table-column prop="initUserName" label="咨询人" min-width="70">
               </el-table-column>
@@ -27,10 +27,10 @@
                 show-overflow-tooltip
                 prop="consultName"
                 label="咨询内容"
-                min-width="100"
+                min-width="130"
               >
               </el-table-column>
-              <el-table-column prop="answerUserName" label="采购跟进人" min-width="100">
+              <el-table-column prop="answerUserName" label="采购跟进人" min-width="70">
                 <template slot-scope="scope">
                   <span v-if="scope.row.answerUserId">
                     {{ scope.row.answerUserName }}
@@ -38,7 +38,7 @@
                   <span v-else style="color: red"> 待跟进 </span>
                 </template>
               </el-table-column>
-              <el-table-column prop="answerName" label="处理反馈" min-width="100">
+              <el-table-column prop="answerName" label="处理反馈" min-width="130" show-overflow-tooltip>
               </el-table-column>
             </el-table>
           </div>
@@ -233,7 +233,7 @@ export default {
         font-weight: bold;
       }
       .left {
-        width: 59%;
+        width: 72%;
         height: 100%;
         .table {
           height: calc(100% - 108px);
@@ -245,7 +245,7 @@ export default {
         }
       }
       .right {
-        width: 39%;
+        width: 25%;
         height: 100%;
         .text {
           height: calc(100% - 108px);

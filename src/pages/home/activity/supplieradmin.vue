@@ -10,7 +10,7 @@
             icon="el-icon-circle-plus-outline"
             @click="supplierLoginSave"
           >
-            新增活动
+            新增供应商账号
           </el-button>
         </div>
         <div class="searchBox"></div>
@@ -44,14 +44,28 @@
             min-width="140"
             show-overflow-tooltip
           >
+            <template slot-scope="scope">
+              <div v-if="scope.row.show">
+                <el-select v-model="value" placeholder="请选择">
+                  <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                    :disabled="item.disabled"
+                  >
+                  </el-option>
+                </el-select>
+              </div>
+            </template>
           </el-table-column>
-          <el-table-column
+          <!-- <el-table-column
             prop="createTime"
             label="合作内容"
             min-width="140"
             show-overflow-tooltip
           >
-          </el-table-column>
+          </el-table-column> -->
           <el-table-column
             prop="frequency"
             label="合作频率"
@@ -65,10 +79,10 @@
             min-width="140"
             show-overflow-tooltip
           >
-          <template slot-scope="scope">
-            <span v-if="scope.row.type==1">个人</span>
-            <span v-else-if="scope.row.type==2">企业</span>
-          </template>
+            <template slot-scope="scope">
+              <span v-if="scope.row.type == 1">个人</span>
+              <span v-else-if="scope.row.type == 2">企业</span>
+            </template>
           </el-table-column>
           <el-table-column
             prop="loginNum"
@@ -90,11 +104,11 @@
             min-width="140"
             show-overflow-tooltip
           >
-          <template>
-            <!-- <el-button type="primary">确认</el-button> -->
-            <el-button size="mini">编辑</el-button>
-            <el-button size="mini">删除</el-button>
-          </template>
+            <template>
+              <!-- <el-button type="primary">确认</el-button> -->
+              <el-button size="mini">编辑</el-button>
+              <el-button size="mini">删除</el-button>
+            </template>
           </el-table-column>
         </el-table>
       </div>
@@ -127,6 +141,29 @@ export default {
       deptName: this.$store.state.user.deptName, // 职位ID
       subordinate: this.$store.state.user.subordinate, // 一级部门ID
       adminShow: this.$store.state.adminShow, // 超级管理员
+
+      options: [
+        {
+          value: '选项1',
+          label: '黄金糕',
+        },
+        {
+          value: '选项2',
+          label: '双皮奶',
+        },
+        {
+          value: '选项3',
+          label: '蚵仔煎',
+        },
+        {
+          value: '选项4',
+          label: '龙须面',
+        },
+        {
+          value: '选项5',
+          label: '北京烤鸭',
+        },
+      ],
 
       supplierLoginList: [1, 2, 3, 4],
       loading: false,
@@ -231,14 +268,14 @@ export default {
         .post('/ocarplay/api/supplierLogin/save', data)
         .then((res) => {
           console.log(res)
-          if (res.status == 200 && res.data.errcode==0) {
+          if (res.status == 200 && res.data.errcode == 0) {
             // let data = res.data
             // this.movieListData = data.items
             // this.total = data.totalRows
             this.$message.success(res.data.msg)
             // console.log(this.movieListData)
             this.getSupplierLoginAjax()
-          }else{
+          } else {
             this.$message.error(res.data.msg)
           }
           this.loading = false

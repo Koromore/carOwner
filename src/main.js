@@ -9,6 +9,8 @@ import router from './router'
 // import echarts from 'echarts/lib/echarts'
 import { date, date_, time } from '@/utils/date'
 import { date0, time0 } from '@/utils/time'
+import { timeformat } from '@/utils/timeformat' // 时间格式处理
+
 import { isEmail, isMobile } from '@/utils/ifformat'
 import { duration } from '@/utils/duration'
 import { download } from '@/utils/download'
@@ -51,6 +53,8 @@ Vue.prototype.$time = time
 
 Vue.prototype.$date0 = date0
 Vue.prototype.$time0 = time0
+
+Vue.prototype.$timeformat = timeformat
 
 Vue.prototype.$isEmail = isEmail
 Vue.prototype.$isMobile = isMobile

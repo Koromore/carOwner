@@ -78,7 +78,7 @@
         <el-col :span="12" class="list">
           <div class="key">备注</div>
           <div class="val">
-            <el-input placeholder="请输入内容" v-model="remark" clearable></el-input>
+            <el-input placeholder="请输入内容（选填）" v-model="remark" clearable></el-input>
           </div>
         </el-col>
         <el-col :span="24" class="list">
@@ -444,7 +444,7 @@ export default {
         isCar, // 是否可停车
         isPark, // 是否可拍车
         money, // 费用
-        remark, // 备注
+        // remark, // 备注
         photoList, // 场地图片
         createTime, // 创建时间
         doUserId: this.userId, // 创建人

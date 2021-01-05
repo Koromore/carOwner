@@ -110,11 +110,17 @@ export default new Vuex.Store({
     searchValue: null,
 
     batchCashOut:[],//批量请款数组
+    // 车型列表
+    carSeriesList: []
   },
   action: {
 
   },
   mutations: {
+    // 车型列表
+    setCarSeriesList(state,data){
+      state.carSeriesList = data;
+    },
     getBatchCashOut(state,data){
       state.batchCashOut = data;
       localStorage.batchCashOut = JSON.stringify(data) ;
