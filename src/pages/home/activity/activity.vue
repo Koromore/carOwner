@@ -197,21 +197,27 @@
             <template slot-scope="scope">
               <template v-if="scope.row.photoTime">
                 <!-- openDelayPhoto -->
-                
+
                 <el-link @click="openDelayPhoto(scope.row)">
                   {{ $timeformat(scope.row.photoTime, 'MM.dd') }}
                 </el-link>
-                <!-- 123 -->
+                <!-- {{scope.row.photoDelayReason}} -->
                 <!-- <template v-if="scope.row.photoTimeOld"> -->
-                  <el-tooltip
-                    class="item"
-                    effect="dark"
-                    :content="scope.row.photoDelayReason"
-                    placement="top"
-                  >
-                    <span class="statusColor3" v-if="scope.row.photoDelayType==1">推迟</span>
-                    <span class="statusColor1" v-else-if="scope.row.photoDelayType==2">提前</span>
-                  </el-tooltip>
+                <el-tooltip class="item" effect="dark" placement="right">
+                  <div slot="content">{{ scope.row.photoDelayReason }}</div>
+                  <span>
+                    <span
+                      class="statusColor3"
+                      v-show="scope.row.photoDelayType == 1"
+                      >推迟</span
+                    >
+                    <span
+                      class="statusColor1"
+                      v-show="scope.row.photoDelayType == 2"
+                      >提前</span
+                    >
+                  </span>
+                </el-tooltip>
                 <!-- </template> -->
               </template>
               <template v-else>/</template>
@@ -278,12 +284,13 @@
                 <template v-if="deptId == 90">
                   <template v-if="scope.row.isPerson">
                     <template v-if="scope.row.movieToSupplierList2.length">
-                      <span
+                      <el-link
+                        @click="toSupplier(scope.row, '摄影师', 2)"
                         v-for="(item, index) in scope.row.movieToSupplierList2"
                         :key="index"
                       >
                         {{ item.supplierName }}
-                      </span>
+                      </el-link>
                     </template>
                     <template v-else>
                       <el-link
@@ -395,12 +402,13 @@
                 <template v-if="deptId == 90">
                   <template v-if="scope.row.movieType == 1">
                     <template v-if="scope.row.movieToSupplierList3.length">
-                      <span
+                      <el-link
+                        @click="toSupplier(scope.row, '车辆', 3)"
                         v-for="(item, index) in scope.row.movieToSupplierList3"
                         :key="index"
                       >
                         {{ item.supplierName }}
-                      </span>
+                      </el-link>
                     </template>
                     <template v-else>
                       <el-link
@@ -451,24 +459,36 @@
               <template v-if="scope.row.status != 2">
                 <template v-if="deptId == 90">
                   <template v-if="scope.row.isOther">
-                    <el-link
-                      type="primary"
-                      @click="toSupplier(scope.row, '其他', 1)"
-                    >
-                      去完善
-                    </el-link>
+                    <template v-if="scope.row.movieToSupplierList4.length">
+                      <el-link
+                        @click="toSupplier(scope.row, '其他', 4)"
+                        v-for="(item, index) in scope.row.movieToSupplierList4"
+                        :key="index"
+                      >
+                        {{ item.supplierName }}
+                      </el-link>
+                    </template>
+                    <template v-else>
+                      <el-link
+                        type="primary"
+                        @click="toSupplier(scope.row, '其他', 4)"
+                      >
+                        去完善
+                      </el-link>
+                    </template>
                   </template>
                   <span v-else>/</span>
                 </template>
                 <template v-else>
                   <template v-if="scope.row.isOther">
                     <template v-if="scope.row.movieToSupplierList4.length">
-                      <span
+                      <el-link
+                        @click="toSupplier(scope.row, '其他', 4)"
                         v-for="(item, index) in scope.row.movieToSupplierList4"
                         :key="index"
                       >
                         {{ item.supplierName }}
-                      </span>
+                      </el-link>
                     </template>
                     <span v-else>待完善</span>
                   </template>
@@ -499,7 +519,7 @@
               <span v-else>/</span>
             </template>
           </el-table-column> -->
-          <el-table-column label="评分" width="90" v-if="deptId != 90">
+          <el-table-column label="评分" width="80" v-if="deptId != 90">
             <template slot-scope="scope">
               <!-- {{scope.row.movieToSupplierList2}} -->
               <template v-if="scope.row.status != 2">
@@ -655,7 +675,11 @@
           <el-table-column type="expand" width="18">
             <!--  slot-scope="props" -->
             <template slot-scope="scope">
-              <el-col :span="2" :offset="9" style="text-align: right; line-height: 42px">
+              <el-col
+                :span="2"
+                :offset="9"
+                style="text-align: right; line-height: 42px"
+              >
                 共{{
                   scope.row.paymentList.length +
                   scope.row.offlineDataList.length
@@ -670,7 +694,8 @@
                   border
                   class="nonemp"
                 >
-                  <el-table-column type="index" label="序号" width="50"> </el-table-column>
+                  <el-table-column type="index" label="序号" width="50">
+                  </el-table-column>
                   <el-table-column prop="name" label="金额类别">
                     <template>请款</template>
                   </el-table-column>
@@ -698,7 +723,9 @@
                   </el-table-column>
                   <el-table-column prop="name" label="状态">
                     <template slot-scope="scope1">
-                      <span v-if="scope1.row.payState" class="statusColor2">已完成</span>
+                      <span v-if="scope1.row.payState" class="statusColor2"
+                        >已完成</span
+                      >
                       <span v-else class="statusColor4">未完成</span>
                     </template>
                   </el-table-column>
@@ -744,9 +771,21 @@
                   </el-table-column>
                   <el-table-column prop="name" label="状态">
                     <template slot-scope="scope">
-                      <span v-if="scope.row.auditStatus == 0" class="statusColor1">未审核</span>
-                      <span v-else-if="scope.row.auditStatus == 1" class="statusColor2">已通过</span>
-                      <span v-else-if="scope.row.auditStatus == 2" class="statusColor3">未通过</span>
+                      <span
+                        v-if="scope.row.auditStatus == 0"
+                        class="statusColor1"
+                        >未审核</span
+                      >
+                      <span
+                        v-else-if="scope.row.auditStatus == 1"
+                        class="statusColor2"
+                        >已通过</span
+                      >
+                      <span
+                        v-else-if="scope.row.auditStatus == 2"
+                        class="statusColor3"
+                        >未通过</span
+                      >
                     </template>
                   </el-table-column>
                 </el-table>
@@ -829,8 +868,6 @@
       </el-col>
     </el-row>
     <!------------------ 内容列表 end ------------------>
-
-    
 
     <!-- 抽屉弹窗发布链接 start -->
     <el-dialog
@@ -1001,16 +1038,11 @@
     <!-- 抽屉弹窗延期原因 end -->
 
     <!-- 抽屉弹窗延期拍摄 start -->
-    <el-drawer
-      title="延期拍摄"
-      :visible.sync="drawerDelayPhoto"
-      size="566px"
-      
-    >
-    <!-- @close="drawerDelayPhotoClose" -->
+    <el-drawer title="延期拍摄" :visible.sync="drawerDelayPhoto" size="566px">
+      <!-- @close="drawerDelayPhotoClose" -->
       <el-row class="drawerDelay" v-loading="drawerLoading">
         <el-col :span="4">任务名称:</el-col>
-        <el-col :span="20">{{linkMovieName}}</el-col>
+        <el-col :span="20">{{ linkMovieName }}</el-col>
         <el-col :span="4">拍摄时间:</el-col>
         <el-col :span="20">
           <el-date-picker
@@ -1567,15 +1599,15 @@ export default {
       // this.taskId = id
       // this.taskName = taskName
     },
-    putDelayPhoto(){
+    putDelayPhoto() {
       let endTime = this.$date0(this.delayTime)
       let photoDelayType = null
       // new Date(Date.parse(customTime))
       let photoTimeOld = new Date(Date.parse(this.photoTimeOld))
       let photoTime = new Date(Date.parse(this.delayPhotoTime))
-      if (photoTimeOld>photoTime) {
+      if (photoTimeOld > photoTime) {
         photoDelayType = 2
-      }else{
+      } else {
         photoDelayType = 1
       }
       let data = {
@@ -1583,7 +1615,7 @@ export default {
         photoDelayReason: this.photoDelayReason,
         photoTimeOld: this.photoTimeOld,
         photoTime: this.delayPhotoTime,
-        photoDelayType: photoDelayType
+        photoDelayType: photoDelayType,
       }
       // console.log(photoTimeOld)
       // console.log(photoDelayType)
@@ -1956,13 +1988,13 @@ export default {
       console.log(item)
       if (item.serviceScore) {
         this.commentShow++
-      }else{
+      } else {
         this.commentSketchyShow++
       }
       this.gradeMovieId = obj.movieId
       this.gradeMovieName = obj.movieName
-      
-      // 
+
+      //
       this.gradeSupplierId = item.supplierId // 评价供应商ID
       this.gradeSupplierName = item.supplierName // 评价供应商名称
     },
@@ -2028,7 +2060,7 @@ export default {
         name: name,
         type: type,
         typeId: typeId,
-        list: list
+        list: list,
       }
       this.supplierData = supplierData
       // console.log(supplierData)

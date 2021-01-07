@@ -124,7 +124,7 @@
               <template slot-scope="scope">
                 {{scope.row.subItemsName?scope.row.subItemsName:'/'}}
               </template> </el-table-column>
-            <el-table-column prop="money" label="预计费用" show-overflow-tooltip> 
+            <el-table-column prop="money" label="预计费用" show-overflow-tooltip width="100"> 
               <!-- <template slot-scope="scope" >
                 {{scope.row.money?scope.row.money:'/'}}
                 {{scope.row.money?scope.row.money:'/'}}
