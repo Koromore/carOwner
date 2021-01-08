@@ -665,7 +665,7 @@
                 报销
               </el-tag>
               <el-tag
-                @click="toRequestpayout(scope.row.movieId)"
+                @click="toRequestpayout(scope.row.movieId, scope.row)"
                 v-else-if="scope.row.status != 2"
               >
                 请款
@@ -674,7 +674,7 @@
           </el-table-column>
           <el-table-column type="expand" width="18">
             <!--  slot-scope="props" -->
-            <template slot-scope="scope">
+            <el-col slot-scope="scope" class="expand">
               <el-col
                 :span="2"
                 :offset="9"
@@ -790,7 +790,7 @@
                   </el-table-column>
                 </el-table>
               </el-col>
-            </template>
+            </el-col>
           </el-table-column>
 
           <el-table-column prop label="状态" width="80" show-overflow-tooltip>
@@ -2042,6 +2042,10 @@ export default {
     // 完善供应商信息
     toSupplier(row, type, typeId) {
       // console.log(row)
+      if (row.paymentList.length || row.offlineDataList.length) {
+        this.$message.error('请款后禁止修改供应商！')
+        return
+      }
       this.supplierShow++
       let name = this.$timeformat(row.photoTime, 'MM.dd')
       if (row.movieType == 1) {
@@ -2081,7 +2085,23 @@ export default {
       })
     },
     // 跳转请款页面
-    toRequestpayout(id) {
+    toRequestpayout(id, row) {
+      if (row.isPerson&&!row.movieToSupplierList2.length) {
+        this.$message.error('请先完善摄影师！')
+        return
+      }
+      if (row.isModel&&!row.movieToSupplierList1.length) {
+        this.$message.error('请先完善模特！')
+        return
+      }
+      if (row.movieType == 1&&!row.movieToSupplierList3.length) {
+        this.$message.error('请先完善车辆！')
+        return
+      }
+      if (row.isOther&&!row.movieToSupplierList4.length) {
+        this.$message.error('请先完善其他资源！')
+        return
+      }
       this.chooseArr = []
       this.chooseArr.push(id)
       this.$store.commit('getBatchCashOut', this.chooseArr)
@@ -2128,7 +2148,7 @@ export default {
         feedbackName: this.feedbackText,
         movieId: this.feedbackMovieId,
       }
-      console.log(data)
+      // console.log(data)
       if (!data.feedbackName) {
         this.$message.error('请填写反馈内容！')
         return
@@ -2523,6 +2543,19 @@ $statusColor4: #ea8a85;
 }
 </style>
 <style lang="scss">
+.expand {
+  background: #fffaf0;
+  .el-table th,
+  .el-table tr {
+    background-color: #00000000;
+  }
+  .el-table__body-wrapper {
+    background: none!important;
+  }
+  // .el-table td, .el-table th.is-leaf{
+  //   border-color: ;
+  // }
+}
 .taskDialog {
   .el-dialog__header {
     text-align: center;

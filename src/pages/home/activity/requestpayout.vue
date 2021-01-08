@@ -397,7 +397,7 @@ export default {
               // this.fromData.supplier.subjectId=this.supplierObj.s
              res.data.forEach(element => {
                 element.totalMoney=0;
-                element.cashMoney=element.money;
+                element.cashMoney=element.supplierMoney;
                 element.payMode='';
                 element.remark='';
                 element.payTime='';
@@ -440,7 +440,7 @@ export default {
               this.supplierObj=res.data[0].supplierList[0];
               res.data.forEach(element => {
                 element.payMoney=0;//付款金额-总额
-                element.cashMoney=element.money;//用户输入-请款金额
+                element.cashMoney=element.supplierMoney;//用户输入-请款金额
                 element.payMode='';//支付方式
                 element.remark='';//备注
                 element.payTime='';//时间
