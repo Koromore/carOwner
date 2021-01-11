@@ -819,39 +819,66 @@
                   </span>
                 </el-tooltip>
               </template>
+              <span v-else-if="scope.row.status == 5" class="statusColor1">
+                已驳回
+              </span>
             </template>
           </el-table-column>
 
-          <el-table-column
-            prop="address"
-            label="操作"
-            width="150"
-            v-if="deptId != 90"
-          >
-            <template slot-scope="scope" v-if="scope.row.status != 2">
-              <el-button type="primary" size="mini" @click="delay(scope.row)">
-                延期
-              </el-button>
-              <el-button
-                type="primary"
-                size="mini"
-                @click="delContent(scope.row.movieId)"
-              >
-                删除
-              </el-button>
-            </template>
+          <el-table-column prop="address" label="操作" width="150">
+            <div slot-scope="scope">
+              <template v-if="scope.row.status == 0||scope.row.status == 3">
+                <template v-if="deptId != 90">
+                  <el-button type="primary" size="mini" @click="delay(scope.row)">
+                    延期
+                  </el-button>
+                  <el-button
+                    plain
+                    type="primary"
+                    size="mini"
+                    @click="delContent(scope.row.movieId)"
+                  >
+                    删除
+                  </el-button>
+                </template>
+                <template v-else>
+                  <el-button
+                    plain
+                    size="mini"
+                    @click="reject(scope.row.movieId)"
+                  >
+                    <!-- @click="reject(scope.row.movieId)" -->
+                    驳回
+                  </el-button>
+                  <el-button
+                    plain
+                    type="primary"
+                    size="mini"
+                    @click="completion(scope.row.movieId)"
+                  >
+                    完成
+                  </el-button>
+                </template>
+              </template>
+              <template  v-else-if="scope.row.status == 5">
+                <template v-if="deptId != 90">
+                  <el-button
+                    plain
+                    type="primary"
+                    size="mini"
+                    @click="delContent(scope.row.movieId)"
+                  >
+                    删除
+                  </el-button>
+                </template>
+              </template>
+            </div>
           </el-table-column>
-          <el-table-column prop="address" label="操作" min-width="80" v-else>
+          <!-- <el-table-column prop="address" label="操作" min-width="80" >
             <template slot-scope="scope" v-if="scope.row.status != 2">
-              <el-button
-                plain
-                size="mini"
-                @click="completion(scope.row.movieId)"
-              >
-                完成
-              </el-button>
+              
             </template>
-          </el-table-column>
+          </el-table-column> -->
         </el-table>
       </div>
       <el-col :span="24" class="paging">
@@ -1985,9 +2012,12 @@ export default {
     ///////// 新增评论 start /////////
     addComment(obj, item) {
       // console.log(obj)
-      console.log(item)
+      // console.log(item)
       if (item.serviceScore) {
-        this.commentShow++
+        this.$message.warning('评价少于两星，请进行详细评分！')
+        setTimeout(() => {
+          this.commentShow++
+        }, 200)
       } else {
         this.commentSketchyShow++
       }
@@ -2086,19 +2116,19 @@ export default {
     },
     // 跳转请款页面
     toRequestpayout(id, row) {
-      if (row.isPerson&&!row.movieToSupplierList2.length) {
+      if (row.isPerson && !row.movieToSupplierList2.length) {
         this.$message.error('请先完善摄影师！')
         return
       }
-      if (row.isModel&&!row.movieToSupplierList1.length) {
+      if (row.isModel && !row.movieToSupplierList1.length) {
         this.$message.error('请先完善模特！')
         return
       }
-      if (row.movieType == 1&&!row.movieToSupplierList3.length) {
+      if (row.movieType == 1 && !row.movieToSupplierList3.length) {
         this.$message.error('请先完善车辆！')
         return
       }
-      if (row.isOther&&!row.movieToSupplierList4.length) {
+      if (row.isOther && !row.movieToSupplierList4.length) {
         this.$message.error('请先完善其他资源！')
         return
       }
@@ -2312,6 +2342,57 @@ export default {
       // 调用 callback 返回建议列表的数据
       cb(results)
     },
+
+    ///////// 驳回 start /////////
+    reject(id){
+      this.$confirm('确认要驳回该活动吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      })
+        .then(() => {
+          this.rejectMovie(id)
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消驳回',
+          })
+        })
+    },
+    rejectMovie(id){
+      let data = {
+        movieId: id,
+        status: 5
+      }
+      this.$axios
+        .post('/ocarplay/api/movie/save', data)
+        .then((res) => {
+          // console.log(res)
+          if (res.status == 200 && res.data.errcode === 0) {
+            // if (this.movieId) {
+              this.$message.success('任务驳回成功！')
+            // } else {
+            //   this.$message.success('任务新建成功！')
+            // }
+            // return
+            // setTimeout(() => {
+            //   this.$router.push({
+            //     name: 'activity',
+            //   })
+            // }, 1000)
+            ///////// 获取任务列表 start /////////
+            this.getMovieListAjax()
+          } else {
+            this.$message.error('任务驳回失败！')
+            this.putLoading = false
+          }
+        })
+        .catch((res) => {
+          // console.log(res)
+          this.putLoading = false
+        })
+    }
   },
 }
 </script>
@@ -2550,7 +2631,7 @@ $statusColor4: #ea8a85;
     background-color: #00000000;
   }
   .el-table__body-wrapper {
-    background: none!important;
+    background: none !important;
   }
   // .el-table td, .el-table th.is-leaf{
   //   border-color: ;

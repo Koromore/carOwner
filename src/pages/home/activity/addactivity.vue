@@ -198,7 +198,7 @@
                   ></el-option>
                 </el-select>
               </div>
-              <el-link href="#/home/resource/addplace">添加</el-link>
+              <el-link @click="addplace">添加</el-link>
             </el-col>
           </el-col>
           <el-col :span="24" class="list">
@@ -251,8 +251,9 @@
               ></el-input>
             </div>
           </el-col>
-          <el-col :span="24" class="list" v-show="movieType != 3">
-            <div class="key imp">拍摄时间</div>
+          <el-col :span="24" class="list">
+            <div class="key imp" v-show="movieType != 3">拍摄时间</div>
+            <div class="key imp" v-show="movieType == 3">时间</div>
             <div class="val">
               <el-date-picker
                 v-model="photoTime"
@@ -284,26 +285,31 @@
               <el-input
                 placeholder="请输入内容"
                 v-model="item.descName"
+                :disabled="movieType == 3"
               ></el-input>
               <div class="miKey">时间:</div>
               <el-input
                 placeholder="请输入内容"
                 v-model="item.descTime"
+                :disabled="movieType == 3"
               ></el-input>
               <div class="miKey">集合地点:</div>
               <el-input
                 placeholder="请输入内容"
                 v-model="item.place"
+                :disabled="movieType == 3"
               ></el-input>
               <div class="miKey">成片要求:</div>
               <el-input
                 placeholder="请输入内容"
                 v-model="item.photoDesc"
+                :disabled="movieType == 3"
               ></el-input>
               <div class="miKey">人员要求:</div>
               <el-input
                 placeholder="请输入内容"
                 v-model="item.personDesc"
+                :disabled="movieType == 3"
               ></el-input>
               <div class="miKey">其他要求:</div>
               <el-input
@@ -402,14 +408,20 @@
         >
       </span>
     </el-dialog>
+    <!-- 新增场地 -->
+    <AddPlacetk :addplacetkshow="addplacetkshow"></AddPlacetk>
+    <!-- 新增场地 -->
   </div>
 </template>
 <script>
 import cityList from '@/common/cityen' // 引入文件格式判断方法
+import AddPlacetk from '@/components/addplacetk' // 新增评分明细
 
 export default {
   name: 'addactivity',
-  components: {},
+  components: {
+    AddPlacetk
+  },
   data() {
     return {
       userId: this.$store.state.user.userId,
@@ -556,6 +568,7 @@ export default {
       identifier: null, // 编号
       // 信息
       movieId: null, // 活动任务ID
+      status: 0, // 任务状态
       movieName2: null,
       movieName3: null,
       movieName: null, // 任务名称
@@ -600,6 +613,8 @@ export default {
       // supplierType
       // 1-模特供应商，2-摄影师供应商，3-车辆供应商，4-其他供应商
       supplierList: [], //
+
+      addplacetkshow: 0,
     }
   },
   // 侦听器
@@ -849,6 +864,7 @@ export default {
           this.money = data.money
           this.moneyRemark = data.moneyRemark
           this.movieName = data.movieName
+          this.status = data.status // 任务状态 0, // 任务状态
 
           // 文件回调
           let fileList = []
@@ -1224,6 +1240,9 @@ export default {
         delete data.cost
         delete data.subItemsName
       }
+      if (this.status==5) {
+        data.status = 0
+      }
       // if (flag) {
       this.putLoading = true
       this.$axios
@@ -1323,6 +1342,12 @@ export default {
       }
     },
     ///////// 拍摄类型切换 end /////////
+
+    ///////// 添加场地 start /////////
+    addplace(){
+      this.addplacetkshow ++
+      // console.log(this.addplacetkshow)
+    }
   },
 }
 </script>

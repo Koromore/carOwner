@@ -89,6 +89,11 @@ export default {
     //
     drawerDataClose() {
       this.$parent.cameraListShow = 0
+      this.movieId = null
+      this.supplierId = null // 摄影师供应商Id
+      this.personId = null // 摄影师Id
+      this.techScore = null
+      this.serviceScore = null
       this.remark = null
     },
     drawerDataOpen() {
