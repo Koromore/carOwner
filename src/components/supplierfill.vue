@@ -38,25 +38,38 @@
                       </el-option>
                     </el-select>
                   </el-col>
-                  <el-col :span="6" :offset="1">
+                  <el-col :span="6">
                     <el-input
                       v-model="item.supplierMoney"
                       placeholder="金额"
                       clearable
                     ></el-input>
                   </el-col>
-                  <el-col :span="6" :offset="1" class="icon">
+                  <el-col :span="4" class="icon">
                     <i
                       class="el-icon-circle-plus-outline"
                       @click="addFromData(index)"
                       v-show="index == fromData.length - 1"
                     ></i>
                     <i class="el-icon-delete" @click="delFromData(index)"></i>
-                    <i
+                    <!-- <i
                       class="el-icon-s-promotion"
                       v-show="supplierData.type == '模特'"
                       @click="send(index)"
-                    ></i>
+                    ></i> -->
+                  </el-col>
+                  <el-col
+                    :span="4"
+                    class="switch"
+                    v-show="supplierData.type == '模特'"
+                  >
+                    是否发送任务
+                    <el-switch
+                      v-model="item.isVisible"
+                      active-text="是"
+                      inactive-text="否"
+                    >
+                    </el-switch>
                   </el-col>
                 </el-col>
               </el-col>
@@ -101,6 +114,7 @@ export default {
       movieToSupplierList: [],
       delFromDataList: [],
       list: this.supplierData.list,
+      isVisible: false, // 是否在小程序可现实
     }
   },
   // 侦听器
@@ -129,6 +143,7 @@ export default {
         supplierMoney: null,
         supplierName: null,
         supplierType: this.supplierData.typeId,
+        isVisible: false,
       })
       this.fromData = fromData
     },
@@ -153,7 +168,7 @@ export default {
       this.getPmsSupplierToOcarplay()
       let fromData = []
       if (this.supplierData.list.length) {
-        this.supplierData.list.forEach(element => {
+        this.supplierData.list.forEach((element) => {
           fromData.push({
             deleteFlag: false,
             msId: element.msId,
@@ -162,8 +177,9 @@ export default {
             supplierName: element.supplierName,
             supplierMoney: element.supplierMoney,
             supplierType: element.supplierType,
+            isVisible: false,
           })
-        });
+        })
         this.fromData = fromData
       } else {
         this.fromData = [
@@ -174,6 +190,7 @@ export default {
             supplierName: null,
             supplierMoney: null,
             supplierType: this.supplierData.typeId,
+            isVisible: false,
           },
         ]
       }
@@ -224,7 +241,7 @@ export default {
           }
         }
       }
-      let movieToSupplierList = fromData.concat(this.delFromDataList);
+      let movieToSupplierList = fromData.concat(this.delFromDataList)
       let data = {
         movieId: this.supplierData.id,
         movieToSupplierList: movieToSupplierList,
@@ -250,6 +267,7 @@ export default {
     },
     // 发送任务补全模特
     send(index) {
+      let fromData = this.fromData
       let data = {
         isVisible: true,
         movieId: this.supplierData.id,
@@ -259,8 +277,9 @@ export default {
         .post('/ocarplay/api/movie/updateVisible', data)
         .then((res) => {
           // console.log(res)
-          if (res.status == 200) {
+          if (res.status == 200 && res.data.errcode == 0) {
             // this.options = res.data.data
+            this.$message.success('任务发送成功！')
           }
         })
         .catch((res) => {
@@ -280,13 +299,21 @@ export default {
   .box {
     height: 360px;
     box-sizing: border-box;
-    padding: 0 9%;
+    padding: 0 3%;
     .list {
       font-size: 16px;
       margin-bottom: 13px;
       .val {
         .item {
           margin-bottom: 9px;
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+          justify-content: space-between;
+          .switch {
+            font-size: 12px;
+            text-align: center;
+          }
         }
         .icon {
           i {

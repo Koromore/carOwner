@@ -221,7 +221,7 @@
         </el-col>
         <el-col :span="24" class="putPlaceholder"></el-col>
         <el-col :span="24" class="put">
-          <el-button type="primary" class="SlideOpen" @click="submit" data-text="提交">
+          <el-button type="primary" @click="submit" :disabled="putDisabled">
             <span>提交</span>
           </el-button>
         </el-col>
@@ -271,6 +271,8 @@ export default {
       tableData: [ ],//列表数据
 
       chooseArr:[],//批量请款选中的id数组
+      putDisabled: false,
+      
     }
   },
   // 侦听器
@@ -358,10 +360,11 @@ export default {
       this.$axios.post('/ocarplay/api/movie/creatPayDetail',sumData).then((res) => {
         if(res.status==200){
           this.$message.success(res.data.msg);
+          this.putDisabled = true
         }else{
-         this.$message.error(res.data.msg)
+          this.$message.error(res.data.msg)
         }
-        this.loading = false
+          this.loading = false
       }).catch((err) => {
          this.$message.error(err)
          this.loading = false
@@ -391,6 +394,7 @@ export default {
     //供应商下拉框选中
     handleSupplier(e){
       console.log(e);
+      this.putDisabled = false
        this.$axios.post('/ocarplay/api/movie/toCashOut',{movieIdList:this.chooseArr,supplierId:e}).then((res) => {
             if(res.status==200){
               this.supplierObj=res.data[0].supplierList[0];
@@ -399,7 +403,7 @@ export default {
                 element.totalMoney=0;
                 element.cashMoney=element.supplierMoney;
                 element.payMode='';
-                element.remark='';
+                element.remark=element.supplierTypeStr;
                 element.payTime='';
                 element.invoiceRemark='';
 
@@ -442,7 +446,7 @@ export default {
                 element.payMoney=0;//付款金额-总额
                 element.cashMoney=element.supplierMoney;//用户输入-请款金额
                 element.payMode='';//支付方式
-                element.remark='';//备注
+                element.remark=element.supplierTypeStr;//备注
                 element.payTime='';//时间
                 element.invoiceRemark='';//有发票-用户下拉框选择
 

@@ -8,7 +8,7 @@
             type="primary"
             size="small"
             icon="el-icon-circle-plus-outline"
-            @click="supplierLoginSave"
+            @click="dialogFormVisible = true"
           >
             新增供应商账号
           </el-button>
@@ -44,7 +44,7 @@
             min-width="140"
             show-overflow-tooltip
           >
-            <template slot-scope="scope">
+            <!-- <template slot-scope="scope">
               <div v-if="scope.row.show">
                 <el-select v-model="value" placeholder="请选择">
                   <el-option
@@ -57,7 +57,7 @@
                   </el-option>
                 </el-select>
               </div>
-            </template>
+            </template> -->
           </el-table-column>
           <!-- <el-table-column
             prop="createTime"
@@ -126,6 +126,46 @@
       </el-col>
     </el-row>
     <!------------------ 内容列表 end ------------------>
+    <el-dialog title="新增供应商账号" :visible.sync="dialogFormVisible">
+      <el-form :model="formData" :rules="rules" ref="formData" :label-width="formLabelWidth" v-loading="saveLoading">
+        <el-form-item label="供应商名称" prop="supplierId">
+          <!-- <el-input v-model="form.name" autocomplete="off"></el-input>supplierLoginList -->
+          <el-select v-model="formData.supplierId" placeholder="请选择供应商">
+            <el-option
+              v-for="item in supplierList"
+              :key="item.supplierId"
+              :label="item.supplierName"
+              :value="item.supplierId"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="合作频率" prop="frequency">
+          <el-input v-model.number="formData.frequency"></el-input>
+        </el-form-item>
+        <el-form-item label="账号类型" prop="type">
+          <el-radio-group v-model="formData.type">
+            <el-radio :label="1">个人</el-radio>
+            <el-radio :label="2">企业</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="账号" prop="loginNum">
+          <el-input v-model.number="formData.loginNum"></el-input>
+        </el-form-item>
+        <el-form-item label="密码" prop="password">
+          <el-input
+            type="password"
+            v-model="formData.password"
+            show-password
+          ></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="supplierLoginSave('formData')">
+          确 定
+        </el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -167,11 +207,39 @@ export default {
 
       supplierLoginList: [1, 2, 3, 4],
       loading: false,
+      saveLoading: false,
       pageNum: 1,
       pageSize: 10,
       total: 100,
 
       supplierList: [], // 供应商列表
+      dialogFormVisible: false,
+      formLabelWidth: '100px',
+      formData: {
+        supplierId: null, // 供应商ID
+        frequency: null, // 合作频率
+        type: null, // 1-个人 2-企业
+        loginNum: null, // 登录账号
+        password: null, // 登录密码
+        // supplierName: '冯萌', // 供应商名字
+      },
+      rules: {
+        supplierId: [
+          { required: true, message: '请选择供应商', trigger: 'change' },
+        ],
+        frequency: [
+          { required: true, message: '请填写合作频率', trigger: 'blur' },
+        ],
+        type: [
+          {
+            required: true,
+            message: '请选择账号类型',
+            trigger: 'change',
+          },
+        ],
+        loginNum: [{ required: true, message: '填写账号', trigger: 'blur' }],
+        password: [{ required: true, message: '填写密码', trigger: 'blur' }],
+      },
     }
   },
   // 过滤器
@@ -229,7 +297,7 @@ export default {
       // }
       let data = {
         subjectId: 8,
-        supplierName: val,
+        // supplierName: val,
       }
       this.$axios
         .post('/ocarplay/api/movie/getPmsSupplierToOcarplay', data)
@@ -238,13 +306,13 @@ export default {
           if (res.status == 200) {
             // this.supplier = res.data.data
             let data = res.data.data
-            let supplierList = []
-            data.forEach((element) => {
-              supplierList.push({
-                value: element.supplierName,
-              })
-            })
-            this.supplierList = supplierList
+            // let supplierList = []
+            // data.forEach((element) => {
+            //   supplierList.push({
+            //     value: element.supplierName,
+            //   })
+            // })
+            this.supplierList = data
           }
         })
         .catch((res) => {
@@ -254,34 +322,48 @@ export default {
     ///////// 获取供应商 end /////////
 
     ///////// 新增供应商账号 start /////////
-    supplierLoginSave() {
-      this.loading = true
-      let data = {
-        frequency: '按需合作', // 合作频率
-        loginNum: 15963265487, // 登录账号
-        password: 123456789, // 登录密码
-        supplierId: 61, // 供应商ID
-        supplierName: '冯萌', // 供应商名字
-        type: 1, // 1-个人 2-企业
-      }
+    supplierLoginSave(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          // alert('submit!')
+          this.supplierSave()
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
+    },
+    supplierSave() {
+      // supplierName
+      let supplierList = this.supplierList
+      this.saveLoading = true
+      let data = this.formData
+      supplierList.forEach(element => {
+        if (data.supplierId==element.supplierId) {
+          data.supplierName = element.supplierName
+        }
+      });
+      // console.log(data)
+      // return
       this.$axios
         .post('/ocarplay/api/supplierLogin/save', data)
         .then((res) => {
-          console.log(res)
+          // console.log(res)
           if (res.status == 200 && res.data.errcode == 0) {
             // let data = res.data
             // this.movieListData = data.items
             // this.total = data.totalRows
             this.$message.success(res.data.msg)
+            this.dialogFormVisible = false
             // console.log(this.movieListData)
             this.getSupplierLoginAjax()
           } else {
             this.$message.error(res.data.msg)
           }
-          this.loading = false
+          this.saveLoading = false
         })
         .catch((res) => {
-          this.loading = false
+          this.saveLoading = false
           console.log(res)
         })
     },

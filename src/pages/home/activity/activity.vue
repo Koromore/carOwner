@@ -3,7 +3,7 @@
     <!-- 头部选项框 start -->
     <el-row class="top">
       <el-col :span="24" class="box">
-        <div>
+        <div class="btn1">
           <el-button
             type="primary"
             size="small"
@@ -23,7 +23,8 @@
           >
             批量请款
           </el-button>
-          <el-button
+          <el-badge :value="noReply" :hidden="!noReply">
+            <el-button
             type="primary"
             size="small"
             plain
@@ -32,6 +33,16 @@
           >
             采购咨询
           </el-button>
+          </el-badge>
+          <!-- <el-button
+            type="primary"
+            size="small"
+            plain
+            icon="el-icon-chat-line-square"
+            @click="toAddAdvisory"
+          >
+            采购咨询
+          </el-button> -->
         </div>
 
         <div>
@@ -227,7 +238,7 @@
           <el-table-column
             prop="taskName"
             label="任务名称"
-            min-width="210"
+            min-width="190"
             show-overflow-tooltip
           >
             <template slot-scope="scope">
@@ -508,6 +519,51 @@
               </template>
             </template>
           </el-table-column>
+          <el-table-column
+            prop="buyUserId"
+            label="跟进人"
+            min-width="100"
+            show-overflow-tooltip
+            v-if="deptId == 90"
+          >
+            <template slot-scope="scope">
+              <div v-show="showIndex == scope.$index">
+                <el-select
+                  v-model="scope.row.buyUserId"
+                  placeholder="请选择"
+                  class="followUserSelect"
+                  size="mini"
+                  clearable
+                >
+                  <el-option
+                    v-for="item in answerUserLst"
+                    :key="item.userId"
+                    :label="item.realName"
+                    :value="item.userId"
+                  >
+                  </el-option>
+                </el-select>
+                <el-button
+                  type="primary"
+                  size="mini"
+                  @click="designate(null, scope.row)"
+                >
+                  确认
+                </el-button>
+              </div>
+              <div v-show="showIndex != scope.$index">
+                <el-link
+                  v-if="scope.row.buyUserId"
+                  @click="designate(scope.$index)"
+                >
+                  {{ scope.row.buyUserName }}
+                </el-link>
+                <el-link type="primary" v-else @click="designate(scope.$index)">
+                  跟进人
+                </el-link>
+              </div>
+            </template>
+          </el-table-column>
           <!-- <el-table-column
             prop="placeName"
             label="场地"
@@ -677,7 +733,7 @@
             <el-col slot-scope="scope" class="expand">
               <el-col
                 :span="2"
-                :offset="9"
+                :offset="5"
                 style="text-align: right; line-height: 42px"
               >
                 共{{
@@ -686,7 +742,7 @@
                 }}笔
                 <!-- 合计3000元 -->
               </el-col>
-              <el-col :span="13">
+              <el-col :span="16">
                 <el-table
                   :data="scope.row.paymentList"
                   style="width: 100%"
@@ -721,7 +777,53 @@
                   </el-table-column>
                   <el-table-column prop="payMoney" label="金额(元)">
                   </el-table-column>
-                  <el-table-column prop="name" label="状态">
+
+                  <el-table-column prop="name" label="请款状态">
+                    <template slot-scope="scope1">
+                      <span
+                        v-if="scope1.row.reqauditeState == 0"
+                        class="statusColor4"
+                      >
+                        未审核
+                      </span>
+                      <span
+                        v-else-if="scope1.row.reqauditeState == 1"
+                        class="statusColor0"
+                      >
+                        已通过
+                      </span>
+                      <span
+                        v-else-if="scope1.row.reqauditeState == 2"
+                        class="statusColor1"
+                        >
+                        未通过
+                        </span
+                      >
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="name" label="付款状态">
+                    <template slot-scope="scope1">
+                      <span
+                        v-if="scope1.row.rejectPayStat == 0"
+                        class="statusColor1"
+                      >
+                        待审核
+                      </span>
+                      <span
+                        v-else-if="scope1.row.rejectPayStat == 1"
+                        class="statusColor4"
+                      >
+                        拒付款
+                      </span>
+                      <span
+                        v-else-if="scope1.row.rejectPayStat == 2"
+                        class="statusColor0"
+                      >
+                        通过
+                      </span>
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="name" label="打款状态">
                     <template slot-scope="scope1">
                       <span v-if="scope1.row.payState" class="statusColor2"
                         >已完成</span
@@ -768,6 +870,12 @@
                     <template>/</template>
                   </el-table-column>
                   <el-table-column prop="buyMoney" label="金额(元)">
+                  </el-table-column>
+                  <el-table-column prop="name" label="请款状态">
+                    <template>/</template>
+                  </el-table-column>
+                  <el-table-column prop="name" label="付款状态">
+                    <template>/</template>
                   </el-table-column>
                   <el-table-column prop="name" label="状态">
                     <template slot-scope="scope">
@@ -827,9 +935,13 @@
 
           <el-table-column prop="address" label="操作" width="150">
             <div slot-scope="scope">
-              <template v-if="scope.row.status == 0||scope.row.status == 3">
+              <template v-if="scope.row.status == 0 || scope.row.status == 3">
                 <template v-if="deptId != 90">
-                  <el-button type="primary" size="mini" @click="delay(scope.row)">
+                  <el-button
+                    type="primary"
+                    size="mini"
+                    @click="delay(scope.row)"
+                  >
                     延期
                   </el-button>
                   <el-button
@@ -845,7 +957,7 @@
                   <el-button
                     plain
                     size="mini"
-                    @click="reject(scope.row.movieId)"
+                    @click="reject(scope.row)"
                   >
                     <!-- @click="reject(scope.row.movieId)" -->
                     驳回
@@ -860,7 +972,7 @@
                   </el-button>
                 </template>
               </template>
-              <template  v-else-if="scope.row.status == 5">
+              <template v-else-if="scope.row.status == 5">
                 <template v-if="deptId != 90">
                   <el-button
                     plain
@@ -1350,6 +1462,10 @@ export default {
       gradeSupplierId: null, // 评价供应商ID
       gradeSupplierName: null, // 评价供应商名称
       supplierList: [], // 供应商列表
+
+      showIndex: null,
+      answerUserLst: [],
+      noReply: 0 // 资讯未回复数
     }
   },
   // 过滤器
@@ -1374,6 +1490,8 @@ export default {
       pageSize: 30,
     }
     // this.$store.commit('taskData', data)
+    ///////// 采购人员列表 /////////
+    this.getDeptAllUserByDeptId()
   },
   // 方法
   methods: {
@@ -1491,6 +1609,7 @@ export default {
         // console.log(res)
         if (res.status == 200 && data) {
           let data = res.data
+          this.noReply = data.items[0].noReply
           data.items.forEach((element) => {
             element.movieToSupplierList1 = []
             element.movieToSupplierList2 = []
@@ -2344,14 +2463,14 @@ export default {
     },
 
     ///////// 驳回 start /////////
-    reject(id){
+    reject(obj) {
       this.$confirm('确认要驳回该活动吗?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
       })
         .then(() => {
-          this.rejectMovie(id)
+          this.rejectMovie(obj)
         })
         .catch(() => {
           this.$message({
@@ -2360,10 +2479,14 @@ export default {
           })
         })
     },
-    rejectMovie(id){
+    rejectMovie(obj) {
+      if (obj.movieUrlList.length||obj.paymentList.length||obj.offlineDataList.length) {
+        this.$message.error('已请款或发布链接，无法驳回！')
+        return
+      }
       let data = {
-        movieId: id,
-        status: 5
+        movieId: obj.movieId,
+        status: 5,
       }
       this.$axios
         .post('/ocarplay/api/movie/save', data)
@@ -2371,7 +2494,7 @@ export default {
           // console.log(res)
           if (res.status == 200 && res.data.errcode === 0) {
             // if (this.movieId) {
-              this.$message.success('任务驳回成功！')
+            this.$message.success('任务驳回成功！')
             // } else {
             //   this.$message.success('任务新建成功！')
             // }
@@ -2392,7 +2515,53 @@ export default {
           // console.log(res)
           this.putLoading = false
         })
-    }
+    },
+    ///////// 获取采购人员列表 start /////////
+    getDeptAllUserByDeptId() {
+      this.tableLoading = true
+      this.$axios
+        .post('/ocarplay/api/user/getDeptAllUserByDeptId?deptId=90')
+        .then((res) => {
+          // console.log(res)
+          // this.listLoading = false
+          if (res.status == 200) {
+            this.answerUserLst = res.data.data
+          }
+        })
+        .catch((res) => {
+          console.log(res)
+        })
+    },
+    ///////// 获取采购人员列表 end /////////
+    ///////// 指拍跟进人 start /////////
+    designate(index, obj) {
+      this.showIndex = index
+      if (index == null && obj.buyUserId) {
+        this.saveAnswerUserId(obj)
+      }
+    },
+    saveAnswerUserId(obj) {
+      let data = {
+        movieId: obj.movieId,
+        buyUserId: obj.buyUserId,
+      }
+      this.$axios
+        .post('/ocarplay/api/movie/save', data)
+        .then((res) => {
+          // console.log(res)
+          if (res.status == 200 && res.data.errcode === 0) {
+            this.$message.success('任务指派成功！')
+          } else {
+            this.$message.error('任务指派失败！')
+          }
+          this.getMovieListAjax()
+        })
+        .catch((res) => {
+          // console.log(res)
+          // this.putLoading = false
+        })
+    },
+    ///////// 指拍跟进人 end /////////
   },
 }
 </script>
@@ -2462,6 +2631,15 @@ $statusColor4: #ea8a85;
       flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
+      .btn1{
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        .el-badge{
+          margin-left: 6px;
+        }
+      }
       .searchBox {
         width: 281px;
       }
@@ -2621,6 +2799,9 @@ $statusColor4: #ea8a85;
   line-height: 24px;
   text-align: center;
   cursor: pointer;
+}
+.followUserSelect {
+  width: 100px;
 }
 </style>
 <style lang="scss">

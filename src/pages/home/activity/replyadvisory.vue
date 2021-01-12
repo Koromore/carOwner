@@ -31,7 +31,6 @@
               >
               </el-table-column>
               <el-table-column
-                show-overflow-tooltip
                 prop="consultName"
                 label="咨询内容"
                 min-width="100"
@@ -108,18 +107,47 @@
                       <el-button
                         type="primary"
                         size="mini"
-                        @click="saveMovieConsult(scope.row.consultId,scope.row.answerUserId,1)"
-                        >提交</el-button
+                        @click="
+                          saveMovieConsult(
+                            scope.row.consultId,
+                            scope.row.answerUserId,
+                            1
+                          )
+                        "
                       >
+                        提交
+                      </el-button>
                     </div>
-                    <el-link
+                    <!-- <el-link
                       @click="answerNameShow(scope.$index, scope.row.answerUserId)"
                       v-show="answerNameShowIndex != scope.$index"
                       type="primary"
                     >
                       去反馈
-                    </el-link>
+                    </el-link> -->
                   </template>
+                </template>
+              </el-table-column>
+              <el-table-column prop="consultName" label="操作" width="180">
+                <template slot-scope="scope">
+                  <el-button
+                    type="primary"
+                    size="mini"
+                    @click="
+                      answerNameShow(scope.$index, scope.row.answerUserId)
+                    "
+                    v-if="!scope.row.answerName"
+                  >
+                    反馈
+                  </el-button>
+                  <el-button
+                    type="primary"
+                    plain
+                    size="mini"
+                    @click="getConsultList(scope.row.consultId)"
+                  >
+                    追问列表
+                  </el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -138,6 +166,58 @@
         </div>
       </el-col>
     </el-row>
+
+    <el-dialog
+      title="追问列表"
+      :visible.sync="consultListDialog"
+      v-loading="consultListLoading"
+    >
+      <el-scrollbar style="height: 360px">
+        <div class="consultList">
+          <div class="item" v-for="(item, index) in consultList" :key="index">
+            <div class="userName">
+              {{ item.initUserName }} {{ item.createTime }}
+            </div>
+            <div class="question">问: {{ item.consultName }}</div>
+            <div class="userName">
+              {{ item.answerUserName }} {{ item.updateTime }}
+            </div>
+            <div class="answer">
+              <template v-if="item.answerName">
+                答: {{ item.answerName }}
+              </template>
+              <template v-else>
+                答:
+                <el-input
+                  type="textarea"
+                  :rows="6"
+                  placeholder="请输入内容"
+                  v-model="answerNameText"
+                  clearable
+                ></el-input>
+                <el-button
+                  type="primary"
+                  size="mini"
+                  @click="
+                    saveMovieConsult(
+                      item.consultId,
+                      item.answerUserId,
+                      1
+                    )
+                  "
+                >
+                  提交
+                </el-button>
+              </template>
+            </div>
+          </div>
+        </div>
+      </el-scrollbar>
+      <!-- <div slot="footer" class="dialog-footer">
+        <el-button @click="addConsultDialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="saveMovieConsult"> 确 定 </el-button>
+      </div> -->
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -177,8 +257,14 @@ export default {
       showIndex: null,
       answerNameShowIndex: null,
       movieConsultList: [],
+      consultListDialog: false,
+      consultListLoading: false,
+      // 追问列表
+      prentConsultId: 0,
+      consultList: [],
       // advisoryContent
       answerNameText: null,
+      answerNameTextZhui: null,
       answerUserLst: [],
       // 分页
       pageNum: 1,
@@ -209,11 +295,7 @@ export default {
     designate(index, obj) {
       this.showIndex = index
       if (index == null) {
-        this.saveMovieConsult(
-          obj.consultId,
-          obj.answerUserId,
-          0
-        )
+        this.saveMovieConsult(obj.consultId, obj.answerUserId, 0)
       }
 
       // let tableData = this.tableData
@@ -243,6 +325,9 @@ export default {
       let data = {
         pageNum: this.pageNum,
         pageSize: this.pageSize,
+        movieConsult: {
+          prentConsultId: 0,
+        },
       }
       this.$axios
         .post('/ocarplay/api/movieConsult/listAjax', data)
@@ -327,6 +412,7 @@ export default {
             this.answerNameText = null
             this.consultName = null
             this.getMovieConsultListAjax()
+            this.getConsultList(this.prentConsultId)
             this.answerNameShowIndex = null
           }
           // this.submitLoading = false
@@ -337,6 +423,40 @@ export default {
         })
     },
     ///////// 回复咨询 end /////////
+
+    ///////// 追问咨询 end /////////
+    // addConsult(obj){
+    //   this.addConsultDialogFormVisible = true
+    //   this.prentConsultId = obj.consultId
+    // },
+    getConsultList(id) {
+      this.consultListDialog = true
+      this.prentConsultId = id
+      let data = {
+        prentConsultId: id,
+      }
+      this.consultListLoading = true
+      this.$axios
+        .post('/ocarplay/api/movieConsult/list', data)
+        .then((res) => {
+          // console.log(res)
+          // this.listLoading = false
+          if (res.status == 200) {
+            let data = res.data
+            this.consultList = data
+            // // this.total = data.totalRows
+            // this.$message.success(data.msg)
+            // this.consultName = null
+            // this.getMovieConsultListAjax()
+          }
+          this.consultListLoading = false
+          this.addConsultDialogFormVisible = false
+        })
+        .catch((res) => {
+          console.log(res)
+          this.consultListLoading = false
+        })
+    },
   },
 }
 </script>
@@ -399,6 +519,20 @@ export default {
           margin-top: 9px;
         }
       }
+    }
+  }
+}
+.consultList {
+  .item {
+    margin-bottom: 9px;
+    .question {
+      margin-bottom: 9px;
+      font-size: 16px;
+      color: black;
+    }
+    .answer {
+      font-size: 16px;
+      color: black;
     }
   }
 }

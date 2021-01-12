@@ -10,51 +10,82 @@
         </el-col>
       </el-col>
       <el-col :span="24" class="center">
-        <div class="left">
-          <div class="title">咨询列表</div>
-          <div class="table">
-            <el-table
-              :data="movieConsultList"
-              style="width: 100%"
-              height="100%"
-              v-loading="tableLoading"
+        <!-- <div class="left"> -->
+        <!-- <div class="title">咨询列表</div> -->
+        <el-col :span="24" class="add">
+          <el-button
+            type="primary"
+            size="mini"
+            @click="addConsultDialogFormVisible = true"
+          >
+            新增采购咨询
+          </el-button>
+        </el-col>
+        <el-col :span="24" class="table">
+          <el-table
+            :data="movieConsultList"
+            style="width: 100%"
+            height="100%"
+            v-loading="tableLoading"
+          >
+            <el-table-column prop="createTime" label="日期" min-width="100">
+            </el-table-column>
+            <el-table-column prop="initUserName" label="咨询人" min-width="70">
+            </el-table-column>
+            <el-table-column
+              prop="consultName"
+              label="咨询内容"
+              min-width="130"
             >
-              <el-table-column prop="createTime" label="日期" min-width="100">
-              </el-table-column>
-              <el-table-column prop="initUserName" label="咨询人" min-width="70">
-              </el-table-column>
-              <el-table-column
-                show-overflow-tooltip
-                prop="consultName"
-                label="咨询内容"
-                min-width="130"
-              >
-              </el-table-column>
-              <el-table-column prop="answerUserName" label="采购跟进人" min-width="70">
-                <template slot-scope="scope">
-                  <span v-if="scope.row.answerUserId">
-                    {{ scope.row.answerUserName }}
-                  </span>
-                  <span v-else style="color: red"> 待跟进 </span>
-                </template>
-              </el-table-column>
-              <el-table-column prop="answerName" label="处理反馈" min-width="130" show-overflow-tooltip>
-              </el-table-column>
-            </el-table>
-          </div>
-          <div class="page">
-            <el-pagination
-              background
-              layout="total, prev, pager, next, sizes"
-              :current-page="pageNum"
-              :total="total"
-              @current-change="changePage"
-              @size-change="changeSize"
+            </el-table-column>
+            <el-table-column
+              prop="answerUserName"
+              label="采购跟进人"
+              min-width="70"
             >
-            </el-pagination>
-          </div>
-        </div>
-        <div class="right">
+              <template slot-scope="scope">
+                <span v-if="scope.row.answerUserId">
+                  {{ scope.row.answerUserName }}
+                </span>
+                <span v-else style="color: red"> 待跟进 </span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="answerName" label="处理反馈" min-width="130">
+            </el-table-column>
+            <el-table-column prop="answerName" label="操作" width="180">
+              <template slot-scope="scope">
+                <el-button
+                  type="primary"
+                  size="mini"
+                  @click="addConsult(scope.row)"
+                >
+                  追问
+                </el-button>
+                <el-button
+                  type="primary"
+                  plain
+                  size="mini"
+                  @click="getConsultList(scope.row)"
+                >
+                  追问列表
+                </el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-col>
+        <el-col :span="24" class="page">
+          <el-pagination
+            background
+            layout="total, prev, pager, next, sizes"
+            :current-page="pageNum"
+            :total="total"
+            @current-change="changePage"
+            @size-change="changeSize"
+          >
+          </el-pagination>
+        </el-col>
+        <!-- </div> -->
+        <!-- <div class="right">
           <div class="title">采购咨询</div>
           <div class="text" v-loading="submitLoading">
             <el-input
@@ -70,9 +101,43 @@
               提交
             </el-button>
           </div>
-        </div>
+        </div> -->
       </el-col>
     </el-row>
+    <el-dialog title="采购咨询" :visible.sync="addConsultDialogFormVisible" v-loading="submitLoading">
+      <el-input
+        type="textarea"
+        :rows="16"
+        placeholder="请输入内容"
+        v-model="consultName"
+      >
+      </el-input>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="addConsultDialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="saveMovieConsult"> 确 定 </el-button>
+      </div>
+    </el-dialog>
+
+    <el-dialog title="追问列表" :visible.sync="consultListDialog" v-loading="consultListLoading">
+      <el-scrollbar style="height: 360px">
+        <div class="consultList">
+          <div class="item" v-for="(item, index) in consultList" :key="index">
+            <div class="userName">
+              {{item.initUserName}} {{item.createTime}}
+            </div>
+            <div class="question">问: {{item.consultName}}</div>
+            <div class="userName">
+              {{ item.answerUserName }} {{ item.updateTime }}
+            </div>
+            <div class="answer">答: {{item.answerName}}</div>
+          </div>
+        </div>
+      </el-scrollbar>
+      <!-- <div slot="footer" class="dialog-footer">
+        <el-button @click="addConsultDialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="saveMovieConsult"> 确 定 </el-button>
+      </div> -->
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -88,10 +153,17 @@ export default {
       deptId: this.$store.state.user.deptId, // 90
       tableLoading: false,
       submitLoading: false,
+      addConsultDialogFormVisible: false,
+      consultListDialog: false,
+      consultListLoading: false,
       // 咨询列表
-      MovieConsultList: [],
+      movieConsultList: [],
+      // 追问列表
+      consultList: [],
       // 咨询内容
       consultName: null,
+      prentConsultId: 0, // 父咨询ID
+      answerUserId: 0,// 跟进人ID
       // 分页
       pageNum: 1,
       pagesize: 10,
@@ -135,6 +207,9 @@ export default {
       let data = {
         pageNum: this.pageNum,
         pageSize: this.pageSize,
+        movieConsult: {
+          prentConsultId: 0
+        }
       }
       this.$axios
         .post('/ocarplay/api/movieConsult/listAjax', data)
@@ -165,6 +240,13 @@ export default {
         this.$message.error('咨询内容不能为空')
         return
       }
+      if (this.prentConsultId) {
+        data.prentConsultId = this.prentConsultId
+      }
+      if (this.answerUserId) {
+        data.answerUserId = this.answerUserId
+      }
+      // answerUserId
       this.submitLoading = true
       // return
       this.$axios
@@ -181,6 +263,7 @@ export default {
             this.getMovieConsultListAjax()
           }
           this.submitLoading = false
+          this.addConsultDialogFormVisible = false
         })
         .catch((res) => {
           console.log(res)
@@ -188,6 +271,48 @@ export default {
         })
     },
     ///////// 新增咨询 end /////////
+
+    ///////// 追问咨询 end /////////
+    addConsult(obj){
+      if (!obj.answerName) {
+        this.$message.error('请先处理反馈！')
+        return
+      }
+      this.addConsultDialogFormVisible = true
+      this.prentConsultId = obj.consultId
+      this.answerUserId = obj.answerUserId
+    },
+    getConsultList(obj){
+       if (!obj.answerName) {
+        this.$message.error('请先处理反馈！')
+        return
+      }
+      this.consultListDialog = true
+      let data = {
+        prentConsultId: obj.consultId
+      }
+      this.consultListLoading = true
+      this.$axios
+        .post('/ocarplay/api/movieConsult/list', data)
+        .then((res) => {
+          // console.log(res)
+          // this.listLoading = false
+          if (res.status == 200) {
+            let data = res.data
+            this.consultList = data
+            // // this.total = data.totalRows
+            // this.$message.success(data.msg)
+            // this.consultName = null
+            // this.getMovieConsultListAjax()
+          }
+          this.consultListLoading = false
+          this.addConsultDialogFormVisible = false
+        })
+        .catch((res) => {
+          console.log(res)
+          this.consultListLoading = false
+        })
+    }
   },
 }
 </script>
@@ -228,49 +353,35 @@ export default {
       flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
-      .title {
-        font-size: 28px;
-        font-weight: bold;
+      .table {
+        width: 100%;
+        height: calc(100% - 108px);
+        margin-top: 9px;
       }
-      .left {
-        width: 72%;
-        height: 100%;
-        .table {
-          height: calc(100% - 108px);
-          margin-top: 9px;
-        }
-        .page {
-          text-align: center;
-          margin-top: 9px;
-        }
+      .page {
+        text-align: center;
+        margin-top: 9px;
       }
-      .right {
-        width: 25%;
-        height: 100%;
-        .text {
-          height: calc(100% - 108px);
-          margin-top: 9px;
-          .el-textarea {
-            height: 100%;
-            & >>> textarea {
-              height: 100%;
-            }
-          }
-        }
-        .btn {
-          margin-top: 9px;
-          text-align: center;
-          .el-button {
-            width: 180px;
-          }
-        }
-      }
+    }
+  }
+}
+.consultList{
+  .item{
+    margin-bottom: 9px;
+    .question{
+      margin-bottom: 9px;
+      font-size: 16px;
+      color: black;
+    }
+    .answer{
+      font-size: 16px;
+      color: black;
     }
   }
 }
 </style>
 <style lang="scss">
-#advisory {
+#addadvisory {
   .el-table {
     background: none;
     .el-table__header-wrapper {
