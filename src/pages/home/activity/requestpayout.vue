@@ -293,6 +293,7 @@ export default {
   // 方法事件
   methods: {
     submit(){
+      // console.log(this.tableData)
       let outData={
             subjectId:this.tableData[0].subjectId,
             subItemsId:this.tableData[0].subItemsId,
@@ -339,10 +340,10 @@ export default {
             remark:element.remark,//备注
             payTime:element.payTime,//付款日期
             subjectName:'影视活动',//科目名
-            subitemName:element.subitemName,//细分项名
+            subItemsName:element.subItemsName,//细分项名
             isInvoice:this.fromData.isInvoice,//有无发票 0-有  1-没有
             invoiceRemark:this.fromData.invoiceRemark,//发票类型(用户下拉框选中)
-            id: this.pId
+            proitemId: this.pId
           }
         )
       });
@@ -356,6 +357,8 @@ export default {
         },
         paydetail:jsonstr
       }
+      // console.log(sumData)
+      // return
       this.loading = true
       this.$axios.post('/ocarplay/api/movie/creatPayDetail',sumData).then((res) => {
         if(res.status==200){

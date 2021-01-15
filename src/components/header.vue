@@ -22,6 +22,7 @@
           <div @click="navTo(6)" :class="[navNum==5?'act':'']" v-if="deptId==90||subordinate==150||postId==231||adminShow">元数据管理</div>
           <!-- <div @click="navTo(6)" :class="[navNum==5?'act':'']">元数据管理</div> -->
           <div @click="navTo(7)" :class="[navNum==6?'act':'']">合作文档</div>
+          <div @click="navTo(10)" :class="[navNum==9?'act':'']" v-if="deptId==90||adminShow">供应商账号</div>
         </div>
         <!-- 导航 end -->
       </el-col>
@@ -223,6 +224,8 @@ export default {
         url = '/home/resource'
       } else if (index == 9) {
         url = '/home/activity'
+      } else if (index == 10) {
+        url = '/home/supplieradmin'
       }
       this.$router.push({ path: url })
     },

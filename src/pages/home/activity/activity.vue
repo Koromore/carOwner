@@ -25,14 +25,14 @@
           </el-button>
           <el-badge :value="noReply" :hidden="!noReply">
             <el-button
-            type="primary"
-            size="small"
-            plain
-            icon="el-icon-chat-line-square"
-            @click="toAddAdvisory"
-          >
-            采购咨询
-          </el-button>
+              type="primary"
+              size="small"
+              plain
+              icon="el-icon-chat-line-square"
+              @click="toAddAdvisory"
+            >
+              采购咨询
+            </el-button>
           </el-badge>
           <!-- <el-button
             type="primary"
@@ -187,7 +187,7 @@
             show-overflow-tooltip
           >
             <template slot-scope="scope">
-              {{ $timeformat(scope.row.createTime, 'MM.dd hh:mm') }}
+              {{ $timeformat(scope.row.createTime, 'M.dd hh:mm') }}
             </template>
           </el-table-column>
 
@@ -210,7 +210,7 @@
                 <!-- openDelayPhoto -->
 
                 <el-link @click="openDelayPhoto(scope.row)">
-                  {{ $timeformat(scope.row.photoTime, 'MM.dd') }}
+                  {{ $timeformat(scope.row.photoTime, 'M.dd') }}
                 </el-link>
                 <!-- {{scope.row.photoDelayReason}} -->
                 <!-- <template v-if="scope.row.photoTimeOld"> -->
@@ -247,7 +247,7 @@
                 class="omit"
                 :underline="false"
                 @click="toDetail(scope.row.movieId)"
-                >{{ $timeformat(scope.row.photoTime, 'MM.dd') }}
+                >{{ $timeformat(scope.row.photoTime, 'M.dd') }}
                 <template v-if="scope.row.movieType == 1">
                   {{ scope.row.city }}- {{ scope.row.deptName }}-
                   {{ scope.row.carTypeName }}-
@@ -619,21 +619,17 @@
                       @click="toMovieUrl(scope.row)"
                       v-if="scope.row.urlStatus == 1"
                     >
-                      待填写 0/{{ scope.row.movieUrlList.length }}
+                      待填写 0/{{ scope.row.num }}
                     </el-link>
                     <el-link
                       type="warning"
                       @click="toMovieUrl(scope.row)"
                       v-else-if="scope.row.urlStatus == 2"
                     >
-                      跟进 {{ scope.row.urlNum }}/{{
-                        scope.row.movieUrlList.length
-                      }}
+                      跟进 {{ scope.row.urlNum }}/{{ scope.row.num }}
                     </el-link>
                     <span v-else-if="scope.row.urlStatus == 3">
-                      完成 {{ scope.row.urlNum }}/{{
-                        scope.row.movieUrlList.length
-                      }}
+                      完成 {{ scope.row.urlNum }}/{{ scope.row.num }}
                     </span>
                   </template>
                   <span v-else>先评价</span>
@@ -644,21 +640,17 @@
                     @click="toMovieUrl(scope.row)"
                     v-if="scope.row.urlStatus == 1"
                   >
-                    待填写 0/{{ scope.row.movieUrlList.length }}
+                    待填写 0/{{ scope.row.num }}
                   </el-link>
                   <el-link
                     type="warning"
                     @click="toMovieUrl(scope.row)"
                     v-else-if="scope.row.urlStatus == 2"
                   >
-                    跟进 {{ scope.row.urlNum }}/{{
-                      scope.row.movieUrlList.length
-                    }}
+                    跟进 {{ scope.row.urlNum }}/{{ scope.row.num }}
                   </el-link>
                   <span v-else-if="scope.row.urlStatus == 3">
-                    完成 {{ scope.row.urlNum }}/{{
-                      scope.row.movieUrlList.length
-                    }}
+                    完成 {{ scope.row.urlNum }}/{{ scope.row.num }}
                   </span>
                 </template>
               </template>
@@ -705,14 +697,20 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="请款报销" width="110">
+          <el-table-column label="请款报销" width="115">
             <!--  slot-scope="props" -->
             <template slot-scope="scope">
               <span
-                >共{{
-                  scope.row.paymentList.length +
-                  scope.row.offlineDataList.length
-                }}笔</span
+                >共
+                <span v-if="deptId == 90">
+                  {{
+                    scope.row.paymentList.length +
+                    scope.row.offlineDataList.length
+                  }}
+                </span>
+                <span v-else>
+                  {{ scope.row.offlineDataList.length }} </span
+                >笔</span
               >
               <el-tag
                 @click="toReimbursement(scope.row)"
@@ -736,26 +734,33 @@
                 :offset="5"
                 style="text-align: right; line-height: 42px"
               >
-                共{{
-                  scope.row.paymentList.length +
-                  scope.row.offlineDataList.length
-                }}笔
+                共
+                <span v-if="deptId == 90">
+                  {{
+                    scope.row.paymentList.length +
+                    scope.row.offlineDataList.length
+                  }}
+                </span>
+                <span v-else>
+                  {{ scope.row.offlineDataList.length }}
+                </span>
+                笔
                 <!-- 合计3000元 -->
               </el-col>
               <el-col :span="16">
                 <el-table
                   :data="scope.row.paymentList"
                   style="width: 100%"
-                  v-if="scope.row.paymentList.length"
+                  v-if="scope.row.paymentList.length && deptId == 90"
                   border
                   class="nonemp"
                 >
-                  <el-table-column type="index" label="序号" width="50">
+                  <el-table-column type="index" label="序号" width="55">
                   </el-table-column>
                   <el-table-column prop="name" label="金额类别">
                     <template>请款</template>
                   </el-table-column>
-                  <el-table-column prop="createTime" label="时间">
+                  <el-table-column prop="createTime" label="时间" width="100">
                     <template slot-scope="scope1">
                       <span>{{ $date0(scope1.row.createTime) }}</span>
                     </template>
@@ -766,7 +771,7 @@
                   <el-table-column
                     prop="userName"
                     label="请款人/报销人"
-                    width="110"
+                    width="120"
                   >
                   </el-table-column>
                   <el-table-column
@@ -795,10 +800,9 @@
                       <span
                         v-else-if="scope1.row.reqauditeState == 2"
                         class="statusColor1"
-                        >
-                        未通过
-                        </span
                       >
+                        未通过
+                      </span>
                     </template>
                   </el-table-column>
                   <el-table-column prop="name" label="付款状态">
@@ -835,20 +839,25 @@
                 <el-table
                   :data="scope.row.offlineDataList"
                   style="width: 100%"
-                  :show-header="!scope.row.paymentList.length"
+                  :show-header="!scope.row.paymentList.length || deptId != 90"
                   v-if="scope.row.offlineDataList.length"
                   border
                   class="nonemp"
                 >
-                  <el-table-column type="index" label="序号">
+                  <el-table-column type="index" label="序号" width="55">
                     <template slot-scope="scope2">
-                      {{ scope.row.paymentList.length + scope2.$index + 1 }}
+                      <span v-if="deptId == 90">
+                        {{ scope.row.paymentList.length + scope2.$index + 1 }}
+                      </span>
+                      <span v-else>
+                        {{ scope2.$index + 1 }}
+                      </span>
                     </template>
                   </el-table-column>
                   <el-table-column prop="name" label="金额类别">
                     <template>报销</template>
                   </el-table-column>
-                  <el-table-column prop="createTime" label="时间">
+                  <el-table-column prop="createTime" label="时间" width="100">
                     <template slot-scope="scope2">
                       <span>{{ $date0(scope2.row.createTime) }}</span>
                     </template>
@@ -859,7 +868,7 @@
                   <el-table-column
                     prop="costPerson"
                     label="请款人/报销人"
-                    width="108"
+                    width="120"
                   >
                   </el-table-column>
                   <el-table-column
@@ -954,11 +963,7 @@
                   </el-button>
                 </template>
                 <template v-else>
-                  <el-button
-                    plain
-                    size="mini"
-                    @click="reject(scope.row)"
-                  >
+                  <el-button plain size="mini" @click="reject(scope.row)">
                     <!-- @click="reject(scope.row.movieId)" -->
                     驳回
                   </el-button>
@@ -1465,7 +1470,7 @@ export default {
 
       showIndex: null,
       answerUserLst: [],
-      noReply: 0 // 资讯未回复数
+      noReply: 0, // 资讯未回复数
     }
   },
   // 过滤器
@@ -1609,7 +1614,12 @@ export default {
         // console.log(res)
         if (res.status == 200 && data) {
           let data = res.data
-          this.noReply = data.items[0].noReply
+          if (data.items.length) {
+            this.noReply = data.items[0].noReply
+          } else {
+            this.noReply = 0
+          }
+
           data.items.forEach((element) => {
             element.movieToSupplierList1 = []
             element.movieToSupplierList2 = []
@@ -2196,7 +2206,7 @@ export default {
         return
       }
       this.supplierShow++
-      let name = this.$timeformat(row.photoTime, 'MM.dd')
+      let name = this.$timeformat(row.photoTime, 'M.dd')
       if (row.movieType == 1) {
         name += `${row.city}-${row.deptName}-${row.carTypeName}-${row.photoTypeName}`
       } else if (row.movieType == 2) {
@@ -2480,7 +2490,11 @@ export default {
         })
     },
     rejectMovie(obj) {
-      if (obj.movieUrlList.length||obj.paymentList.length||obj.offlineDataList.length) {
+      if (
+        obj.movieUrlList.length ||
+        obj.paymentList.length ||
+        obj.offlineDataList.length
+      ) {
         this.$message.error('已请款或发布链接，无法驳回！')
         return
       }
@@ -2631,12 +2645,12 @@ $statusColor4: #ea8a85;
       flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
-      .btn1{
+      .btn1 {
         display: flex;
         flex-wrap: wrap;
         align-items: center;
         justify-content: space-between;
-        .el-badge{
+        .el-badge {
           margin-left: 6px;
         }
       }

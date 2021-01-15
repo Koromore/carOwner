@@ -8,7 +8,7 @@
             type="primary"
             size="small"
             icon="el-icon-circle-plus-outline"
-            @click="dialogFormVisible = true"
+            @click="saveAdmin(0)"
           >
             新增供应商账号
           </el-button>
@@ -104,10 +104,12 @@
             min-width="140"
             show-overflow-tooltip
           >
-            <template>
+            <template slot-scope="scope">
               <!-- <el-button type="primary">确认</el-button> -->
-              <el-button size="mini">编辑</el-button>
-              <el-button size="mini">删除</el-button>
+              <el-button size="mini" @click="saveAdmin(scope.row.id)"
+                >编辑</el-button
+              >
+              <el-button size="mini" @click="delContent(scope.row.id)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -126,11 +128,26 @@
       </el-col>
     </el-row>
     <!------------------ 内容列表 end ------------------>
-    <el-dialog title="新增供应商账号" :visible.sync="dialogFormVisible">
-      <el-form :model="formData" :rules="rules" ref="formData" :label-width="formLabelWidth" v-loading="saveLoading">
+    <el-dialog
+      title="新增供应商账号"
+      :visible.sync="dialogFormVisible"
+      :close-on-click-modal="false"
+      @close="closeDialog"
+    >
+      <el-form
+        :model="formData"
+        :rules="rules"
+        ref="formData"
+        :label-width="formLabelWidth"
+        v-loading="saveLoading"
+      >
         <el-form-item label="供应商名称" prop="supplierId">
           <!-- <el-input v-model="form.name" autocomplete="off"></el-input>supplierLoginList -->
-          <el-select v-model="formData.supplierId" placeholder="请选择供应商">
+          <el-select
+            v-model="formData.supplierId"
+            placeholder="请选择供应商"
+            filterable
+          >
             <el-option
               v-for="item in supplierList"
               :key="item.supplierId"
@@ -321,6 +338,49 @@ export default {
     },
     ///////// 获取供应商 end /////////
 
+    closeDialog() {
+      this.formData = {
+        supplierId: null, // 供应商ID
+        frequency: null, // 合作频率
+        type: null, // 1-个人 2-企业
+        loginNum: null, // 登录账号
+        password: null, // 登录密码
+        // supplierName: '冯萌', // 供应商名字
+      }
+    },
+
+    saveAdmin(id) {
+      this.dialogFormVisible = true
+      if (id) {
+        let data = {
+          id: id,
+        }
+        this.$axios
+          .post('/ocarplay/api/supplierLogin/show', data)
+          .then((res) => {
+            // console.log(res)
+            if (res.status == 200) {
+              let data = res.data
+              this.formData = {
+                supplierId: data.supplierId, // 供应商ID
+                frequency: data.frequency, // 合作频率
+                type: data.type, // 1-个人 2-企业
+                loginNum: data.loginNum, // 登录账号
+                password: data.password, // 登录密码
+                // supplierName: '冯萌', // 供应商名字
+              }
+            } else {
+              this.$message.error(res.data.msg)
+            }
+            // this.saveLoading = false
+          })
+          .catch((res) => {
+            // this.saveLoading = false
+            console.log(res)
+          })
+      }
+    },
+
     ///////// 新增供应商账号 start /////////
     supplierLoginSave(formName) {
       this.$refs[formName].validate((valid) => {
@@ -338,11 +398,11 @@ export default {
       let supplierList = this.supplierList
       this.saveLoading = true
       let data = this.formData
-      supplierList.forEach(element => {
-        if (data.supplierId==element.supplierId) {
+      supplierList.forEach((element) => {
+        if (data.supplierId == element.supplierId) {
           data.supplierName = element.supplierName
         }
-      });
+      })
       // console.log(data)
       // return
       this.$axios
@@ -368,6 +428,52 @@ export default {
         })
     },
     ///////// 新增供应商账号 end /////////
+
+    ///////// 删除供应商账号 start /////////
+    delContent(id){
+      this.$confirm('确认要删除该供应商账号吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      })
+        .then(() => {
+          this.deleteAdmin(id)
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除',
+          })
+        })
+    },
+    // POST /api/supplierLogin/deleteBatch
+    deleteAdmin(id){
+      let data = {
+        id: id
+      }
+      this.$axios
+        .post('/ocarplay/api/supplierLogin/delete', data)
+        .then((res) => {
+          // console.log(res)
+          if (res.status == 200 && res.data.errcode == 0) {
+            // let data = res.data
+            // this.movieListData = data.items
+            // this.total = data.totalRows
+            this.$message.success('供应商账号删除成功！')
+            // this.dialogFormVisible = false
+            // console.log(this.movieListData)
+            this.getSupplierLoginAjax()
+          } else {
+            this.$message.error(res.data.msg)
+          }
+          // this.saveLoading = false
+        })
+        .catch((res) => {
+          // this.saveLoading = false
+          console.log(res)
+        })
+    },
+    ///////// 删除供应商账号 end /////////
 
     ///////// 分页 start /////////
     // 每页条数变化时触发事件

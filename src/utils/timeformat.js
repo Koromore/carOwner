@@ -1,9 +1,9 @@
 export function timeformat(data, type) {
   if (data) {
     let date = ''
-    if (typeof(data) == 'string') {
-      date = new Date(data.replace(/-/g,'/'))
-    }else{
+    if (typeof (data) == 'string') {
+      date = new Date(data.replace(/-/g, '/'))
+    } else {
       date = new Date(data)
     }
     let year = date.getFullYear()
@@ -12,8 +12,10 @@ export function timeformat(data, type) {
     let hours = date.getHours()
     let minutes = date.getMinutes()
     let seconds = date.getSeconds()
-    if (month >= 1 && month <= 9) {
-      month = "0" + month
+    if (type.indexOf("MM") == 0) {
+      if (month >= 1 && month <= 9) {
+        month = "0" + month
+      }
     }
     if (strDate >= 0 && strDate <= 9) {
       strDate = "0" + strDate
@@ -30,6 +32,7 @@ export function timeformat(data, type) {
     // yyyy/MM/dd/hh/mm/ss
     type = type.replace(/yyyy/g, year)
     type = type.replace(/MM/g, month)
+    type = type.replace(/M/g, month)
     type = type.replace(/dd/g, strDate)
     type = type.replace(/hh/g, hours)
     type = type.replace(/mm/g, minutes)
