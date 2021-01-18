@@ -235,6 +235,7 @@ export default {
       let data = {
         consultName: this.consultName,
         initUserId: this.userId,
+        prentConsultId: 0
       }
       if (!data.consultName) {
         this.$message.error('咨询内容不能为空')

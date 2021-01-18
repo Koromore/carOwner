@@ -31,7 +31,19 @@
             <div class="key">项目名称</div>
             <div>:</div>
             <div class="val">
-              {{ $date0(movieDetails.photoTime) }}{{ movieDetails.city }}-{{ movieDetails.deptName }}-{{ movieDetails.carTypeName }}-{{ movieDetails.photoTypeName }}
+              {{ $timeformat(movieDetails.photoTime, 'M.dd') }}
+                <template v-if="movieDetails.movieType == 1">
+                  {{ movieDetails.city }}- {{ movieDetails.deptName }}-
+                  {{ movieDetails.carTypeName }}-
+                  {{ movieDetails.photoTypeName }}
+                </template>
+                <template v-else-if="movieDetails.movieType == 2">
+                  {{ movieDetails.city }}- {{ movieDetails.deptName }}-
+                  {{ movieDetails.movieName }}
+                </template>
+                <template v-else-if="movieDetails.movieType == 3">
+                  {{ movieDetails.movieName }}
+                </template>
             </div>
           </el-col>
           <el-col :span="24" class="list">

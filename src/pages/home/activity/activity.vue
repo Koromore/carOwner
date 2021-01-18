@@ -183,7 +183,7 @@
           <el-table-column
             prop="createTime"
             label="下达时间"
-            width="100"
+            width="90"
             show-overflow-tooltip
           >
             <template slot-scope="scope">
@@ -194,7 +194,7 @@
           <el-table-column
             prop="initUserName"
             label="下达人"
-            width="80"
+            width="70"
             show-overflow-tooltip
           >
           </el-table-column>
@@ -287,7 +287,7 @@
           <el-table-column
             prop="personName"
             label="摄影师"
-            min-width="70"
+            width="70"
             show-overflow-tooltip
           >
             <template slot-scope="scope">
@@ -346,7 +346,7 @@
           <el-table-column
             prop="modelName"
             label="模特"
-            min-width="70"
+            width="50"
             show-overflow-tooltip
           >
             <template slot-scope="scope">
@@ -405,7 +405,7 @@
           <el-table-column
             prop="ownerName"
             label="车辆"
-            min-width="70"
+            width="50"
             show-overflow-tooltip
           >
             <template slot-scope="scope">
@@ -463,7 +463,7 @@
           <el-table-column
             prop="modelName"
             label="其他"
-            min-width="70"
+            width="50"
             show-overflow-tooltip
           >
             <template slot-scope="scope">
@@ -522,7 +522,7 @@
           <el-table-column
             prop="buyUserId"
             label="跟进人"
-            min-width="100"
+            :width="[showIndex ? 150 : 70 ]"
             show-overflow-tooltip
             v-if="deptId == 90"
           >
@@ -910,7 +910,7 @@
             </el-col>
           </el-table-column>
 
-          <el-table-column prop label="状态" width="80" show-overflow-tooltip>
+          <el-table-column prop label="状态" width="70" show-overflow-tooltip>
             <template slot-scope="scope">
               <span v-if="scope.row.status == 0" class="statusColor0">
                 进行中
@@ -1588,6 +1588,7 @@ export default {
 
     ///////// 获取任务列表 start /////////
     getMovieListAjax() {
+      this.showIndex = null
       this.loading = true
       let data = {
         pageNum: this.pageNum,
@@ -2815,7 +2816,7 @@ $statusColor4: #ea8a85;
   cursor: pointer;
 }
 .followUserSelect {
-  width: 100px;
+  width: 86px;
 }
 </style>
 <style lang="scss">

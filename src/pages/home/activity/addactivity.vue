@@ -1107,7 +1107,7 @@ export default {
           num: 1,
           budget: this.money,
           reqFinishTime: endTime,
-          remark: this.photoTime + '-' + city + '-' + brandName,
+          remark: remark
         },
       ])
       let data = {
