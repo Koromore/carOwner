@@ -61,14 +61,16 @@
                 >
                   追问
                 </el-button>
-                <el-button
-                  type="primary"
-                  plain
-                  size="mini"
-                  @click="getConsultList(scope.row)"
-                >
-                  追问列表
-                </el-button>
+                <el-badge :value="scope.row.noReply" :hidden="!scope.row.noReply">
+                  <el-button
+                    type="primary"
+                    plain
+                    size="mini"
+                    @click="getConsultList(scope.row)"
+                  >
+                    追问列表
+                  </el-button>
+                </el-badge>
               </template>
             </el-table-column>
           </el-table>
@@ -104,7 +106,11 @@
         </div> -->
       </el-col>
     </el-row>
-    <el-dialog title="采购咨询" :visible.sync="addConsultDialogFormVisible" v-loading="submitLoading">
+    <el-dialog
+      title="采购咨询"
+      :visible.sync="addConsultDialogFormVisible"
+      v-loading="submitLoading"
+    >
       <el-input
         type="textarea"
         :rows="16"
@@ -113,23 +119,29 @@
       >
       </el-input>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="addConsultDialogFormVisible = false">取 消</el-button>
+        <el-button @click="addConsultDialogFormVisible = false"
+          >取 消</el-button
+        >
         <el-button type="primary" @click="saveMovieConsult"> 确 定 </el-button>
       </div>
     </el-dialog>
 
-    <el-dialog title="追问列表" :visible.sync="consultListDialog" v-loading="consultListLoading">
+    <el-dialog
+      title="追问列表"
+      :visible.sync="consultListDialog"
+      v-loading="consultListLoading"
+    >
       <el-scrollbar style="height: 360px">
         <div class="consultList">
           <div class="item" v-for="(item, index) in consultList" :key="index">
             <div class="userName">
-              {{item.initUserName}} {{item.createTime}}
+              {{ item.initUserName }} {{ item.createTime }}
             </div>
-            <div class="question">问: {{item.consultName}}</div>
+            <div class="question">问: {{ item.consultName }}</div>
             <div class="userName">
               {{ item.answerUserName }} {{ item.updateTime }}
             </div>
-            <div class="answer">答: {{item.answerName}}</div>
+            <div class="answer">答: {{ item.answerName }}</div>
           </div>
         </div>
       </el-scrollbar>
@@ -163,7 +175,7 @@ export default {
       // 咨询内容
       consultName: null,
       prentConsultId: 0, // 父咨询ID
-      answerUserId: 0,// 跟进人ID
+      answerUserId: 0, // 跟进人ID
       // 分页
       pageNum: 1,
       pagesize: 10,
@@ -190,7 +202,7 @@ export default {
     ///////// 每页条数改变 start /////////
     changeSize(size) {
       this.pageSize = size
-      this.pageNum = page
+      this.pageNum = 1
       this.getMovieConsultListAjax()
     },
     ///////// 每页条数改变 end /////////
@@ -208,8 +220,8 @@ export default {
         pageNum: this.pageNum,
         pageSize: this.pageSize,
         movieConsult: {
-          prentConsultId: 0
-        }
+          prentConsultId: 0,
+        },
       }
       this.$axios
         .post('/ocarplay/api/movieConsult/listAjax', data)
@@ -235,7 +247,7 @@ export default {
       let data = {
         consultName: this.consultName,
         initUserId: this.userId,
-        prentConsultId: 0
+        prentConsultId: 0,
       }
       if (!data.consultName) {
         this.$message.error('咨询内容不能为空')
@@ -274,7 +286,7 @@ export default {
     ///////// 新增咨询 end /////////
 
     ///////// 追问咨询 end /////////
-    addConsult(obj){
+    addConsult(obj) {
       if (!obj.answerName) {
         this.$message.error('请先处理反馈！')
         return
@@ -283,14 +295,14 @@ export default {
       this.prentConsultId = obj.consultId
       this.answerUserId = obj.answerUserId
     },
-    getConsultList(obj){
-       if (!obj.answerName) {
+    getConsultList(obj) {
+      if (!obj.answerName) {
         this.$message.error('请先处理反馈！')
         return
       }
       this.consultListDialog = true
       let data = {
-        prentConsultId: obj.consultId
+        prentConsultId: obj.consultId,
       }
       this.consultListLoading = true
       this.$axios
@@ -313,7 +325,7 @@ export default {
           console.log(res)
           this.consultListLoading = false
         })
-    }
+    },
   },
 }
 </script>
@@ -366,15 +378,15 @@ export default {
     }
   }
 }
-.consultList{
-  .item{
+.consultList {
+  .item {
     margin-bottom: 9px;
-    .question{
+    .question {
       margin-bottom: 9px;
       font-size: 16px;
       color: black;
     }
-    .answer{
+    .answer {
       font-size: 16px;
       color: black;
     }
@@ -397,6 +409,11 @@ export default {
       th {
         background: none;
       }
+    }
+  }
+  .el-table{
+    .cell{
+      overflow: inherit;
     }
   }
 }

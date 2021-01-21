@@ -323,7 +323,7 @@ export default {
                 budgetApplyId: this.$route.query.budgetApplyId
             }
             this.$axios.post('/ocarplay/task/getBudgetDetailByApplyId', data).then((res) => {
-                console.log(res)
+                // console.log(res)
                 // this.listLoading = false
                 if (res.status == 200 && res.data.errorCode == 0) {
                     this.subdivideList = res.data.data;
@@ -333,7 +333,7 @@ export default {
         },
         getpayerList() {
             this.$axios.post('/ocarplay/api/movie/getPaymentRoleToOcarplay', { isOther: 1 }).then((res) => {
-                console.log(res)
+                // console.log(res)
                 // this.listLoading = false
                 if (res.status == 200 && res.data.errorCode == 0) {
                     this.payerList = res.data.data;
@@ -386,6 +386,7 @@ export default {
         ///////// 获取项目名称 start /////////
         getBudget() {
             let data = { userId: this.userId, subjectId: 8 }
+            // let data = { subjectId: 8 }
             this.$axios.post('/ocarplay/task/getBudget', data).then((res) => {
                 // console.log(res)
                 // this.listLoading = false

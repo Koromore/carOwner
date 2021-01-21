@@ -59,8 +59,9 @@
               size="small"
               @click="statusChange(2)"
               v-if="deptId != 90"
-              >已完成</el-button
             >
+              已完成
+            </el-button>
           </el-button-group>
           <el-button type="info" size="small">拍摄时间</el-button>
           <el-date-picker
@@ -90,20 +91,6 @@
               :value="item.value"
             ></el-option>
           </el-select>
-          <!-- <el-select
-            v-model="appraise"
-            filterable
-            clearable
-            placeholder="是否评价"
-            size="small"
-          >
-            <el-option
-              v-for="item in appraiseList"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            ></el-option>
-          </el-select> -->
           <el-select
             v-model="linkState"
             filterable
@@ -117,6 +104,21 @@
               :key="item.value"
               :label="item.label"
               :value="item.value"
+            ></el-option>
+          </el-select>
+          <el-select
+            v-model="buyUserId"
+            filterable
+            clearable
+            placeholder="跟进人"
+            size="small"
+            @change="buyUserChange"
+          >
+            <el-option
+              v-for="item in answerUserLst"
+              :key="item.userId"
+              :label="item.realName"
+              :value="item.userId"
             ></el-option>
           </el-select>
         </div>
@@ -160,6 +162,7 @@
 
     <!------------------ 内容列表 start ------------------>
     <el-row class="content content1">
+      <!-- :default-expand-all="true" -->
       <div class="table_list">
         <el-table
           :data="movieListData"
@@ -183,7 +186,7 @@
           <el-table-column
             prop="createTime"
             label="下达时间"
-            width="90"
+            min-width="90"
             show-overflow-tooltip
           >
             <template slot-scope="scope">
@@ -194,7 +197,7 @@
           <el-table-column
             prop="initUserName"
             label="下达人"
-            width="70"
+            min-width="70"
             show-overflow-tooltip
           >
           </el-table-column>
@@ -202,7 +205,7 @@
           <el-table-column
             prop="photoTime"
             label="拍摄时间"
-            width="100"
+            min-width="100"
             sortable="custom"
           >
             <template slot-scope="scope">
@@ -238,7 +241,7 @@
           <el-table-column
             prop="taskName"
             label="任务名称"
-            min-width="190"
+            min-width="240"
             show-overflow-tooltip
           >
             <template slot-scope="scope">
@@ -287,7 +290,7 @@
           <el-table-column
             prop="personName"
             label="摄影师"
-            width="70"
+            min-width="80"
             show-overflow-tooltip
           >
             <template slot-scope="scope">
@@ -296,6 +299,9 @@
                   <template v-if="scope.row.isPerson">
                     <template v-if="scope.row.movieToSupplierList2.length">
                       <el-link
+                        target="_blank"
+                        class="omit"
+                        :underline="false"
                         @click="toSupplier(scope.row, '摄影师', 2)"
                         v-for="(item, index) in scope.row.movieToSupplierList2"
                         :key="index"
@@ -305,6 +311,9 @@
                     </template>
                     <template v-else>
                       <el-link
+                        target="_blank"
+                        class="omit"
+                        :underline="false"
                         type="primary"
                         @click="toSupplier(scope.row, '摄影师', 2)"
                       >
@@ -346,7 +355,7 @@
           <el-table-column
             prop="modelName"
             label="模特"
-            width="50"
+            min-width="80"
             show-overflow-tooltip
           >
             <template slot-scope="scope">
@@ -355,6 +364,9 @@
                   <template v-if="scope.row.isModel">
                     <template v-if="scope.row.movieToSupplierList1.length">
                       <el-link
+                        target="_blank"
+                        class="omit"
+                        :underline="false"
                         @click="toSupplier(scope.row, '模特', 1)"
                         v-for="(item, index) in scope.row.movieToSupplierList1"
                         :key="index"
@@ -364,6 +376,9 @@
                     </template>
                     <template v-else>
                       <el-link
+                        target="_blank"
+                        class="omit"
+                        :underline="false"
                         type="primary"
                         @click="toSupplier(scope.row, '模特', 1)"
                       >
@@ -405,7 +420,7 @@
           <el-table-column
             prop="ownerName"
             label="车辆"
-            width="50"
+            min-width="80"
             show-overflow-tooltip
           >
             <template slot-scope="scope">
@@ -414,6 +429,9 @@
                   <template v-if="scope.row.movieType == 1">
                     <template v-if="scope.row.movieToSupplierList3.length">
                       <el-link
+                        target="_blank"
+                        class="omit"
+                        :underline="false"
                         @click="toSupplier(scope.row, '车辆', 3)"
                         v-for="(item, index) in scope.row.movieToSupplierList3"
                         :key="index"
@@ -423,6 +441,9 @@
                     </template>
                     <template v-else>
                       <el-link
+                        target="_blank"
+                        class="omit"
+                        :underline="false"
                         type="primary"
                         @click="toSupplier(scope.row, '车辆', 3)"
                       >
@@ -463,7 +484,7 @@
           <el-table-column
             prop="modelName"
             label="其他"
-            width="50"
+            min-width="80"
             show-overflow-tooltip
           >
             <template slot-scope="scope">
@@ -472,6 +493,9 @@
                   <template v-if="scope.row.isOther">
                     <template v-if="scope.row.movieToSupplierList4.length">
                       <el-link
+                        target="_blank"
+                        class="omit"
+                        :underline="false"
                         @click="toSupplier(scope.row, '其他', 4)"
                         v-for="(item, index) in scope.row.movieToSupplierList4"
                         :key="index"
@@ -481,6 +505,9 @@
                     </template>
                     <template v-else>
                       <el-link
+                        target="_blank"
+                        class="omit"
+                        :underline="false"
                         type="primary"
                         @click="toSupplier(scope.row, '其他', 4)"
                       >
@@ -522,7 +549,7 @@
           <el-table-column
             prop="buyUserId"
             label="跟进人"
-            :width="[showIndex ? 150 : 70 ]"
+            :min-width="[showIndex != null ? 150 : 70]"
             show-overflow-tooltip
             v-if="deptId == 90"
           >
@@ -575,7 +602,7 @@
               <span v-else>/</span>
             </template>
           </el-table-column> -->
-          <el-table-column label="评分" width="80" v-if="deptId != 90">
+          <el-table-column label="评分" min-width="80" v-if="deptId != 90">
             <template slot-scope="scope">
               <!-- {{scope.row.movieToSupplierList2}} -->
               <template v-if="scope.row.status != 2">
@@ -609,7 +636,7 @@
               </template>
             </template>
           </el-table-column>
-          <el-table-column label="发布" width="90">
+          <el-table-column label="发布" min-width="90">
             <template slot-scope="scope">
               <template v-if="deptId != 90">
                 <template v-if="scope.row.movieToSupplierList2.length">
@@ -686,7 +713,7 @@
               <span> / </span>
             </template>
           </el-table-column> -->
-          <el-table-column label="反馈" width="60">
+          <el-table-column label="反馈" min-width="60">
             <template slot-scope="scope">
               <i
                 class="el-icon-chat-dot-round feedbackIcon"
@@ -708,8 +735,7 @@
                     scope.row.offlineDataList.length
                   }}
                 </span>
-                <span v-else>
-                  {{ scope.row.offlineDataList.length }} </span
+                <span v-else> {{ scope.row.offlineDataList.length }} </span
                 >笔</span
               >
               <el-tag
@@ -730,8 +756,8 @@
             <!--  slot-scope="props" -->
             <el-col slot-scope="scope" class="expand">
               <el-col
-                :span="2"
-                :offset="5"
+                :span="4"
+                :offset="2"
                 style="text-align: right; line-height: 42px"
               >
                 共
@@ -745,9 +771,9 @@
                   {{ scope.row.offlineDataList.length }}
                 </span>
                 笔
-                <!-- 合计3000元 -->
+                总预算{{scope.row.money}}元
               </el-col>
-              <el-col :span="16">
+              <el-col :span="17">
                 <el-table
                   :data="scope.row.paymentList"
                   style="width: 100%"
@@ -781,6 +807,11 @@
                   >
                   </el-table-column>
                   <el-table-column prop="payMoney" label="金额(元)">
+                  </el-table-column>
+                  <el-table-column prop="payMoney" label="付款方">
+                    <template slot-scope="scope">
+                      {{scope.row.roleName}}
+                    </template>
                   </el-table-column>
 
                   <el-table-column prop="name" label="请款状态">
@@ -880,6 +911,8 @@
                   </el-table-column>
                   <el-table-column prop="buyMoney" label="金额(元)">
                   </el-table-column>
+                  <el-table-column prop="payMoney" label="付款方">/
+                  </el-table-column>
                   <el-table-column prop="name" label="请款状态">
                     <template>/</template>
                   </el-table-column>
@@ -910,7 +943,12 @@
             </el-col>
           </el-table-column>
 
-          <el-table-column prop label="状态" width="70" show-overflow-tooltip>
+          <el-table-column
+            prop
+            label="状态"
+            min-width="70"
+            show-overflow-tooltip
+          >
             <template slot-scope="scope">
               <span v-if="scope.row.status == 0" class="statusColor0">
                 进行中
@@ -942,7 +980,7 @@
             </template>
           </el-table-column>
 
-          <el-table-column prop="address" label="操作" width="150">
+          <el-table-column prop="address" label="操作" min-width="150">
             <div slot-scope="scope">
               <template v-if="scope.row.status == 0 || scope.row.status == 3">
                 <template v-if="deptId != 90">
@@ -1376,6 +1414,7 @@ export default {
           label: '其他',
         },
       ], // 活动类型列表
+      buyUserId: '', // 跟进人
       appraise: null, // 是否评价
       appraiseList: [
         {
@@ -1602,7 +1641,7 @@ export default {
           photoTimeEnd: this.photoTimeScope[1],
           supplierType: this.selectType,
           supplierName: this.searchWord,
-
+          buyUserId: this.buyUserId,
           // itemId: this.itemId,
           // carSeriesId: this.activityType,
           // taskName: this.$store.state.searchValue,
@@ -1613,7 +1652,7 @@ export default {
       }
       this.$axios.post('/ocarplay/api/movie/listAjax', data).then((res) => {
         // console.log(res)
-        if (res.status == 200 && data) {
+        if (res.status == 200) {
           let data = res.data
           if (data.items.length) {
             this.noReply = data.items[0].noReply
@@ -1654,7 +1693,10 @@ export default {
           this.total = data.totalRows
           this.loading = false
           // console.log(this.movieListData)
+        } else {
+          this.$message.error('网络错误！')
         }
+        this.loading = false
       })
     },
 
@@ -2143,7 +2185,7 @@ export default {
     addComment(obj, item) {
       // console.log(obj)
       // console.log(item)
-      if (item.serviceScore) {
+      if (item.serviceScore < 3 || item.techScore < 3) {
         this.$message.warning('评价少于两星，请进行详细评分！')
         setTimeout(() => {
           this.commentShow++
@@ -2231,7 +2273,7 @@ export default {
     },
     // 跳转报销页面
     toReimbursement(obj) {
-      // console.log(obj)
+      // console.log(obj.proRequireId)
       // return
       this.$router.push({
         path: '/home/reimbursement',
@@ -2335,8 +2377,8 @@ export default {
     ///////// 新增反馈 end /////////
     ///////// 折叠获取请款和报销数据 end /////////
     getExpansionData(row, expandedRows) {
-      console.log(row)
-      console.log(expandedRows)
+      // console.log(row)
+      // console.log(expandedRows)
       return
       let data = {
         // proRequireId: row.proRequireId,
@@ -2353,7 +2395,7 @@ export default {
             // console.log(listOfflineData)
             // console.log(listPayment)
             let list = listPayment.concat(listOfflineData)
-            console.log(list)
+            // console.log(list)
             this.tableData = list
             console.log()
             // this.feedbackText = null
@@ -2383,6 +2425,12 @@ export default {
       this.getMovieListAjax()
     },
     ///////// 发布状态筛选 end /////////
+
+    ///////// 跟进人筛选 start /////////
+    buyUserChange(val) {
+      this.getMovieListAjax()
+    },
+    ///////// 跟进人筛选 end /////////
 
     ///////// 拍摄时间范围筛选 start /////////
     photoTimeScopeChange() {

@@ -13,7 +13,11 @@
           </el-col>
           <el-col :span="12">活动任务详情</el-col>
           <el-col :span="6" class="redact">
-            <i class="el-icon-edit" @click="addactivity"></i>
+            <i
+              class="el-icon-edit"
+              @click="addactivity"
+              v-if="movieDetails.status != 2"
+            ></i>
           </el-col>
         </el-col>
         <el-col :span="12" class="left">
@@ -32,18 +36,18 @@
             <div>:</div>
             <div class="val">
               {{ $timeformat(movieDetails.photoTime, 'M.dd') }}
-                <template v-if="movieDetails.movieType == 1">
-                  {{ movieDetails.city }}- {{ movieDetails.deptName }}-
-                  {{ movieDetails.carTypeName }}-
-                  {{ movieDetails.photoTypeName }}
-                </template>
-                <template v-else-if="movieDetails.movieType == 2">
-                  {{ movieDetails.city }}- {{ movieDetails.deptName }}-
-                  {{ movieDetails.movieName }}
-                </template>
-                <template v-else-if="movieDetails.movieType == 3">
-                  {{ movieDetails.movieName }}
-                </template>
+              <template v-if="movieDetails.movieType == 1">
+                {{ movieDetails.city }}- {{ movieDetails.deptName }}-
+                {{ movieDetails.carTypeName }}-
+                {{ movieDetails.photoTypeName }}
+              </template>
+              <template v-else-if="movieDetails.movieType == 2">
+                {{ movieDetails.city }}- {{ movieDetails.deptName }}-
+                {{ movieDetails.movieName }}
+              </template>
+              <template v-else-if="movieDetails.movieType == 3">
+                {{ movieDetails.movieName }}
+              </template>
             </div>
           </el-col>
           <el-col :span="24" class="list">
@@ -91,7 +95,7 @@
           <el-col :span="24" class="list">
             <div class="key">摄影师</div>
             <div>:</div>
-             <div class="val">
+            <div class="val">
               <div v-if="movieDetails.isPerson">
                 <template v-if="movieDetails.movieToSupplierList2.length">
                   <span
@@ -130,11 +134,19 @@
               <span v-else>/</span>
             </div>
           </el-col>
+          <el-col :span="24" class="list">
+            <div class="key">车型图片</div>
+            <div>:</div>
+            <div class="val">
+              <el-button size="mini" type="primary" @click="uploadShow">上传车型图片</el-button>
+              <el-button size="mini" type="primary">查看车型图片</el-button>
+            </div>
+          </el-col>
 
           <el-col :span="24" class="list">
             <div class="key">其他资源</div>
             <div>:</div>
-             <div class="val">
+            <div class="val">
               <div v-if="movieDetails.isOther">
                 <template v-if="movieDetails.movieToSupplierList4.length">
                   <span
@@ -418,16 +430,34 @@
             </el-table>
           </el-col>
         </el-col>
-        <el-col style="height: 40px"></el-col>
+        <!-- <el-col style="height: 40px"></el-col>
         <el-col :span="24" class="btn">
           <el-button type="primary" @click="sendInvitation"
             >发送邀请函</el-button
           >
           <el-button type="primary" @click="toAddactivity">复制任务</el-button>
-        </el-col>
+        </el-col> -->
       </el-scrollbar>
     </el-row>
     <!-- 内容列表 end -->
+
+    <!-- 上传车型图片 -->
+    <el-dialog title="车型图片上传" :visible.sync="dialogUploadShow">
+      <div class="dialogUploadContent">
+        <el-upload
+          action="/ocarplay/file/upload"
+          list-type="picture-card"
+          :on-remove="carImgRemove"
+          :on-success="carImgSuccess"
+        >
+          <i class="el-icon-plus"></i>
+        </el-upload>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="carImgUpload">取 消</el-button>
+        <el-button type="primary" @click="dialogUploadShow = false">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -453,6 +483,30 @@ export default {
       offlineDataList: [],
       loading: false,
       activeNames: [],
+
+      dialogUploadShow: false, // 上传车型图片弹框
+      movieCarFileList: [
+        {
+          fileName: 'string',
+          localPath: 'string',
+          movieId: 0,
+          suffix: 'string',
+          supplierId: 0,
+          supplierName: 'string',
+        },
+      ],
+      fileList: [
+        {
+          name: 'food.jpeg',
+          url:
+            'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100',
+        },
+        {
+          name: 'food2.jpeg',
+          url:
+            'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100',
+        },
+      ],
     }
   },
   // 侦听器
@@ -629,6 +683,35 @@ export default {
       })
     },
     ///////// 修改任务 end /////////
+
+    ///////// 上传车型图片 start /////////
+    uploadShow(){
+      this.dialogUploadShow = true
+    },
+    carImgRemove(file, fileList) {
+      console.log(file, fileList)
+    },
+    carImgSuccess(response, file, fileList) {
+      console.log(response)
+      console.log(file)
+      console.log(fileList)
+      let movieCarFileList = []
+      fileList.forEach(element => {
+        movieCarFileList.push({
+          fileName: element.response.data.fileName,
+          localPath: element.response.data.fileName,
+          movieId: movieDetails.movieId,
+          suffix: element.response.data.suffix,
+          supplierId: 0,
+          supplierName: '',
+        })
+      });
+      this.movieCarFileList = movieCarFileList
+    },
+    carImgUpload(){
+      // this
+    }
+    ///////// 上传车型图片 end /////////
   },
 }
 </script>

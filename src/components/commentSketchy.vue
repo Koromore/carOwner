@@ -137,6 +137,9 @@ export default {
         this.$message.error('分值不能为空')
         return
       }
+      if (this.techScore>2&&this.techScore>2) {
+        data.movieToSupplierList[0].grade = true
+      }
       // return
       // if (max) {
       this.loading = true

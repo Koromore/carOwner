@@ -281,41 +281,45 @@
                 maxlength="500"
                 show-word-limit
               ></el-input> -->
-              <div class="miKey">主题:</div>
+              <div class="miKey" v-show="movieType != 3">主题:</div>
               <el-input
                 placeholder="请输入内容"
                 v-model="item.descName"
-                :disabled="movieType == 3"
+                v-show="movieType != 3"
               ></el-input>
-              <div class="miKey">时间:</div>
+              <div class="miKey" v-show="movieType != 3">时间:</div>
               <el-input
                 placeholder="请输入内容"
                 v-model="item.descTime"
-                :disabled="movieType == 3"
+                v-show="movieType != 3"
               ></el-input>
-              <div class="miKey">集合地点:</div>
+              <div class="miKey" v-show="movieType != 3">集合地点:</div>
               <el-input
                 placeholder="请输入内容"
                 v-model="item.place"
-                :disabled="movieType == 3"
+                v-show="movieType != 3"
               ></el-input>
-              <div class="miKey">成片要求:</div>
+              <div class="miKey" v-show="movieType != 3">成片要求:</div>
               <el-input
                 placeholder="请输入内容"
                 v-model="item.photoDesc"
-                :disabled="movieType == 3"
+                v-show="movieType != 3"
               ></el-input>
-              <div class="miKey">人员要求:</div>
+              <div class="miKey" v-show="movieType != 3">人员要求:</div>
               <el-input
                 placeholder="请输入内容"
                 v-model="item.personDesc"
-                :disabled="movieType == 3"
+                v-show="movieType != 3"
               ></el-input>
               <div class="miKey">其他要求:</div>
               <el-input
                 placeholder="请输入内容"
                 v-model="item.otherDesc"
               ></el-input>
+              <i
+                class="el-icon-remove-outline delValList"
+                @click="delMovieDesc(index)"
+              ></i>
               <i
                 class="el-icon-circle-plus-outline addValList"
                 @click="addMovieDescList"
@@ -347,7 +351,7 @@
                 type="number"
               ></el-input> -->
               <div class="miKey">总费用:</div>
-              <el-input placeholder="请输入内容" v-model="money"></el-input>
+              <el-input placeholder="请输入内容" v-model="money" type="number" clearable></el-input>
               <div class="miKey">费用明细:</div>
               <el-input
                 placeholder="请输入内容"
@@ -588,7 +592,7 @@ export default {
       isPerson: null, // 是否需要摄影师
       isOther: null, // 是否需要其他资源
       placeId: null, // 场地ID
-      periodTime: [new Date(), ''], // 计划周期
+      periodTime: ['', ''], // 计划周期
       // 任务文件
       movieFileList: [],
       fileList: [],
@@ -606,6 +610,7 @@ export default {
           otherDesc: '', // 其他要求
         },
       ], //
+      delMovieDescList: [], // 删除的描述
       money: null, // 预估费用
       moneyRemark: '', // 费用明细
       halfTaskName: null, //
@@ -634,6 +639,7 @@ export default {
   beforeCreate() {},
   beforeMount() {},
   mounted() {
+    // console.log(this.$store.state.carSeriesList)
     let data = {
       movieId: 14,
       movieToSupplierList: [
@@ -1058,6 +1064,31 @@ export default {
       })
       this.movieDescList = movieDescList
     },
+    // 删除任务描述
+    delMovieDesc(index) {
+      // let movieDescList = this.movieDescList
+      // movieDescList.push({
+      //   descName: null, // 主题
+      //   descTime: null, // 时间
+      //   place: null, // 集合地点
+      //   photoDesc: null, // 成片要求
+      //   personDesc: null, // 人员要求
+      //   otherDesc: null, // 其他要求
+      // })
+      // this.movieDescList = movieDescList
+
+      let movieDescList = this.movieDescList
+      if (movieDescList.length > 1) {
+        if (movieDescList[index].descId) {
+          movieDescList[index].deleteFlag = true
+          this.delMovieDescList.push(fromData[index])
+        }
+        movieDescList.splice(index, 1)
+        this.movieDescList = movieDescList
+      } else {
+        this.$message.warning('至少一个')
+      }
+    },
 
     ///////// 影视活动任务 start /////////
     // （0-进行中，1-结算中，2-完成，3-延期，4-人工延期
@@ -1153,6 +1184,14 @@ export default {
       // data.movieType
       if (data.movieType == 3) {
         data.isOther = true
+        delete data.placeId
+        delete data.isModel
+        delete data.isPerson
+        delete data.num
+        delete data.city
+        delete data.brandId
+        delete data.carTypeId
+        delete data.photoType
       }
       if (!data.movieType) {
         this.$message.error('请选择任务类型')
@@ -1194,7 +1233,7 @@ export default {
       //   this.$message.error('请选择是否需要其他资源')
       //   return
       // }
-      if (!data.placeId) {
+      if (data.movieType != 3 && !data.placeId) {
         this.$message.error('请填写场地信息')
         return
       }
@@ -1244,6 +1283,8 @@ export default {
         data.status = 0
       }
       // if (flag) {
+        // this.$message.success('下达任务！')
+      // return
       this.putLoading = true
       this.$axios
         .post('/ocarplay/api/movie/save', data)
@@ -1262,7 +1303,7 @@ export default {
               })
             }, 1000)
           } else {
-            this.$message.error('任务新建失败！')
+            this.$message.error(res.data.msg)
             this.putLoading = false
           }
         })
@@ -1279,14 +1320,16 @@ export default {
 
     ///////// 品牌切换 start /////////
     changeBrandId(val) {
-      console.log(val)
+      // console.log(val)
       if (val) {
-        let carSeriesList = this.carSeriesList
+        let carSeriesList = this.$store.state.carSeriesList
+        // console.log(carSeriesList)
         let carTypeList = []
         carSeriesList.forEach((element) => {
           if (element.value == val) {
             carTypeList = element.children
           }
+          // console.log(element.value)
         })
         this.carTypeList = carTypeList
         let brandName = null
@@ -1459,6 +1502,13 @@ export default {
           align-items: center;
           position: relative;
           .addValList {
+            font-size: 24px;
+            color: #333333;
+            position: absolute;
+            right: -64px;
+            bottom: 0;
+          }
+          .delValList {
             font-size: 24px;
             color: #333333;
             position: absolute;

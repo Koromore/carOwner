@@ -140,14 +140,16 @@
                   >
                     反馈
                   </el-button>
-                  <el-button
-                    type="primary"
-                    plain
-                    size="mini"
-                    @click="getConsultList(scope.row.consultId)"
-                  >
-                    追问列表
-                  </el-button>
+                  <el-badge :value="scope.row.noReply" :hidden="!scope.row.noReply">
+                    <el-button
+                      type="primary"
+                      plain
+                      size="mini"
+                      @click="getConsultList(scope.row.consultId)"
+                    >
+                      追问列表
+                    </el-button>
+                  </el-badge>
                 </template>
               </el-table-column>
             </el-table>
@@ -553,6 +555,11 @@ export default {
       th {
         background: none;
       }
+    }
+  }
+  .el-table{
+    .cell{
+      overflow: inherit;
     }
   }
 }

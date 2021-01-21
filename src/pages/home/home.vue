@@ -94,12 +94,12 @@ export default {
                 children: [],
               },
               {
-                deptId: 106,
+                value: 106,
                 label: '东本',
                 children: [],
               },
               {
-                deptId: 117,
+                value: 117,
                 label: '内容一组',
                 children: [],
               },

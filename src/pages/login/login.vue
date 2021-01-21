@@ -1,6 +1,6 @@
 <template>
   <div class="login">
-    <i class="el-icon-platform-eleme"></i>
+    <!-- <i class="el-icon-platform-eleme"></i> -->
   </div>
 </template>
 <script>
@@ -23,7 +23,8 @@ export default {
       // let token = localStorage.getItem('token')
       // let userSign = localStorage.getItem('userSign')
 
-      let url = window.location.href // let url = 'http://218.106.254.122:8084/dist/index.html#/login?NDAyMyxsaXV0ZSwyMDIwLTA0LTMw'
+      let url = window.location.href
+      // let url = 'http://218.106.254.122:8084/dist/index.html#/login?NDAyMyxsaXV0ZSwyMDIwLTA0LTMw'
       let aesStr = ''
 
       if (url.indexOf('?') != -1) {
