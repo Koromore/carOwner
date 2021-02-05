@@ -28,8 +28,8 @@
       </el-col>
 
       <el-col :span="7" class="header_right">
-        <div class="doc" @click="doc"><i class="el-icon-document-copy"></i><br><span>帮助</span>
-        </div>
+        <!-- <div class="doc" @click="doc"><i class="el-icon-document-copy"></i><br><span>帮助</span>
+        </div> -->
         
         <!-- 搜索框 start -->
         <el-input
@@ -125,7 +125,8 @@ export default {
         ['metadata'],
         ['document'],
         ['resource'],
-        ['activity']
+        ['activity'],
+        ['supplieradmin']
       ]
       let navNum = 0
       list.forEach((element, i) => {
@@ -295,7 +296,7 @@ export default {
         line-height: 32px;
         // font-weight: 700;
         cursor: pointer;
-        margin-right: 5%;
+        margin-right: 3%;
         &:nth-last-of-type(1) {
           margin-right: 0;
         }

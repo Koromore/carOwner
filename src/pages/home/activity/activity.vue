@@ -638,7 +638,8 @@
           </el-table-column>
           <el-table-column label="发布" min-width="90">
             <template slot-scope="scope">
-              <template v-if="deptId != 90">
+              <template v-if="scope.row.movieType!=3">
+                <template v-if="deptId != 90">
                 <template v-if="scope.row.movieToSupplierList2.length">
                   <template v-if="scope.row.scoreNum">
                     <el-link
@@ -701,6 +702,10 @@
                   {{ scope.row.urlNum }}/{{ scope.row.movieUrlList.length }}
                 </span> -->
               </template>
+              </template>
+              <template v-else>
+                完成
+              </template>
             </template>
           </el-table-column>
 
@@ -724,32 +729,37 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="请款报销" width="115">
+          <el-table-column label="请款报销" width="140">
             <!--  slot-scope="props" -->
             <template slot-scope="scope">
-              <span
-                >共
+              <span>
+                共
                 <span v-if="deptId == 90">
+                  <template v-if="!scope.row.paymentList">
+                    <div></div>
+                  </template>
                   {{
                     scope.row.paymentList.length +
                     scope.row.offlineDataList.length
                   }}
                 </span>
-                <span v-else> {{ scope.row.offlineDataList.length }} </span
-                >笔</span
-              >
+                <span v-else>
+                  {{ scope.row.offlineDataList.length }}
+                </span>
+                笔
+              </span>
               <el-tag
                 @click="toReimbursement(scope.row)"
                 v-if="deptId != 90 && scope.row.status != 2"
               >
                 报销
               </el-tag>
-              <el-tag
-                @click="toRequestpayout(scope.row.movieId, scope.row)"
-                v-else-if="scope.row.status != 2"
-              >
-                请款
-              </el-tag>
+              <template v-else-if="scope.row.status != 2">
+                <el-tag @click="toRequestpayout(scope.row.movieId, scope.row)">
+                  请
+                </el-tag>
+                <el-tag @click="toReimbursement(scope.row)"> 报 </el-tag>
+              </template>
             </template>
           </el-table-column>
           <el-table-column type="expand" width="18">
@@ -770,8 +780,7 @@
                 <span v-else>
                   {{ scope.row.offlineDataList.length }}
                 </span>
-                笔
-                总预算{{scope.row.money}}元
+                笔 总预算{{ scope.row.money }}元
               </el-col>
               <el-col :span="17">
                 <el-table
@@ -810,7 +819,7 @@
                   </el-table-column>
                   <el-table-column prop="payMoney" label="付款方">
                     <template slot-scope="scope">
-                      {{scope.row.roleName}}
+                      {{ scope.row.roleName }}
                     </template>
                   </el-table-column>
 
@@ -911,7 +920,8 @@
                   </el-table-column>
                   <el-table-column prop="buyMoney" label="金额(元)">
                   </el-table-column>
-                  <el-table-column prop="payMoney" label="付款方">/
+                  <el-table-column prop="payMoney" label="付款方"
+                    >/
                   </el-table-column>
                   <el-table-column prop="name" label="请款状态">
                     <template>/</template>
@@ -1651,10 +1661,10 @@ export default {
         orderType: this.orderType, // 1-升序，2-降序
       }
       this.$axios.post('/ocarplay/api/movie/listAjax', data).then((res) => {
-        // console.log(res)
         if (res.status == 200) {
           let data = res.data
-          if (data.items.length) {
+          // console.log(data.items.length)
+          if (data.items) {
             this.noReply = data.items[0].noReply
           } else {
             this.noReply = 0
@@ -2185,7 +2195,10 @@ export default {
     addComment(obj, item) {
       // console.log(obj)
       // console.log(item)
-      if (item.serviceScore < 3 || item.techScore < 3) {
+      if (
+        (item.serviceScore < 3 && item.serviceScore) ||
+        (item.techScore < 3 && item.techScore)
+      ) {
         this.$message.warning('评价少于两星，请进行详细评分！')
         setTimeout(() => {
           this.commentShow++
@@ -2244,10 +2257,10 @@ export default {
     // 完善供应商信息
     toSupplier(row, type, typeId) {
       // console.log(row)
-      if (row.paymentList.length || row.offlineDataList.length) {
-        this.$message.error('请款后禁止修改供应商！')
-        return
-      }
+      // if (row.paymentList.length || row.offlineDataList.length) {
+      //   this.$message.error('请款后禁止修改供应商！')
+      //   return
+      // }
       this.supplierShow++
       let name = this.$timeformat(row.photoTime, 'M.dd')
       if (row.movieType == 1) {

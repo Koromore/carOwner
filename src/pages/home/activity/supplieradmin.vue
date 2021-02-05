@@ -133,6 +133,7 @@
       :visible.sync="dialogFormVisible"
       :close-on-click-modal="false"
       @close="closeDialog"
+      width="540px"
     >
       <el-form
         :model="formData"
@@ -510,6 +511,9 @@ $icoColor: #6a91e8;
         margin-top: 18px;
         width: 180px;
       }
+    }
+    .el-select{
+      width: 100%;
     }
   }
 

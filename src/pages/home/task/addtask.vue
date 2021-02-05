@@ -17,10 +17,10 @@
             <div class="key imp">任务类型</div>
             <div class="val">
               <el-radio-group v-model="taskType" :disabled="!disabledCaigou">
-                <el-radio :label="1">借车</el-radio>
+                <!-- <el-radio :label="1">借车</el-radio> -->
                 <el-radio :label="2">素材</el-radio>
                 <el-radio :label="3">邀约</el-radio>
-                <el-radio :label="4">拍摄</el-radio>
+                <!-- <el-radio :label="4">拍摄</el-radio> -->
                 <el-radio :label="5">发布</el-radio>
               </el-radio-group>
             </div>

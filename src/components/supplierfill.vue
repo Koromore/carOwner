@@ -7,7 +7,7 @@
       center
       @open="openDialog"
     >
-      <el-row class="box">
+      <el-row class="box" v-loading="dialogLoading">
         <el-scrollbar style="height: 100%">
           <div class="content">
             <el-col class="list">
@@ -96,6 +96,7 @@ export default {
   data() {
     return {
       dialogVisible: false,
+      dialogLoading: false,
       fromData: [],
       options: [
         {
@@ -248,6 +249,7 @@ export default {
       }
       // console.log(data)
       // return
+      this.dialogLoading = true
       this.$axios
         .post('/ocarplay/api/movie/save', data)
         .then((res) => {
@@ -260,6 +262,7 @@ export default {
           } else {
             this.$message.error(res.data.msg)
           }
+          this.dialogLoading = false
         })
         .catch((res) => {
           console.log(res)

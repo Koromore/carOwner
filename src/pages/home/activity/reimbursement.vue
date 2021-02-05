@@ -332,7 +332,7 @@ export default {
 
         },
         getpayerList() {
-            this.$axios.post('/ocarplay/api/movie/getPaymentRoleToOcarplay', { isOther: 1 }).then((res) => {
+            this.$axios.post('/ocarplay/api/movie/getPaymentRoleToOcarplay', { payer: 1 }).then((res) => {
                 // console.log(res)
                 // this.listLoading = false
                 if (res.status == 200 && res.data.errorCode == 0) {
@@ -490,7 +490,7 @@ export default {
                         }
                     });
                     this.$axios.post('/ocarplay/api/movie/saveReimbursement', this.fromData).then((res) => {
-                        console.log(res)
+                        // console.log(res)
                         // this.listLoading = false
                         if (res.status == 200 && res.data.errorCode == 0) {
                             this.$message.success('申请报销成功！')

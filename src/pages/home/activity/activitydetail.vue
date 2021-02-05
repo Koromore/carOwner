@@ -34,6 +34,16 @@
           <el-col :span="24" class="list">
             <div class="key">项目名称</div>
             <div>:</div>
+            <div class="val">{{ movieDetails.proName }}</div>
+          </el-col>
+          <el-col :span="24" class="list">
+            <div class="key">预算明细</div>
+            <div>:</div>
+            <div class="val">{{ movieDetails.subItemsName }}</div>
+          </el-col>
+          <el-col :span="24" class="list">
+            <div class="key">任务名称</div>
+            <div>:</div>
             <div class="val">
               {{ $timeformat(movieDetails.photoTime, 'M.dd') }}
               <template v-if="movieDetails.movieType == 1">
@@ -49,16 +59,6 @@
                 {{ movieDetails.movieName }}
               </template>
             </div>
-          </el-col>
-          <el-col :span="24" class="list">
-            <div class="key">预算明细</div>
-            <div>:</div>
-            <div class="val">{{ movieDetails.subItemsName }}</div>
-          </el-col>
-          <el-col :span="24" class="list">
-            <div class="key">任务名称</div>
-            <div>:</div>
-            <div class="val">{{ movieDetails.movieName }}</div>
           </el-col>
           <el-col :span="24" class="list">
             <div class="key">任务状态</div>
@@ -138,8 +138,12 @@
             <div class="key">车型图片</div>
             <div>:</div>
             <div class="val">
-              <el-button size="mini" type="primary" @click="uploadShow">上传车型图片</el-button>
-              <el-button size="mini" type="primary">查看车型图片</el-button>
+              <el-button size="mini" type="primary" @click="uploadShow">
+                上传车型图片
+                </el-button>
+              <el-button size="mini" type="primary" @click="viewShow">
+                查看车型图片
+                </el-button>
             </div>
           </el-col>
 
@@ -445,18 +449,32 @@
     <el-dialog title="车型图片上传" :visible.sync="dialogUploadShow">
       <div class="dialogUploadContent">
         <el-upload
+          ref="uploadCarImg"
           action="/ocarplay/file/upload"
           list-type="picture-card"
           :on-remove="carImgRemove"
           :on-success="carImgSuccess"
+          :accept="'.png,.jpg,.jpeg,.gif'"
         >
           <i class="el-icon-plus"></i>
         </el-upload>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="carImgUpload">取 消</el-button>
-        <el-button type="primary" @click="dialogUploadShow = false">确 定</el-button>
+        <el-button @click="cancelCarImgUpload">取 消</el-button>
+        <el-button type="primary" @click="carImgUpload">确 定</el-button>
       </span>
+    </el-dialog>
+
+    <!-- 车型图片查看 -->
+    <el-dialog title="车型图片查看" :visible.sync="dialogViewShow">
+      <div class="dialogViewContent">
+        <el-image
+          v-for="(item,index) in movieCarFileList"
+          :key="index"
+          :src="'/ocarplay/'+item.localPath" 
+          :preview-src-list="['/ocarplay/'+item.localPath]">
+        </el-image>
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -507,6 +525,8 @@ export default {
             'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100',
         },
       ],
+
+      dialogViewShow: false,
     }
   },
   // 侦听器
@@ -555,7 +575,20 @@ export default {
             }
           })
           this.movieDetails = data
-          console.log(this.movieDetails)
+          let movieCarFileList = []
+          data.movieCarFileList.forEach((element) => {
+            movieCarFileList.push({
+              fileName: element.fileName,
+              localPath: element.localPath,
+              movieId: element.movieId,
+              suffix: element.suffix,
+            })
+          })
+          this.movieCarFileList = data.movieCarFileList
+          // console.log(this.movieDetails)
+          // console.log(data.paymentList)
+          // this.paymentList = data.paymentList
+          // this.offlineDataList = data.listOfflineData
           this.loading = false
         }
       })
@@ -564,6 +597,7 @@ export default {
 
     ///////// 获取报销和请款数据 start /////////
     getReimbur(id) {
+      // return
       // this.loading = true
       let data = {
         proRequireId: id,
@@ -571,11 +605,15 @@ export default {
       this.$axios
         .post('/ocarplay/api/movie/getReimburAndPaymentOfPrequire', data)
         .then((res) => {
-          // console.log(res)
+          // console.log(res.data)
+          // return
           if (res.status == 200) {
-            let data = res.data.data[0]
-            this.paymentList = data.listPayment
-            this.offlineDataList = data.listOfflineData
+            let data = res.data.data
+            // console.log(data)
+            // let data0 = JSON.parse(data)
+            // console.log(data0)
+            this.paymentList = data.paymentList
+            this.offlineDataList = data.offlineDataList
           }
         })
         .catch((res) => {
@@ -685,7 +723,7 @@ export default {
     ///////// 修改任务 end /////////
 
     ///////// 上传车型图片 start /////////
-    uploadShow(){
+    uploadShow() {
       this.dialogUploadShow = true
     },
     carImgRemove(file, fileList) {
@@ -696,22 +734,58 @@ export default {
       console.log(file)
       console.log(fileList)
       let movieCarFileList = []
-      fileList.forEach(element => {
+      let movieDetails = this.movieDetails
+      fileList.forEach((element) => {
         movieCarFileList.push({
           fileName: element.response.data.fileName,
-          localPath: element.response.data.fileName,
+          localPath: element.response.data.localPath,
           movieId: movieDetails.movieId,
           suffix: element.response.data.suffix,
-          supplierId: 0,
-          supplierName: '',
         })
-      });
+      })
       this.movieCarFileList = movieCarFileList
     },
-    carImgUpload(){
+    // 确认上传
+    carImgUpload() {
       // this
-    }
+      let data = {
+        movieId: this.movieDetails.movieId,
+        movieCarFileList: this.movieCarFileList,
+      }
+      this.$axios
+        .post('/ocarplay/api/movie/save', data)
+        .then((res) => {
+          // console.log(res)
+          if (res.status == 200 && res.data.errcode === 0) {
+            this.$message.success('车型图片上传成功！')
+            ///////// 获取任务详情 start /////////
+            this.getMovieDetails()
+            this.$refs.uploadCarImg.clearFiles()
+            this.movieCarFileList = []
+            this.dialogUploadShow = false
+          } else {
+            this.$message.error(res.data.msg)
+            this.putLoading = false
+          }
+        })
+        .catch((res) => {
+          console.log(res)
+          this.putLoading = false
+        })
+    },
+    // 取消上传
+    cancelCarImgUpload() {
+      this.$refs.uploadCarImg.clearFiles()
+      this.movieCarFileList = []
+      this.dialogUploadShow = false
+    },
     ///////// 上传车型图片 end /////////
+
+    ///////// 查看车型图片 start /////////
+    viewShow(){
+      this.dialogViewShow = true
+    }
+    ///////// 查看车型图片 end /////////
   },
 }
 </script>
@@ -830,6 +904,14 @@ export default {
           margin: 0;
         }
       }
+    }
+  }
+  .dialogViewContent{
+    .el-image{
+      display: inline-block;
+      width: 100px;
+      height: 100px;
+      margin-right: 9px;
     }
   }
 }

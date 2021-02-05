@@ -14,7 +14,7 @@
         </el-col>
         <el-col :span="24" class="top">
           <div class="case">申请人</div>
-          <div class="case">{{ supplierObj.supplierName }}</div>
+          <div class="case">{{ realName }}</div>
           <div class="case">申请日期</div>
           <div class="case">{{ createTime }}</div>
           <div class="case">供应商</div>
@@ -332,6 +332,7 @@ export default {
       userId: this.$store.state.user.userId,
       deptId: this.$store.state.user.deptId,
       userName: this.$store.state.user.userName,
+      realName: this.$store.state.user.realName,
       loading: false,
       createTime: null,
       pId: 0,
@@ -430,7 +431,7 @@ export default {
           remark: element.remark, //备注
           payTime: element.payTime, //付款日期
           subjectName: '影视活动', //科目名
-          subItemsName: element.subItemsName, //细分项名
+          subitemName: element.subItemsName, //细分项名
           isInvoice: this.fromData.isInvoice, //有无发票 0-有  1-没有
           invoiceRemark: this.fromData.invoiceRemark, //发票类型(用户下拉框选中)
           proitemId: this.pId,
@@ -526,7 +527,7 @@ export default {
     //获取付款方
     getpayerList() {
       this.$axios
-        .post('/ocarplay/api/movie/getPaymentRoleToOcarplay', { isOther: 1 })
+        .post('/ocarplay/api/movie/getPaymentRoleToOcarplay', { payer: 1 })
         .then((res) => {
           if (res.status == 200 && res.data.errorCode == 0) {
             this.payerList = res.data.data

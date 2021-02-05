@@ -153,7 +153,6 @@ export default {
               this.$message.success('评分成功')
               this.drawerData = false
               this.$parent.getMovieListAjax()
-
               if (this.techScore<3||this.techScore<3) {
                 this.$message.warning('分数少于2星，请进行详细评分')
                 this.$parent.commentShow++

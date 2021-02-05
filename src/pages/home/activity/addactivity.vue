@@ -255,11 +255,11 @@
             <div class="key imp" v-show="movieType != 3">拍摄时间</div>
             <div class="key imp" v-show="movieType == 3">时间</div>
             <div class="val">
+                <!-- :picker-options="pickerOptions" -->
               <el-date-picker
                 v-model="photoTime"
                 type="date"
                 placeholder="选择日期"
-                :picker-options="pickerOptions"
                 value-format="yyyy-MM-dd"
                 :disabled="movieId ? true : false"
               ></el-date-picker>
@@ -447,7 +447,7 @@ export default {
       props: { multiple: true, expandTrigger: 'hover' },
       carSeriesList: [],
       // 日期禁止
-      pickerOptions: {},
+      // pickerOptions: {},
       // 摄影师  模特  场地
       options3: [
         {
@@ -541,6 +541,10 @@ export default {
         {
           value: 106,
           label: '东本',
+        },
+        {
+          value: 117,
+          label: '内容一组',
         },
       ],
       // 车型列表
@@ -665,15 +669,15 @@ export default {
     this.getBudget()
     ///////// 获取预算明细 start /////////
     // this.getBudgetDetailByApplyId()
-    let brandList = this.brandList
-    let deptId = this.deptId
+    // let brandList = this.brandList
+    // let deptId = this.deptId
 
-    for (let i = 0; i < brandList.length; i++) {
-      let element = brandList[i]
-      if (element.value == deptId) {
-        this.brandList = [element]
-      }
-    }
+    // for (let i = 0; i < brandList.length; i++) {
+    //   let element = brandList[i]
+    //   if (element.value == deptId) {
+    //     this.brandList = [element]
+    //   }
+    // }
   },
   // 方法事件
   methods: {
@@ -1258,11 +1262,11 @@ export default {
         return
       }
       if (
-        !data.movieDescList[0].descName ||
-        !data.movieDescList[0].descTime ||
-        !data.movieDescList[0].place ||
-        !data.movieDescList[0].photoDesc ||
-        !data.movieDescList[0].personDesc ||
+        // !data.movieDescList[0].descName ||
+        // !data.movieDescList[0].descTime ||
+        // !data.movieDescList[0].place ||
+        // !data.movieDescList[0].photoDesc ||
+        // !data.movieDescList[0].personDesc ||
         !data.movieDescList[0].otherDesc
       ) {
         this.$message.error('请填写任务描述')
