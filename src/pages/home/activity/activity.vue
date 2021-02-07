@@ -767,7 +767,6 @@
             <el-col slot-scope="scope" class="expand">
               <el-col
                 :span="4"
-                :offset="2"
                 style="text-align: right; line-height: 42px"
               >
                 共
@@ -782,7 +781,7 @@
                 </span>
                 笔 总预算{{ scope.row.money }}元
               </el-col>
-              <el-col :span="17">
+              <el-col :span="19">
                 <el-table
                   :data="scope.row.paymentList"
                   style="width: 100%"
@@ -794,6 +793,9 @@
                   </el-table-column>
                   <el-table-column prop="name" label="金额类别">
                     <template>请款</template>
+                  </el-table-column>
+                  <el-table-column label="报销编号" width="100">
+                    <template>/</template>
                   </el-table-column>
                   <el-table-column prop="createTime" label="时间" width="100">
                     <template slot-scope="scope1">
@@ -896,6 +898,8 @@
                   </el-table-column>
                   <el-table-column prop="name" label="金额类别">
                     <template>报销</template>
+                  </el-table-column>
+                  <el-table-column prop="applyNumber" label="报销编号" width="100">
                   </el-table-column>
                   <el-table-column prop="createTime" label="时间" width="100">
                     <template slot-scope="scope2">

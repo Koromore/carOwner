@@ -15,8 +15,8 @@
                 <el-col :span="24" class="formBox">
                     <el-form :model="fromData" :rules="fromRules" ref="fromData" label-width="100px" class="demo-fromData">
                         <el-form-item label="项目组" prop="groupId">
-                            <el-select v-model="fromData.groupId" placeholder="请选择项目组">
-                                <el-option :label="item.label" :value="item.value" v-for="(item, index) in groupList" :key="index"></el-option>
+                            <el-select v-model="fromData.groupId" placeholder="请选择项目组" filterable clearable>
+                                <el-option :label="item.groupName" :value="item.groupId" v-for="(item, index) in groupList" :key="index"></el-option>
                             </el-select>
                         </el-form-item>
                         <el-form-item label="项目名称" prop="budgetApplyId">
@@ -315,9 +315,29 @@ export default {
         this.getpayerList();
         //细分项
         this.getSubdivide();
+        this.getGroupList()
     },
     // 方法事件
     methods: {
+        getGroupList() {
+            let data = {
+                userId: this.userId,
+            }
+            this.$axios
+                .post('/ocarplay/api/movie/getUserGroupToOcarplayOffineData', data)
+                .then((res) => {
+                // console.log(res)
+                // this.listLoading = false
+                    if (res.status == 200 && res.data.errcode == 0) {
+                        this.subdivideList = res.data.data;
+                        this.groupList = res.data.data
+                        // console.log(this.groupList)
+                    }
+                })
+                .catch((res) => {
+                    console.log(res)
+                })
+        },
         getSubdivide(e) {
             let data = {
                 budgetApplyId: this.$route.query.budgetApplyId
@@ -332,7 +352,7 @@ export default {
 
         },
         getpayerList() {
-            this.$axios.post('/ocarplay/api/movie/getPaymentRoleToOcarplay', { payer: 1 }).then((res) => {
+            this.$axios.post('/ocarplay/api/movie/getPaymentRoleToOcarplayOfflineData', { payer: 1 }).then((res) => {
                 // console.log(res)
                 // this.listLoading = false
                 if (res.status == 200 && res.data.errorCode == 0) {
